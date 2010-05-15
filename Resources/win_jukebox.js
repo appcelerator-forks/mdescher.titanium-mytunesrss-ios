@@ -4,7 +4,7 @@ var win = Titanium.UI.currentWindow;
 
 var tableView;
 
-var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
 
 var controlRewind = Titanium.UI.createImageView({url:'back.png'});
 controlRewind.addEventListener('click', function() {
@@ -53,7 +53,7 @@ function setTrackInformation(track) {
     if (tableView) {
         win.remove(tableView);
     }
-    tableView = Titanium.UI.createTableView({top:45,bottom:44,style:Titanium.UI.iPhone.TableViewStyle.GROUPED});
+    tableView = Titanium.UI.createTableView({top:45,bottom:44,style:tableViewGroupStyle});
     var imageRow;
     if (track.imageUrl) {
         imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:240});

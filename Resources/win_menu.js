@@ -1,22 +1,35 @@
 Titanium.include('mytunesrss.js');
 
-function playTrack() {
-    audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
-    Titanium.App.fireEvent('mytunesrss_playtrack', currentPlaylist[currentPlaylistIndex]);
-    audioPlayer.start();
-}
-
 var win = Titanium.UI.currentWindow;
 
 var actIndicator = Titanium.UI.createActivityIndicator({top:45,bottom:0,left:0,right:0});
 
 var audioPlayer = Titanium.Media.createAudioPlayer({audioSessionMode:Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK});
+var videoPlayer = Titanium.Media.createVideoPlayer();
 var currentPlaylist;
 var currentPlaylistIndex;
+
+function playTrack() {
+    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
+        audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
+        Titanium.App.fireEvent('mytunesrss_playtrack', currentPlaylist[currentPlaylistIndex]);
+        audioPlayer.start();
+    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
+        videoPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
+        Titanium.App.fireEvent('mytunesrss_playtrack', currentPlaylist[currentPlaylistIndex]);
+        videoPlayer.start();
+    }
+}
 
 audioPlayer.addEventListener('progress', function(e) {
     Titanium.App.fireEvent('mytunesrss_progress', e);
 });
+
+if (videoPlayer != undefined) {
+    videoPlayer.addEventListener('progress', function(e) {
+        Titanium.App.fireEvent('mytunesrss_progress', e);
+    });
+}
 
 audioPlayer.addEventListener('change', function(e) {
     if (e.state == audioPlayer.STATE_STOPPED && currentPlaylistIndex < currentPlaylist.length - 1) {
@@ -25,6 +38,15 @@ audioPlayer.addEventListener('change', function(e) {
     }
 });
 
+if (videoPlayer != undefined) {
+    videoPlayer.addEventListener('change', function(e) {
+        if (e.state == videoPlayer.STATE_STOPPED && currentPlaylistIndex < currentPlaylist.length - 1) {
+            currentPlaylistIndex++;
+            playTrack();
+        }
+    });
+}
+
 var labelPlaylists = Titanium.UI.createLabel({text:'Playlists',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var labelAlbums = Titanium.UI.createLabel({text:'Albums',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var labelArtists = Titanium.UI.createLabel({text:'Artists',left:10,font:{fontSize:20,fontWeight:'bold'}});
@@ -32,39 +54,51 @@ var labelGenres = Titanium.UI.createLabel({text:'Genres',left:10,font:{fontSize:
 var inputSearch = Titanium.UI.createTextField({hintText:'Search terms',left:10,right:10,top:5,bottom:5,returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalize:false,autocomplete:false});
 var labelSearch = Titanium.UI.createLabel({text:'Search',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var labelNowPlaying = Titanium.UI.createLabel({text:'Currently playing',left:10,font:{fontSize:20,fontWeight:'bold'}});
-var buttonLogout = Titanium.UI.createButton({title:'Logout',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+var buttonLogout = Titanium.UI.createButton({title:'Logout',style:buttonStyle});
 
 var tableViewData = [];
 tableViewData.push(Titanium.UI.createTableViewSection());
 tableViewData.push(Titanium.UI.createTableViewSection());
 tableViewData.push(Titanium.UI.createTableViewSection());
 
-tableViewData[0].add(wrap([labelPlaylists]));
-tableViewData[0].add(wrap([labelAlbums]));
-tableViewData[0].add(wrap([labelArtists]));
-tableViewData[0].add(wrap([labelGenres]));
+var buttonRowPlaylists = wrap([labelPlaylists]);
+tableViewData[0].add(buttonRowPlaylists);
+var buttonRowAlbums = wrap([labelAlbums]);
+tableViewData[0].add(buttonRowAlbums);
+var buttonRowArtists = wrap([labelArtists]);
+tableViewData[0].add(buttonRowArtists);
+var buttonRowGenres = wrap([labelGenres]);
+tableViewData[0].add(buttonRowGenres);
 
 var inputSearchRow = wrap([inputSearch]);
 inputSearchRow.hasChild = false;
 tableViewData[1].add(inputSearchRow);
-tableViewData[1].add(wrap([labelSearch]));
+var buttonRowSearch = wrap([labelSearch]);
+tableViewData[1].add(buttonRowSearch);
 
-tableViewData[2].add(wrap([labelNowPlaying]));
+var buttonRowNowPlaying = wrap([labelNowPlaying]);
+tableViewData[2].add(buttonRowNowPlaying);
 
-var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45});
+var tableView = Titanium.UI.createTableView({data:tableViewData,style:tableViewGroupStyle,top:45});
+
+if (Titanium.Platform.osname === 'android') {
+    tableView.addEventListener('click', function(e) {
+        e.row.fireEvent('click');
+    });
+}
 
 buttonLogout.addEventListener('click', function() {
     if (Titanium.App.mediaPlayer) {
         Titanium.App.mediaPlayer.stop();
     }
-    Titanium.App.sessionId = undefined;
+    Titanium.App.Properties.removeProperty('jsonRpcSessionId');
     Titanium.App.mediaPlaylist = undefined;
     Titanium.App.mediaCurrentTrack = undefined;
     Titanium.App.mediaPlayer = undefined;
     win.close();
 });
 
-labelPlaylists.addEventListener('click', function() {
+buttonRowPlaylists.addEventListener('click', function() {
     actIndicator.show();
     ajaxCall('PlaylistService.getPlaylists', [], function(result, error) {
         if (result) {
@@ -79,7 +113,7 @@ labelPlaylists.addEventListener('click', function() {
     });
 });
 
-labelAlbums.addEventListener('click', function() {
+buttonRowAlbums.addEventListener('click', function() {
     actIndicator.show();
     ajaxCall('AlbumService.getAlbums', [null, null, null, -1, -1, -1, false, -1, -1], function(result, error) {
         if (result) {
@@ -94,7 +128,7 @@ labelAlbums.addEventListener('click', function() {
     });
 });
 
-labelArtists.addEventListener('click', function() {
+buttonRowArtists.addEventListener('click', function() {
     actIndicator.show();
     ajaxCall('ArtistService.getArtists', [null, null, null, -1, -1, -1], function(result, error) {
         if (result) {
@@ -109,7 +143,7 @@ labelArtists.addEventListener('click', function() {
     });
 });
 
-labelGenres.addEventListener('click', function() {
+buttonRowGenres.addEventListener('click', function() {
     actIndicator.show();
     ajaxCall('GenreService.getGenres', [1, -1, -1], function(result, error) {
         if (result) {
@@ -124,7 +158,7 @@ labelGenres.addEventListener('click', function() {
     });
 });
 
-labelSearch.addEventListener('click', function() {
+buttonRowSearch.addEventListener('click', function() {
     actIndicator.show();
     ajaxCall('TrackService.search', [inputSearch.value, 30, 'KeepOrder', 0, -1], function(result, error) {
         if (result && result.tracks && result.tracks.length > 0) {
@@ -142,7 +176,7 @@ labelSearch.addEventListener('click', function() {
     });
 });
 
-labelNowPlaying.addEventListener('click', function() {
+buttonRowNowPlaying.addEventListener('click', function() {
     if (currentPlaylist && audioPlayer) {
         Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundColor:'#FFF'}).open();
     } else {
@@ -152,42 +186,77 @@ labelNowPlaying.addEventListener('click', function() {
 
 Titanium.App.addEventListener('mytunesrss_playlist', function(e) {
     audioPlayer.stop();
+    if (videoPlayer != undefined) {
+        videoPlayer.stop();
+    }
     currentPlaylist = e.playlist;
     currentPlaylistIndex = e.index;
-    audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
-    audioPlayer.start();
+    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
+        audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
+        audioPlayer.start();
+    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
+        videoPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
+        videoPlayer.start();
+    }
     Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundColor:'#FFF'}).open();
 });
 
 Titanium.App.addEventListener('mytunesrss_rewind', function() {
-    if (audioPlayer.playing && audioPlayer.progress > 2.0) {
-        audioPlayer.stop();
-        audioPlayer.start();
-    } else if (currentPlaylistIndex > 0) {
-        audioPlayer.stop();
-        currentPlaylistIndex--;
-        playTrack();
+    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
+        if (audioPlayer.playing && audioPlayer.progress > 2.0) {
+            audioPlayer.stop();
+            audioPlayer.start();
+        } else if (currentPlaylistIndex > 0) {
+            audioPlayer.stop();
+            currentPlaylistIndex--;
+            playTrack();
+        }
+    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
+        if (videoPlayer.playing && videoPlayer.progress > 2.0) {
+            videoPlayer.stop();
+            videoPlayer.start();
+        } else if (currentPlaylistIndex > 0) {
+            videoPlayer.stop();
+            currentPlaylistIndex--;
+            playTrack();
+        }
     }
 });
 
 Titanium.App.addEventListener('mytunesrss_fastforward', function() {
     if (currentPlaylistIndex + 1 < currentPlaylist.length) {
-        audioPlayer.stop();
+        if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
+            audioPlayer.stop();
+        } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
+            videoPlayer.stop();
+        }
         currentPlaylistIndex++;
         playTrack();
     }
 });
 
 Titanium.App.addEventListener('mytunesrss_stop', function() {
-    audioPlayer.stop();
+    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
+        audioPlayer.stop();
+    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
+        videoPlayer.stop();
+    }
 });
 
 Titanium.App.addEventListener('mytunesrss_play', function() {
-    audioPlayer.start();
+    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
+        audioPlayer.start();
+    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
+        videoPlayer.start();
+    }
 });
 
 Titanium.App.addEventListener('mytunesrss_pause', function() {
-    audioPlayer.pause();
+    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
+        audioPlayer.pause();
+    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
+        videoPlayer.pause();
+    }
 });
 
 addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogout);
@@ -195,7 +264,7 @@ win.add(tableView);
 win.add(actIndicator);
 
 function wrap(components) {
-    var row = Titanium.UI.createTableViewRow({hasChild:true});
+    var row = Titanium.UI.createTableViewRow({hasChild:true,touchEnabled:true});
     for (var i = 0; i < components.length; i++) {
         row.add(components[i]);
     }

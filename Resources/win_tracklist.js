@@ -3,7 +3,7 @@ Titanium.include('mytunesrss.js');
 var win = Titanium.UI.currentWindow;
 
 var tableView = Titanium.UI.createTableView({top:45});
-var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
 
 buttonBack.addEventListener('click', function() {
     win.close();

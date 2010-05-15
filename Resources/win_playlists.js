@@ -5,7 +5,7 @@ var win = Titanium.UI.currentWindow;
 var actIndicator = Titanium.UI.createActivityIndicator({top:45,bottom:0,left:0,right:0});
 
 var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar(), filterAttribute:'title',top:45});
-var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
 
 buttonBack.addEventListener('click', function() {
     win.close();
