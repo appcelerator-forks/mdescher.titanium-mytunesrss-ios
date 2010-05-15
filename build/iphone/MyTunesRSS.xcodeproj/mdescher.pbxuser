@@ -1,0 +1,279 @@
+// !$*UTF8*$!
+{
+	1D6058900D05DD3D006BFB54 /* MyTunesRSS */ = {
+		activeExec = 0;
+		executables = (
+			D2752CD0119DF8F5002C5D0E /* MyTunesRSS */,
+		);
+	};
+	24596692118E70D300519F79 /* ApplicationRouting.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {67758, 981}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 34971}";
+		};
+	};
+	24CA89F41111618F0084E2DE /* APICast.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1514, 1768}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 2814}";
+		};
+	};
+	24CA8A22111161FD0084E2DE /* TiUIWindowProxy.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 7709}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{5896, 1961}";
+		};
+	};
+	24CA8A30111161FD0084E2DE /* TiUIToolbar.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1079, 2340}}";
+			sepNavSelRange = "{2219, 0}";
+			sepNavVisRange = "{1921, 911}";
+			sepNavWindowFrame = "{{15, 312}, {1293, 1101}}";
+		};
+	};
+	24CA8A48111161FD0084E2DE /* TiUITableView.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 20878}}";
+			sepNavSelRange = "{19444, 0}";
+			sepNavVisRange = "{19073, 2068}";
+			sepNavWindowFrame = "{{38, 291}, {1293, 1101}}";
+		};
+	};
+	24CA8B56111161FE0084E2DE /* AppModule.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 3744}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{3100, 1974}";
+		};
+	};
+	24D8E3B5119B9D8A00F8CAA6 /* MyTunesRSS-iPad */ = {
+		activeExec = 0;
+		executables = (
+			D2752CD1119DF8F5002C5D0E /* MyTunesRSS-iPad */,
+		);
+	};
+	24F6204E1199F1F400EEAD3C /* TopTiModule.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1514, 981}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1116}";
+		};
+	};
+	29B97313FDCFA39411CA2CEA /* Project object */ = {
+		activeBuildConfigurationName = Release;
+		activeExecutable = D2752CD0119DF8F5002C5D0E /* MyTunesRSS */;
+		activeSDKPreference = iphoneos3.1;
+		activeTarget = 1D6058900D05DD3D006BFB54 /* MyTunesRSS */;
+		codeSenseManager = D2752D06119DF915002C5D0E /* Code sense */;
+		executables = (
+			D2752CD0119DF8F5002C5D0E /* MyTunesRSS */,
+			D2752CD1119DF8F5002C5D0E /* MyTunesRSS-iPad */,
+		);
+		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					1236,
+					20,
+					48.16259765625,
+					43,
+					43,
+					20,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+					PBXFileDataSource_Target_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 295565557;
+			PBXWorkspaceStateSaveDate = 295565557;
+		};
+		perUserProjectItems = {
+			D2752D3A119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3A119DFC93002C5D0E /* PBXTextBookmark */;
+			D2752D3B119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3B119DFC93002C5D0E /* PBXTextBookmark */;
+			D2752D3C119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3C119DFC93002C5D0E /* PBXTextBookmark */;
+			D2752D3D119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3D119DFC93002C5D0E /* PBXTextBookmark */;
+			D2752D3E119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3E119DFC93002C5D0E /* PBXTextBookmark */;
+			D2752D3F119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3F119DFC93002C5D0E /* PBXTextBookmark */;
+			D2752D40119DFC93002C5D0E /* PBXTextBookmark */ = D2752D40119DFC93002C5D0E /* PBXTextBookmark */;
+			D2752D41119DFC93002C5D0E /* PBXBookmark */ = D2752D41119DFC93002C5D0E /* PBXBookmark */;
+			D2752D73119E09B6002C5D0E /* PBXTextBookmark */ = D2752D73119E09B6002C5D0E /* PBXTextBookmark */;
+		};
+		sourceControlManager = D2752D05119DF915002C5D0E /* Source Control */;
+		userBuildSettings = {
+		};
+	};
+	29B97316FDCFA39411CA2CEA /* main.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1514, 981}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1580}";
+		};
+	};
+	D2752CD0119DF8F5002C5D0E /* MyTunesRSS */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		dylibVariantSuffix = "";
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = MyTunesRSS;
+		savedGlobals = {
+		};
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+	};
+	D2752CD1119DF8F5002C5D0E /* MyTunesRSS-iPad */ = {
+		isa = PBXExecutable;
+		activeArgIndices = (
+		);
+		argumentStrings = (
+		);
+		autoAttachOnCrash = 1;
+		breakpointsEnabled = 0;
+		configStateDict = {
+		};
+		customDataFormattersEnabled = 1;
+		dataTipCustomDataFormattersEnabled = 1;
+		dataTipShowTypeColumn = 1;
+		dataTipSortType = 0;
+		debuggerPlugin = GDBDebugging;
+		disassemblyDisplayState = 0;
+		enableDebugStr = 1;
+		environmentEntries = (
+		);
+		executableSystemSymbolLevel = 0;
+		executableUserSymbolLevel = 0;
+		libgmallocEnabled = 0;
+		name = "MyTunesRSS-iPad";
+		showTypeColumn = 0;
+		sourceDirectories = (
+		);
+	};
+	D2752D05119DF915002C5D0E /* Source Control */ = {
+		isa = PBXSourceControlManager;
+		fallbackIsa = XCSourceControlManager;
+		isSCMEnabled = 0;
+		scmConfiguration = {
+			repositoryNamesForRoots = {
+				"" = "";
+			};
+		};
+	};
+	D2752D06119DF915002C5D0E /* Code sense */ = {
+		isa = PBXCodeSenseManager;
+		indexTemplatePath = "";
+	};
+	D2752D3A119DFC93002C5D0E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A30111161FD0084E2DE /* TiUIToolbar.m */;
+		name = "TiUIToolbar.m: 93";
+		rLen = 11;
+		rLoc = 2226;
+		rType = 0;
+		vrLen = 1494;
+		vrLoc = 1559;
+	};
+	D2752D3B119DFC93002C5D0E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24F6204E1199F1F400EEAD3C /* TopTiModule.m */;
+		name = "TopTiModule.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1116;
+		vrLoc = 0;
+	};
+	D2752D3C119DFC93002C5D0E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 29B97316FDCFA39411CA2CEA /* main.m */;
+		name = "main.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1580;
+		vrLoc = 0;
+	};
+	D2752D3D119DFC93002C5D0E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24596692118E70D300519F79 /* ApplicationRouting.m */;
+		name = "ApplicationRouting.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 34971;
+		vrLoc = 0;
+	};
+	D2752D3E119DFC93002C5D0E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA89F41111618F0084E2DE /* APICast.h */;
+		name = "APICast.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 2814;
+		vrLoc = 0;
+	};
+	D2752D3F119DFC93002C5D0E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8B56111161FE0084E2DE /* AppModule.m */;
+		name = "AppModule.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1974;
+		vrLoc = 3100;
+	};
+	D2752D40119DFC93002C5D0E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A22111161FD0084E2DE /* TiUIWindowProxy.m */;
+		name = "TiUIWindowProxy.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1961;
+		vrLoc = 5896;
+	};
+	D2752D41119DFC93002C5D0E /* PBXBookmark */ = {
+		isa = PBXBookmark;
+		fRef = 24CA8A48111161FD0084E2DE /* TiUITableView.m */;
+	};
+	D2752D73119E09B6002C5D0E /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A48111161FD0084E2DE /* TiUITableView.m */;
+		name = "TiUITableView.m: 704";
+		rLen = 0;
+		rLoc = 19444;
+		rType = 0;
+		vrLen = 2068;
+		vrLoc = 19073;
+	};
+}
