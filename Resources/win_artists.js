@@ -22,7 +22,7 @@ setTableDataAndIndex(win.ajaxResult.results, tableView, function(item, index) {
 tableView.addEventListener('click', function(e) {
     ajaxCall('AlbumService.getAlbums', [null, e.rowData.jsonItem.name.replace('\'', '\\\''), null, -1, -1, -1, false, -1, -1], function(result, error) {
         if (result) {
-            var winAlbums = Titanium.UI.createWindow({url:'win_albums.js'});
+            var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundColor:'#FFF'});
             winAlbums.ajaxResult = result;
             winAlbums.open();
         } else {

@@ -1,17 +1,25 @@
 Titanium.include('mytunesrss.js');
 
+function playTrack(start) {
+    audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
+    Titanium.App.fireEvent('mytunesrss_playtrack', currentPlaylist[currentPlaylistIndex]);
+    audioPlayer.start();
+}
+
 var win = Titanium.UI.currentWindow;
 
 var audioPlayer = Titanium.Media.createAudioPlayer({audioSessionMode:Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK});
 var currentPlaylist;
 var currentPlaylistIndex;
 
+audioPlayer.addEventListener('progress', function(e) {
+    Titanium.App.fireEvent('mytunesrss_progress', e);
+});
+
 audioPlayer.addEventListener('change', function(e) {
     if (e.state == audioPlayer.STATE_STOPPED && currentPlaylistIndex < currentPlaylist.length - 1) {
         currentPlaylistIndex++;
-        audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
-        audioPlayer.start();
-        Titanium.App.fireEvent('mytunesrss_playtrack', currentPlaylist[currentPlaylistIndex]);
+        playTrack();
     }
 });
 
@@ -57,7 +65,7 @@ buttonLogout.addEventListener('click', function() {
 labelPlaylists.addEventListener('click', function() {
     ajaxCall('PlaylistService.getPlaylists', [], function(result, error) {
         if (result) {
-            var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js'});
+            var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js',backgroundColor:'#FFF'});
             winPlaylists.ajaxResult = result;
             winPlaylists.open();
         } else {
@@ -69,7 +77,7 @@ labelPlaylists.addEventListener('click', function() {
 labelAlbums.addEventListener('click', function() {
     ajaxCall('AlbumService.getAlbums', [null, null, null, -1, -1, -1, false, -1, -1], function(result, error) {
         if (result) {
-            var winAlbums = Titanium.UI.createWindow({url:'win_albums.js'});
+            var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundColor:'#FFF'});
             winAlbums.ajaxResult = result;
             winAlbums.open();
         } else {
@@ -81,7 +89,7 @@ labelAlbums.addEventListener('click', function() {
 labelArtists.addEventListener('click', function() {
     ajaxCall('ArtistService.getArtists', [null, null, null, -1, -1, -1], function(result, error) {
         if (result) {
-            var winArtists = Titanium.UI.createWindow({url:'win_artists.js'});
+            var winArtists = Titanium.UI.createWindow({url:'win_artists.js',backgroundColor:'#FFF'});
             winArtists.ajaxResult = result;
             winArtists.open();
         } else {
@@ -93,7 +101,7 @@ labelArtists.addEventListener('click', function() {
 labelGenres.addEventListener('click', function() {
     ajaxCall('GenreService.getGenres', [1, -1, -1], function(result, error) {
         if (result) {
-            var winGenres = Titanium.UI.createWindow({url:'win_genres.js'});
+            var winGenres = Titanium.UI.createWindow({url:'win_genres.js',backgroundColor:'#FFF'});
             winGenres.ajaxResult = result;
             winGenres.open();
         } else {
@@ -105,7 +113,7 @@ labelGenres.addEventListener('click', function() {
 labelSearch.addEventListener('click', function() {
     ajaxCall('TrackService.search', [inputSearch.value, 30, 'KeepOrder', 0, -1], function(result, error) {
         if (result && result.tracks && result.tracks.length > 0) {
-            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js'});
+            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
             winTracks.ajaxResult = result;
             winTracks.open();
         } else if (result && result.tracks && result.tracks.length === 0) {
@@ -118,7 +126,7 @@ labelSearch.addEventListener('click', function() {
 
 labelNowPlaying.addEventListener('click', function() {
     if (currentPlaylist && audioPlayer) {
-        Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex]}).open();
+        Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundColor:'#FFF'}).open();
     } else {
         alert('nothing in playlist');
     }
@@ -130,7 +138,38 @@ Titanium.App.addEventListener('mytunesrss_playlist', function(e) {
     currentPlaylistIndex = e.index;
     audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
     audioPlayer.start();
-    Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex]}).open();
+    Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundColor:'#FFF'}).open();
+});
+
+Titanium.App.addEventListener('mytunesrss_rewind', function() {
+    if (audioPlayer.playing && audioPlayer.progress > 2.0) {
+        audioPlayer.stop();
+        audioPlayer.start();
+    } else if (currentPlaylistIndex > 0) {
+        audioPlayer.stop();
+        currentPlaylistIndex--;
+        playTrack();
+    }
+});
+
+Titanium.App.addEventListener('mytunesrss_fastforward', function() {
+    if (currentPlaylistIndex + 1 < currentPlaylist.length) {
+        audioPlayer.stop();
+        currentPlaylistIndex++;
+        playTrack();
+    }
+});
+
+Titanium.App.addEventListener('mytunesrss_stop', function() {
+    audioPlayer.stop();
+});
+
+Titanium.App.addEventListener('mytunesrss_play', function() {
+    audioPlayer.start();
+});
+
+Titanium.App.addEventListener('mytunesrss_pause', function() {
+    audioPlayer.pause();
 });
 
 addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogout);

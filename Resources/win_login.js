@@ -65,6 +65,6 @@ function onLogin(result) {
 
     Titanium.App.sessionId = result;
 
-    Titanium.UI.createWindow({url:'win_menu.js'}).open();
+    Titanium.UI.createWindow({url:'win_menu.js',backgroundColor:'#FFF'}).open();
 
 }

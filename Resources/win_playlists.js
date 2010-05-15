@@ -22,7 +22,7 @@ setTableDataAndIndex(win.ajaxResult.results, tableView, function(item) {
 tableView.addEventListener('click', function(e) {
     ajaxCall('PlaylistService.getTracks', [e.rowData.jsonItem.id, null], function(result, error) {
         if (result) {
-            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js'});
+            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
             winTracks.ajaxResult = result;
             winTracks.open();
         } else {

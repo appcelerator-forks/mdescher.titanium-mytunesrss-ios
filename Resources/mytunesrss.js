@@ -70,29 +70,15 @@ function addTopToolbar(window, titleText, leftButton, rightButton) {
     var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
     var toolbarItems = [];
     if (leftButton) {
-        leftButton.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
         toolbarItems.push(leftButton);
     }
     toolbarItems.push(flexSpace);
     if (rightButton) {
-        rightButton.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
         toolbarItems.push(rightButton);
     }
-    window.add(Titanium.UI.createToolbar({top:0,items:toolbarItems}));
+    window.add(Titanium.UI.createToolbar({top:0,height:45,items:toolbarItems}));
     if (titleText) {
         var title = Titanium.UI.createLabel({text:titleText,left:0,right:0,top:0,height:45,textAlign:'center',color:'#FFF',font:{fontSize:20,fontWeight:'bold'}});
         window.add(title);
     }
-}
-
-function addBottomToolbar(window, buttons) {
-    var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
-    var toolbarItems = [];
-    for (var i = 0; i < buttons.length; i++) {
-        buttons[i].style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
-        toolbarItems.push(flexSpace);
-        toolbarItems.push(buttons[i]);
-    }
-    toolbarItems.push(flexSpace);
-    window.add(Titanium.UI.createToolbar({bottom:0,items:toolbarItems}));
 }
