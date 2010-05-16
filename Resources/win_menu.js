@@ -9,7 +9,6 @@ win.addEventListener('focus', function() {
 });
 
 var audioPlayer = Titanium.Media.createAudioPlayer({audioSessionMode:Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK});
-var videoPlayer = Titanium.Media.createVideoPlayer();
 var currentPlaylist;
 var currentPlaylistIndex;
 
@@ -18,22 +17,12 @@ function playTrack() {
         audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
         Titanium.App.fireEvent('mytunesrss_playtrack', currentPlaylist[currentPlaylistIndex]);
         audioPlayer.start();
-    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
-        videoPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
-        Titanium.App.fireEvent('mytunesrss_playtrack', currentPlaylist[currentPlaylistIndex]);
-        videoPlayer.start();
     }
 }
 
 audioPlayer.addEventListener('progress', function(e) {
-    Titanium.App.fireEvent('mytunesrss_progress', e);
+    Titanium.App.fireEvent('mytunesrss_progress', {value:e.progress});
 });
-
-if (videoPlayer != undefined) {
-    videoPlayer.addEventListener('progress', function(e) {
-        Titanium.App.fireEvent('mytunesrss_progress', e);
-    });
-}
 
 audioPlayer.addEventListener('change', function(e) {
     if (e.state == audioPlayer.STATE_STOPPED && currentPlaylistIndex < currentPlaylist.length - 1) {
@@ -41,15 +30,6 @@ audioPlayer.addEventListener('change', function(e) {
         playTrack();
     }
 });
-
-if (videoPlayer != undefined) {
-    videoPlayer.addEventListener('change', function(e) {
-        if (e.state == videoPlayer.STATE_STOPPED && currentPlaylistIndex < currentPlaylist.length - 1) {
-            currentPlaylistIndex++;
-            playTrack();
-        }
-    });
-}
 
 var labelPlaylists = Titanium.UI.createLabel({text:'Playlists',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var labelAlbums = Titanium.UI.createLabel({text:'Albums',left:10,font:{fontSize:20,fontWeight:'bold'}});
@@ -185,17 +165,11 @@ buttonRowNowPlaying.addEventListener('click', function() {
 
 Titanium.App.addEventListener('mytunesrss_playlist', function(e) {
     audioPlayer.stop();
-    if (videoPlayer != undefined) {
-        videoPlayer.stop();
-    }
     currentPlaylist = e.playlist;
     currentPlaylistIndex = e.index;
     if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
         audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
         audioPlayer.start();
-    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
-        videoPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
-        videoPlayer.start();
     }
     Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundColor:'#FFF'}).open();
 });
@@ -210,15 +184,6 @@ Titanium.App.addEventListener('mytunesrss_rewind', function() {
             currentPlaylistIndex--;
             playTrack();
         }
-    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
-        if (videoPlayer.playing && videoPlayer.progress > 2.0) {
-            videoPlayer.stop();
-            videoPlayer.start();
-        } else if (currentPlaylistIndex > 0) {
-            videoPlayer.stop();
-            currentPlaylistIndex--;
-            playTrack();
-        }
     }
 });
 
@@ -226,8 +191,6 @@ Titanium.App.addEventListener('mytunesrss_fastforward', function() {
     if (currentPlaylistIndex + 1 < currentPlaylist.length) {
         if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
             audioPlayer.stop();
-        } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
-            videoPlayer.stop();
         }
         currentPlaylistIndex++;
         playTrack();
@@ -237,24 +200,27 @@ Titanium.App.addEventListener('mytunesrss_fastforward', function() {
 Titanium.App.addEventListener('mytunesrss_stop', function() {
     if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
         audioPlayer.stop();
-    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
-        videoPlayer.stop();
     }
 });
 
 Titanium.App.addEventListener('mytunesrss_play', function() {
     if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
         audioPlayer.start();
-    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
-        videoPlayer.start();
     }
 });
 
 Titanium.App.addEventListener('mytunesrss_pause', function() {
     if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
         audioPlayer.pause();
-    } else if (videoPlayer != undefined && currentPlaylist[currentPlaylistIndex].mediaType === 'Video') {
-        videoPlayer.pause();
+    }
+});
+
+Titanium.App.addEventListener('mytunesrss_moveplayhead', function(e) {
+    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
+        Titanium.API.info('setting progress to ' + e.value);
+        audioPlayer.pause();
+        audioPlayer.progress = e.value;
+        audioPlayer.start();
     }
 });
 
