@@ -1,9 +1,12 @@
 Titanium.include('mytunesrss.js');
-Titanium.include('mytunesrss_platform.js');
 
 var win = Titanium.UI.currentWindow;
 
-var actIndicator = Titanium.UI.createActivityIndicator({top:45,bottom:0,left:0,right:0});
+var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
+actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
+win.addEventListener('focus', function() {
+    actIndicatorView.hide();
+});
 
 var audioPlayer = Titanium.Media.createAudioPlayer({audioSessionMode:Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK});
 var videoPlayer = Titanium.Media.createVideoPlayer();
@@ -100,78 +103,73 @@ buttonLogout.addEventListener('click', function() {
 });
 
 buttonRowPlaylists.addEventListener('click', function() {
-    actIndicator.show();
+    actIndicatorView.show();
     ajaxCall('PlaylistService.getPlaylists', [], function(result, error) {
         if (result) {
             var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js',backgroundColor:'#FFF'});
             winPlaylists.ajaxResult = result;
             winPlaylists.open();
-            actIndicator.hide();
         } else {
-            actIndicator.hide();
+            actIndicatorView.hide();
             alert('server error');
         }
     });
 });
 
 buttonRowAlbums.addEventListener('click', function() {
-    actIndicator.show();
+    actIndicatorView.show();
     ajaxCall('AlbumService.getAlbums', [null, null, null, -1, -1, -1, false, -1, -1], function(result, error) {
         if (result) {
             var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundColor:'#FFF'});
             winAlbums.ajaxResult = result;
             winAlbums.open();
-            actIndicator.hide();
         } else {
-            actIndicator.hide();
+            actIndicatorView.hide();
             alert('server error');
         }
     });
 });
 
 buttonRowArtists.addEventListener('click', function() {
-    actIndicator.show();
+    actIndicatorView.show();
     ajaxCall('ArtistService.getArtists', [null, null, null, -1, -1, -1], function(result, error) {
         if (result) {
             var winArtists = Titanium.UI.createWindow({url:'win_artists.js',backgroundColor:'#FFF'});
             winArtists.ajaxResult = result;
             winArtists.open();
-            actIndicator.hide();
         } else {
-            actIndicator.hide();
+            actIndicatorView.hide();
             alert('server error');
         }
     });
 });
 
 buttonRowGenres.addEventListener('click', function() {
-    actIndicator.show();
+    actIndicatorView.show();
     ajaxCall('GenreService.getGenres', [1, -1, -1], function(result, error) {
         if (result) {
             var winGenres = Titanium.UI.createWindow({url:'win_genres.js',backgroundColor:'#FFF'});
             winGenres.ajaxResult = result;
             winGenres.open();
-            actIndicator.hide();
         } else {
-            actIndicator.hide();
+            actIndicatorView.hide();
             alert('server error');
         }
     });
 });
 
 buttonRowSearch.addEventListener('click', function() {
-    actIndicator.show();
+    actIndicatorView.show();
     ajaxCall('TrackService.search', [inputSearch.value, 30, 'KeepOrder', 0, -1], function(result, error) {
         if (result && result.tracks && result.tracks.length > 0) {
             var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
             winTracks.ajaxResult = result;
             winTracks.open();
-            actIndicator.hide();
         } else if (result && result.tracks && result.tracks.length === 0) {
-            actIndicator.hide();
+            actIndicatorView.hide();
             alert('no matching tracks found');
         } else {
-            actIndicator.hide();
+            actIndicatorView.hide();
             alert('server error');
         }
     });
@@ -262,7 +260,7 @@ Titanium.App.addEventListener('mytunesrss_pause', function() {
 
 addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogout);
 win.add(tableView);
-win.add(actIndicator);
+win.add(actIndicatorView);
 
 function wrap(components) {
     var row = Titanium.UI.createTableViewRow({hasChild:true,touchEnabled:true});

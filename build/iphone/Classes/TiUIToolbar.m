@@ -90,7 +90,7 @@
 	{
 		NSMutableArray * result = [NSMutableArray arrayWithCapacity:[value count]];
 		Class proxyClass = [TiViewProxy class];
-		for (TiViewProxy * thisProxy in value) {
+		for (TiUIViewProxy * thisProxy in value) {
 			ENSURE_CLASS(thisProxy,proxyClass);
 			if (![thisProxy supportsNavBarPositioning])
 			{

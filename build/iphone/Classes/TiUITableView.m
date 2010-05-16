@@ -461,14 +461,14 @@
     // for headers/footers when the frame changes.
     UIView* headerView = [[self tableView] tableHeaderView];
     if ([headerView isKindOfClass:[TiUIView class]]) {
-        [(TiUIView*)[(TiUIView*)headerView proxy] reposition];
+        [(TiUIViewProxy*)[(TiUIView*)headerView proxy] reposition];
         [[self tableView] setTableHeaderView:headerView];
     }
     
     // ... And we have to do the same thing for the footer.
     UIView* footerView = [[self tableView] tableFooterView];
     if ([footerView isKindOfClass:[TiUIView class]]) {
-        [(TiUIView*)[(TiUIView*)footerView proxy] reposition];
+        [(TiUIViewProxy*)[(TiUIView*)footerView proxy] reposition];
         [[self tableView] setTableFooterView:footerView];
     }
 }

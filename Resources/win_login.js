@@ -1,7 +1,12 @@
 Titanium.include('mytunesrss.js');
-Titanium.include('mytunesrss_platform.js');
 
 var win = Titanium.UI.currentWindow;
+
+var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
+actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
+win.addEventListener('focus', function() {
+    actIndicatorView.hide();
+});
 
 var inputServerUrl = Titanium.UI.createTextField({hintText:'Server URL',left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalize:false,autocomplete:false});
 var inputUsername = Titanium.UI.createTextField({hintText:'Username',left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('username'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalize:false,autocomplete:false});
@@ -36,10 +41,12 @@ buttonLogin.addEventListener('click', function() {
         Titanium.App.Properties.removeProperty('password');
     }
 
+    actIndicatorView.show();
     ajaxCall('LoginService.login', [inputUsername.value, inputPassword.value, 180], function(result, error) {
         if (result) {
             onLogin(result);
         } else {
+            actIndicatorView.hide();
             alert('login failed');
         }
     });

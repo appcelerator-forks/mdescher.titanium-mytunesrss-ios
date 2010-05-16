@@ -1,5 +1,4 @@
 Titanium.include('mytunesrss.js');
-Titanium.include('mytunesrss_platform.js');
 
 var win = Titanium.UI.currentWindow;
 
@@ -37,12 +36,17 @@ setTrackInformation(win.data);
 var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
 win.add(Titanium.UI.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace]}));
 
+//var progressBar = Titanium.UI.createProgressBar({min:0,max:100,value:30,bottom:60,left:10,right:10,height:10});
+//win.add(progressBar);
+
 Titanium.App.addEventListener('mytunesrss_playtrack', function(track) {
     setTrackInformation(track);
 });
 
 Titanium.App.addEventListener('mytunesrss_progress', function(e) {
     Titanium.API.info('progress = ' + e.progress);
+    //progressBar.value = e.progress;
+    //progressBar.show();
 });
 
 function setTrackInformation(track) {

@@ -1,5 +1,4 @@
 Titanium.include('mytunesrss.js');
-Titanium.include('mytunesrss_platform.js');
 
 var win = Titanium.UI.currentWindow;
 

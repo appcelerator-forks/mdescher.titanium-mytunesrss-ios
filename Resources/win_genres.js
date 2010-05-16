@@ -1,9 +1,12 @@
 Titanium.include('mytunesrss.js');
-Titanium.include('mytunesrss_platform.js');
 
 var win = Titanium.UI.currentWindow;
 
-var actIndicator = Titanium.UI.createActivityIndicator({top:45,bottom:0,left:0,right:0});
+var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
+actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
+win.addEventListener('focus', function() {
+    actIndicatorView.hide();
+});
 
 var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar(), filterAttribute:'title',top:45});
 var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
@@ -23,15 +26,14 @@ setTableDataAndIndex(win.ajaxResult.results, tableView, function(item) {
 });
 
 tableView.addEventListener('click', function(e) {
-    actIndicator.show();
+    actIndicatorView.show();
     ajaxCall('AlbumService.getAlbums', [null, null, e.rowData.jsonItem.name.replace('\'', '\\\''), -1, -1, -1, false, -1, -1], function(result, error) {
         if (result) {
             var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
             winTracks.ajaxResult = result;
             winTracks.open();
-            actIndicator.hide();
         } else {
-            actIndicator.hide();
+            actIndicatorView.hide();
             alert('server error');
         }
     });
@@ -39,4 +41,4 @@ tableView.addEventListener('click', function(e) {
 
 win.add(tableView);
 
-win.add(actIndicator);
+win.add(actIndicatorView);
