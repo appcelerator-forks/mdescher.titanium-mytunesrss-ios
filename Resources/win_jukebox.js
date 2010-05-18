@@ -2,6 +2,15 @@ Titanium.include('mytunesrss.js');
 
 var win = Titanium.UI.currentWindow;
 
+var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
+actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
+Titanium.App.addEventListener('mytunesrss_audiobuffering', function() {
+    actIndicatorView.show();
+});
+Titanium.App.addEventListener('mytunesrss_audioplaying', function() {
+    actIndicatorView.hide();
+});
+
 var tableView;
 var progressBar;
 
@@ -36,6 +45,7 @@ setTrackInformation(win.data);
 
 var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
 win.add(Titanium.UI.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace]}));
+win.add(actIndicatorView);
 
 Titanium.App.addEventListener('mytunesrss_playtrack', function(track) {
     setTrackInformation(track);

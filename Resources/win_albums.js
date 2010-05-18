@@ -17,8 +17,10 @@ buttonBack.addEventListener('click', function() {
 
 addTopToolbar(win, 'Albums', buttonBack, undefined);
 
+win.add(tableView);
+
 setTableDataAndIndex(win.ajaxResult.results, tableView, function(item, index) {
-    var row = Titanium.UI.createTableViewRow({hasChild:true,height:48,className:'album_row_' + index});
+    var row = Titanium.UI.createTableViewRow({hasChild:true,height:48,className:item.imageUrl ? 'album_row_img' : 'album_row'});
     if (item.imageUrl) {
         var albumImage = Titanium.UI.createImageView({url:(item.imageUrl + '/size=64'),top:4,left:4,width:40,height:40});
         row.add(albumImage);
@@ -47,6 +49,6 @@ tableView.addEventListener('click', function(e) {
     });
 });
 
-win.add(tableView);
+//win.add(tableView);
 
 win.add(actIndicatorView);

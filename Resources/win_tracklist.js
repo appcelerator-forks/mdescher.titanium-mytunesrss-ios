@@ -17,7 +17,7 @@ if (!items) {
     items = win.ajaxResult.tracks;
 }
 for (var i = 0; i < items.length; i++) {
-    var row = Titanium.UI.createTableViewRow({hasChild:true,height:48,className:'album_row_' + i});
+    var row = Titanium.UI.createTableViewRow({hasChild:true,height:48,className:'track_row'});
     var trackName = Titanium.UI.createLabel({text:getDisplayName(items[i].name),top:4,left:4,height:24,font:{fontSize:16,fontWeight:'bold'}});
     var artistName = Titanium.UI.createLabel({text:getDisplayName(items[i].artist),bottom:4,left:4,height:18,font:{fontSize:12}});
     row.add(trackName);

@@ -41,41 +41,32 @@ function getDisplayName(name) {
 }
 
 function setTableDataAndIndex(items, tableView, createTableViewRowCallback, getSectionAndIndexNameCallback) {
-    var sections = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
-    var tableIndex = [];
+    var sectionTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '123'];
+    var indexTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#'];
+    var section = new Array(27);
+    for (var i = 0; i < items.length; i++) {
+        var itemName = getSectionAndIndexNameCallback(items[i]);
+        var index = itemName[0].toUpperCase().charCodeAt(0) - 65;
+        if (index < 0 || index > 25) {
+            index = 26;
+        }
+        if (!section[index]) {
+            section[index] = Titanium.UI.createTableViewSection({headerTitle:sectionTitle[index]});
+        }
+        section[index].add(createTableViewRowCallback(items[i], i));
+    }
+    var indexData = [];
     var tableData = [];
-    var elementCount = 0;
-    for (var i = 0; i < sections.length; i++) {
-        tableIndex.push({title:sections[i], index:elementCount});
-        var section = Titanium.UI.createTableViewSection({headerTitle:sections[i]});
-        for (var k = 0; k < items.length; k++) {
-            if (items[k] != null) {
-                var firstChar = getSectionAndIndexNameCallback(items[k]).substr(0, 1).toUpperCase();
-                if (firstChar === section.headerTitle) {
-                    section.add(createTableViewRowCallback(items[k], k));
-                    elementCount++;
-                    items[k] = null;
-                }
-            }
+    var globalIndex = 0;
+    for (i = 0; i < 27; i++) {
+        if (section[i]) {
+            tableData.push(section[i]);
+            indexData.push({title:indexTitle[i],index:globalIndex});
+            globalIndex += section[i].rowCount;
         }
-        if (section.rowCount > 0) {
-            tableData.push(section);
-        }
-    }
-    section = Titanium.UI.createTableViewSection({headerTitle:'123'});
-    tableIndex.push({title:'#', index:elementCount});
-    for (k = 0; k < items.length; k++) {
-        if (items[k] != null) {
-            section.add(Titanium.UI.createTableViewRow({title:getDisplayName(items[k].name)}));
-        }
-    }
-    if (section.rowCount > 0) {
-        tableData.push(section);
     }
     tableView.setData(tableData);
-    if (items.length > 50) {
-        tableView.setIndex(tableIndex);
-    }
+    tableView.setIndex(indexData);
 }
 
 function addTopToolbar(window, titleText, leftButton, rightButton) {
