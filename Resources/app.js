@@ -1,5 +1,7 @@
 Titanium.include('mytunesrss.js');
 
+var view = Titanium.UI.createView();
+
 Titanium.App.Properties.removeProperty('jsonRpcSessionId');
 
 Titanium.UI.setBackgroundColor('#000');
