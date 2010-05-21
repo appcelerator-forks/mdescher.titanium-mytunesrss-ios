@@ -37,9 +37,9 @@
 	};
 	24CA8A48111161FD0084E2DE /* TiUITableView.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1414, 21125}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 21099}}";
 			sepNavSelRange = "{19444, 0}";
-			sepNavVisRange = "{18917, 2007}";
+			sepNavVisRange = "{18857, 1999}";
 			sepNavWindowFrame = "{{38, 291}, {1293, 1101}}";
 		};
 	};
@@ -74,6 +74,20 @@
 			D2752CD1119DF8F5002C5D0E /* MyTunesRSS-iPad */,
 		);
 		perUserDictionary = {
+			PBXConfiguration.PBXFileTableDataSource3.PBXExecutablesDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXExecutablesDataSource_NameID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					22,
+					300,
+					1124,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXExecutablesDataSource_ActiveFlagID,
+					PBXExecutablesDataSource_NameID,
+					PBXExecutablesDataSource_CommentsID,
+				);
+			};
 			PBXConfiguration.PBXFileTableDataSource3.PBXFileTableDataSource = {
 				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
 				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
@@ -96,11 +110,32 @@
 					PBXFileDataSource_Target_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 295643565;
-			PBXWorkspaceStateSaveDate = 295643565;
+			PBXConfiguration.PBXTargetDataSource.PBXTargetDataSource = {
+				PBXFileTableDataSourceColumnSortingDirectionKey = "-1";
+				PBXFileTableDataSourceColumnSortingKey = PBXFileDataSource_Filename_ColumnID;
+				PBXFileTableDataSourceColumnWidthsKey = (
+					20,
+					1196,
+					60,
+					20,
+					48.16259765625,
+					43,
+					43,
+				);
+				PBXFileTableDataSourceColumnsKey = (
+					PBXFileDataSource_FiletypeID,
+					PBXFileDataSource_Filename_ColumnID,
+					PBXTargetDataSource_PrimaryAttribute,
+					PBXFileDataSource_Built_ColumnID,
+					PBXFileDataSource_ObjectSize_ColumnID,
+					PBXFileDataSource_Errors_ColumnID,
+					PBXFileDataSource_Warnings_ColumnID,
+				);
+			};
+			PBXPerProjectTemplateStateSaveDate = 295988060;
+			PBXWorkspaceStateSaveDate = 295988060;
 		};
 		perUserProjectItems = {
-			D25078DB119F1E1600B090C0 /* PBXTextBookmark */ = D25078DB119F1E1600B090C0 /* PBXTextBookmark */;
 			D2752D3A119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3A119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D3B119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3B119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D3C119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3C119DFC93002C5D0E /* PBXTextBookmark */;
@@ -109,6 +144,7 @@
 			D2752D3F119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3F119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D40119DFC93002C5D0E /* PBXTextBookmark */ = D2752D40119DFC93002C5D0E /* PBXTextBookmark */;
 			D276EB3A119F2D8E004C7C8E /* PBXTextBookmark */ = D276EB3A119F2D8E004C7C8E /* PBXTextBookmark */;
+			D2CB52CA11A46D0400B0C515 /* PBXTextBookmark */ = D2CB52CA11A46D0400B0C515 /* PBXTextBookmark */;
 		};
 		sourceControlManager = D2752D05119DF915002C5D0E /* Source Control */;
 		userBuildSettings = {
@@ -120,16 +156,6 @@
 			sepNavSelRange = "{0, 0}";
 			sepNavVisRange = "{0, 1580}";
 		};
-	};
-	D25078DB119F1E1600B090C0 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 24CA8A48111161FD0084E2DE /* TiUITableView.m */;
-		name = "TiUITableView.m: 704";
-		rLen = 0;
-		rLoc = 19444;
-		rType = 0;
-		vrLen = 2048;
-		vrLoc = 18917;
 	};
 	D2752CD0119DF8F5002C5D0E /* MyTunesRSS */ = {
 		isa = PBXExecutable;
@@ -281,5 +307,15 @@
 		rType = 0;
 		vrLen = 2007;
 		vrLoc = 18917;
+	};
+	D2CB52CA11A46D0400B0C515 /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A48111161FD0084E2DE /* TiUITableView.m */;
+		name = "TiUITableView.m: 704";
+		rLen = 0;
+		rLoc = 19444;
+		rType = 0;
+		vrLen = 1999;
+		vrLoc = 18857;
 	};
 }
