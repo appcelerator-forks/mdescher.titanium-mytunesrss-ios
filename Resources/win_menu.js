@@ -69,12 +69,6 @@ tableViewData[2].add(buttonRowNowPlaying);
 
 var tableView = Titanium.UI.createTableView({data:tableViewData,style:tableViewGroupStyle,top:45});
 
-if (Titanium.Platform.osname === 'android') {
-    tableView.addEventListener('click', function(e) {
-        e.row.fireEvent('click');
-    });
-}
-
 buttonLogout.addEventListener('click', function() {
     if (Titanium.App.mediaPlayer) {
         Titanium.App.mediaPlayer.stop();

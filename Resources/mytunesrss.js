@@ -1,7 +1,7 @@
 Titanium.include('json2.js');
 
-var buttonStyle = Titanium.Platform.osname === 'android' ? undefined : Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
-var tableViewGroupStyle = Titanium.Platform.osname === 'android' ? undefined : Titanium.UI.iPhone.TableViewStyle.GROUPED;
+var buttonStyle = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+var tableViewGroupStyle = Titanium.UI.iPhone.TableViewStyle.GROUPED;
 
 function ajaxCall(func, parameterArray, resultCallback) {
     var httpClient = Titanium.Network.createHTTPClient();
@@ -70,39 +70,18 @@ function setTableDataAndIndex(items, tableView, createTableViewRowCallback, getS
 }
 
 function addTopToolbar(window, titleText, leftButton, rightButton) {
-    if (Titanium.Platform.osname === 'android') {
-        var view = Titanium.UI.createView({backgroundColor:'#CCC',top:0,height:45,left:0,right:0});
-        if (titleText) {
-            var title = Titanium.UI.createLabel({text:titleText,top:10,height:45,textAlign:'center',color:'#FFF',font:{fontSize:20,fontWeight:'bold'}});
-            view.add(title);
-        }
-        if (leftButton) {
-            leftButton.top = 5;
-            leftButton.bottom = 5;
-            leftButton.left = 10;
-            view.add(leftButton);
-        }
-        if (rightButton) {
-            rightButton.top = 5;
-            rightButton.bottom = 5;
-            rightButton.right = 10;
-            view.add(rightButton);
-        }
-        window.add(view);
-    } else {
-        var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
-        var toolbarItems = [];
-        if (leftButton) {
-            toolbarItems.push(leftButton);
-        }
-        toolbarItems.push(flexSpace);
-        if (rightButton) {
-            toolbarItems.push(rightButton);
-        }
-        window.add(Titanium.UI.createToolbar({top:0,height:45,items:toolbarItems}));
-        if (titleText) {
-            var title = Titanium.UI.createLabel({text:titleText,left:0,right:0,top:0,height:45,textAlign:'center',color:'#FFF',font:{fontSize:20,fontWeight:'bold'}});
-            window.add(title);
-        }
+    var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
+    var toolbarItems = [];
+    if (leftButton) {
+        toolbarItems.push(leftButton);
+    }
+    toolbarItems.push(flexSpace);
+    if (rightButton) {
+        toolbarItems.push(rightButton);
+    }
+    window.add(Titanium.UI.createToolbar({top:0,height:45,items:toolbarItems}));
+    if (titleText) {
+        var title = Titanium.UI.createLabel({text:titleText,left:0,right:0,top:0,height:45,textAlign:'center',color:'#FFF',font:{fontSize:20,fontWeight:'bold'}});
+        window.add(title);
     }
 }
