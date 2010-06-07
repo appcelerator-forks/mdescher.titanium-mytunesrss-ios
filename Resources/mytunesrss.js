@@ -1,17 +1,10 @@
-Titanium.include('json2.js');
-
 var buttonStyle = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
 var tableViewGroupStyle = Titanium.UI.iPhone.TableViewStyle.GROUPED;
 
 function ajaxCall(func, parameterArray, resultCallback) {
     var httpClient = Titanium.Network.createHTTPClient();
     httpClient.onload = function() {
-        var response = JSON2.parse(this.responseText);
-        if (response.error) {
-            Titanium.API.error('JSON RPC error: ' + JSON2.stringify(response.error));
-        } else {
-            Titanium.API.debug('JSON RPC result: ' + JSON2.stringify(response.result));
-        }
+        var response = JSON.parse(this.responseText);
         resultCallback(response.result, response.error);
     };
     httpClient.onerror = function() {
@@ -20,7 +13,6 @@ function ajaxCall(func, parameterArray, resultCallback) {
     httpClient.open('POST', Titanium.App.Properties.getString('serverUrl') + '/jsonrpc');
     httpClient.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
     if (Titanium.App.Properties.getString('jsonRpcSessionId') != undefined) {
-        Titanium.API.debug('JSON RPC header "X-MyTunesRSS-ID": ' + Titanium.App.Properties.getString('jsonRpcSessionId'));
         httpClient.setRequestHeader('X-MyTunesRSS-ID', Titanium.App.Properties.getString('jsonRpcSessionId'));
     }
     var data = {
@@ -29,8 +21,7 @@ function ajaxCall(func, parameterArray, resultCallback) {
         'id' : '0',
         'params' : parameterArray
     };
-    Titanium.API.debug('JSON RPC data: ' + JSON2.stringify(data));
-    httpClient.send(JSON2.stringify(data));
+    httpClient.send(JSON.stringify(data));
 }
 
 function getDisplayName(name) {

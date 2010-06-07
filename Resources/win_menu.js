@@ -215,7 +215,6 @@ Titanium.App.addEventListener('mytunesrss_pause', function() {
 
 Titanium.App.addEventListener('mytunesrss_moveplayhead', function(e) {
     if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
-        Titanium.API.info('setting progress to ' + e.value);
         audioPlayer.pause();
         audioPlayer.progress = e.value;
         audioPlayer.start();
