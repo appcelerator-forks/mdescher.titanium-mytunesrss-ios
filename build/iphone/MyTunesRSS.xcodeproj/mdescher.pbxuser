@@ -175,8 +175,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 297800302;
-			PBXWorkspaceStateSaveDate = 297800302;
+			PBXPerProjectTemplateStateSaveDate = 297893390;
+			PBXWorkspaceStateSaveDate = 297893390;
 		};
 		perUserProjectItems = {
 			D238DC8D11C0090800BE1517 /* PBXTextBookmark */ = D238DC8D11C0090800BE1517 /* PBXTextBookmark */;
@@ -184,9 +184,7 @@
 			D238DC8F11C0090800BE1517 /* PBXTextBookmark */ = D238DC8F11C0090800BE1517 /* PBXTextBookmark */;
 			D238DC9011C0090800BE1517 /* PBXTextBookmark */ = D238DC9011C0090800BE1517 /* PBXTextBookmark */;
 			D238DC9111C0090800BE1517 /* PBXTextBookmark */ = D238DC9111C0090800BE1517 /* PBXTextBookmark */;
-			D238DC9311C0090800BE1517 /* PBXTextBookmark */ = D238DC9311C0090800BE1517 /* PBXTextBookmark */;
 			D238DCDC11C014EF00BE1517 /* PBXTextBookmark */ = D238DCDC11C014EF00BE1517 /* PBXTextBookmark */;
-			D238DCDD11C014EF00BE1517 /* PBXTextBookmark */ = D238DCDD11C014EF00BE1517 /* PBXTextBookmark */;
 			D2752D3A119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3A119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D3B119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3B119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D3C119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3C119DFC93002C5D0E /* PBXTextBookmark */;
@@ -256,16 +254,6 @@
 		vrLen = 1632;
 		vrLoc = 0;
 	};
-	D238DC9311C0090800BE1517 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 24CA8928111161050084E2DE /* AudioStreamer.h */;
-		name = "AudioStreamer.h: 1";
-		rLen = 0;
-		rLoc = 0;
-		rType = 0;
-		vrLen = 2359;
-		vrLoc = 2223;
-	};
 	D238DCDC11C014EF00BE1517 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 24CA8929111161050084E2DE /* AudioStreamer.m */;
@@ -275,16 +263,6 @@
 		rType = 0;
 		vrLen = 2677;
 		vrLoc = 4494;
-	};
-	D238DCDD11C014EF00BE1517 /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 24CA8928111161050084E2DE /* AudioStreamer.h */;
-		name = "AudioStreamer.h: 1";
-		rLen = 0;
-		rLoc = 0;
-		rType = 0;
-		vrLen = 2223;
-		vrLoc = 0;
 	};
 	D2752CD0119DF8F5002C5D0E /* MyTunesRSS */ = {
 		isa = PBXExecutable;
