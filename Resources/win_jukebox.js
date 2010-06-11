@@ -2,7 +2,7 @@ Titanium.include('mytunesrss.js');
 
 var win = Titanium.UI.currentWindow;
 
-var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
+var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:44,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 Titanium.App.addEventListener('mytunesrss_audiobuffering', function() {
     win.add(actIndicatorView);

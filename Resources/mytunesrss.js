@@ -15,6 +15,7 @@ function ajaxCall(func, parameterArray, resultCallback) {
     if (Titanium.App.Properties.getString('jsonRpcSessionId') != undefined) {
         httpClient.setRequestHeader('X-MyTunesRSS-ID', Titanium.App.Properties.getString('jsonRpcSessionId'));
     }
+    httpClient.setRequestHeader('Accept-Encoding', 'gzip,deflate');
     var data = {
         'version' : '1.1',
         'method' : func,

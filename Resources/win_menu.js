@@ -70,13 +70,8 @@ tableViewData[2].add(buttonRowNowPlaying);
 var tableView = Titanium.UI.createTableView({data:tableViewData,style:tableViewGroupStyle,top:45});
 
 buttonLogout.addEventListener('click', function() {
-    if (Titanium.App.mediaPlayer) {
-        Titanium.App.mediaPlayer.stop();
-    }
+    audioPlayer.stop();
     Titanium.App.Properties.removeProperty('jsonRpcSessionId');
-    Titanium.App.mediaPlaylist = undefined;
-    Titanium.App.mediaCurrentTrack = undefined;
-    Titanium.App.mediaPlayer = undefined;
     win.close();
 });
 
