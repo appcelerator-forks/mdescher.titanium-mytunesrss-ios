@@ -1,5 +1,18 @@
 Titanium.include('mytunesrss.js');
 
+function wrap(components) {
+    var row = Titanium.UI.createTableViewRow();
+    for (var i = 0; i < components.length; i++) {
+        row.add(components[i]);
+    }
+    return row;
+}
+
+function onLogin(result) {
+    Titanium.App.Properties.setString('jsonRpcSessionId', result);
+    Titanium.UI.createWindow({url:'win_menu.js',backgroundColor:'#FFF'}).open();
+}
+
 var win = Titanium.UI.currentWindow;
 
 var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
@@ -45,9 +58,12 @@ buttonLogin.addEventListener('click', function() {
     ajaxCall('LoginService.login', [inputUsername.value, inputPassword.value, 180], function(result, error) {
         if (result) {
             onLogin(result);
+        } else if (error) {
+            actIndicatorView.hide();
+            Titanium.UI.createAlertDialog({message:'Login failed, please check username and password.',buttonNames:['Ok']}).show();
         } else {
             actIndicatorView.hide();
-            alert('login failed');
+            Titanium.UI.createAlertDialog({message:'No response from server, please check server URL and make sure the server is running.',buttonNames:['Ok']}).show();
         }
     });
 
@@ -61,19 +77,3 @@ buttonDefaultInterfaceRow.addEventListener('click', function() {
 addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogin);
 win.add(tableView);
 win.add(actIndicatorView);
-
-function wrap(components) {
-    var row = Titanium.UI.createTableViewRow();
-    for (var i = 0; i < components.length; i++) {
-        row.add(components[i]);
-    }
-    return row;
-}
-
-function onLogin(result) {
-
-    Titanium.App.Properties.setString('jsonRpcSessionId', result);
-
-    Titanium.UI.createWindow({url:'win_menu.js',backgroundColor:'#FFF'}).open();
-
-}

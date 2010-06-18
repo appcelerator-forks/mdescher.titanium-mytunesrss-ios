@@ -44,7 +44,7 @@ tableView.addEventListener('click', function(e) {
             winTracks.open();
         } else {
             actIndicatorView.hide();
-            alert('server error');
+            showUnexpectedServerError();
         }
     });
 });

@@ -58,7 +58,9 @@ function setTableDataAndIndex(items, tableView, createTableViewRowCallback, getS
         }
     }
     tableView.setData(tableData);
-    tableView.setIndex(indexData);
+    if (items.length > 50 && indexData.length > 5) {
+        tableView.setIndex(indexData);
+    }
 }
 
 function addTopToolbar(window, titleText, leftButton, rightButton) {
@@ -76,4 +78,8 @@ function addTopToolbar(window, titleText, leftButton, rightButton) {
         var title = Titanium.UI.createLabel({text:titleText,left:0,right:0,top:0,height:45,textAlign:'center',color:'#FFF',font:{fontSize:20,fontWeight:'bold'}});
         window.add(title);
     }
+}
+
+function showUnexpectedServerError() {
+    Titanium.UI.createAlertDialog({message:'Unexpected server error.',buttonNames:['Ok']}).show();    
 }

@@ -1,5 +1,13 @@
 Titanium.include('mytunesrss.js');
 
+function wrap(components) {
+    var row = Titanium.UI.createTableViewRow({hasChild:true,touchEnabled:true});
+    for (var i = 0; i < components.length; i++) {
+        row.add(components[i]);
+    }
+    return row;
+}
+
 var win = Titanium.UI.currentWindow;
 
 var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
@@ -84,7 +92,7 @@ buttonRowPlaylists.addEventListener('click', function() {
             winPlaylists.open();
         } else {
             actIndicatorView.hide();
-            alert('server error');
+            showUnexpectedServerError();
         }
     });
 });
@@ -98,7 +106,7 @@ buttonRowAlbums.addEventListener('click', function() {
             winAlbums.open();
         } else {
             actIndicatorView.hide();
-            alert('server error');
+            showUnexpectedServerError();
         }
     });
 });
@@ -112,7 +120,7 @@ buttonRowArtists.addEventListener('click', function() {
             winArtists.open();
         } else {
             actIndicatorView.hide();
-            alert('server error');
+            showUnexpectedServerError();
         }
     });
 });
@@ -126,7 +134,7 @@ buttonRowGenres.addEventListener('click', function() {
             winGenres.open();
         } else {
             actIndicatorView.hide();
-            alert('server error');
+            showUnexpectedServerError();
         }
     });
 });
@@ -140,10 +148,10 @@ buttonRowSearch.addEventListener('click', function() {
             winTracks.open();
         } else if (result && result.tracks && result.tracks.length === 0) {
             actIndicatorView.hide();
-            alert('no matching tracks found');
+            Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
         } else {
             actIndicatorView.hide();
-            alert('server error');
+            showUnexpectedServerError();
         }
     });
 });
@@ -152,7 +160,7 @@ buttonRowNowPlaying.addEventListener('click', function() {
     if (currentPlaylist && audioPlayer) {
         Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundColor:'#FFF'}).open();
     } else {
-        alert('nothing in playlist');
+        Titanium.UI.createAlertDialog({message:'There is no active playlist.',buttonNames:['Ok']}).show();
     }
 });
 
@@ -219,11 +227,3 @@ Titanium.App.addEventListener('mytunesrss_moveplayhead', function(e) {
 addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogout);
 win.add(tableView);
 win.add(actIndicatorView);
-
-function wrap(components) {
-    var row = Titanium.UI.createTableViewRow({hasChild:true,touchEnabled:true});
-    for (var i = 0; i < components.length; i++) {
-        row.add(components[i]);
-    }
-    return row;
-}
