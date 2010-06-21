@@ -83,3 +83,7 @@ function addTopToolbar(window, titleText, leftButton, rightButton) {
 function showUnexpectedServerError() {
     Titanium.UI.createAlertDialog({message:'Unexpected server error.',buttonNames:['Ok']}).show();    
 }
+
+function showServerError(error) {
+    Titanium.UI.createAlertDialog({message:error.msg,buttonNames:['Ok']}).show();
+}

@@ -140,20 +140,27 @@ buttonRowGenres.addEventListener('click', function() {
 });
 
 buttonRowSearch.addEventListener('click', function() {
-    actIndicatorView.show();
-    ajaxCall('TrackService.search', [inputSearch.value, 30, 'KeepOrder', 0, -1], function(result, error) {
-        if (result && result.tracks && result.tracks.length > 0) {
-            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
-            winTracks.ajaxResult = result;
-            winTracks.open();
-        } else if (result && result.tracks && result.tracks.length === 0) {
-            actIndicatorView.hide();
-            Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
-        } else {
-            actIndicatorView.hide();
-            showUnexpectedServerError();
-        }
-    });
+    if (inputSearch.value.length === 0) {
+        Titanium.UI.createAlertDialog({message:'Please enter a search term.',buttonNames:['Ok']}).show();
+    } else {
+        actIndicatorView.show();
+        ajaxCall('TrackService.search', [inputSearch.value, 30, 'KeepOrder', 0, -1], function(result, error) {
+            if (result && result.tracks && result.tracks.length > 0) {
+                var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
+                winTracks.ajaxResult = result;
+                winTracks.open();
+            } else if (result && result.tracks && result.tracks.length === 0) {
+                actIndicatorView.hide();
+                Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
+            } else if (error && error.msg) {
+                actIndicatorView.hide();
+                showServerError(error);
+            } else {
+                actIndicatorView.hide();
+                showUnexpectedServerError();
+            }
+        });
+    }
 });
 
 buttonRowNowPlaying.addEventListener('click', function() {
