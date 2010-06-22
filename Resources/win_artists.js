@@ -8,7 +8,7 @@ win.addEventListener('focus', function() {
     actIndicatorView.hide();
 });
 
-var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar(), filterAttribute:'title',top:45});
+var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
 var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
 
 buttonBack.addEventListener('click', function() {

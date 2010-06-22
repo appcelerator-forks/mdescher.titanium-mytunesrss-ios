@@ -8,7 +8,7 @@ win.addEventListener('focus', function() {
     actIndicatorView.hide();
 });
 
-var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar(), filterAttribute:'title',top:45});
+var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
 var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
 
 buttonBack.addEventListener('click', function() {
@@ -20,12 +20,13 @@ addTopToolbar(win, 'Albums', buttonBack, undefined);
 win.add(tableView);
 
 setTableDataAndIndex(win.ajaxResult.results, tableView, function(item, index) {
-    var row = Titanium.UI.createTableViewRow({hasChild:true,height:48,className:item.imageUrl ? 'album_row_img' : 'album_row'});
+    var displayName = getDisplayName(item.name);
+    var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:item.imageUrl ? 'album_row_img' : 'album_row'});
     if (item.imageUrl) {
-        var albumImage = Titanium.UI.createImageView({url:(item.imageUrl + '/size=64'),top:4,left:4,width:40,height:40});
+        var albumImage = Titanium.UI.createImageView({url:(item.imageUrl + '/size=64'),top:4,left:4,width:40,height:40,defaultImage:'appicon.png'});
         row.add(albumImage);
     }
-    var albumName = Titanium.UI.createLabel({text:getDisplayName(item.name),top:4,left:48,height:24,font:{fontSize:16,fontWeight:'bold'}});
+    var albumName = Titanium.UI.createLabel({text:displayName,top:4,left:48,height:24,font:{fontSize:16,fontWeight:'bold'}});
     var artistName = Titanium.UI.createLabel({text:getDisplayName(item.artist),bottom:4,left:48,height:18,font:{fontSize:12}});
     row.add(albumName);
     row.add(artistName);
