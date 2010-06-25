@@ -37,9 +37,9 @@ audioPlayer.addEventListener('change', function(e) {
         currentPlaylistIndex++;
         playTrack();
     } else if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
-        Titanium.App.fireEvent('mytunesrss_audiobuffering');
+        Titanium.App.fireEvent('mytunesrss_showJukeboxActivityView');
     } else if (e.state === audioPlayer.STATE_PLAYING) {
-        Titanium.App.fireEvent('mytunesrss_audioplaying');
+        Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
     }
 });
 
@@ -92,7 +92,7 @@ buttonRowPlaylists.addEventListener('click', function() {
             winPlaylists.open();
         } else {
             actIndicatorView.hide();
-            showUnexpectedServerError();
+            handleUnexpectedServerError(error.msg);
         }
     });
 });
@@ -106,7 +106,7 @@ buttonRowAlbums.addEventListener('click', function() {
             winAlbums.open();
         } else {
             actIndicatorView.hide();
-            showUnexpectedServerError();
+            handleUnexpectedServerError(error.msg);
         }
     });
 });
@@ -120,7 +120,7 @@ buttonRowArtists.addEventListener('click', function() {
             winArtists.open();
         } else {
             actIndicatorView.hide();
-            showUnexpectedServerError();
+            handleUnexpectedServerError(error.msg);
         }
     });
 });
@@ -134,7 +134,7 @@ buttonRowGenres.addEventListener('click', function() {
             winGenres.open();
         } else {
             actIndicatorView.hide();
-            showUnexpectedServerError();
+            handleUnexpectedServerError(error.msg);
         }
     });
 });
@@ -157,7 +157,7 @@ buttonRowSearch.addEventListener('click', function() {
                 showServerError(error);
             } else {
                 actIndicatorView.hide();
-                showUnexpectedServerError();
+                handleUnexpectedServerError(error.msg);
             }
         });
     }

@@ -44,13 +44,17 @@ function wrapInSection(rows) {
 
 var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:44,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
-Titanium.App.addEventListener('mytunesrss_audiobuffering', function() {
-    win.add(actIndicatorView);
-    actIndicatorView.show();
+Titanium.App.addEventListener('mytunesrss_showJukeboxActivityView', function() {
+    if (!actIndicatorView.visible) {
+        win.add(actIndicatorView);
+        actIndicatorView.show();
+    }
 });
-Titanium.App.addEventListener('mytunesrss_audioplaying', function() {
-    actIndicatorView.hide();
-    win.remove(actIndicatorView);
+Titanium.App.addEventListener('mytunesrss_hideJukeboxActivityView', function() {
+    if (actIndicatorView.visible) {
+        actIndicatorView.hide();
+        win.remove(actIndicatorView);
+    }
 });
 
 var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
@@ -66,10 +70,12 @@ controlPlay.addEventListener('click', function() {
 var controlPause = Titanium.UI.createImageView({url:'pause.png'});
 controlPause.addEventListener('click', function() {
     Titanium.App.fireEvent('mytunesrss_pause');
+    Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
 });
 var controlStop = Titanium.UI.createImageView({url:'stop.png'});
 controlStop.addEventListener('click', function() {
     Titanium.App.fireEvent('mytunesrss_stop');
+    Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
 });
 var controlFastForward = Titanium.UI.createImageView({url:'forward.png'});
 controlFastForward.addEventListener('click', function() {

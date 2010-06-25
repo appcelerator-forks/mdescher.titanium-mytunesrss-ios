@@ -45,7 +45,7 @@ tableView.addEventListener('click', function(e) {
             winTracks.open();
         } else {
             actIndicatorView.hide();
-            showUnexpectedServerError();
+            handleUnexpectedServerError(error.msg);
         }
     });
 });

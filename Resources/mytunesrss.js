@@ -80,8 +80,12 @@ function addTopToolbar(window, titleText, leftButton, rightButton) {
     }
 }
 
-function showUnexpectedServerError() {
-    Titanium.UI.createAlertDialog({message:'Unexpected server error.',buttonNames:['Ok']}).show();    
+function handleUnexpectedServerError(msg) {
+    if (msg.toUpperCase() === 'UNAUTHORIZED') {
+        Titanium.UI.createAlertDialog({message:'You are not authorized to access the server. Maybe your session has expired. Please go back to the menu and logout.',buttonNames:['Ok']}).show();
+    } else {
+        Titanium.UI.createAlertDialog({message:'Unexpected server error.',buttonNames:['Ok']}).show();
+    }
 }
 
 function showServerError(error) {

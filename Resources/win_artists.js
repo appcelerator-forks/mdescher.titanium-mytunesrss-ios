@@ -34,7 +34,7 @@ tableView.addEventListener('click', function(e) {
             winAlbums.open();
         } else {
             actIndicatorView.hide();
-            showUnexpectedServerError();
+            handleUnexpectedServerError(error.msg);
         }
     });
 });
