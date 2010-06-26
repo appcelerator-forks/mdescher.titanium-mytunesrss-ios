@@ -61,11 +61,23 @@ var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
 
 var controlRewind = Titanium.UI.createImageView({url:'back.png'});
 controlRewind.addEventListener('click', function() {
-    Titanium.App.fireEvent('mytunesrss_rewind');
+    ajaxCall('LoginService.ping', null, function(result, error) {
+        if (!result && !error) {
+            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+        } else {
+            Titanium.App.fireEvent('mytunesrss_rewind');
+        }
+    });
 });
 var controlPlay = Titanium.UI.createImageView({url:'play.png'});
 controlPlay.addEventListener('click', function() {
-    Titanium.App.fireEvent('mytunesrss_play');
+    ajaxCall('LoginService.ping', null, function(result, error) {
+        if (!result && !error) {
+            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+        } else {
+            Titanium.App.fireEvent('mytunesrss_play');
+        }
+    });
 });
 var controlPause = Titanium.UI.createImageView({url:'pause.png'});
 controlPause.addEventListener('click', function() {
@@ -79,7 +91,13 @@ controlStop.addEventListener('click', function() {
 });
 var controlFastForward = Titanium.UI.createImageView({url:'forward.png'});
 controlFastForward.addEventListener('click', function() {
-    Titanium.App.fireEvent('mytunesrss_fastforward');
+    ajaxCall('LoginService.ping', null, function(result, error) {
+        if (!result && !error) {
+            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+        } else {
+            Titanium.App.fireEvent('mytunesrss_fastforward');
+        }
+    });
 });
 buttonBack.addEventListener('click', function() {
     win.close();

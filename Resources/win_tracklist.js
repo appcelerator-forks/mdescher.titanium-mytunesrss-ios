@@ -33,7 +33,13 @@ tableView.addEventListener('click', function(e) {
     if (!items) {
         items = win.ajaxResult.tracks;
     }
-    Titanium.App.fireEvent('mytunesrss_playlist', {playlist:items,index:e.index});
+    ajaxCall('LoginService.ping', null, function(result, error) {
+        if (!result && !error) {
+            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+        } else {
+            Titanium.App.fireEvent('mytunesrss_playlist', {playlist:items,index:e.index});
+        }
+    });
 });
 
 win.add(tableView);
