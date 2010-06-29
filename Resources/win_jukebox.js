@@ -11,7 +11,7 @@ function setTrackInformation(track) {
     if (progressBar) {
         win.remove(progressBar);
     }
-    tableView = Titanium.UI.createTableView({top:45,bottom:44,style:tableViewGroupStyle});
+    tableView = Titanium.UI.createTableView({top:45,bottom:44,style:tableViewGroupStyle,touchEnabled:false});
     var imageRow;
     if (track.imageUrl) {
         imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:240});

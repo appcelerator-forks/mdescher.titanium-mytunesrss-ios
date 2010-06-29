@@ -43,12 +43,12 @@ audioPlayer.addEventListener('change', function(e) {
     }
 });
 
+var searchBar = Titanium.UI.createSearchBar({hintText:'Search',left:0,right:0,top:45,height:45,autocorrect:false,autocapitalization:false,autocomplete:false});
+
 var labelPlaylists = Titanium.UI.createLabel({text:'Playlists',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var labelAlbums = Titanium.UI.createLabel({text:'Albums',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var labelArtists = Titanium.UI.createLabel({text:'Artists',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var labelGenres = Titanium.UI.createLabel({text:'Genres',left:10,font:{fontSize:20,fontWeight:'bold'}});
-var inputSearch = Titanium.UI.createTextField({hintText:'Search terms',left:10,right:10,top:5,bottom:5,returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false});
-var labelSearch = Titanium.UI.createLabel({text:'Search',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var labelNowPlaying = Titanium.UI.createLabel({text:'Currently playing',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var buttonLogout = Titanium.UI.createButton({title:'Logout',style:buttonStyle});
 
@@ -66,16 +66,10 @@ tableViewData[0].add(buttonRowArtists);
 var buttonRowGenres = wrap([labelGenres]);
 tableViewData[0].add(buttonRowGenres);
 
-var inputSearchRow = wrap([inputSearch]);
-inputSearchRow.hasChild = false;
-tableViewData[1].add(inputSearchRow);
-var buttonRowSearch = wrap([labelSearch]);
-tableViewData[1].add(buttonRowSearch);
-
 var buttonRowNowPlaying = wrap([labelNowPlaying]);
-tableViewData[2].add(buttonRowNowPlaying);
+tableViewData[1].add(buttonRowNowPlaying);
 
-var tableView = Titanium.UI.createTableView({data:tableViewData,style:tableViewGroupStyle,top:45});
+var tableView = Titanium.UI.createTableView({data:tableViewData,style:tableViewGroupStyle,top:90});
 
 buttonLogout.addEventListener('click', function() {
     audioPlayer.stop();
@@ -151,12 +145,14 @@ buttonRowGenres.addEventListener('click', function() {
     });
 });
 
-buttonRowSearch.addEventListener('click', function() {
-    if (inputSearch.value.length === 0) {
+searchBar.addEventListener('return', function() {
+    searchBar.showCancel = false;
+    searchBar.blur();
+    if (searchBar.value.length === 0) {
         Titanium.UI.createAlertDialog({message:'Please enter a search term.',buttonNames:['Ok']}).show();
     } else {
         actIndicatorView.show();
-        ajaxCall('TrackService.search', [inputSearch.value, 30, 'KeepOrder', 0, -1], function(result, error) {
+        ajaxCall('TrackService.search', [searchBar.value, 30, 'KeepOrder', 0, -1], function(result, error) {
             if (result && result.tracks && result.tracks.length > 0) {
                 var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
                 winTracks.ajaxResult = result;
@@ -176,6 +172,15 @@ buttonRowSearch.addEventListener('click', function() {
             }
         });
     }
+});
+
+searchBar.addEventListener('focus', function() {
+    searchBar.showCancel = true;
+});
+
+searchBar.addEventListener('cancel', function() {
+    searchBar.showCancel = false;
+    searchBar.blur();        
 });
 
 buttonRowNowPlaying.addEventListener('click', function() {
@@ -247,5 +252,6 @@ Titanium.App.addEventListener('mytunesrss_moveplayhead', function(e) {
 });
 
 addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogout);
+win.add(searchBar);
 win.add(tableView);
 win.add(actIndicatorView);

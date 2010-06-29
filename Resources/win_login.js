@@ -42,9 +42,17 @@ tableViewData[2].add(buttonDefaultInterfaceRow);
 
 var tableView = Titanium.UI.createTableView({data:tableViewData,style:tableViewGroupStyle,top:45});
 
-buttonLogin.addEventListener('click', function() {
+function getServerUrl() {
+    var serverUrl = inputServerUrl.value;
+    while (serverUrl.length > 0 && serverUrl.substr(serverUrl.length - 1) === '/') {
+        serverUrl = serverUrl.substr(0, serverUrl.length - 1);
+    }
+    return serverUrl;
+}
 
-    Titanium.App.Properties.setString('serverUrl', inputServerUrl.value);
+buttonLogin.addEventListener('click', function() {
+    var serverUrl = getServerUrl();
+    Titanium.App.Properties.setString('serverUrl', serverUrl);
     Titanium.App.Properties.setBool('saveCredentials', inputSaveCredentials.value);
     if (inputSaveCredentials.value === true) {
         Titanium.App.Properties.setString('username', inputUsername.value);
@@ -70,8 +78,9 @@ buttonLogin.addEventListener('click', function() {
 });
 
 buttonDefaultInterfaceRow.addEventListener('click', function() {
-    Titanium.App.Properties.setString('serverUrl', inputServerUrl.value);
-    Titanium.Platform.openURL(inputServerUrl.value);
+    var serverUrl = getServerUrl();
+    Titanium.App.Properties.setString('serverUrl', serverUrl);
+    Titanium.Platform.openURL(serverUrl + '/mytunesrss/?interface=default');
 });
 
 addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogin);
