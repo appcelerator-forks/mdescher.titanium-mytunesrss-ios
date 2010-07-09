@@ -195,10 +195,8 @@ Titanium.App.addEventListener('mytunesrss_playlist', function(e) {
     audioPlayer.stop();
     currentPlaylist = e.playlist;
     currentPlaylistIndex = e.index;
-    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
-        audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
-        audioPlayer.start();
-    }
+    audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
+    audioPlayer.start();
     Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundColor:'#FFF'}).open();
 });
 

@@ -37,7 +37,14 @@ tableView.addEventListener('click', function(e) {
         if (!result && !error) {
             Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
         } else {
-            Titanium.App.fireEvent('mytunesrss_playlist', {playlist:items,index:e.index});
+            if (items[e.index].mediaType === 'Video') {
+                Titanium.App.fireEvent('mytunesrss_stop');
+                Titanium.UI.createWindow({url:'win_videoplayer.js',data:items[e.index].playbackUrl,backgroundColor:'#000'}).open();
+            } else if (items[e.index].mediaType === 'Audio') {
+                Titanium.App.fireEvent('mytunesrss_playlist', {playlist:items,index:e.index});
+            } else {
+                Titanium.UI.createAlertDialog({message:'The media type "' + currentPlaylist[currentPlaylistIndex].mediaType + '" is not supported.',buttonNames:['Ok']}).show();
+            }
         }
     });
 });
