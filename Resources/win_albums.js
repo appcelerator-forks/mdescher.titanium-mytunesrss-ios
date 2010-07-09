@@ -38,7 +38,7 @@ setTableDataAndIndex(win.ajaxResult.results, tableView, function(item, index) {
 
 tableView.addEventListener('click', function(e) {
     actIndicatorView.show();
-    ajaxCall('AlbumService.getTracks', [[e.rowData.jsonItem.name.replace('\'', '\\\'')]], function(result, error) {
+    ajaxCall('AlbumService.getTracks', [[e.rowData.jsonItem.name]], function(result, error) {
         if (result) {
             var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
             winTracks.ajaxResult = result;
