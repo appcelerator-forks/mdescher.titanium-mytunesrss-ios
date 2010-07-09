@@ -26,7 +26,7 @@ var inputUsername = Titanium.UI.createTextField({hintText:'Username',left:10,rig
 var inputPassword = Titanium.UI.createTextField({hintText:'Password',left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true});
 var inputSaveCredentials = Titanium.UI.createSwitch({right:10,value:Titanium.App.Properties.getBool('saveCredentials', false)});
 var buttonLogin = Titanium.UI.createButton({title:'Login',style:buttonStyle});
-var labelDefaultInterface = Titanium.UI.createLabel({text:'Default Web-Interface',left:10,font:{fontSize:20,fontWeight:'bold'}});
+var labelDefaultInterface = Titanium.UI.createLabel({text:'Open in browser',left:10,font:{fontSize:20,fontWeight:'bold'}});
 
 var tableViewData = [];
 tableViewData.push(Titanium.UI.createTableViewSection());
@@ -46,6 +46,9 @@ function getServerUrl() {
     var serverUrl = inputServerUrl.value;
     while (serverUrl.length > 0 && serverUrl.substr(serverUrl.length - 1) === '/') {
         serverUrl = serverUrl.substr(0, serverUrl.length - 1);
+    }
+    if (serverUrl.toLowerCase().search(/https?:\/\//) != 0) {
+        serverUrl = 'http://' + serverUrl;
     }
     return serverUrl;
 }

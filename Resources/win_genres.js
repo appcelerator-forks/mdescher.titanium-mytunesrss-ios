@@ -29,7 +29,7 @@ tableView.addEventListener('click', function(e) {
     actIndicatorView.show();
     ajaxCall('AlbumService.getAlbums', [null, null, e.rowData.jsonItem.name.replace('\'', '\\\''), -1, -1, -1, false, -1, -1], function(result, error) {
         if (result) {
-            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
+            var winTracks = Titanium.UI.createWindow({url:'win_albums.js',backgroundColor:'#FFF'});
             winTracks.ajaxResult = result;
             winTracks.open();
         } else if (error) {
