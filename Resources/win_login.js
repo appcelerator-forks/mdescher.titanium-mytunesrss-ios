@@ -66,12 +66,24 @@ buttonLogin.addEventListener('click', function() {
     }
 
     actIndicatorView.show();
-    ajaxCall('LoginService.login', [inputUsername.value, inputPassword.value, 180], function(result, error) {
+    ajaxCall('ServerService.getServerInfo', [], function(result, error) {
         if (result) {
-            onLogin(result);
-        } else if (error) {
-            actIndicatorView.hide();
-            Titanium.UI.createAlertDialog({message:'Login failed, please check username and password.',buttonNames:['Ok']}).show();
+            if (result.major < 3 || (result.major == 3 && (result.minor < 8 || (result.minor == 8 && result.revision < 11)))) {
+                actIndicatorView.hide();
+                Titanium.UI.createAlertDialog({message:'The MyTunesRSS server must be version 3.8.11 or better and is version ' + result.version + ' only.',buttonNames:['Ok']}).show();
+            } else {
+                ajaxCall('LoginService.login', [inputUsername.value, inputPassword.value, 180], function(result, error) {
+                    if (result) {
+                        onLogin(result);
+                    } else if (error) {
+                        actIndicatorView.hide();
+                        Titanium.UI.createAlertDialog({message:'Login failed, please check username and password.',buttonNames:['Ok']}).show();
+                    } else {
+                        actIndicatorView.hide();
+                        Titanium.UI.createAlertDialog({message:'No response from server, please check server URL and make sure the server is running.',buttonNames:['Ok']}).show();
+                    }
+                });
+            }
         } else {
             actIndicatorView.hide();
             Titanium.UI.createAlertDialog({message:'No response from server, please check server URL and make sure the server is running.',buttonNames:['Ok']}).show();
