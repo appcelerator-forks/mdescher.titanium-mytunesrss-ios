@@ -21,11 +21,9 @@ var currentPlaylist;
 var currentPlaylistIndex;
 
 function playTrack() {
-    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
-        audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
-        Titanium.App.fireEvent('mytunesrss_playtrack', currentPlaylist[currentPlaylistIndex]);
-        audioPlayer.start();
-    }
+    audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
+    Titanium.App.fireEvent('mytunesrss_playtrack', currentPlaylist[currentPlaylistIndex]);
+    audioPlayer.start();
 }
 
 audioPlayer.addEventListener('progress', function(e) {
@@ -195,6 +193,7 @@ Titanium.App.addEventListener('mytunesrss_playlist', function(e) {
     audioPlayer.stop();
     currentPlaylist = e.playlist;
     currentPlaylistIndex = e.index;
+    // remove all non-audio tracks
     for (var i = currentPlaylist.length - 1; i >= 0; i--) {
         if (currentPlaylist[i].mediaType != 'Audio') {
             currentPlaylist = currentPlaylist.slice(0, i).concat(currentPlaylist.slice(i + 1));
@@ -203,58 +202,47 @@ Titanium.App.addEventListener('mytunesrss_playlist', function(e) {
             }
         }
     }
+    // start playback with the selected track
     audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
     audioPlayer.start();
     Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundColor:'#FFF'}).open();
 });
 
 Titanium.App.addEventListener('mytunesrss_rewind', function() {
-    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
-        if (audioPlayer.playing && audioPlayer.progress > 2.0) {
-            audioPlayer.stop();
-            audioPlayer.start();
-        } else if (currentPlaylistIndex > 0) {
-            audioPlayer.stop();
-            currentPlaylistIndex--;
-            playTrack();
-        }
+    if (audioPlayer.playing && audioPlayer.progress > 2.0) {
+        audioPlayer.stop();
+        audioPlayer.start();
+    } else if (currentPlaylistIndex > 0) {
+        audioPlayer.stop();
+        currentPlaylistIndex--;
+        playTrack();
     }
 });
 
 Titanium.App.addEventListener('mytunesrss_fastforward', function() {
     if (currentPlaylistIndex + 1 < currentPlaylist.length) {
-        if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
-            audioPlayer.stop();
-        }
+        audioPlayer.stop();
         currentPlaylistIndex++;
         playTrack();
     }
 });
 
 Titanium.App.addEventListener('mytunesrss_stop', function() {
-    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
-        audioPlayer.stop();
-    }
+    audioPlayer.stop();
 });
 
 Titanium.App.addEventListener('mytunesrss_play', function() {
-    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
-        audioPlayer.start();
-    }
+    audioPlayer.start();
 });
 
 Titanium.App.addEventListener('mytunesrss_pause', function() {
-    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
-        audioPlayer.pause();
-    }
+    audioPlayer.pause();
 });
 
 Titanium.App.addEventListener('mytunesrss_moveplayhead', function(e) {
-    if (currentPlaylist[currentPlaylistIndex].mediaType === 'Audio') {
-        audioPlayer.pause();
-        audioPlayer.progress = e.value;
-        audioPlayer.start();
-    }
+    audioPlayer.pause();
+    audioPlayer.progress = e.value;
+    audioPlayer.start();
 });
 
 addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogout);
