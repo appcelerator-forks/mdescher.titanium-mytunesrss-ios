@@ -109,7 +109,7 @@
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
 		activeBuildConfigurationName = Release;
 		activeExecutable = D2752CD0119DF8F5002C5D0E /* MyTunesRSS */;
-		activeSDKPreference = iphoneos3.1.3;
+		activeSDKPreference = iphonesimulator3.2;
 		activeTarget = 1D6058900D05DD3D006BFB54 /* MyTunesRSS */;
 		codeSenseManager = D2752D06119DF915002C5D0E /* Code sense */;
 		executables = (
@@ -175,8 +175,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 297893390;
-			PBXWorkspaceStateSaveDate = 297893390;
+			PBXPerProjectTemplateStateSaveDate = 298845616;
+			PBXWorkspaceStateSaveDate = 298845616;
 		};
 		perUserProjectItems = {
 			D238DC8D11C0090800BE1517 /* PBXTextBookmark */ = D238DC8D11C0090800BE1517 /* PBXTextBookmark */;

@@ -8,7 +8,7 @@
 #define STRING(x) _QUOTEME(x)
 
 NSString * const TI_APPLICATION_DEPLOYTYPE = @"production";
-NSString * const TI_APPLICATION_ID = @"de.codewave.MyTunesRSS";
+NSString * const TI_APPLICATION_ID = @"de.codewave.mytunesrss";
 NSString * const TI_APPLICATION_PUBLISHER = @"Codewave Software Michael Descher";
 NSString * const TI_APPLICATION_URL = @"http://www.codewave.de";
 NSString * const TI_APPLICATION_NAME = @"MyTunesRSS";
