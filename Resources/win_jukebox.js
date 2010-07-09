@@ -42,6 +42,15 @@ function wrapInSection(rows) {
     return section;
 }
 
+function addTouchListener(control, name) {
+    control.addEventListener('touchstart', function() {
+        control.url = name + '_touched.png';
+    });
+    control.addEventListener('touchend', function() {
+        control.url = name + '.png';
+    });
+}
+
 var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:44,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 Titanium.App.addEventListener('mytunesrss_showJukeboxActivityView', function() {
@@ -59,7 +68,7 @@ Titanium.App.addEventListener('mytunesrss_hideJukeboxActivityView', function() {
 
 var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
 
-var controlRewind = Titanium.UI.createImageView({url:'back.png'});
+var controlRewind = Titanium.UI.createImageView({url:'back.png',width:45,height:45});
 controlRewind.addEventListener('click', function() {
     ajaxCall('LoginService.ping', null, function(result, error) {
         if (!result && !error) {
@@ -69,7 +78,7 @@ controlRewind.addEventListener('click', function() {
         }
     });
 });
-var controlPlay = Titanium.UI.createImageView({url:'play.png'});
+var controlPlay = Titanium.UI.createImageView({url:'play.png',width:45,height:45});
 controlPlay.addEventListener('click', function() {
     ajaxCall('LoginService.ping', null, function(result, error) {
         if (!result && !error) {
@@ -79,17 +88,17 @@ controlPlay.addEventListener('click', function() {
         }
     });
 });
-var controlPause = Titanium.UI.createImageView({url:'pause.png'});
+var controlPause = Titanium.UI.createImageView({url:'pause.png',width:45,height:45});
 controlPause.addEventListener('click', function() {
     Titanium.App.fireEvent('mytunesrss_pause');
     Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
 });
-var controlStop = Titanium.UI.createImageView({url:'stop.png'});
+var controlStop = Titanium.UI.createImageView({url:'stop.png',width:45,height:45});
 controlStop.addEventListener('click', function() {
     Titanium.App.fireEvent('mytunesrss_stop');
     Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
 });
-var controlFastForward = Titanium.UI.createImageView({url:'forward.png'});
+var controlFastForward = Titanium.UI.createImageView({url:'forward.png',width:45,height:45});
 controlFastForward.addEventListener('click', function() {
     ajaxCall('LoginService.ping', null, function(result, error) {
         if (!result && !error) {
@@ -102,6 +111,12 @@ controlFastForward.addEventListener('click', function() {
 buttonBack.addEventListener('click', function() {
     win.close();
 });
+
+addTouchListener(controlRewind, 'back');
+addTouchListener(controlFastForward, 'forward');
+addTouchListener(controlPause, 'pause');
+addTouchListener(controlPlay, 'play');
+addTouchListener(controlStop, 'stop');
 
 addTopToolbar(win, 'Jukebox', buttonBack, undefined);
 setTrackInformation(win.data);
