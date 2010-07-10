@@ -3,6 +3,17 @@ Titanium.include('mytunesrss.js');
 var win = Titanium.UI.currentWindow;
 var tableView;
 var progressBar;
+var timePlayed;
+var timeRemaining;
+
+function getDisplayTime(time) {
+    var mins = Math.floor(time / 60);
+    var secs = Math.floor(time % 60);
+    if (secs < 10) {
+        return mins + ':0' + secs;
+    }
+    return mins + ':' + secs;
+}
 
 function setTrackInformation(track) {
     if (tableView) {
@@ -25,13 +36,17 @@ function setTrackInformation(track) {
     infoRow.add(Titanium.UI.createLabel({bottom:7,left:10,height:24,font:{fontSize:12},text:getDisplayName(track.artist)}));
     tableView.setData([imageRow, infoRow]);
     win.add(tableView);
-    progressBar = Titanium.UI.createProgressBar({min:0,max:track.time,value:0,bottom:60,left:10,right:10,height:10});
+    progressBar = Titanium.UI.createProgressBar({min:0,max:track.time,value:0,bottom:60,left:60,right:60,height:10});
     progressBar.addEventListener('click', function(e) {
         var val = ((e.x - progressBar.left) * track.time) / (Titanium.Platform.displayCaps.platformWidth - progressBar.left - progressBar.right);
         Titanium.App.fireEvent('mytunesrss_moveplayhead', {value:val});
     });
     win.add(progressBar);
     progressBar.show();
+    timePlayed = Titanium.UI.createLabel({bottom:60,left:10,height:10,width:40,font:{fontSize:12},text:'',textAlign:'right'});
+    win.add(timePlayed);
+    timeRemaining = Titanium.UI.createLabel({bottom:60,right:10,width:40,height:10,font:{fontSize:12},text:''});
+    win.add(timeRemaining);
 }
 
 function wrapInSection(rows) {
@@ -95,6 +110,11 @@ controlPause.addEventListener('click', function() {
 });
 var controlStop = Titanium.UI.createImageView({url:'stop.png',width:45,height:45});
 controlStop.addEventListener('click', function() {
+    if (progressBar) {
+        progressBar.value = 0;
+    }
+    timePlayed.text = '';
+    timeRemaining.text = '';
     Titanium.App.fireEvent('mytunesrss_stop');
     Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
 });
@@ -130,6 +150,8 @@ Titanium.App.addEventListener('mytunesrss_playtrack', function(track) {
 
 Titanium.App.addEventListener('mytunesrss_progress', function(e) {
     if (progressBar) {
-        progressBar.value = e.value;
+        progressBar.value = Math.floor(e.value);
     }
+    timePlayed.text = getDisplayTime(e.value);
+    timeRemaining.text = getDisplayTime(win.data.time - e.value);
 });
