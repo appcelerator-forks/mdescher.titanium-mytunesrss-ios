@@ -13,6 +13,32 @@ function onLogin(result) {
     Titanium.UI.createWindow({url:'win_menu.js',backgroundColor:'#FFF'}).open();
 }
 
+function doLogin() {
+    ajaxCall('ServerService.getServerInfo', [], function(result, error) {
+        if (result) {
+            if (result.major < 3 || (result.major == 3 && (result.minor < 8 || (result.minor == 8 && result.revision < 11)))) {
+                actIndicatorView.hide();
+                Titanium.UI.createAlertDialog({message:'The MyTunesRSS server must be version 3.8.11 or better and is version ' + result.version + ' only.',buttonNames:['Ok']}).show();
+            } else {
+                ajaxCall('LoginService.login', [inputUsername.value, inputPassword.value, 180], function(result, error) {
+                    if (result) {
+                        onLogin(result);
+                    } else if (error) {
+                        actIndicatorView.hide();
+                        Titanium.UI.createAlertDialog({message:'Login failed, please check username and password.',buttonNames:['Ok']}).show();
+                    } else {
+                        actIndicatorView.hide();
+                        Titanium.UI.createAlertDialog({message:'No response from server, please check server URL and make sure the server is running.',buttonNames:['Ok']}).show();
+                    }
+                });
+            }
+        } else {
+            actIndicatorView.hide();
+            Titanium.UI.createAlertDialog({message:'No response from server, please check server URL and make sure the server is running.',buttonNames:['Ok']}).show();
+        }
+    });
+}
+
 var win = Titanium.UI.currentWindow;
 
 var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
@@ -66,30 +92,30 @@ buttonLogin.addEventListener('click', function() {
     }
 
     actIndicatorView.show();
-    ajaxCall('ServerService.getServerInfo', [], function(result, error) {
-        if (result) {
-            if (result.major < 3 || (result.major == 3 && (result.minor < 8 || (result.minor == 8 && result.revision < 11)))) {
-                actIndicatorView.hide();
-                Titanium.UI.createAlertDialog({message:'The MyTunesRSS server must be version 3.8.11 or better and is version ' + result.version + ' only.',buttonNames:['Ok']}).show();
-            } else {
-                ajaxCall('LoginService.login', [inputUsername.value, inputPassword.value, 180], function(result, error) {
-                    if (result) {
-                        onLogin(result);
-                    } else if (error) {
-                        actIndicatorView.hide();
-                        Titanium.UI.createAlertDialog({message:'Login failed, please check username and password.',buttonNames:['Ok']}).show();
-                    } else {
-                        actIndicatorView.hide();
-                        Titanium.UI.createAlertDialog({message:'No response from server, please check server URL and make sure the server is running.',buttonNames:['Ok']}).show();
-                    }
-                });
-            }
-        } else {
-            actIndicatorView.hide();
-            Titanium.UI.createAlertDialog({message:'No response from server, please check server URL and make sure the server is running.',buttonNames:['Ok']}).show();
-        }
-    });
 
+    if (serverUrl.toLowerCase().search(/https?:\/\/mytunesrss.com\//) === 0) {
+        // mytunesrss.com handling => resolve real server url and then login
+        var httpClient = Titanium.Network.createHTTPClient({timeout:5000});
+        httpClient.onload = function() {
+            var resolvedServerUrl = this.location.match(/https?:\/\/[^\/]+/)[0];
+            if (resolvedServerUrl.toLowerCase().search(/https?:\/\/mytunesrss.com/) === 0) {
+                actIndicatorView.hide();
+                Titanium.UI.createAlertDialog({message:'The mytunesrss.com username seems to be wrong. Please check the server URL.',buttonNames:['Ok']}).show();
+            } else {
+                Titanium.App.Properties.setString('resolvedServerUrl', resolvedServerUrl);
+                doLogin();
+            }
+        };
+        httpClient.onerror = function() {
+            actIndicatorView.hide();
+            Titanium.UI.createAlertDialog({message:'The mytunesrss.com username seems to be wrong. Please check the server URL.',buttonNames:['Ok']}).show();
+        };
+        httpClient.open('GET', Titanium.App.Properties.getString('serverUrl'));
+        httpClient.send(null);
+    } else {
+        Titanium.App.Properties.setString('resolvedServerUrl', serverUrl);
+        doLogin();
+    }
 });
 
 buttonDefaultInterfaceRow.addEventListener('click', function() {

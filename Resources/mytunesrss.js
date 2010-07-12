@@ -10,7 +10,7 @@ function ajaxCall(func, parameterArray, resultCallback) {
     httpClient.onerror = function() {
         resultCallback();
     };
-    httpClient.open('POST', Titanium.App.Properties.getString('serverUrl') + '/jsonrpc');
+    httpClient.open('POST', Titanium.App.Properties.getString('resolvedServerUrl') + '/jsonrpc');
     httpClient.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
     if (Titanium.App.Properties.getString('jsonRpcSessionId') != undefined) {
         httpClient.setRequestHeader('X-MyTunesRSS-ID', Titanium.App.Properties.getString('jsonRpcSessionId'));
