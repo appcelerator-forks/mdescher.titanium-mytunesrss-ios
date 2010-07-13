@@ -22,7 +22,7 @@ var currentPlaylistIndex;
 
 function playTrack() {
     audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
-    Titanium.App.fireEvent('mytunesrss_playtrack', currentPlaylist[currentPlaylistIndex]);
+    Titanium.App.fireEvent('mytunesrss_setTrackInfo', currentPlaylist[currentPlaylistIndex]);
     audioPlayer.start();
 }
 
@@ -237,6 +237,25 @@ Titanium.App.addEventListener('mytunesrss_play', function() {
 
 Titanium.App.addEventListener('mytunesrss_pause', function() {
     audioPlayer.pause();
+});
+
+Titanium.App.addEventListener('mytunesrss_shuffle', function() {
+    var playing = audioPlayer.playing;
+    audioPlayer.stop();
+    var tmp, rand;
+    for (var i = 0; i < currentPlaylist.length; i++){
+      rand = Math.floor(Math.random() * currentPlaylist.length);
+      tmp = currentPlaylist[i];
+      currentPlaylist[i] = currentPlaylist[rand];
+      currentPlaylist[rand] = tmp;
+    }
+    currentPlaylistIndex = 0;
+    if (playing) {
+        playTrack();
+    } else {
+        audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
+        Titanium.App.fireEvent('mytunesrss_setTrackInfo', currentPlaylist[currentPlaylistIndex]);
+    }
 });
 
 Titanium.App.addEventListener('mytunesrss_moveplayhead', function(e) {

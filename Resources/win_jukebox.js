@@ -128,6 +128,16 @@ controlFastForward.addEventListener('click', function() {
         }
     });
 });
+var controlShuffle = Titanium.UI.createImageView({url:'shuffle.png',width:45,height:45});
+controlShuffle.addEventListener('click', function() {
+    ajaxCall('LoginService.ping', null, function(result, error) {
+        if (!result && !error) {
+            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+        } else {
+            Titanium.App.fireEvent('mytunesrss_shuffle');
+        }
+    });
+});
 buttonBack.addEventListener('click', function() {
     win.close();
 });
@@ -137,14 +147,15 @@ addTouchListener(controlFastForward, 'forward');
 addTouchListener(controlPause, 'pause');
 addTouchListener(controlPlay, 'play');
 addTouchListener(controlStop, 'stop');
+addTouchListener(controlShuffle, 'shuffle');
 
 addTopToolbar(win, 'Jukebox', buttonBack, undefined);
 setTrackInformation(win.data);
 
 var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
-win.add(Titanium.UI.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace]}));
+win.add(Titanium.UI.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace, controlShuffle, flexSpace]}));
 
-Titanium.App.addEventListener('mytunesrss_playtrack', function(track) {
+Titanium.App.addEventListener('mytunesrss_setTrackInfo', function(track) {
     setTrackInformation(track);
 });
 
