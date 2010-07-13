@@ -45,9 +45,12 @@ var tableView = Titanium.UI.createTableView({data:tableViewData,style:tableViewG
 function doLogin() {
     ajaxCall('ServerService.getServerInfo', [], function(result, error) {
         if (result) {
-            if (result.major < 3 || (result.major == 3 && (result.minor < 8 || (result.minor == 8 && result.revision < 11)))) {
+            Titanium.App.Properties.setString('serverMajor', result.major);
+            Titanium.App.Properties.setString('serverMinor', result.minor);
+            Titanium.App.Properties.setString('serverRevision', result.revision);
+            if (result.major < 3 || (result.major == 3 && (result.minor < 8 || (result.minor == 8 && result.revision < 13)))) {
                 actIndicatorView.hide();
-                Titanium.UI.createAlertDialog({message:'The MyTunesRSS server must be version 3.8.11 or better and is version ' + result.version + ' only.',buttonNames:['Ok']}).show();
+                Titanium.UI.createAlertDialog({message:'The MyTunesRSS server must be version 3.8.13 or better and is version ' + result.version + ' only.',buttonNames:['Ok']}).show();
             } else {
                 ajaxCall('LoginService.login', [inputUsername.value, inputPassword.value, 180], function(result, error) {
                     if (result) {

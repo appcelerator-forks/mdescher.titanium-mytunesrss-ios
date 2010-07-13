@@ -20,8 +20,17 @@ var audioPlayer = Titanium.Media.createAudioPlayer({audioSessionMode:Titanium.Me
 var currentPlaylist;
 var currentPlaylistIndex;
 
+function setPlayerUrl(url) {
+    audioPlayer.url = url;
+    if (Titanium.App.Properties.getString('tcParam') != undefined) {
+        audioPlayer.url = url + '/' + Titanium.App.Properties.getString('tcParam');
+    } else {
+        audioPlayer.url = url;
+    }
+}
+
 function playTrack() {
-    audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
+    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUrl);
     Titanium.App.fireEvent('mytunesrss_setTrackInfo', currentPlaylist[currentPlaylistIndex]);
     audioPlayer.start();
 }
@@ -49,6 +58,7 @@ var labelArtists = Titanium.UI.createLabel({text:'Artists',left:10,font:{fontSiz
 var labelGenres = Titanium.UI.createLabel({text:'Genres',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var labelNowPlaying = Titanium.UI.createLabel({text:'Currently playing',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var buttonLogout = Titanium.UI.createButton({title:'Logout',style:buttonStyle});
+var buttonSettings = Titanium.UI.createButton({title:'Settings',style:buttonStyle});
 
 var tableViewData = [];
 tableViewData.push(Titanium.UI.createTableViewSection());
@@ -72,7 +82,27 @@ var tableView = Titanium.UI.createTableView({data:tableViewData,style:tableViewG
 buttonLogout.addEventListener('click', function() {
     audioPlayer.stop();
     Titanium.App.Properties.removeProperty('jsonRpcSessionId');
+    Titanium.App.Properties.removeProperty('serverMajor');
+    Titanium.App.Properties.removeProperty('serverMinor');
+    Titanium.App.Properties.removeProperty('serverRevision');
     win.close();
+});
+
+buttonSettings.addEventListener('click', function() {
+    actIndicatorView.show();
+    ajaxCall('LoginService.getUserInfo', [], function(result, error) {
+        if (result) {
+            var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundColor:'#FFF'});
+            winSettings.ajaxResult = result;
+            winSettings.open();
+        } else if (error) {
+            actIndicatorView.hide();
+            handleUnexpectedServerError(error.msg);
+        } else {
+            actIndicatorView.hide();
+            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+        }
+    });
 });
 
 buttonRowPlaylists.addEventListener('click', function() {
@@ -203,7 +233,7 @@ Titanium.App.addEventListener('mytunesrss_playlist', function(e) {
         }
     }
     // start playback with the selected track
-    audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
+    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUrl);
     audioPlayer.start();
     Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundColor:'#FFF'}).open();
 });
@@ -253,7 +283,7 @@ Titanium.App.addEventListener('mytunesrss_shuffle', function() {
     if (playing) {
         playTrack();
     } else {
-        audioPlayer.url = currentPlaylist[currentPlaylistIndex].playbackUrl;
+        setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUrl);
         Titanium.App.fireEvent('mytunesrss_setTrackInfo', currentPlaylist[currentPlaylistIndex]);
     }
 });
@@ -264,7 +294,7 @@ Titanium.App.addEventListener('mytunesrss_moveplayhead', function(e) {
     audioPlayer.start();
 });
 
-addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogout);
+addTopToolbar(win, 'MyTunesRSS', buttonLogout, buttonSettings);
 win.add(searchBar);
 win.add(tableView);
 win.add(actIndicatorView);
