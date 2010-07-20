@@ -61,7 +61,7 @@ if (win.ajaxResult.transcoderNames.length > 0) {
         var transcoderName = win.ajaxResult.transcoderNames[i];
         var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:Titanium.App.Properties.getBool('transcoder_' + transcoderName, false)});
         transcoderSwitches.push(transcoderSwitch);
-        tableViewData[0].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10}), transcoderSwitch]));
+        tableViewData[0].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
     }
 }
 

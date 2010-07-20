@@ -18,7 +18,9 @@ buttonBack.addEventListener('click', function() {
 addTopToolbar(win, 'Artists', buttonBack, undefined);
 
 setTableDataAndIndex(win.ajaxResult.results, tableView, function(item, index) {
-    var row = Titanium.UI.createTableViewRow({hasChild:true,className:'artist_row',title:getDisplayName(item.name)});
+    var displayName = getDisplayName(item.name);
+    var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'artist_row'});
+    row.add(Titanium.UI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'},minimumFontSize:12}));
     row.jsonItem = item;
     return row;
 }, function(item) {

@@ -18,7 +18,9 @@ buttonBack.addEventListener('click', function() {
 addTopToolbar(win, 'Playlists', buttonBack, undefined);
 
 setTableDataAndIndex(win.ajaxResult.results, tableView, function(item) {
-    var row = Titanium.UI.createTableViewRow({hasChild:true,className:'playlist_row',title:getDisplayName(item.name)});
+    var displayName = getDisplayName(item.name);
+    var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'playlist_row'});
+    row.add(Titanium.UI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'},minimumFontSize:12}));
     row.jsonItem = item;
     return row;
 }, function(item) {

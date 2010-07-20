@@ -26,7 +26,7 @@ setTableDataAndIndex(win.ajaxResult.results, tableView, function(item, index) {
         var albumImage = Titanium.UI.createImageView({url:(item.imageUrl + '/size=64'),top:4,left:4,width:40,height:40,defaultImage:'appicon.png'});
         row.add(albumImage);
     }
-    var albumName = Titanium.UI.createLabel({text:displayName,top:4,left:48,height:24,font:{fontSize:16,fontWeight:'bold'}});
+    var albumName = Titanium.UI.createLabel({text:displayName,top:4,left:48,height:24,right:10,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
     var artistName = Titanium.UI.createLabel({text:getDisplayName(item.artist),bottom:4,left:48,height:18,font:{fontSize:12}});
     row.add(albumName);
     row.add(artistName);

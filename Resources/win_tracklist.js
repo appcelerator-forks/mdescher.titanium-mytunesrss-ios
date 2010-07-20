@@ -19,8 +19,8 @@ if (!items) {
 for (var i = 0; i < items.length; i++) {
     if (items[i].mediaType === 'Audio' || items[i].mediaType === 'Video') {
         var row = Titanium.UI.createTableViewRow({hasChild:true,height:48,className:'track_row'});
-        var trackName = Titanium.UI.createLabel({text:getDisplayName(items[i].name),top:4,left:4,height:24,font:{fontSize:16,fontWeight:'bold'}});
-        var artistName = Titanium.UI.createLabel({text:getDisplayName(items[i].artist),bottom:4,left:4,height:18,font:{fontSize:12}});
+        var trackName = Titanium.UI.createLabel({text:getDisplayName(items[i].name),top:4,left:10,right:10,height:24,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
+        var artistName = Titanium.UI.createLabel({text:getDisplayName(items[i].artist),bottom:4,left:10,right:10,height:18,font:{fontSize:12}});
         row.add(trackName);
         row.add(artistName);
         row.jsonItem = items[i];
