@@ -288,11 +288,12 @@ Titanium.App.addEventListener('mytunesrss_shuffle', function() {
     }
 });
 
-Titanium.App.addEventListener('mytunesrss_moveplayhead', function(e) {
+/*Titanium.App.addEventListener('mytunesrss_moveplayhead', function(e) {
+    alert(e.value);
     audioPlayer.pause();
     audioPlayer.progress = e.value;
     audioPlayer.start();
-});
+});*/
 
 addTopToolbar(win, 'MyTunesRSS', buttonLogout, buttonSettings);
 win.add(searchBar);

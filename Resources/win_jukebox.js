@@ -37,12 +37,14 @@ function setTrackInformation(track) {
     tableView.setData([imageRow, infoRow]);
     win.add(tableView);
     progressBar = Titanium.UI.createProgressBar({min:0,max:track.time,value:0,bottom:60,left:60,right:60,height:10});
-    progressBar.addEventListener('click', function(e) {
+    win.add(progressBar);
+    progressBar.show();
+/*    var progressLabel = Titanium.UI.createLabel({bottom:60,left:60,right:60,height:10});
+    progressLabel.addEventListener('click', function(e) {
         var val = ((e.x - progressBar.left) * track.time) / (Titanium.Platform.displayCaps.platformWidth - progressBar.left - progressBar.right);
         Titanium.App.fireEvent('mytunesrss_moveplayhead', {value:val});
     });
-    win.add(progressBar);
-    progressBar.show();
+    win.add(progressLabel); */
     timePlayed = Titanium.UI.createLabel({bottom:60,left:10,height:10,width:40,font:{fontSize:12},text:'',textAlign:'right'});
     win.add(timePlayed);
     timeRemaining = Titanium.UI.createLabel({bottom:60,right:10,width:40,height:10,font:{fontSize:12},text:''});
