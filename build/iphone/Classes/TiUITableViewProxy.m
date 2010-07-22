@@ -22,23 +22,22 @@
 #import "TiViewProxy.h"
 #import "TiComplexValue.h"
 
+
+NSArray * tableKeySequence;
+
 @implementation TiUITableViewProxy
 
-#pragma mark Internal 
+#pragma mark Internal
 
--(id<NSFastEnumeration>)allKeys
+
+-(NSArray *)keySequence
 {
-	NSArray * result = (NSArray *)[super allKeys];
-	if (![result containsObject:@"data"])
+	if (tableKeySequence == nil)
 	{
-		return result;
+		tableKeySequence = [[NSArray arrayWithObjects:@"style",@"search",@"data",nil] retain];
 	}
-	result = [NSMutableArray arrayWithArray:result];
-	[(NSMutableArray *)result removeObject:@"data"];
-	[(NSMutableArray *)result insertObject:@"data" atIndex:0];
-	return result;
+	return tableKeySequence;
 }
-
 
 -(TiUITableView*)tableView
 {
@@ -74,11 +73,16 @@
 
 -(NSMutableArray*)sections
 {
-	NSMutableArray *sections = [self valueForKey:@"data"];;
-	if (sections == nil)
+	NSMutableArray *sections;
+	@synchronized(self)
 	{
-		sections = [NSMutableArray array];
-		[self replaceValue:sections forKey:@"data" notification:YES];
+		sections = [self valueForKey:@"data"];
+		if (sections == nil)
+		{
+			sections = [NSMutableArray array];
+			[self replaceValue:sections forKey:@"data" notification:YES];
+		}
+		[[sections retain] autorelease];
 	}
 	return sections;
 }
@@ -385,7 +389,7 @@
 
 -(void)setData:(id)args withObject:(id)properties
 {
-	ENSURE_ARRAY(args);
+	ENSURE_TYPE_OR_NIL(args,NSArray);
 	ENSURE_UI_THREAD_WITH_OBJ(setData,args,properties);
 	
 	// this is on the non-UI thread. let's do the work here before we pass
@@ -394,9 +398,7 @@
 	Class dictionaryClass = [NSDictionary class];
 	Class sectionClass = [TiUITableViewSectionProxy class];
 	Class rowClass = [TiUITableViewRowProxy class];
-	
-	TiUITableView *table = [self tableView];
-	
+		
 	NSMutableArray *data = [NSMutableArray array];
 	
 	TiUITableViewSectionProxy *section = nil;
@@ -455,6 +457,8 @@
 	[self replaceValue:data forKey:@"data" notification:NO];
 
 	TiUITableViewAction *action = [[[TiUITableViewAction alloc] initWithRow:nil animation:properties section:0 type:TiUITableViewActionSetData] autorelease];
+
+	TiUITableView *table = [self tableView];
 	[table dispatchAction:action];
 }
 
@@ -462,6 +466,24 @@
 {
 	// if you pass in no args, it's a non animation set
 	[self setData:args withObject:[NSDictionary dictionaryWithObject:NUMINT(UITableViewRowAnimationNone) forKey:@"animationStyle"]];
+}
+
+-(void)setContentInsets:(id)args
+{
+	ENSURE_UI_THREAD(setContentInsets,args);
+	id arg1;
+	id arg2;
+	if ([args isKindOfClass:[NSDictionary class]])
+	{
+		arg1 = args;
+		arg2 = [NSDictionary dictionary];
+	}
+	else
+	{
+		arg1 = [args objectAtIndex:0];
+		arg2 = [args count] > 1 ? [args objectAtIndex:1] : [NSDictionary dictionary];
+	}
+	[[self view] performSelector:@selector(setContentInsets_:withObject:) withObject:arg1 withObject:arg2];
 }
 
 @end 

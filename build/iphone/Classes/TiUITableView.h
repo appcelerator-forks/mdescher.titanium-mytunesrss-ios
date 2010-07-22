@@ -15,6 +15,19 @@
 #import "TiUISearchBarProxy.h"
 #import "TiDimension.h"
 
+// Overloads hilighting to send touchbegin/touchend events
+@interface TiUITableViewCell : UITableViewCell
+{
+	TiUITableViewRowProxy* row;
+}
+
+-(id)initWithFrame:(CGRect)frame_ reuseIdentifier:(NSString *)reuseIdentifier_ row:(TiUITableViewRowProxy*)row_;
+-(id)initWithStyle:(UITableViewCellStyle)style_ reuseIdentifier:(NSString *)reuseIdentifier_ row:(TiUITableViewRowProxy*)row_;
+
+-(void)handleEvent:(NSString*)type;
+
+@end
+
 @interface TiUITableView : TiUIView<UISearchDisplayDelegate,UIScrollViewDelegate,UITableViewDelegate,UITableViewDataSource,UISearchBarDelegate,TiUIScrollView> {
 @private
 	UITableView *tableview;
@@ -33,6 +46,7 @@
 	TiDimension maxRowHeight;
 	TiUISearchBarProxy * searchField;
 	UIView * tableHeaderView;
+	UIView * tableHeaderPullView;
 	UIButton * searchScreenView;
 	UITableView *searchTableView;
 	NSString * filterAttribute;
@@ -43,6 +57,8 @@
 	UITableViewController *tableController;
 	UISearchDisplayController *searchController;
 	BOOL searchHiddenSet;
+	BOOL headerPulling;
+	NSInteger frameChanges;
 }
 
 #pragma mark Framework
@@ -55,6 +71,10 @@
 -(void)dispatchAction:(TiUITableViewAction*)action;
 -(void)scrollToIndex:(NSInteger)index position:(UITableViewScrollPosition)position animated:(BOOL)animated;
 -(void)scrollToTop:(NSInteger)top animated:(BOOL)animated;
+-(NSIndexPath*)indexPathFromSearchIndex:(int)index;
+-(IBAction)hideSearchScreen:(id)sender;
+-(UITableView*)searchTableView;
+-(UITableView*)tableView;
 
 @end
 

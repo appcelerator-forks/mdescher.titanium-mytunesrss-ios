@@ -61,6 +61,15 @@
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
+	[self lockChildrenForReading];
+	for (TiViewProxy * thisProxy in [self children])
+	{
+		if ([thisProxy respondsToSelector:@selector(willAnimateRotationToInterfaceOrientation:duration:)])
+		{
+			[(id)thisProxy willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
+		}
+	}
+	[self unlockChildren];
 	//This is in place for TabController (Or any others) to subclass.
 }
 
@@ -127,7 +136,13 @@ END_UI_THREAD_PROTECTED_VALUE(opened)
 	opened = YES;
 	opening = NO;
 	
-	[self attachViewToTopLevelWindow];
+	if (!navWindow) {
+		[self attachViewToTopLevelWindow];
+	}
+	else
+	{
+		[self layoutChildren];
+	}
 	
 	if ([self _hasListeners:@"open"])
 	{
@@ -155,6 +170,8 @@ END_UI_THREAD_PROTECTED_VALUE(opened)
 
 -(void)windowClosed
 {
+	ENSURE_UI_THREAD_0_ARGS
+	
 	if (opened==NO)
 	{
 		return;
@@ -296,11 +313,12 @@ END_UI_THREAD_PROTECTED_VALUE(opened)
 	
 	if (opening==NO)
 	{
-		modal = [self isModal:args];
-		fullscreen = [self isFullscreen:args];
+		modalFlag = [self isModal:args];
+		fullscreenFlag = [self isFullscreen:args];
 		opening = YES;
 	}
 	
+	navWindow = NO;
 	BOOL rootViewAttached = [self isRootViewAttached];
 	
 	// ensure on open that we've created our view before we start to use it
@@ -310,7 +328,11 @@ END_UI_THREAD_PROTECTED_VALUE(opened)
 	// false to delay for some other action
 	if ([self _handleOpen:args])
 	{
-		TiAnimation *animation = [TiAnimation animationFromArg:args context:[self pageContext] create:NO];
+		TiAnimation *animation = nil;
+		if (!modalFlag)
+		{
+			animation = [TiAnimation animationFromArg:args context:[self pageContext] create:NO];
+		}
 		if (animation!=nil)
 		{
 			if (rootViewAttached)
@@ -325,16 +347,16 @@ END_UI_THREAD_PROTECTED_VALUE(opened)
 			animation.delegate = self;
 			[animation animate:self];
 		}
-		if (fullscreen)
+		if (fullscreenFlag)
 		{
-			fullscreen = YES;
+			fullscreenFlag = YES;
 			restoreFullscreen = [UIApplication sharedApplication].statusBarHidden;
 			[[UIApplication sharedApplication] setStatusBarHidden:YES];
 			[self view].frame = [[[TiApp app] controller] resizeView];
 		}
-		else if (modal)
+		else if (modalFlag)
 		{
-			modal = YES;
+			modalFlag = YES;
 			attached = YES;
 			TiWindowViewController *wc = [[[TiWindowViewController alloc] initWithWindow:self] autorelease];
 			UINavigationController *nc = nil;
@@ -396,6 +418,30 @@ END_UI_THREAD_PROTECTED_VALUE(opened)
 	}
 }
 
+// We can't open properly in nav views since they handle all of the view
+// goofiness, and need to perform the prepatory steps that open: usually does.
+-(void)prepareForNavView:(UINavigationController*)navController_
+{
+	ENSURE_UI_THREAD(prepareForNavView, navController_);
+	
+	if (opened) {
+		return;
+	}
+	
+	if (!opening) {
+		opening = YES;
+	}
+	
+	self.navController = navController_;
+	navWindow = YES;
+	[self view];
+	[self setupWindowDecorations];
+	if ([self _handleOpen:nil])
+	{
+		[self windowReady];
+	}
+}
+
 -(void)removeTempController:(id)sender
 {
 	//TEMP hack until split view is fixed
@@ -436,7 +482,7 @@ END_UI_THREAD_PROTECTED_VALUE(opened)
 		
 		[[[TiApp app] controller] windowClosed:vc];
 
-		if (modal)
+		if (modalFlag)
 		{
 			BOOL animated = args!=nil && [args isKindOfClass:[NSDictionary class]] ? [TiUtils boolValue:@"animated" properties:[args objectAtIndex:0] def:YES] : YES;
 			[[TiApp app] hideModalController:vc animated:animated];
@@ -445,7 +491,7 @@ END_UI_THREAD_PROTECTED_VALUE(opened)
 				// if animated, we don't want to immediately remove our view but instead need
 				// to wait until the modal dialog is dismissed before we remove our view 
 				// otherwise, you'll see the view popup as the window is lowering
-				modal = NO;
+				modalFlag = NO;
 				[self performSelector:@selector(close:) withObject:nil afterDelay:0.3];
 				return;
 			}
@@ -466,22 +512,24 @@ END_UI_THREAD_PROTECTED_VALUE(opened)
 	
 	// notify our child that his window is closing
 	[self lockChildrenForReading];
-		for (TiViewProxy *child in self.children)
-		{
-			[child windowWillClose];
-		}
+	for (TiViewProxy *child in self.children)
+	{
+		[child windowWillClose];
+	}
 	[self unlockChildren];
 
 	if ([self _handleClose:args])
 	{
 		TiAnimation *animation = [TiAnimation animationFromArg:args context:[self pageContext] create:NO];
+		BOOL animated = animation==nil && args!=nil && [args count]>0 ? [TiUtils boolValue:@"animated" properties:[args objectAtIndex:0] def:YES] : YES;
+
 		if (animation!=nil)
 		{
 			if ([animation isTransitionAnimation])
 			{
 				UIView *rootView = [[TiApp app] controller].view;
 				transitionAnimation = [[animation transition] intValue];
-				splashTransitionAnimation = [[rootView subviews] count]<=1 && modal==NO;
+				splashTransitionAnimation = [[rootView subviews] count]<=1 && modalFlag==NO;
 				if (splashTransitionAnimation)
 				{
 					[[TiApp app] attachSplash];
@@ -509,16 +557,21 @@ END_UI_THREAD_PROTECTED_VALUE(opened)
 			[animation animate:self];
 		}
 		
-		if (fullscreen)
+		if (fullscreenFlag)
 		{
 			[[UIApplication sharedApplication] setStatusBarHidden:restoreFullscreen];
 			self.view.frame = [[[TiApp app] controller] resizeView];
 		}
 		
-		if (animation==nil)
+		if (([self _isChildOfTab] && animated) || animation!=nil)
+		{
+			[self performSelector:@selector(windowClosed) withObject:nil afterDelay:0.8];
+		}
+		else 
 		{
 			[self windowClosed];
 		}
+
 	}	 
 }
 
@@ -569,7 +622,7 @@ END_UI_THREAD_PROTECTED_VALUE(opened)
 	}
 #endif
 
-	[self fireEvent: newFocused?@"focus":@"blur" ];
+	[self fireEvent:newFocused?@"focus":@"blur" withObject:nil propagate:NO];
 	focused = newFocused;
 }
 

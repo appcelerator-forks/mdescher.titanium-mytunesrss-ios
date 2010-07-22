@@ -11,6 +11,7 @@
 #import "TiDatabaseResultSetProxy.h"
 #import "TiDatabaseProxy.h"
 #import "TiUtils.h"
+#import "TiBlob.h"
 
 @implementation TiDatabaseResultSetProxy
 
@@ -76,7 +77,11 @@
 	ENSURE_SINGLE_ARG(args,NSObject);
 	if (results!=nil)
 	{
-		return [results objectForColumnIndex:[TiUtils intValue:args]];
+		id result = [results objectForColumnIndex:[TiUtils intValue:args]];
+		if ([result isKindOfClass:[NSData class]]) {
+			result = [[[TiBlob alloc] initWithData:result mimetype:@"application/octet-stream"] autorelease];
+		}
+		return result;
 	}
 	return nil;
 }

@@ -17,6 +17,7 @@
 }
 
 +(NSString *)UTCDateForDate:(NSDate*)data;
++(NSDate *)dateForUTCDate:(NSString*)date;
 
 +(NSString *)UTCDate;
 
@@ -128,6 +129,10 @@
 
 +(NSDictionary*)rectToDictionary:(CGRect)rect;
 
++(NSDictionary*)sizeToDictionary:(CGSize)size;
+
++(UIEdgeInsets)contentInsets:(id)value;
+
 +(CGRect)contentFrame:(BOOL)window;
 
 +(CGFloat)sizeValue:(id)value;
@@ -170,6 +175,6 @@
 
 +(BOOL)isIPad;
 
-+(BOOL)isDevice_Pre_3_2;
++(BOOL)isiPhoneOS3_2OrGreater;
 
 @end

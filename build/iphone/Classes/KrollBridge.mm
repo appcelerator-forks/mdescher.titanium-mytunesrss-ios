@@ -14,6 +14,12 @@
 #import "TopTiModule.h"
 #import "TiUtils.h"
 #import "TiApp.h"
+#import "ApplicationMods.h"
+
+#ifdef DEBUGGER_ENABLED
+#import "TiDebuggerContext.h"
+#import "TiDebugger.h"
+#endif
 
 extern BOOL const TI_APPLICATION_ANALYTICS;
 
@@ -62,6 +68,7 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 {
 	RELEASE_TO_NIL(host);
 	RELEASE_TO_NIL(modules);
+	RELEASE_TO_NIL(dynprops);
 	[super dealloc];
 }
 
@@ -73,6 +80,20 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 
 -(id)valueForKey:(NSString *)key
 {
+	// allow dynprops to override built-in modules
+	// in case you want to re-define them
+	if (dynprops!=nil)
+	{
+		id result = [dynprops objectForKey:key];
+		if (result!=nil)
+		{
+			if (result == [NSNull null])
+			{
+				return nil;
+			}
+			return result;
+		}
+	}
 	id module = [modules objectForKey:key];
 	if (module!=nil)
 	{
@@ -89,7 +110,30 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 
 -(void)setValue:(id)value forKey:(NSString *)key
 {
-	// can't delete at the MyTunesRSS level so no-op
+	if (dynprops==nil)
+	{
+		dynprops = [[NSMutableDictionary dictionary] retain];
+	}
+	if (value == nil)
+	{
+		value = [NSNull null];
+	}
+	[dynprops setValue:value forKey:key];
+}
+
+- (id) valueForUndefinedKey: (NSString *) key
+{
+	if ([key isEqualToString:@"toString"] || [key isEqualToString:@"valueOf"])
+	{
+		return [self description];
+	}
+	if (dynprops != nil)
+	{
+		return [dynprops objectForKey:key];
+	}
+	//NOTE: we need to return nil here since in JS you can ask for properties
+	//that don't exist and it should return undefined, not an exception
+	return nil;
 }
 
 -(KrollObject*)addModule:(NSString*)name module:(TiModule*)module
@@ -103,6 +147,7 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 {
 	return [modules objectForKey:name];
 }
+
 @end
 
 
@@ -185,6 +230,7 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	RELEASE_TO_NIL(preload);
 	RELEASE_TO_NIL(context);
 	RELEASE_TO_NIL(_mytunesrss);
+	RELEASE_TO_NIL(modules);
 	[super dealloc];
 }
 
@@ -221,6 +267,12 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	[context evalJS:code];
 }
 
+// NOTE: this must only be called on the JS thread or an exception will be raised
+- (id)evalJSAndWait:(NSString*)code
+{
+	return [context evalJSAndWait:code];
+}
+
 - (void)scriptError:(NSString*)message
 {
 	[[TiApp app] showModalError:message];
@@ -232,14 +284,14 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	TiValueRef exception = NULL;
 	
 	TiContextRef jsContext = [context_ context];
-	 
+	
 	NSURL *url_ = [path hasPrefix:@"file:"] ? [NSURL URLWithString:path] : [NSURL fileURLWithPath:path];
 	
 	if (![path hasPrefix:@"/"] && ![path hasPrefix:@"file:"])
 	{
 		url_ = [NSURL URLWithString:path relativeToURL:url];
 	}
-
+	
 	NSString *jcode = nil;
 	
 	if ([url_ isFileURL])
@@ -258,7 +310,7 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	{
 		jcode = [NSString stringWithContentsOfURL:url_ encoding:NSUTF8StringEncoding error:&error];
 	}
-
+	
 	if (error!=nil)
 	{
 		NSLog(@"[ERROR] error loading path: %@, %@",path,error);
@@ -274,13 +326,12 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 		}
 		return;
 	}
-
-	NSMutableString *code = [[NSMutableString alloc] init];
-	[code appendString:jcode];
-
-	TiStringRef jsCode = TiStringCreateWithUTF8CString([code UTF8String]);
-	TiStringRef jsURL = TiStringCreateWithUTF8CString([[url_ absoluteString] UTF8String]);
-
+	
+	const char *urlCString = [[url_ absoluteString] UTF8String];
+	
+	TiStringRef jsCode = TiStringCreateWithUTF8CString([jcode UTF8String]);
+	TiStringRef jsURL = TiStringCreateWithUTF8CString(urlCString);
+	
 	// validate script
 	// TODO: we do not need to do this in production app
 	if (!TiCheckScriptSyntax(jsContext,jsCode,jsURL,1,&exception))
@@ -293,8 +344,22 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	// only continue if we don't have any exceptions from above
 	if (exception == NULL)
 	{
+#ifdef DEBUGGER_ENABLED
+		Ti::TiDebuggerContext* debugger = static_cast<Ti::TiDebuggerContext*>([context_ debugger]);
+		if (debugger!=NULL)
+		{
+			debugger->beginScriptEval(urlCString);
+		}
+#endif
+		
 		TiEvalScript(jsContext, jsCode, NULL, jsURL, 1, &exception);
 		
+#ifdef DEBUGGER_ENABLED		
+		if (debugger!=NULL)
+		{
+			debugger->endScriptEval();
+		}
+#endif		
 		if (exception!=NULL)
 		{
 			id excm = [KrollObject toID:context value:exception];
@@ -302,8 +367,7 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 			[self scriptError:[TiUtils exceptionMessage:excm]];
 		}
 	}
-
-	[code release];
+	
 	TiStringRelease(jsCode);
 	TiStringRelease(jsURL);
 }
@@ -328,7 +392,7 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	{
 		NSLog(@"[ERROR] listener callback is of a non-supported type: %@",[listener class]);
 	}
-
+	
 }
 
 -(void)injectPatches
@@ -376,9 +440,10 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	// create MyTunesRSS global object
 	NSString *basePath = (url==nil) ? [[NSBundle mainBundle] resourcePath] : [[url path] stringByDeletingLastPathComponent];
 	_mytunesrss = [[MyTunesRSSObject alloc] initWithContext:kroll host:host context:self baseURL:[NSURL fileURLWithPath:basePath]];
+	
 	TiContextRef jsContext = [kroll context];
 	TiValueRef tiRef = [KrollObject toValue:kroll value:_mytunesrss];
-
+	
 	NSString *_mytunesrssNS = [NSString stringWithFormat:@"T%sanium","it"];
 	TiStringRef prop = TiStringCreateWithUTF8CString([_mytunesrssNS UTF8String]);
 	TiStringRef prop2 = TiStringCreateWithUTF8CString([[NSString stringWithFormat:@"%si","T"] UTF8String]);
@@ -387,17 +452,6 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	TiObjectSetProperty(jsContext, globalRef, prop2, tiRef, NULL, NULL);
 	TiStringRelease(prop);
 	TiStringRelease(prop2);	
-	
-	// this is so that the compiled namespace will also get compiled in and linked
-	// during compile this will be replaced with the project name and won't match above
-	// but in xcode (not the project version) it'll be the same and we can ignore
-	NSString *compiledNS = @"MyTunesRSS";
-	if (![compiledNS isEqualToString:_mytunesrssNS])
-	{
-		TiStringRef prop3 = TiStringCreateWithUTF8CString([compiledNS UTF8String]);
-		TiObjectSetProperty(jsContext, globalRef, prop3, tiRef, NULL, NULL);
-		TiStringRelease(prop3);	
-	}
 	
 	//if we have a preload dictionary, register those static key/values into our UI namespace
 	//in the future we may support another top-level module but for now UI is only needed
@@ -441,6 +495,7 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	RELEASE_TO_NIL(_mytunesrss);
 	RELEASE_TO_NIL(context);
 	RELEASE_TO_NIL(preload);
+	RELEASE_TO_NIL(modules);
 }
 
 - (void)registerProxy:(id)proxy 
@@ -467,5 +522,113 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	}
 }
 
+-(id)loadCommonJSModule:(NSString*)code withPath:(NSString*)path
+{
+	NSMutableString *js = [NSMutableString string];
+	
+	[js appendString:@"(function(exports){"];
+	[js appendString:code];
+	[js appendString:@"return exports;"];
+	[js appendString:@"})({})"];
+	
+	NSDictionary *result = [self evalJSAndWait:js];
+	TiProxy *proxy = [[TiProxy alloc] _initWithPageContext:self];
+	for (id key in result)
+	{
+		[proxy setValue:[result objectForKey:key] forUndefinedKey:key];
+	}
+	
+	// register it
+	[modules setObject:proxy forKey:path];
+	
+	return [proxy autorelease];
+}
+
+-(NSString*)pathToModuleClassName:(NSString*)path
+{
+	//TODO: switch to use ApplicationMods
+	
+	NSArray *tokens = [path componentsSeparatedByString:@"."];
+	NSMutableString *modulename = [NSMutableString string];
+	for (NSString *token in tokens)
+	{
+		[modulename appendFormat:@"%@%@",[[token substringToIndex:1] uppercaseString],[token substringFromIndex:1]];
+	}
+	[modulename appendString:@"Module"];
+	return modulename;
+}
+
+-(id)require:(KrollContext*)kroll path:(NSString*)path
+{
+	TiModule* module = nil;
+	NSData *data = nil;
+	NSString *filepath = nil;
+	
+	// first check to see if we've already loaded the module
+	// and if so, return it
+	if (modules!=nil)
+	{
+		module = [modules objectForKey:path];
+		if (module!=nil)
+		{
+			return module;
+		}
+	}
+	
+	// now see if this is a plus module that we need to dynamically
+	// load and create
+	NSString *moduleClassName = [self pathToModuleClassName:path];
+	id moduleClass = NSClassFromString(moduleClassName);
+	if (moduleClass!=nil)
+	{
+		module = [[moduleClass alloc] _initWithPageContext:self];
+		// we might have a module that's simply a JS native module wrapper
+		// in which case we simply load it and don't register our native module
+		if ([module isJSModule])
+		{
+			data = [module moduleJS];
+		}
+		else
+		{
+			[module setHost:host];
+			[module _setName:moduleClassName];
+			// register it
+			[modules setObject:module forKey:path];
+		}
+		[module release];
+	}
+	
+	if (data==nil)
+	{
+		filepath = [NSString stringWithFormat:@"%@.js",path];
+		NSURL *url_ = [TiHost resourceBasedURL:filepath baseURL:NULL];
+		data = [TiUtils loadAppResource:url_];
+		if (data==nil)
+		{
+			data = [NSData dataWithContentsOfURL:url_];
+		}
+	}
+	
+	// we found data, now create the common js module proxy
+	if (data!=nil)
+	{
+		module = [self loadCommonJSModule:[[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding] autorelease] withPath:path];
+		if (filepath!=nil)
+		{
+			// uri is optional but we point it to where we loaded it
+			[module replaceValue:[NSString stringWithFormat:@"app://%@",filepath] forKey:@"uri" notification:NO];
+		}
+	}
+	
+	if (module!=nil)
+	{
+		// spec says you must have a read-only id property - we don't
+		// currently support readonly in kroll so this is probably OK for now
+		[module replaceValue:path forKey:@"id" notification:NO];
+		return module;
+	}
+	
+	@throw [NSException exceptionWithName:@"org.mytunesrss.kroll" reason:[NSString stringWithFormat:@"Couldn't find module: %@",path] userInfo:nil];
+}
 
 @end

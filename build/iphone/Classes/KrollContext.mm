@@ -13,6 +13,11 @@
 #import "KrollCallback.h"
 #import "TiUtils.h"
 
+#ifdef DEBUGGER_ENABLED
+	#import "TiDebuggerContext.h"
+	#import "TiDebugger.h"
+#endif
+
 static unsigned short KrollContextIdCounter = 0;
 static unsigned short KrollContextCount = 0;
 
@@ -143,6 +148,28 @@ static TiValueRef SetTimeoutCallback (TiContextRef jsContext, TiObjectRef jsFunc
 	return MakeTimer(jsContext, jsFunction, fnRef, jsThis, durationRef, YES);
 }
 
+static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef jsFunction, TiObjectRef jsThis, size_t argCount,
+									  const TiValueRef args[], TiValueRef* exception)
+{
+	if (argCount!=1)
+	{
+		return ThrowException(jsContext, @"invalid number of arguments", exception);
+	}
+	
+	KrollContext *ctx = GetKrollContext(jsContext);
+	id path = [KrollObject toID:ctx value:args[0]];
+	@try 
+	{
+		id result = [ctx.delegate require:ctx path:path];
+		return [KrollObject toValue:ctx value:result];
+	}
+	@catch (NSException * e) 
+	{
+		return ThrowException(jsContext, [e reason], exception);
+	}
+}	
+
+
 @implementation KrollEval
 
 -(id)initWithCode:(NSString*)code_
@@ -158,9 +185,9 @@ static TiValueRef SetTimeoutCallback (TiContextRef jsContext, TiObjectRef jsFunc
 	[code release];
 	[super dealloc];
 }
+
 -(void)invoke:(KrollContext*)context
 {
-	// evaluate our code in the Global Context
 	TiStringRef js = TiStringCreateWithUTF8CString([code UTF8String]); 
 	TiObjectRef global = TiContextGetGlobalObject([context context]);
 	
@@ -176,6 +203,29 @@ static TiValueRef SetTimeoutCallback (TiContextRef jsContext, TiObjectRef jsFunc
 	}
 	
 	TiStringRelease(js);
+}
+
+-(id)invokeWithResult:(KrollContext*)context
+{
+	TiStringRef js = TiStringCreateWithUTF8CString([code UTF8String]); 
+	TiObjectRef global = TiContextGetGlobalObject([context context]);
+	
+	TiValueRef exception = NULL;
+	
+	TiValueRef result = TiEvalScript([context context], js, global, NULL, 1, &exception);
+	
+	if (exception!=NULL)
+	{
+		id excm = [KrollObject toID:context value:exception];
+		NSLog(@"[ERROR] Script Error = %@",[TiUtils exceptionMessage:excm]);
+		fflush(stderr);
+		TiStringRelease(js);
+		throw excm;
+	}
+	
+	TiStringRelease(js);
+	
+	return [KrollObject toID:context value:result];
 }
 
 @end
@@ -344,6 +394,16 @@ static TiValueRef SetTimeoutCallback (TiContextRef jsContext, TiObjectRef jsFunc
 	{
 		[condition lock];
 		stopped = YES;
+#ifdef DEBUGGER_ENABLED
+		if (debugger!=NULL)
+		{
+			TiObjectRef globalRef = TiContextGetGlobalObject(context);
+			static_cast<Ti::TiDebuggerContext*>(debugger)->detach((TI::TiGlobalObject*)globalRef);
+			[[TiDebugger sharedDebugger] detach:self];
+			delete static_cast<Ti::TiDebuggerContext*>(debugger);
+			debugger = NULL;
+		}
+#endif
 		[condition signal];
 		[condition unlock];
 	}
@@ -402,11 +462,22 @@ static TiValueRef SetTimeoutCallback (TiContextRef jsContext, TiObjectRef jsFunc
 {
 	KrollEval *eval = [[[KrollEval alloc] initWithCode:code] autorelease];
 	if ([self isKJSThread])
-	{
+	{	
 		[eval invoke:self];
 		return;
 	}
 	[self enqueue:eval];
+}
+
+-(id)evalJSAndWait:(NSString*)code
+{
+	if (![self isKJSThread])
+	{
+		NSLog(@"[ERROR] attempted to evaluate JS and not on correct Thread! Aborting!");
+		@throw @"Invalid Thread Access";
+	}
+	KrollEval *eval = [[[KrollEval alloc] initWithCode:code] autorelease];
+	return [eval invokeWithResult:self];
 }
 
 -(void)invokeOnThread:(id)callback_ method:(SEL)method_ withObject:(id)obj condition:(NSCondition*)condition_
@@ -457,6 +528,14 @@ static TiValueRef SetTimeoutCallback (TiContextRef jsContext, TiObjectRef jsFunc
 {
 	// don't worry about locking, not that important
 	gcrequest = YES;
+	
+	// signal the waiting thread to wake up - since this
+	// is called on a possible low memory condition, we 
+	// need to immediately force the thread to wake up
+	// and collect garbage asap
+	[condition lock];
+	[condition signal];
+	[condition unlock];
 }
 
 -(void)main
@@ -468,6 +547,12 @@ static TiValueRef SetTimeoutCallback (TiContextRef jsContext, TiObjectRef jsFunc
 	TiObjectRef globalRef = TiContextGetGlobalObject(context);
 		
 	TiGlobalContextRetain(context);
+
+#ifdef DEBUGGER_ENABLED
+	debugger = new Ti::TiDebuggerContext(self);
+	[[TiDebugger sharedDebugger] attach:self];
+	static_cast<Ti::TiDebuggerContext*>(debugger)->attach((TI::TiGlobalObject*)globalRef);
+#endif
 	
 	// we register an empty kroll string that allows us to pluck out this instance
 	KrollObject *kroll = [[KrollObject alloc] initWithTarget:nil context:self];
@@ -483,7 +568,8 @@ static TiValueRef SetTimeoutCallback (TiContextRef jsContext, TiObjectRef jsFunc
 	[self bindCallback:@"setInterval" callback:&SetIntervalCallback];
 	[self bindCallback:@"clearTimeout" callback:&ClearTimerCallback];
 	[self bindCallback:@"clearInterval" callback:&ClearTimerCallback];
-
+	[self bindCallback:@"require" callback:&CommonJSRequireCallback];
+	
 	if (delegate!=nil && [delegate respondsToSelector:@selector(willStartNewContext:)])
 	{
 		[delegate performSelector:@selector(willStartNewContext:) withObject:self];
@@ -618,7 +704,9 @@ static TiValueRef SetTimeoutCallback (TiContextRef jsContext, TiObjectRef jsFunc
 		[lock unlock];
 		if (queue_count == 0)
 		{
-			[condition wait];		
+			// wait only 10 seconds and then loop, this will allow us to garbage
+			// collect every so often
+			[condition waitUntilDate:[NSDate dateWithTimeIntervalSinceNow:10]];		
 		}
 		[condition unlock]; 
 		
@@ -667,5 +755,12 @@ static TiValueRef SetTimeoutCallback (TiContextRef jsContext, TiObjectRef jsFunc
 	[kroll autorelease];
 	[pool release];
 }
+
+#ifdef DEBUGGER_ENABLED
+-(void*)debugger
+{
+	return debugger;
+}
+#endif
 
 @end

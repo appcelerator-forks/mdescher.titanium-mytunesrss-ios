@@ -14,35 +14,40 @@
 #import <AddressBookUI/AddressBookUI.h>
 
 #import "KrollCallback.h"
-
+#import "TiContactsPerson.h"
 
 @interface ContactsModule : TiModule<ABPeoplePickerNavigationControllerDelegate> {
 @private
 	ABAddressBookRef addressBook;
-	ABPeoplePickerNavigationController *picker;
-	BOOL pickerAnimated;
-	KrollCallback *pickerSuccessCallback;
-	KrollCallback *pickerCancelCallback;
-	KrollCallback *pickerErrorCallback;
-	NSMutableArray *pickerFields;
+	ABPeoplePickerNavigationController* picker;
+	
+	BOOL animated;
+	KrollCallback* cancelCallback;
+	KrollCallback* selectedPersonCallback;
+	KrollCallback* selectedPropertyCallback;
+	
+	// Everything has to happen on the main thread for memory access reasons, so
+	// for functions which return a value we need a cache.
+	NSMutableDictionary* returnCache;
 }
 
-@property(nonatomic,readonly) NSString *ADDRESS_STREET_1;
-@property(nonatomic,readonly) NSString *ADDRESS_STREET_2;
-@property(nonatomic,readonly) NSString *ADDRESS_CITY;
-@property(nonatomic,readonly) NSString *ADDRESS_STATE;
-@property(nonatomic,readonly) NSString *ADDRESS_PROVINCE;
-@property(nonatomic,readonly) NSString *ADDRESS_SECONDARY_REGION;
-@property(nonatomic,readonly) NSString *ADDRESS_ZIP;
-@property(nonatomic,readonly) NSString *ADDRESS_POSTAL_CODE;
-@property(nonatomic,readonly) NSString *ADDRESS_COUNTRY;
-@property(nonatomic,readonly) NSString *ADDRESS_COUNTRY_CODE;
+-(ABAddressBookRef)addressBook;
 
--(id)saveContact:(id)arg;
--(id)removeContact:(id)arg;
+-(void)save:(id)unusued;
+-(void)revert:(id)unused;
+-(void)showContacts:(id)args;
+-(TiContactsPerson*)getPersonByID:(id)arg;
+-(NSArray*)getPeopleWithName:(id)arg;
+-(NSArray*)getAllPeople:(id)unused;
+-(TiContactsPerson*)createPerson:(id)arg;
+-(void)removePerson:(id)arg;
 
-#pragma mark Framework
--(ABRecordRef)recordForId:(ABRecordID)rec;
+@property (nonatomic,readonly) NSNumber* CONTACTS_KIND_PERSON;
+@property (nonatomic,readonly) NSNumber* CONTACTS_KIND_ORGANIZATION;
+
+@property (nonatomic,readonly) NSNumber* CONTACTS_SORT_FIRST_NAME;
+@property (nonatomic,readonly) NSNumber* CONTACTS_SORT_LAST_NAME;
+
 
 @end
 

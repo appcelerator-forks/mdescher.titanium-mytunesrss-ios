@@ -28,30 +28,24 @@ extern NSString * const TI_APPLICATION_RESOURCE_DIR;
 
 @implementation TiUtils
 
-+(BOOL)isDevice_Pre_3_2
++(BOOL)isiPhoneOS3_2OrGreater
 {
-	static BOOL checked = NO;
-	static BOOL is_pre_3_2 = NO;
-	
-	if (checked==NO)
-	{
-		NSString *version = [UIDevice currentDevice].systemVersion;
-		NSArray *tokens = [version componentsSeparatedByString:@"."];
-		NSInteger major = [TiUtils intValue:[tokens objectAtIndex:0]];
-		NSInteger minor = [TiUtils intValue:[tokens objectAtIndex:1]];
-		is_pre_3_2 = (major==3 && minor < 2);
-		checked = YES;
-	}
-	return is_pre_3_2;
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_3_2
+	// Here's a cheap way to test for 3.2; does it respond to a selector that was introduced with that version?
+	return [[UIApplication sharedApplication] respondsToSelector:@selector(setStatusBarHidden:withAnimation:)];
+#else
+	return NO;
+#endif
 }
 
 +(BOOL)isIPad
 {
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_3_2
-	return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
-#else
-	return NO;
+	if ([TiUtils isiPhoneOS3_2OrGreater]) {
+		return UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad;
+	}
 #endif
+	return NO;
 }
 
 +(void)queueAnalytics:(NSString*)type name:(NSString*)name data:(NSDictionary*)data
@@ -78,6 +72,20 @@ extern NSString * const TI_APPLICATION_RESOURCE_DIR;
 	//Example UTC full format: 2009-06-15T21:46:28.685+0000
 	[dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'.'SSS+0000"];
 	return [dateFormatter stringFromDate:data];
+}
+
++(NSDate *)dateForUTCDate:(NSString*)date
+{
+	NSDateFormatter *dateFormatter = [[[NSDateFormatter alloc] init] autorelease];
+	NSTimeZone* timeZone = [NSTimeZone timeZoneWithName:@"UTC"];
+	[dateFormatter setTimeZone:timeZone];
+	
+	NSLocale* USLocale = [[NSLocale alloc] initWithLocaleIdentifier:@"en_US"];
+	[dateFormatter setLocale:USLocale];
+	[USLocale release];
+	
+	[dateFormatter setDateFormat:@"yyyy-MM-dd'T'HH:mm:ss'.'SSS+0000"];
+	return [dateFormatter dateFromString:date];
 }
 
 +(NSString *)UTCDate
@@ -181,6 +189,20 @@ extern NSString * const TI_APPLICATION_RESOURCE_DIR;
 		return [value doubleValue];
 	}
 	return 0;
+}
+
++(UIEdgeInsets)contentInsets:(id)value
+{
+	if ([value isKindOfClass:[NSDictionary class]])
+	{
+		NSDictionary *dict = (NSDictionary*)value;
+		CGFloat t = [TiUtils floatValue:@"top" properties:dict def:0];
+		CGFloat l = [TiUtils floatValue:@"left" properties:dict def:0];
+		CGFloat b = [TiUtils floatValue:@"bottom" properties:dict def:0];
+		CGFloat r = [TiUtils floatValue:@"right" properties:dict def:0];
+		return UIEdgeInsetsMake(t, l, b, r);
+	}
+	return UIEdgeInsetsMake(0,0,0,0);
 }
 
 +(CGRect)rectValue:(id)value
@@ -677,6 +699,14 @@ extern NSString * const TI_APPLICATION_RESOURCE_DIR;
 			nil];
 }
 
++(NSDictionary*)sizeToDictionary:(CGSize)size
+{
+	return [NSDictionary dictionaryWithObjectsAndKeys:
+			[NSNumber numberWithDouble:size.width],@"width",
+			[NSNumber numberWithDouble:size.height],@"height",
+			nil];
+}
+
 +(CGRect)contentFrame:(BOOL)window
 {
 	double height = 0;
@@ -967,7 +997,9 @@ extern NSString * const TI_APPLICATION_RESOURCE_DIR;
 +(UIColor *)barColorForColor:(TiColor *)color
 {
 	UIColor * result = [color _color];
-	if ((result == [UIColor clearColor]) || (result == [UIColor blackColor]))
+	// TODO: Return nil for the appropriate colors once Apple fixes how the 'cancel' button
+	// is displayed on nil-color bars.
+	if ((result == [UIColor clearColor]))
 	{
 		return nil;
 	}
@@ -977,7 +1009,9 @@ extern NSString * const TI_APPLICATION_RESOURCE_DIR;
 +(UIBarStyle)barStyleForColor:(TiColor *)color
 {
 	UIColor * result = [color _color];
-	if ((result == [UIColor clearColor]) || (result == [UIColor blackColor]))
+	// TODO: Return UIBarStyleBlack for the appropriate colors once Apple fixes how the 'cancel' button
+	// is displayed on nil-color bars.
+	if ((result == [UIColor clearColor]))
 	{
 		return UIBarStyleBlack;
 	}

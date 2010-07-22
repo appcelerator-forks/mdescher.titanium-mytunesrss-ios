@@ -307,5 +307,14 @@
 	return nil;
 }
 
+-(id)toString:(id)args
+{
+	id t = [self text];
+	if (t!=nil)
+	{
+		return t;
+	}
+	return [super toString:args];
+}
 
 @end

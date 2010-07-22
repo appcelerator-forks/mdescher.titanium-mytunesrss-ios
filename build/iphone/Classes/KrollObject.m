@@ -340,7 +340,17 @@ void KrollFinalizer(TiObjectRef ref)
 	o = nil;
 }
 
-
+bool KrollDeleteProperty(TiContextRef ctx, TiObjectRef object, TiStringRef propertyName, TiValueRef* exception)
+{
+	KrollObject* o = (KrollObject*) TiObjectGetPrivate(object);
+	if ([o isKindOfClass:[KrollObject class]])
+	{
+		NSString* name = (NSString*)TiStringCopyCFString(kCFAllocatorDefault, propertyName);
+		[o deleteKey:name];
+		[name release];
+	}
+	return true;
+}
 
 //
 // callback for handling creation (in JS land)
@@ -359,6 +369,10 @@ void KrollInitializer(TiContextRef ctx, TiObjectRef object)
 	{
 		[o retain];
 	}
+	else {
+		NSLog(@"[DEBUG] initializer for %@",[o class]);
+	}
+
 }
 
 //
@@ -422,6 +436,7 @@ bool KrollSetProperty(TiContextRef jsContext, TiObjectRef object, TiStringRef pr
 			classDef.finalize = KrollFinalizer;
 			classDef.setProperty = KrollSetProperty;
 			classDef.getProperty = KrollGetProperty;
+			classDef.deleteProperty = KrollDeleteProperty;
 			KrollObjectClassRef = TiClassCreate(&classDef);
 		}
 	}
@@ -594,7 +609,7 @@ bool KrollSetProperty(TiContextRef jsContext, TiObjectRef object, TiStringRef pr
 		{
 			if ([key isEqualToString:@"toString"] || [key isEqualToString:@"valueOf"])
 			{
-				return [[[KrollMethod alloc] initWithTarget:target selector:@selector(description) argcount:0 type:KrollMethodInvoke name:nil context:[self context]] autorelease];
+				return [[[KrollMethod alloc] initWithTarget:target selector:@selector(toString:) argcount:0 type:KrollMethodInvoke name:nil context:[self context]] autorelease];
 			}
 			
 			SEL selector = NSSelectorFromString([NSString stringWithFormat:@"%@:",key]);
@@ -730,6 +745,10 @@ bool KrollSetProperty(TiContextRef jsContext, TiObjectRef object, TiStringRef pr
 	}
 }
 
+-(void)deleteKey:(NSString*)key
+{
+	[target deleteKey:key];
+}
 
 -(void)setValue:(id)value forKey:(NSString *)key
 {

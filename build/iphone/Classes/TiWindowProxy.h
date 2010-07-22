@@ -27,9 +27,10 @@
 @protected
 	BOOL opened;
 	BOOL focused;
-	BOOL fullscreen;
-	BOOL modal;
+	BOOL fullscreenFlag;
+	BOOL modalFlag;
 	BOOL restoreFullscreen;
+	BOOL navWindow;
 	TiViewProxy<TiTab> *tab;
 	UIViewController *controller;
 	UINavigationController *navController;
@@ -61,6 +62,7 @@
 -(BOOL)handleFocusEvents;
 -(BOOL)_isChildOfTab;
 -(void)_associateTab:(UIViewController*)controller_ navBar:(UINavigationController*)navbar_ tab:(TiProxy<TiTab>*)tab_;
+-(void)prepareForNavView:(UINavigationController*)navController_;
 
 @property(nonatomic,readwrite,retain)	UIViewController *controller;
 @property(nonatomic,readwrite,retain)	UINavigationController *navController;

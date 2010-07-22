@@ -79,6 +79,7 @@
 	return;
 }
 
+// FIXME: This isn't quite true.  But the brilliant soluton wasn't so brilliant, because it screwed with layout in unpredictable ways.
 //	Sadly, there was a brilliant solution for fixing the blurring here, but it turns out there's a 
 //	quicker fix: Make sure the label itself has an even height and width. Everything else is irrelevant.
 -(void)setCenter:(CGPoint)newCenter
@@ -90,6 +91,7 @@
 -(void)frameSizeChanged:(CGRect)frame bounds:(CGRect)bounds
 {
 	[label setFrame:bounds];
+	[backgroundView setFrame:bounds];
 	initialLabelFrame = [label frame];
     
     repad = YES;

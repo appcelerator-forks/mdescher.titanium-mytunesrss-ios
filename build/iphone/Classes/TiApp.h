@@ -20,7 +20,8 @@
 {
 	UIWindow *window;
 	UIImageView *loadView;
-	BOOL splashDone;
+	BOOL splashAttached;
+	BOOL loaded;
 	
 	KrollBridge *kjsBridge;
 
@@ -34,7 +35,8 @@
 	NSLock *networkActivity;
 	int networkActivityCount;
 	
-	TiRootViewController *controller;
+	// TODO: Create a specialized SplitView controller if necessary
+	UIViewController<TiRootController> *controller;
 	NSString *userAgent;
 	NSString *remoteDeviceUUID;
 	
@@ -48,12 +50,14 @@
 @property (nonatomic, retain) IBOutlet UIWindow *window;
 @property (nonatomic, assign) id remoteNotificationDelegate;
 @property (nonatomic, readonly) NSDictionary* remoteNotification;
+@property (nonatomic, retain) UIViewController<TiRootController>* controller;
 
 +(TiApp*)app;
 
 -(BOOL)isSplashVisible;
 -(void)hideSplash:(id)event;
 -(UIView*)splash;
+-(void)loadSplash;
 -(UIView*)attachSplash;
 -(NSDictionary*)launchOptions;
 -(NSString*)remoteDeviceUUID;
@@ -61,7 +65,6 @@
 -(void)startNetwork;
 -(void)stopNetwork;
 
--(TiRootViewController*)controller;
 -(void)showModalError:(NSString*)message;
 
 -(void)showModalController:(UIViewController*)controller animated:(BOOL)animated;
@@ -71,6 +74,8 @@
 -(NSString*)sessionId;
 
 -(BOOL)isKeyboardShowing;
+
+-(KrollBridge*)krollBridge;
 
 @end
 

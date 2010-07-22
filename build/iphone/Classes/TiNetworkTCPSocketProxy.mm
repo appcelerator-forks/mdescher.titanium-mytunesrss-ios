@@ -53,7 +53,7 @@ const CFOptionFlags writeStreamEventFlags =
 
 #pragma mark Macros
 
-#define VALID (socket!=NULL) && [[self isValid:nil] boolValue]
+#define VALID (socket!=NULL) && [[self isValid] boolValue]
 
 #pragma mark Private
 
@@ -263,7 +263,7 @@ const CFOptionFlags writeStreamEventFlags =
     // based on sockets, according to the CFReadStream it comes from.
     
     // NOTE: Without sentenels, this could result in some weird behavior (for example, if two images are transmitted back-to-back with no break).
-    NSMutableData* data = [[[NSMutableData init] alloc] autorelease];
+    NSMutableData* data = [[[NSMutableData alloc] init] autorelease];
     while ([input hasBytesAvailable]) {
         uint8_t* buffer = (uint8_t*)malloc(bufferSize * sizeof(uint8_t));
         NSInteger bytesRead = [input read:buffer maxLength:bufferSize];
@@ -401,7 +401,7 @@ const CFOptionFlags writeStreamEventFlags =
     port = [port_ intValue];
 }
 
--(NSNumber*)isValid:(id)unused
+-(NSNumber*)isValid
 {
     if (socket!=NULL) {
         return [NSNumber numberWithBool:CFSocketIsValid(socket)];
@@ -461,7 +461,7 @@ const CFOptionFlags writeStreamEventFlags =
     
             CFRelease(addressData);
             
-            [self throwException:[NSString stringWithFormat:@"Failed to connect to %@:%d: %d", hostName, port, errno]
+            [self throwException:[NSString stringWithFormat:@"Failed to listen on %@:%d: %d", hostName, port, errno]
                        subreason:nil
                         location:CODELOCATION];
             break;

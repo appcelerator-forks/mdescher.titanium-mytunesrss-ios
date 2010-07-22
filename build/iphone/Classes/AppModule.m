@@ -26,20 +26,8 @@ extern NSString * const TI_APPLICATION_GUID;
 
 @implementation AppModule
 
--(id)init
-{
-	if (self = [super init])
-	{
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationWillResignActive:) name:UIApplicationWillResignActiveNotification object:nil];
-		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(applicationDidBecomeActive:) name:UIApplicationDidBecomeActiveNotification object:nil];
-	}
-	return self;
-}
-
 -(void)dealloc
 {
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationWillResignActiveNotification object:nil];
-	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIApplicationDidBecomeActiveNotification object:nil];
 	[appListeners removeAllObjects];
 	RELEASE_TO_NIL(appListeners);
 	RELEASE_TO_NIL(properties);
@@ -114,7 +102,7 @@ extern NSString * const TI_APPLICATION_GUID;
 	id type = [args objectAtIndex:0];
 	id obj = [args count] > 1 ? [args objectAtIndex:1] : nil;
 	
-#ifdef DEBUG	
+#ifdef DEBUG
 	NSLog(@"[DEBUG] fire app event: %@ with %@",type,obj);
 #endif
 	
@@ -208,17 +196,42 @@ extern NSString * const TI_APPLICATION_GUID;
 	[super didReceiveMemoryWarning:notification];
 }
 
--(void)shutdown:(id)sender
+-(void)willShutdown:(id)sender;
 {
 	// fire the application close event when shutting down
 	if ([self _hasListeners:@"close"])
 	{
 		[self fireEvent:@"close" withObject:nil];
 	}
-	
+}
+
+-(void)startup
+{
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(willShutdown:) name:kTiWillShutdownNotification object:nil];
+	[super startup];
+}
+
+-(void)shutdown:(id)sender
+{
 	// make sure we force any changes made on shutdown
 	[[NSUserDefaults standardUserDefaults] synchronize];
 	[super shutdown:sender];
+}
+
+-(void)suspend:(id)sender
+{
+	if ([self _hasListeners:@"pause"])
+	{
+		[self fireEvent:@"pause" withObject:nil];
+	}
+}
+
+-(void)resume:(id)sender
+{
+	if ([self _hasListeners:@"resume"])
+	{
+		[self fireEvent:@"resume" withObject:nil];
+	}
 }
 
 #pragma mark Delegate stuff
@@ -302,25 +315,6 @@ extern NSString * const TI_APPLICATION_GUID;
 -(id)guid
 {
 	return TI_APPLICATION_GUID;
-}
-
-
-#pragma mark Delegates
-
--(void)applicationWillResignActive:(NSNotification*)note
-{
-	if ([self _hasListeners:@"pause"])
-	{
-		[self fireEvent:@"pause" withObject:nil];
-	}
-}
-
--(void)applicationDidBecomeActive:(NSNotification*)note
-{
-	if ([self _hasListeners:@"resume"])
-	{
-		[self fireEvent:@"resume" withObject:nil];
-	}
 }
 
 @end

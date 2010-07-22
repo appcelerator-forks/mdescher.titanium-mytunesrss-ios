@@ -7,7 +7,9 @@
  * WARNING: This is generated code. Modify at your own risk and without support.
  */
 #ifdef USE_TI_UITABLEVIEW
+#ifndef USE_TI_UISEARCHBAR
 #define USE_TI_UISEARCHBAR
+#endif
 #endif
 
 #ifdef USE_TI_UISEARCHBAR
@@ -101,6 +103,7 @@
 {
 	TiColor * newBarColor = [TiUtils colorValue:value];
 	UISearchBar *search = [self searchBar];
+	
 	[search setBarStyle:[TiUtils barStyleForColor:newBarColor]];
 	[search setTintColor:[TiUtils barColorForColor:newBarColor]];
 	[search setTranslucent:[TiUtils barTranslucencyForColor:newBarColor]];
@@ -117,7 +120,7 @@
 	//No need to setValue, because it's already been set.
 	if ([self.proxy _hasListeners:@"focus"])
 	{
-		[self.proxy fireEvent:@"focus" withObject:[NSDictionary dictionaryWithObject:text forKey:@"value"]];
+		[self.proxy fireEvent:@"focus" withObject:[NSDictionary dictionaryWithObject:text forKey:@"value"] propagate:NO];
 	}
 	
 	if (delegate!=nil && [delegate respondsToSelector:@selector(searchBarTextDidBeginEditing:)])
@@ -135,7 +138,7 @@
 	//No need to setValue, because it's already been set.
 	if ([self.proxy _hasListeners:@"blur"])
 	{
-		[self.proxy fireEvent:@"blur" withObject:[NSDictionary dictionaryWithObject:text forKey:@"value"]];
+		[self.proxy fireEvent:@"blur" withObject:[NSDictionary dictionaryWithObject:text forKey:@"value"] propagate:NO];
 	}
 
 	if (delegate!=nil && [delegate respondsToSelector:@selector(searchBarTextDidEndEditing:)])

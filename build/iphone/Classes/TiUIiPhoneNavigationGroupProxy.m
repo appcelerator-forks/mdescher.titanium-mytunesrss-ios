@@ -37,12 +37,31 @@
 -(void)close:(NSArray*)args
 {
 	ENSURE_UI_THREAD(close,args);
-	TiWindowProxy *window = [args objectAtIndex:0];
-	ENSURE_TYPE(window,TiWindowProxy);
-	NSDictionary *properties = [args count] > 1 ? [args objectAtIndex:1] : [NSDictionary dictionary];
-	[[self view] performSelector:@selector(close:withObject:) withObject:window withObject:properties];
+	
+	if ([args count]>0)
+	{
+		// we're closing a nav group window
+		
+		TiWindowProxy *window = [args objectAtIndex:0];
+		ENSURE_TYPE(window,TiWindowProxy);
+		NSDictionary *properties = [args count] > 1 ? [args objectAtIndex:1] : [NSDictionary dictionary];
+		[[self view] performSelector:@selector(close:withObject:) withObject:window withObject:properties];
+	}
+	else 
+	{
+		// we're closing the nav group itself
+		[[self view] performSelector:@selector(close)];
+		[self detachView];
+	}
 }
 
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+	if ([self viewAttached])
+	{
+		[(TiUIiPhoneNavigationGroup *)[self view] willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
+	}
+}
 
 @end
 

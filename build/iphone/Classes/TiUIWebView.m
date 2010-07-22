@@ -160,14 +160,14 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 	{
 		path = [path substringFromIndex:1];
 	}
-	return [NSURL URLWithString:[NSString stringWithFormat:@"app://%@/%@",TI_APPLICATION_ID,path]];
+	return [NSURL URLWithString:[[NSString stringWithFormat:@"app://%@/%@",TI_APPLICATION_ID,path] stringByAddingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
 }
 
 -(NSString*)_mytunesrssInjection
 {
 	NSMutableString *html = [[[NSMutableString alloc] init] autorelease];
 	[html appendString:@"<script id='__ti_injection'>"];
-	NSString *ti = [NSString stringWithFormat:@"%@%s",@"Ti","anium"];
+	NSString *ti = [NSString stringWithFormat:@"%@%s",@"Ti","tanium"];
 	[html appendFormat:@"window.%@={};window.Ti=%@;Ti.pageToken=%@;Ti.appId='%@';",ti,ti,pageToken,TI_APPLICATION_ID];
 	[html appendString:kMyTunesRSSJavascript];
 	[html appendString:@"</script>"];
@@ -187,46 +187,45 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 	   textEncodingName:(NSString*)textEncodingName
 	   mimeType:(NSString*)mimeType
 {
-	[self prepareInjection];
-	NSMutableString *html = [[NSMutableString alloc] initWithCapacity:[content length]+2000];
-	
 	// attempt to make well-formed HTML and inject in our MyTunesRSS bridge code
 	// However, we only do this if the content looks like HTML
 	NSRange range = [content rangeOfString:@"<html"];
 	if (range.location!=NSNotFound)
 	{
-		BOOL found = NO;
+		[self prepareInjection];
+		NSMutableString *html = [[NSMutableString alloc] initWithCapacity:[content length]+2000];
+
 		NSRange nextRange = [content rangeOfString:@">" options:0 range:NSMakeRange(range.location, [content length]-range.location) locale:nil];
 		if (nextRange.location!=NSNotFound)
 		{
 			[html appendString:[content substringToIndex:nextRange.location+1]];
 			[html appendString:[self _mytunesrssInjection]];
 			[html appendString:[content substringFromIndex:nextRange.location+1]];
-			found = YES;
 		}
-		if (found==NO)
+		else
 		{
 			// oh well, just jack it in
 			[html appendString:[self _mytunesrssInjection]];
 			[html appendString:content];
 		}
+		
+		content = [html autorelease];
 	}
 	
 	NSURL *relativeURL = [self fileURLToAppURL:url];
 	
 	if (url!=nil)
 	{
-		[[self webview] loadHTMLString:html baseURL:relativeURL];
+		[[self webview] loadHTMLString:content baseURL:relativeURL];
 	}
 	else
 	{
-		[[self webview] loadData:[html dataUsingEncoding:encoding] MIMEType:mimeType textEncodingName:textEncodingName baseURL:relativeURL];
+		[[self webview] loadData:[content dataUsingEncoding:encoding] MIMEType:mimeType textEncodingName:textEncodingName baseURL:relativeURL];
 	}
 	if (scalingOverride==NO)
 	{
 		[[self webview] setScalesPageToFit:NO];
 	}
-	[html release];
 }
 
 
@@ -297,6 +296,16 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 	UIColor *c = UIColorWebColorNamed(color);
 	[self setBackgroundColor:c];
 	[[self webview] setBackgroundColor:c];
+}
+
+-(void)setAutoDetect_:(NSArray*)values
+{
+	UIDataDetectorTypes result = UIDataDetectorTypeNone;
+	for (NSNumber * thisNumber in values)
+	{
+		result |= [TiUtils intValue:thisNumber];
+	}
+	[[self webview] setDataDetectorTypes:result];
 }
 
 -(void)setHtml_:(NSString*)content
@@ -451,8 +460,9 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 					NSLog(@"[WARN] I have no idea what the appropriate text encoding is for: %@. Please report this to MyTunesRSS support.",url);
 				}
 			}
-			if (error!=nil && [error code]==261)
-			{
+			if ((error!=nil && [error code]==261) || [mimeType isEqualToString:(NSString*)svgMimeType])
+			{//TODO: Shouldn't we be checking for an HTML mime type before trying to read? This is right now rather inefficient, but it
+			//Gets the job done, with minimal reliance on extensions.
 				// this is a different encoding than specified, just send it to the webview to load
 				NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
 				[self loadURLRequest:request];
@@ -540,6 +550,23 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 		TiBlob *blob = [args objectAtIndex:1];
 		[blob setData:[result dataUsingEncoding:NSUTF8StringEncoding]];
 	}
+}
+
+-(void)_evalJSOnThread:(NSArray*)args
+{
+	// this happens from evalJSAndWait to put us on the main thread
+	NSString *code = [args objectAtIndex:0];
+	NSMutableString *result = [args objectAtIndex:1];
+	NSString *r = [[self webview] stringByEvaluatingJavaScriptFromString:code];
+	[result appendString:r];
+}
+
+-(id)evalJSAndWait:(NSString *)code
+{
+	NSMutableString *result = [NSMutableString string];
+	NSArray *args = [NSArray arrayWithObjects:code,result,nil];
+	[self performSelectorOnMainThread:@selector(_evalJSOnThread:) withObject:args waitUntilDone:YES];
+	return result;
 }
 
 // Webview appears to have an interesting quirk where the web content is always scaled/sized to just barely

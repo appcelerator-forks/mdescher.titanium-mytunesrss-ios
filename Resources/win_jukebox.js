@@ -26,10 +26,10 @@ function setTrackInformation(track) {
     var imageRow;
     if (track.imageUrl) {
         imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:240});
-        imageRow.add(Titanium.UI.createImageView({top:10,url:track.imageUrl + '/size=256',width:220,height:220}));
+        imageRow.add(Titanium.UI.createImageView({top:10,image:track.imageUrl + '/size=256',width:220,height:220}));
     } else {
         imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:77});
-        imageRow.add(Titanium.UI.createImageView({top:10,url:'appicon.png',width:57,height:57}));
+        imageRow.add(Titanium.UI.createImageView({top:10,image:'appicon.png',width:57,height:57}));
     }
     var infoRow = Titanium.UI.createTableViewRow({height:60,className:'jukebox_info'});
     infoRow.add(Titanium.UI.createLabel({top:7,left:10,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name)}));
@@ -85,7 +85,7 @@ Titanium.App.addEventListener('mytunesrss_hideJukeboxActivityView', function() {
 
 var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
 
-var controlRewind = Titanium.UI.createImageView({url:'back.png',width:45,height:45});
+var controlRewind = Titanium.UI.createImageView({image:'back.png',width:45,height:45});
 controlRewind.addEventListener('click', function() {
     ajaxCall('LoginService.ping', null, function(result, error) {
         if (!result && !error) {
@@ -95,7 +95,7 @@ controlRewind.addEventListener('click', function() {
         }
     });
 });
-var controlPlay = Titanium.UI.createImageView({url:'play.png',width:45,height:45});
+var controlPlay = Titanium.UI.createImageView({image:'play.png',width:45,height:45});
 controlPlay.addEventListener('click', function() {
     ajaxCall('LoginService.ping', null, function(result, error) {
         if (!result && !error) {
@@ -105,12 +105,12 @@ controlPlay.addEventListener('click', function() {
         }
     });
 });
-var controlPause = Titanium.UI.createImageView({url:'pause.png',width:45,height:45});
+var controlPause = Titanium.UI.createImageView({image:'pause.png',width:45,height:45});
 controlPause.addEventListener('click', function() {
     Titanium.App.fireEvent('mytunesrss_pause');
     Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
 });
-var controlStop = Titanium.UI.createImageView({url:'stop.png',width:45,height:45});
+var controlStop = Titanium.UI.createImageView({image:'stop.png',width:45,height:45});
 controlStop.addEventListener('click', function() {
     if (progressBar) {
         progressBar.value = 0;
@@ -120,7 +120,7 @@ controlStop.addEventListener('click', function() {
     Titanium.App.fireEvent('mytunesrss_stop');
     Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
 });
-var controlFastForward = Titanium.UI.createImageView({url:'forward.png',width:45,height:45});
+var controlFastForward = Titanium.UI.createImageView({image:'forward.png',width:45,height:45});
 controlFastForward.addEventListener('click', function() {
     ajaxCall('LoginService.ping', null, function(result, error) {
         if (!result && !error) {
@@ -130,7 +130,7 @@ controlFastForward.addEventListener('click', function() {
         }
     });
 });
-var controlShuffle = Titanium.UI.createImageView({url:'shuffle.png',width:45,height:45});
+var controlShuffle = Titanium.UI.createImageView({image:'shuffle.png',width:45,height:45});
 controlShuffle.addEventListener('click', function() {
     ajaxCall('LoginService.ping', null, function(result, error) {
         if (!result && !error) {

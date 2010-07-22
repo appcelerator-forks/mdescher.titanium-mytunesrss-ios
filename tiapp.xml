@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
-<id>R99EQ3TL2Z.de.codewave.mytunesrss</id>
+<id>de.codewave.mytunesrss</id>
 <name>MyTunesRSS</name>
-<version>1.0.0</version>
+<version>1.0.2</version>
 <publisher>Codewave Software Michael Descher</publisher>
 <url>http://www.codewave.de</url>
 <description>MyTunesRSS Mobile Client</description>

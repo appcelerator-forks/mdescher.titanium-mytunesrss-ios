@@ -9,6 +9,7 @@
 
 #import <UIKit/UIKit.h>
 #import "TiDimension.h"
+#import "TiUtils.h"
 
 @protocol LayoutAutosizing
 
@@ -34,6 +35,10 @@ typedef enum {
 	TiLayoutRuleHorizontal,
 } TiLayoutRule;
 
+TI_INLINE CGFloat TiFixedValueRuleFromObject(id object)
+{
+	return [TiUtils floatValue:object def:0];
+}
 
 TI_INLINE TiLayoutRule TiLayoutRuleFromObject(id object)
 {
@@ -81,11 +86,13 @@ typedef struct LayoutConstraint {
 	
 	TiLayoutRule layout;
 	
+	CGFloat minimumHeight;
+	CGFloat minimumWidth;
+	
 } LayoutConstraint;
 
 @class TiUIView;
 void ApplyConstraintToViewWithinViewWithBounds(LayoutConstraint * constraint, TiUIView * subView, UIView * superView, CGRect viewBounds, BOOL addToSuperView);
-void ReadConstraintFromDictionary(LayoutConstraint * constraint, NSDictionary * inputDict);
 CGFloat WidthFromConstraintGivenWidth(LayoutConstraint * constraint,CGFloat viewWidth);
 CGSize SizeConstraintViewWithSizeAddingResizing(LayoutConstraint * constraint, NSObject<LayoutAutosizing> * autoSizer, CGSize boundSize, UIViewAutoresizing * resultResizing);
 BOOL IsLayoutUndefined(LayoutConstraint *constraint);

@@ -24,6 +24,9 @@
 #ifdef USE_TI_UIIPAD
 	TiProxy *ipad;
 #endif
+#ifdef USE_TI_UIIOS
+	TiProxy *ios;
+#endif
 }
 
 //TODO: review these, maybe they need to go on iPhone Animation Style - however, they are platform generic
@@ -123,6 +126,13 @@
 @property(nonatomic,readonly) NSNumber *BLEND_MODE_PLUS_DARKER;
 @property(nonatomic,readonly) NSNumber *BLEND_MODE_PLUS_LIGHTER;
 
+@property(nonatomic,readonly) NSNumber *AUTODETECT_NONE;
+@property(nonatomic,readonly) NSNumber *AUTODETECT_ALL;
+@property(nonatomic,readonly) NSNumber *AUTODETECT_PHONE;
+@property(nonatomic,readonly) NSNumber *AUTODETECT_LINK;
+
+
+
 #ifdef USE_TI_UI2DMATRIX
 -(id)create2DMatrix:(id)args;
 #endif
@@ -141,6 +151,10 @@
 
 #ifdef USE_TI_UIIPAD
 @property(nonatomic,readonly)			TiProxy* iPad;
+#endif
+
+#ifdef USE_TI_UIIOS
+@property(nonatomic,readonly)			TiProxy* iOS;
 #endif
 
 @end

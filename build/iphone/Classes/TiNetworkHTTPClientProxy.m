@@ -8,7 +8,7 @@
  */
 #ifdef USE_TI_NETWORK
 
-
+#import "TiBase.h"
 #import "TiNetworkHTTPClientProxy.h"
 #import "TiNetworkHTTPClientResultProxy.h"
 #import "TiUtils.h"
@@ -40,6 +40,29 @@ NSStringEncoding ExtractEncodingFromData(NSData * inputData)
 	if(remainingSize > 2008) unsearchableSize = remainingSize - 2000;
 	else unsearchableSize = 8; // So that there's no chance of overrunning the buffer with 'charset='
 	const char * data = [inputData bytes];
+	
+	// XML provides its own encoding format as part of the definition,
+	// we need to use this if it looks like a XML document
+	int prefix = CaselessCompare(data,"<?xml",5);
+	if (prefix==0)
+	{
+		char *enc = strstr(data, "encoding=");
+		if (enc)
+		{
+			enc += 10;
+			data = enc;
+			TRYENCODING("windows-1252",12,NSWindowsCP1252StringEncoding);
+			TRYENCODING("iso-8859-1",10,NSISOLatin1StringEncoding);
+			TRYENCODING("utf-8",5,NSUTF8StringEncoding);
+			TRYENCODING("shift-jis",9,NSShiftJISStringEncoding);
+			TRYENCODING("x-euc",5,NSJapaneseEUCStringEncoding);
+			TRYENCODING("windows-1250",12,NSWindowsCP1251StringEncoding);
+			TRYENCODING("windows-1251",12,NSWindowsCP1252StringEncoding);
+			TRYENCODING("windows-1253",12,NSWindowsCP1253StringEncoding);
+			TRYENCODING("windows-1254",12,NSWindowsCP1254StringEncoding);
+			return NSUTF8StringEncoding;
+		}
+	}
 	
 	while(remainingSize > unsearchableSize)
 	{
@@ -280,8 +303,14 @@ extern NSString * const TI_APPLICATION_DEPLOYTYPE;
 	[request setDefaultResponseEncoding:NSUTF8StringEncoding];
 	// don't cache credentials, session etc since each request might be to
 	// different URI and cause security compromises if we do 
-	[request setUseSessionPersistance:NO];
-	[request setUseKeychainPersistance:NO];
+	[request setUseSessionPersistence:NO];
+	[request setUseKeychainPersistence:NO];
+	[request setUseCookiePersistence:YES];
+	[request setShowAccurateProgress:YES];
+	[request setShouldUseRFC2616RedirectBehaviour:YES];
+	[request setShouldAttemptPersistentConnection:YES];
+	[request setShouldRedirect:YES];
+	[request setShouldPerformCallbacksOnMainThread:NO];
 	[self _fireReadyStateChange:NetworkClientStateOpened];
 	[self _fireReadyStateChange:NetworkClientStateHeaders];
 }
@@ -292,7 +321,24 @@ extern NSString * const TI_APPLICATION_DEPLOYTYPE;
 	
 	NSString *key = [TiUtils stringValue:[args objectAtIndex:0]];
 	NSString *value = [TiUtils stringValue:[args objectAtIndex:1]];
-	[request addRequestHeader:key value:value];
+	
+	// allow setting of cookies - even though the XHR spec specifically
+	// disallows this from a security standpoint, we're going to allow
+	// it since we assume that the app is "trusted" (thus, cross domain ,etc)
+	if ([key isEqualToString:@"Cookie"])
+	{
+		NSArray *tok = [value componentsSeparatedByString:@"="];
+		if ([tok count]!=2)
+		{
+			[self throwException:@"invalid arguments for setting cookie. value should be in the format 'name=value'" subreason:nil location:CODELOCATION];
+		}
+		NSHTTPCookie *cookie = [NSHTTPCookie cookieWithProperties:[NSDictionary dictionaryWithObjectsAndKeys:[tok objectAtIndex:0],NSHTTPCookieName,[tok objectAtIndex:1],NSHTTPCookieValue,@"/",NSHTTPCookiePath,[url host],NSHTTPCookieDomain,url,NSHTTPCookieOriginURL,nil]];
+		[[request requestCookies] addObject:cookie];
+	}
+	else 
+	{
+		[request addRequestHeader:key value:value];
+	}
 }
 
 -(void)send:(id)args
@@ -357,8 +403,8 @@ extern NSString * const TI_APPLICATION_DEPLOYTYPE;
 	}
 	
 	connected = YES;
-	downloadProgress = -1;
-	uploadProgress = -1;
+	downloadProgress = 0;
+	uploadProgress = 0;
 	[[TiApp app] startNetwork];
 	[self _fireReadyStateChange:NetworkClientStateLoading];
 	[request setAllowCompressedResponse:YES];
@@ -368,12 +414,12 @@ extern NSString * const TI_APPLICATION_DEPLOYTYPE;
 	
 	if (async)
 	{
-		[request startAsynchronous];
+		[NSThread detachNewThreadSelector:@selector(startAsynchronous) toTarget:request withObject:nil];
 	}
 	else
 	{
 		[[TiApp app] startNetwork];
-		[request start];
+		[request startSynchronous];
 		[[TiApp app] stopNetwork];
 	}
 }
@@ -421,36 +467,52 @@ extern NSString * const TI_APPLICATION_DEPLOYTYPE;
 	}
 }
 
--(void)setProgress:(float)value upload:(BOOL)upload
+// Called when the request receives some data - bytes is the length of that data
+- (void)request:(ASIHTTPRequest *)request didReceiveBytes:(long long)bytes
 {
-	if (upload)
+	downloadProgress += bytes;
+	if (ondatastream)
 	{
-		if (uploadProgress==value)
-		{
-			return;
-		}
-		uploadProgress = value;
-	}
-	else
-	{
-		if (downloadProgress==value)
-		{
-			return;
-		}
-		downloadProgress = value;
-	}	
-	
-	TiNetworkHTTPClientResultProxy *thisPointer = [[[TiNetworkHTTPClientResultProxy alloc] initWithDelegate:self] autorelease];
-	
-	NSDictionary *event = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:value] forKey:@"progress"];
-	
-	if (upload)
-	{
-		[self _fireEventToListener:@"sendstream" withObject:event listener:onsendstream thisObject:thisPointer];
-	}
-	else
-	{
+		CGFloat progress = (CGFloat)((CGFloat)downloadProgress/(CGFloat)downloadLength);
+		TiNetworkHTTPClientResultProxy *thisPointer = [[TiNetworkHTTPClientResultProxy alloc] initWithDelegate:self];
+		NSDictionary *event = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:progress] forKey:@"progress"];
 		[self _fireEventToListener:@"datastream" withObject:event listener:ondatastream thisObject:thisPointer];
+		[thisPointer release];
+	}
+}
+
+// Called when the request sends some data
+// The first 32KB (128KB on older platforms) of data sent is not included in this amount because of limitations with the CFNetwork API
+// bytes may be less than zero if a request needs to remove upload progress (probably because the request needs to run again)
+- (void)request:(ASIHTTPRequest *)request didSendBytes:(long long)bytes
+{
+	uploadProgress += bytes;
+	if (onsendstream)
+	{
+		CGFloat progress = (CGFloat)((CGFloat)uploadProgress/(CGFloat)uploadLength);
+		TiNetworkHTTPClientResultProxy *thisPointer = [[TiNetworkHTTPClientResultProxy alloc] initWithDelegate:self];
+		NSDictionary *event = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:progress] forKey:@"progress"];
+		[self _fireEventToListener:@"sendstream" withObject:event listener:onsendstream thisObject:thisPointer];
+		[thisPointer release];
+	}
+}
+
+// Called when a request needs to change the length of the content to download
+- (void)request:(ASIHTTPRequest *)request incrementDownloadSizeBy:(long long)newLength
+{
+	if (newLength>0)
+	{
+		downloadLength = newLength;
+	}
+}
+
+// Called when a request needs to change the length of the content to upload
+// newLength may be less than zero when a request needs to remove the size of the internal buffer from progress tracking
+- (void)request:(ASIHTTPRequest *)request incrementUploadSizeBy:(long long)newLength
+{
+	if (newLength>0)
+	{
+		uploadLength = newLength;
 	}
 }
 

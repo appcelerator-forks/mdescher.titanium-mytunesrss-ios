@@ -23,7 +23,7 @@ setTableDataAndIndex(win.ajaxResult.results, tableView, function(item, index) {
     var displayName = getDisplayName(item.name);
     var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:item.imageUrl ? 'album_row_img' : 'album_row'});
     if (item.imageUrl) {
-        var albumImage = Titanium.UI.createImageView({url:(item.imageUrl + '/size=64'),top:4,left:4,width:40,height:40,defaultImage:'appicon.png'});
+        var albumImage = Titanium.UI.createImageView({image:(item.imageUrl + '/size=64'),top:4,left:4,width:40,height:40,defaultImage:'appicon.png'});
         row.add(albumImage);
     }
     var albumName = Titanium.UI.createLabel({text:displayName,top:4,left:48,height:24,right:10,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
@@ -52,7 +52,5 @@ tableView.addEventListener('click', function(e) {
         }
     });
 });
-
-//win.add(tableView);
 
 win.add(actIndicatorView);

@@ -11,8 +11,16 @@
 #import "TiViewProxy.h"
 #import "TiDimension.h"
 
+@class TiUITableViewCell;
 @class TiUITableView;
 @class TiUITableViewSectionProxy;
+
+typedef enum  
+{
+    TiCellBackgroundViewPositionTop, 
+    TiCellBackgroundViewPositionMiddle, 
+    TiCellBackgroundViewPositionBottom
+} TiCellBackgroundViewPosition;
 
 @interface TiUITableViewRowProxy : TiViewProxy <TiProxyDelegate>
 {
@@ -21,10 +29,13 @@
 	TiUITableView *table;
 	TiUITableViewSectionProxy *section;
 	TiDimension height;
+	CGFloat rowHeight;
 	
 	UIView * rowContainerView;
 	BOOL modifyingRow;
 	NSInteger row;
+	
+	TiUITableViewCell* callbackCell;
 }
 
 #pragma mark Public APIs
@@ -36,11 +47,13 @@
 @property(nonatomic,readwrite,assign) TiUITableView *table;
 @property(nonatomic,readwrite,assign) TiUITableViewSectionProxy *section;
 @property(nonatomic,readwrite,assign) NSInteger row;
+@property(nonatomic,readwrite,assign) TiUITableViewCell* callbackCell;
 
 -(void)initializeTableViewCell:(UITableViewCell*)cell;
 -(void)renderTableViewCell:(UITableViewCell*)cell;
 -(CGFloat)rowHeight:(CGRect)bounds;
 -(TiProxy *)touchedViewProxyInCell:(UITableViewCell *)targetCell;
+-(id)createEventObject:(id)initialObject;
 
 -(void)updateRow:(NSDictionary*)data withObject:(NSDictionary*)properties;
 

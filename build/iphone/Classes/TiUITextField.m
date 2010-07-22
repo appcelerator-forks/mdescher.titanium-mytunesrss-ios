@@ -421,7 +421,7 @@
 {
 	if ([self.proxy _hasListeners:@"focus"])
 	{
-		[self.proxy fireEvent:@"focus" withObject:[NSDictionary dictionaryWithObject:[tf text] forKey:@"value"]];
+		[self.proxy fireEvent:@"focus" withObject:[NSDictionary dictionaryWithObject:[tf text] forKey:@"value"] propagate:NO];
 	}
 }
 
@@ -457,7 +457,7 @@
 {
 	if ([self.proxy _hasListeners:@"blur"])
 	{
-		[self.proxy fireEvent:@"blur" withObject:[NSDictionary dictionaryWithObject:[tf text] forKey:@"value"]];
+		[self.proxy fireEvent:@"blur" withObject:[NSDictionary dictionaryWithObject:[tf text] forKey:@"value"] propagate:NO];
 	}
 }
 

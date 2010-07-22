@@ -41,11 +41,15 @@
 	NSInteger readyCount;
 	NSInteger loadTotal;
 	ImageLoaderRequest *urlRequest;
+	UIImageView * imageView;
 }
 
 -(void)start;
 -(void)stop;
 -(void)pause;
+
+-(void)setImage_:(id)arg;
+
 
 @end
 

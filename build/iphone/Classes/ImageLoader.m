@@ -28,12 +28,14 @@
     TiDimension leftCap;
     TiDimension topCap;
     BOOL recapStretchableImage;
+	BOOL isLocalImage;
 }
 
 @property(nonatomic,readwrite,retain) UIImage * fullImage;
 @property(nonatomic,readwrite,retain) UIImage * recentlyResizedImage;
 @property(nonatomic,readwrite) TiDimension leftCap;
 @property(nonatomic,readwrite) TiDimension topCap;
+@property(nonatomic,readwrite) BOOL isLocalImage;
 -(UIImage *)imageForSize:(CGSize)imageSize;
 -(UIImage *)stretchableImage;
 
@@ -42,7 +44,15 @@
 @end
 
 @implementation ImageCacheEntry
-@synthesize fullImage, recentlyResizedImage, leftCap, topCap;
+@synthesize fullImage, recentlyResizedImage, leftCap, topCap, isLocalImage;
+
+-(void)ensureFullImageForUrl:(NSURL *)url
+{
+	if (isLocalImage && (fullImage == nil))
+	{
+		[self setFullImage:[UIImage imageWithContentsOfFile:[url path]]];
+	}
+}
 
 -(UIImage *)imageForSize:(CGSize)imageSize scalingStyle:(TiImageScalingStyle)scalingStyle
 {
@@ -172,6 +182,11 @@
 		RELEASE_TO_NIL(fullImage);
 		return YES;
 	}
+	else if(isLocalImage && [fullImage retainCount]<2)
+	{
+		RELEASE_TO_NIL(fullImage);
+	}
+
 	return NO;
 }
 
@@ -283,8 +298,8 @@ DEFINE_EXCEPTIONS
 {
 	NSString * doomedKey;
 
-#ifdef VERBOSE
 	int cacheCount = [cache count];
+#ifdef VERBOSE
 	vm_statistics_data_t vmStats;
 	mach_msg_type_number_t infoCount = HOST_VM_INFO_COUNT;
 	kern_return_t kernReturn = host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&vmStats, &infoCount);
@@ -313,6 +328,9 @@ DEFINE_EXCEPTIONS
 #ifdef VERBOSE
 	kernReturn = host_statistics(mach_host_self(), HOST_VM_INFO, (host_info_t)&vmStats, &infoCount);
 	NSLog(@"[INFO] %d of %d images remain in cache, %d pages now free.",[cache count],cacheCount,vmStats.free_count);
+#else
+	int newCacheCount = [cache count];
+	NSLog(@"[INFO] Due to memory conditions, %d of %d images were unloaded from cache.",cacheCount - newCacheCount,cacheCount);
 #endif
 
 
@@ -363,11 +381,19 @@ DEFINE_EXCEPTIONS
 	NSString * urlString = [url absoluteString];
 	ImageCacheEntry * result = [cache objectForKey:urlString];
 	
-	if ((result == nil) && [url isFileURL])
+	if ([url isFileURL])
 	{
-		//Well, let's make it for them!
-		UIImage * resultImage = [UIImage imageWithContentsOfFile:[url path]];
-		result = [self setImage:resultImage forKey:urlString];
+		if (result == nil)
+		{
+			//Well, let's make it for them!
+			UIImage * resultImage = [UIImage imageWithContentsOfFile:[url path]];
+			result = [self setImage:resultImage forKey:urlString];
+			[result setIsLocalImage:YES];
+		}
+		else
+		{
+			[result ensureFullImageForUrl:url];
+		}
 	}
 	
 	return result;

@@ -28,6 +28,9 @@
 #ifdef USE_TI_UIIPAD
 	#import "TiUIiPadProxy.h"
 #endif
+#ifdef USE_TI_UIIOS
+#import "TiUIiOSProxy.h"
+#endif
 #import "TiApp.h"
 #import "ImageLoader.h"
 #import "Webcolor.h"
@@ -133,17 +136,23 @@ MAKE_SYSTEM_PROP(BLEND_MODE_DESTINATION_ATOP,kCGBlendModeDestinationAtop);
 MAKE_SYSTEM_PROP(BLEND_MODE_XOR,kCGBlendModeXOR);
 MAKE_SYSTEM_PROP(BLEND_MODE_PLUS_DARKER,kCGBlendModePlusDarker);
 MAKE_SYSTEM_PROP(BLEND_MODE_PLUS_LIGHTER,kCGBlendModePlusLighter);
-				 
+
+MAKE_SYSTEM_PROP(AUTODETECT_NONE,UIDataDetectorTypeNone);
+MAKE_SYSTEM_PROP(AUTODETECT_ALL,UIDataDetectorTypeAll);
+MAKE_SYSTEM_PROP(AUTODETECT_PHONE,UIDataDetectorTypePhoneNumber);
+MAKE_SYSTEM_PROP(AUTODETECT_LINK,UIDataDetectorTypeLink);
+
+
 
 -(void)setBackgroundColor:(id)color
 {
-	TiRootViewController *controller = [[TiApp app] controller];
+	UIViewController<TiRootController> *controller = [[TiApp app] controller];
 	[controller setBackgroundColor:UIColorWebColorNamed(color)];
 }
 
 -(void)setBackgroundImage:(id)image
 {
-	TiRootViewController *controller = [[TiApp app] controller];
+	UIViewController<TiRootController> *controller = [[TiApp app] controller];
 	UIImage *resultImage = [[ImageLoader sharedLoader] loadImmediateStretchableImage:[TiUtils toURL:image proxy:self]];
 	if (resultImage==nil && [image isEqualToString:@"Default.png"])
 	{
@@ -249,13 +258,29 @@ MAKE_SYSTEM_PROP(FACE_DOWN,UIDeviceOrientationFaceDown);
 	if (ipad==nil)
 	{
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_3_2
-		if ([TiUtils isIPad])
+		if ([TiUtils isiPhoneOS3_2OrGreater] && [TiUtils isIPad])
 		{
 			ipad = [[TiUIiPadProxy alloc] _initWithPageContext:[self pageContext]];
 		}
 #endif
 	}
 	return ipad;
+}
+#endif
+
+#ifdef USE_TI_UIIOS
+-(id)iOS
+{
+	if (ios==nil)
+	{
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_3_2
+		if ([TiUtils isiPhoneOS3_2OrGreater])
+		{
+			ios = [[TiUIiOSProxy alloc] _initWithPageContext:[self pageContext]];
+		}
+#endif
+	}
+	return ios;
 }
 #endif
 
@@ -268,6 +293,9 @@ MAKE_SYSTEM_PROP(FACE_DOWN,UIDeviceOrientationFaceDown);
 #endif
 #ifdef USE_TI_UIIPAD
 	RELEASE_TO_NIL(ipad);
+#endif
+#ifdef USE_TI_UIIOS
+	RELEASE_TO_NIL(ios);
 #endif
 	[super didReceiveMemoryWarning:notification];
 }

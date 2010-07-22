@@ -20,6 +20,8 @@
 
 -(UIButton*)button;
 
+-(void)setEnabled_:(id)value;
+
 @end
 
 #endif

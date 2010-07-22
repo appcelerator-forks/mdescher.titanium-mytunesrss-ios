@@ -10,7 +10,9 @@
 
 #import "TiProxy.h"
 #import "TiBlob.h"
+#import "TiBase.h"
 #import "ASIFormDataRequest.h"
+#import "ASIProgressDelegate.h"
 
 typedef enum {
 	NetworkClientStateUnsent = 0,
@@ -21,7 +23,7 @@ typedef enum {
 } NetworkClientState;
 
 
-@interface TiNetworkHTTPClientProxy : TiProxy 
+@interface TiNetworkHTTPClientProxy : TiProxy<ASIHTTPRequestDelegate,ASIProgressDelegate> 
 {
 @private
 	ASIFormDataRequest *request;
@@ -29,8 +31,10 @@ typedef enum {
 	BOOL connected;
 	BOOL async;
 	NSURL *url;
-	CGFloat uploadProgress;
-	CGFloat downloadProgress;
+	long long uploadProgress;
+	long long downloadProgress;
+	long long downloadLength;
+	long long uploadLength;
 	BOOL validatesSecureCertificate;
     NSNumber* timeout;
 	

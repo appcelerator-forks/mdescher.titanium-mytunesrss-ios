@@ -127,6 +127,7 @@
 	}
 	
 	BOOL animated = [TiUtils boolValue:[self valueForKey:@"animated"] def:YES];
+	[self retain];
 	[[TiApp app] showModalController:composer animated:animated];
 }
 
@@ -148,7 +149,8 @@ MAKE_SYSTEM_PROP(FAILED,MFMailComposeResultFailed);
 
 	[[TiApp app] hideModalController:composer animated:animated];
 	[composer autorelease];
-
+	composer = nil;
+	[self autorelease];
 	if ([self _hasListeners:@"complete"])
 	{
 		NSDictionary *event = [NSDictionary dictionaryWithObjectsAndKeys:NUMINT(result),@"result",

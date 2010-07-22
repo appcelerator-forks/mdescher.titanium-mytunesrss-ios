@@ -6,7 +6,7 @@
  * 
  * WARNING: This is generated code. Modify at your own risk and without support.
  */
-#ifdef USE_TI_UIIPADPOPOVER
+#if defined(USE_TI_UIIPADPOPOVER) || defined(USE_TI_UIIPADSPLITWINDOW)
 
 #import "TiUIView.h"
 #import "TiViewController.h"

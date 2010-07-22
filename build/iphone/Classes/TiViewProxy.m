@@ -16,6 +16,8 @@
 #import <libkern/OSAtomic.h>
 #import <pthread.h>
 
+#import "TiLayoutQueue.h"
+
 @implementation TiViewProxy
 
 @synthesize children, parent;
@@ -372,6 +374,7 @@
 			[child windowDidClose];
 		}
 	[self unlockChildren];
+	[self detachView];
 }
 
 -(void)windowWillClose
@@ -382,7 +385,6 @@
 			[child windowWillClose];
 		}
 	[self unlockChildren];
-	[self detachView];
 }
 
 -(void)viewWillAttach
@@ -661,15 +663,13 @@
 		return;
 	}
 	OSAtomicTestAndSetBarrier(NEEDS_LAYOUT_CHILDREN, &dirtyflags);
-
 	[self lockChildrenForReading];
 		for (id child in self.children)
 		{
 			[self layoutChild:child];
 		}
-	[self unlockChildren];
-
 	OSAtomicTestAndClearBarrier(NEEDS_LAYOUT_CHILDREN, &dirtyflags);
+	[self unlockChildren];
 }
 
 -(CGRect)appFrame
@@ -694,12 +694,19 @@
 #pragma mark Memory Management
 
 -(void)_destroy
-{//TODO: What's the difference between _destroy and dealloc? Or rather, when do you call destroy and not release?
+{
+	// _destroy is called during a JS context shutdown, to inform the object to 
+	// release all its memory and references.  this will then cause dealloc 
+	// on objects that it contains (assuming we don't have circular references)
+	// since some of these objects are registered in the context and thus still
+	// reachable, we need _destroy to help us start the unreferencing part
+	
 	RELEASE_TO_NIL(barButtonItem);
 	if (view!=nil)
 	{
 		view.proxy = nil;
-		[view removeFromSuperview];
+		// must be on main thread
+		[view performSelectorOnMainThread:@selector(removeFromSuperview) withObject:nil waitUntilDone:NO];
 		RELEASE_TO_NIL(view);
 	}
 	
@@ -714,6 +721,14 @@
 {
 	//FIXME- me already have a _destroy, refactor this
 	[self _destroy];
+}
+
+-(void)didReceiveMemoryWarning:(NSNotification*)notification
+{
+	// Only release a view if it's not currently attached and we're the only living reference for it
+	if (![self viewAttached] && [[self view] retainCount] == 1) {
+		RELEASE_TO_NIL(view);
+	}
 }
 
 #pragma mark Listener Management
@@ -944,7 +959,7 @@
 {
 	[self repositionIfNeeded];
 
-	BOOL wasSet=NEEDS_LAYOUT_CHILDREN & dirtyflags;
+	BOOL wasSet=OSAtomicTestAndClearBarrier(NEEDS_LAYOUT_CHILDREN, &dirtyflags);
 	if (wasSet && [self viewAttached])
 	{
 		[self layoutChildren];
@@ -965,12 +980,12 @@
 	ENSURE_VALUE_CONSISTENCY(containsChild,YES);
 	[self setNeedsRepositionIfAutoSized];
 
-	if (TiLayoutRuleIsVertical(layoutProperties.layout))
+	if (!TiLayoutRuleIsAbsolute(layoutProperties.layout))
 	{
 		BOOL alreadySet = OSAtomicTestAndSetBarrier(NEEDS_LAYOUT_CHILDREN, &dirtyflags);
 		if (!alreadySet)
 		{
-			[self performSelectorOnMainThread:@selector(layoutChildrenIfNeeded) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+			[TiLayoutQueue addViewProxy:self];
 		}
 	}
 }
@@ -1022,12 +1037,12 @@
 	}
 
 	[parent childWillResize:self];
-	[self performSelectorOnMainThread:@selector(repositionIfNeeded) withObject:nil waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
+	[TiLayoutQueue addViewProxy:self];
 }
 
 -(void)clearNeedsReposition
 {
-	BOOL wasSet = OSAtomicTestAndClearBarrier(NEEDS_REPOSITION, &dirtyflags);
+	OSAtomicTestAndClearBarrier(NEEDS_REPOSITION, &dirtyflags);
 }
 
 -(void)setNeedsRepositionIfAutoSized
@@ -1057,6 +1072,9 @@ LAYOUTPROPERTIES_SETTER(setWidth,width,TiDimensionFromObject)
 LAYOUTPROPERTIES_SETTER(setHeight,height,TiDimensionFromObject)
 
 LAYOUTPROPERTIES_SETTER(setLayout,layout,TiLayoutRuleFromObject)
+
+LAYOUTPROPERTIES_SETTER(setMinWidth,minimumWidth,TiFixedValueRuleFromObject)
+LAYOUTPROPERTIES_SETTER(setMinHeight,minimumHeight,TiFixedValueRuleFromObject)
 
 -(void)setCenter:(id)value
 {

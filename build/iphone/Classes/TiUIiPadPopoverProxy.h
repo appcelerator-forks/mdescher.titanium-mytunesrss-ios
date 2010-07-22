@@ -6,7 +6,7 @@
  * 
  * WARNING: This is generated code. Modify at your own risk and without support.
  */
-#ifdef USE_TI_UIIPADPOPOVER
+#if defined(USE_TI_UIIPADPOPOVER) || defined(USE_TI_UIIPADSPLITWINDOW)
 
 #import "TiViewProxy.h"
 #import "TiViewController.h"
@@ -19,11 +19,12 @@
 @interface TiUIiPadPopoverProxy : TiViewProxy<UIPopoverControllerDelegate> {
 @private
 	UIPopoverController *popoverController;
+	UINavigationController *navigationController;
 	TiViewController *viewController;
 }
 
 //Because the Popover isn't meant to be placed in anywhere specific, 
-@property(nonatomic,readwrite,retain) UIPopoverController *popoverController;
+@property(nonatomic,readonly) UIPopoverController *popoverController;
 @property(nonatomic,readwrite,retain) TiViewController *viewController;
 
 @end

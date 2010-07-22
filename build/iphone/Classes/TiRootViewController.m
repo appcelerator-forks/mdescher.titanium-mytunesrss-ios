@@ -12,6 +12,7 @@
 #import "TiViewProxy.h"
 #import "TiWindowProxy.h"
 #import "TiTab.h"
+#import "TiApp.h"
 #import <MessageUI/MessageUI.h>
 
 @interface TiRootView : UIView
@@ -102,8 +103,36 @@
 	}
 }
 
+
+-(void)didOrientNotify:(NSNotification *)notification
+{
+	UIInterfaceOrientation newOrientation = [[UIDevice currentDevice] orientation];
+	if (lastOrientation == 0)
+	{ //This is when the application first starts. statusBarOrientation lies at the beginning,
+	//And device orientation is 0 until this notification.
+		// FIRST!  We know the orientation now, so attach the splash!
+		if (![[TiApp app] isSplashVisible]) {
+			[[TiApp app] loadSplash];
+		}
+		[self willAnimateRotationToInterfaceOrientation:newOrientation duration:0];
+		return;
+	}
+
+	if ((newOrientation==windowOrientation)&&(lastOrientation!=newOrientation) && [self shouldAutorotateToInterfaceOrientation:newOrientation])
+	{ //This is for when we've forced an orientation that was not what the device was, and
+	//Now we want to return to it. Because newOrientation and windowOrientation are identical
+	//The iPhone OS wouldn't send this method.
+		[self willAnimateRotationToInterfaceOrientation:newOrientation duration:[[UIApplication sharedApplication] statusBarOrientationAnimationDuration]];
+	}
+
+}
+
+
 -(void)loadView
 {
+	[[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(didOrientNotify:) name:UIDeviceOrientationDidChangeNotification object:nil];
+
 	TiRootView *rootView = [[TiRootView alloc] init];
 	[rootView setAutoresizingMask:UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight];
 	self.view = rootView;
@@ -118,7 +147,6 @@
 			[[thisWindowController proxy] reposition];
 		}
 	}
-	[self willAnimateRotationToInterfaceOrientation:[[UIApplication sharedApplication] statusBarOrientation] duration:0];
 	[rootView release];
 }
 
@@ -132,6 +160,17 @@
 {
 	[self.view resignFirstResponder];
     [super viewDidDisappear:animated];
+}
+
+-(void)repositionSubviews
+{
+	for (UIView * subView in [[self view] subviews])
+	{
+		if ([subView respondsToSelector:@selector(proxy)])
+		{
+			[(TiViewProxy *)[(TiUIView *)subView proxy] reposition];
+		}
+	}
 }
 
 -(void)manuallyRotateToOrientation:(UIInterfaceOrientation)newOrientation duration:(NSTimeInterval)duration
@@ -192,14 +231,8 @@
 	[self resizeView];
 
 	//Propigate this to everyone else. This has to be done INSIDE the animation.
-	for (UIView * subView in [[self view] subviews])
-	{
-		if ([subView respondsToSelector:@selector(proxy)])
-		{
-			[(TiViewProxy *)[(TiUIView *)subView proxy] reposition];
-		}
-	}
-
+	[self repositionSubviews];
+	
 	if (duration > 0.0)
 	{
 		[UIView commitAnimations];
@@ -218,11 +251,6 @@
 	windowOrientation = toInterfaceOrientation;
 	[self manuallyRotateToOrientation:toInterfaceOrientation duration:duration];
 	[super willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
-}
-
--(BOOL)isEmailViewControllerOnTop
-{
-	return [[windowViewControllers lastObject] isKindOfClass:[MFMailComposeViewController class]];
 }
 
 -(void)setOrientationModes:(NSArray *)newOrientationModes
@@ -322,7 +350,7 @@
 		[self setOrientationModes:nil];
 	}
 
-	if(allowedOrientations[lastOrientation])
+	if(allowedOrientations[lastOrientation] || (lastOrientation == 0))
 	{
 		return; //Nothing to enforce.
 	}
@@ -423,5 +451,9 @@
 	
 }
 
+-(UIViewController *)focusedViewController
+{
+	return [windowViewControllers lastObject];
+}
 
 @end

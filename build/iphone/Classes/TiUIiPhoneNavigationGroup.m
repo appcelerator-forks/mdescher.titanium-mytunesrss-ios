@@ -57,6 +57,27 @@
 	[self controller];
 }
 
+-(void)close
+{
+	if (controller!=nil)
+	{
+		for (UIViewController *viewController in controller.viewControllers)
+		{
+			UIView *view = viewController.view;
+			if ([view isKindOfClass:[TiUIWindow class]])
+			{
+				TiWindowProxy *win =(TiWindowProxy*) ((TiUIWindow*)view).proxy;
+				[win retain];
+				[win close:nil];
+				[win autorelease];
+			}
+		}
+		controller.viewControllers = nil;
+		[controller resignFirstResponder];
+		RELEASE_TO_NIL(controller);
+	}
+}
+
 -(void)open:(TiWindowProxy*)window withObject:(NSDictionary*)properties
 {
 	BOOL animated = [TiUtils boolValue:@"animated" properties:properties def:YES];
@@ -64,22 +85,34 @@
 	current = window;
 	opening = YES;
 	[controller pushViewController:viewController animated:animated];
-    [window setupWindowDecorations];
 }
 
 -(void)close:(TiWindowProxy*)window withObject:(NSDictionary*)properties
 {
+	UIViewController* windowController = [window controller];
+	NSMutableArray* newControllers = [NSMutableArray arrayWithArray:controller.viewControllers];
+	BOOL animated = (windowController == [newControllers lastObject]);
+	[newControllers removeObject:windowController];
+	[controller setViewControllers:newControllers animated:animated];
+	
 	[window retain];
 	[window close:nil];
 	[window autorelease];
 }
+
+- (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
+{
+	[controller willAnimateRotationToInterfaceOrientation:toInterfaceOrientation duration:duration];
+}
+
 
 #pragma mark Delegate 
 
 - (void)navigationController:(UINavigationController *)navigationController willShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {
     TiWindowProxy *newWindow = [(TiWindowViewController*)viewController proxy];
-    [newWindow setupWindowDecorations];
+	[newWindow prepareForNavView:controller];
+	[newWindow setupWindowDecorations];
 }
 - (void)navigationController:(UINavigationController *)navigationController didShowViewController:(UIViewController *)viewController animated:(BOOL)animated
 {

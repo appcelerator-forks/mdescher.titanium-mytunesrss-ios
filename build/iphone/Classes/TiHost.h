@@ -23,6 +23,8 @@
 -(NSURL*)baseURL;
 -(NSURL*)startURL;
 
++(NSURL*)resourceBasedURL:(NSString*)fn baseURL:(NSString**)base;
+
 -(id)moduleNamed:(NSString*)name context:(id<TiEvaluator>)context;
 
 -(void)fireEvent:(id)listener withObject:(id)obj remove:(BOOL)remove context:(id<TiEvaluator>)context thisObject:(TiProxy*)thisObject_;

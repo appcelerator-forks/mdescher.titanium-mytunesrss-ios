@@ -105,10 +105,12 @@ void DoProxyDelegateReadValuesWithKeysFromProxy(UIView<TiProxyDelegate> * target
 -(void)didReceiveMemoryWarning:(NSNotification*)notification;
 -(TiProxy*)currentWindow;
 -(void)contextShutdown:(id)sender;
+-(id)toString:(id)args;
 
 #pragma mark Public 
 -(id<NSFastEnumeration>)allKeys;
--(void)setValuesForKeysWithDictionary:(NSDictionary *)keyedValues usingKeys:(id<NSFastEnumeration>)keys;
+-(NSArray *)keySequence;
+
 +(void)throwException:(NSString *) reason subreason:(NSString*)subreason location:(NSString *)location;
 -(void)throwException:(NSString *) reason subreason:(NSString*)subreason location:(NSString *)location;
 -(void)addEventListener:(NSArray*)args;
@@ -122,6 +124,10 @@ void DoProxyDelegateReadValuesWithKeysFromProxy(UIView<TiProxyDelegate> * target
 
 -(NSDictionary*)allProperties;
 -(void)replaceValue:(id)value forKey:(NSString*)key notification:(BOOL)notify;
+-(void)deleteKey:(NSString*)key;
+
+-(id)sanitizeURL:(id)value;
+
 -(void)setExecutionContext:(id<TiEvaluator>)context;
 
 @end

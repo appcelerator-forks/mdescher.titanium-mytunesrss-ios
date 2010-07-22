@@ -18,6 +18,74 @@
 
 #define DEFAULT_SECTION_HEADERFOOTER_HEIGHT 20.0
 
+@implementation TiUITableViewCell
+
+#pragma mark Touch event handling
+
+// TODO: Replace callback cells with blocks by changing fireEvent: to take special-case
+// code which will allow better interactions with UIControl elements (such as buttons)
+// and table rows/cells.
+-(id)initWithStyle:(UITableViewCellStyle)style_ reuseIdentifier:(NSString *)reuseIdentifier_ row:(TiUITableViewRowProxy *)row_
+{
+	if (self = [super initWithStyle:style_ reuseIdentifier:reuseIdentifier_]) {
+		row = [row_ retain];
+		[row setCallbackCell:self];
+	}
+	
+	return self;
+}
+
+-(id)initWithFrame:(CGRect)frame_ reuseIdentifier:(NSString *)reuseIdentifier_ row:(TiUITableViewRowProxy *)row_
+{
+	if (self = [super initWithFrame:frame_ reuseIdentifier:reuseIdentifier_]) {
+		row = [row_ retain];
+		[row setCallbackCell:self];
+	}
+	
+	return self;
+}
+
+-(void)dealloc
+{
+	RELEASE_TO_NIL(row);
+	[super dealloc];
+}
+
+-(void)setHighlighted:(BOOL)yn
+{
+	[self setHighlighted:yn animated:NO];
+}
+
+-(void)setHighlighted:(BOOL)yn animated:(BOOL)animated
+{
+	[super setHighlighted:yn animated:animated];
+	if (yn) 
+	{
+		if ([row _hasListeners:@"touchstart"])
+		{
+			[row fireEvent:@"touchstart" withObject:[row createEventObject:nil] propagate:YES];
+		}
+	}
+	else
+	{
+		if ([row _hasListeners:@"touchend"]) {
+			[row fireEvent:@"touchend" withObject:[row createEventObject:nil] propagate:YES];
+		}
+	}
+}
+
+-(void)handleEvent:(NSString*)type
+{
+	if ([type isEqual:@"touchstart"]) {
+		[super setHighlighted:YES animated:NO];
+	}
+	else if ([type isEqual:@"touchend"]) {
+		[super setHighlighted:NO animated:YES];
+	}
+}
+
+@end
+
 @implementation TiUITableView
 
 #pragma mark Internal 
@@ -31,7 +99,6 @@
 	}
 	return self;
 }
-
 
 -(void)dealloc
 {
@@ -52,6 +119,7 @@
 	RELEASE_TO_NIL(filterAttribute);
 	RELEASE_TO_NIL(searchResultIndexes);
 	RELEASE_TO_NIL(initialSelection);
+	RELEASE_TO_NIL(tableHeaderPullView);
 	[super dealloc];
 }
 
@@ -79,7 +147,15 @@
 {
 	if (tableview==nil)
 	{
-		UITableViewStyle style = [TiUtils intValue:[self.proxy valueForKey:@"style"] def:UITableViewStylePlain];
+		id styleObject = [self.proxy valueForKey:@"style"];
+		UITableViewStyle style = [TiUtils intValue:styleObject def:UITableViewStylePlain];
+#ifdef VERBOSE
+		NSLog(@"[DEBUG] Generating a new tableView, and style for %@ is %d",[self.proxy valueForKey:@"style"],style);
+		if(styleObject == nil)
+		{
+			NSLog(@"[WARN] No style object!");
+		}
+#endif
 		tableview = [[UITableView alloc] initWithFrame:CGRectMake(0, 0, [self bounds].size.width, [self bounds].size.height) style:style];
 		tableview.delegate = self;
 		tableview.dataSource = self;
@@ -254,7 +330,6 @@
 	}
 
 	[self reloadDataFromCount:oldCount toCount:newCount animation:animation];
-
 }
 
 -(void)updateRow:(TiUITableViewRowProxy*)row
@@ -471,15 +546,21 @@
         [(TiUIViewProxy*)[(TiUIView*)footerView proxy] reposition];
         [[self tableView] setTableFooterView:footerView];
     }
+	
+	[tableview reloadData];
 }
 
-- (void)triggerActionForIndexPath: (NSIndexPath *)indexPath fromPath:(NSIndexPath*)fromPath wasAccessory: (BOOL) accessoryTapped search: (BOOL) viaSearch name:(NSString*)name
+- (void)triggerActionForIndexPath:(NSIndexPath *)indexPath fromPath:(NSIndexPath*)fromPath tableView:(UITableView*)ourTableView wasAccessory: (BOOL)accessoryTapped search:(BOOL)viaSearch name:(NSString*)name
 {
-	int sectionIdx = [indexPath section];
+	NSIndexPath* index = indexPath;
+	if (viaSearch) {
+		index = [self indexPathFromSearchIndex:[indexPath row]];
+	}
+	int sectionIdx = [index section];
 	TiUITableViewSectionProxy *section = [sections objectAtIndex:sectionIdx];
 	
-	int rowIndex = [indexPath row];
-	int index = 0;
+	int rowIndex = [index row];
+	int dataIndex = 0;
 	int c = 0;
 	TiUITableViewRowProxy *row = [section rowAtIndex:rowIndex];
 	
@@ -488,16 +569,16 @@
 	{
 		if (c == sectionIdx)
 		{
-			index += rowIndex;
+			dataIndex += rowIndex;
 			break;
 		}
-		index += [section rowCount];
+		dataIndex += [section rowCount];
 		c++;
 	}
 	
 	NSMutableDictionary * eventObject = [NSMutableDictionary dictionaryWithObjectsAndKeys:
 										 section,@"section",
-										 NUMINT(index),@"index",
+										 NUMINT(dataIndex),@"index",
 										 row,@"row",
 										 NUMBOOL(accessoryTapped),@"detail",
 										 NUMBOOL(viaSearch),@"searchMode",
@@ -514,8 +595,8 @@
 	
 	// fire it to our row since the row, section and table are
 	// in a hierarchy and it will bubble up from there...
-	
-	UITableViewCell * thisCell = [tableview cellForRowAtIndexPath:indexPath];
+
+	UITableViewCell * thisCell = [ourTableView cellForRowAtIndexPath:indexPath];
 	
 	TiProxy * target = [row touchedViewProxyInCell:thisCell];
 
@@ -523,6 +604,10 @@
 	{
 		[target fireEvent:name withObject:eventObject];
 	}	
+	
+	if (viaSearch) {
+		[self hideSearchScreen:nil];
+	}
 }
 
 #pragma mark Searchbar-related accessors
@@ -645,8 +730,14 @@
 			[tableview setContentOffset:CGPointMake(0,0)];
 		}
 	}
-	int sectionCount = [sections count];
-	[self reloadDataFromCount:sectionCount toCount:sectionCount animation:UITableViewRowAnimationNone];
+	// if the first frame size change, don't reload - otherwise, we'll reload
+	// the entire table twice each time - which is a killer on big tables
+	if (frameChanges++ > 0)
+	{
+		int sectionCount = [sections count];
+		[self reloadDataFromCount:sectionCount toCount:sectionCount animation:UITableViewRowAnimationNone];
+	}
+	[super frameSizeChanged:frame bounds:bounds];
 }
 
 #pragma mark Searchbar-related IBActions
@@ -667,6 +758,9 @@
 	[tableview setScrollEnabled:YES];
 	[self.proxy replaceValue:NUMBOOL(YES) forKey:@"searchHidden" notification:NO];
 	[searchController setActive:NO animated:YES];
+	
+	[tableview reloadRowsAtIndexPaths:[tableview indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationNone];
+
 	if (sender==nil)
 	{
 		[UIView beginAnimations:@"searchy" context:nil];
@@ -759,6 +853,8 @@
 	// called when text changes (including clear)
 	if([searchText length]==0)
 	{
+		// Redraw visible cells
+		[tableview reloadRowsAtIndexPaths:[tableview indexPathsForVisibleRows] withRowAnimation:UITableViewRowAnimationNone];
 		[searchTableView removeFromSuperview];
 		return;
 	}
@@ -953,6 +1049,15 @@
 	}
 }
 
+/*
+-(void)setData_:(NSArray *)newData
+{
+	NSDictionary * properties = [NSDictionary dictionaryWithObject:NUMINT(UITableViewRowAnimationNone) forKey:@"animationStyle"];
+	TiUITableViewAction *action = [[[TiUITableViewAction alloc] initWithRow:nil animation:properties section:0 type:TiUITableViewActionSetData] autorelease];
+	[self dispatchAction:action];
+}
+*/
+
 -(void)setSearchHidden_:(id)hide
 {
 	searchHiddenSet = YES;
@@ -1023,6 +1128,12 @@
 	moveable = [TiUtils boolValue:args];
 }
 
+-(void)setScrollable_:(id)args
+{
+	UITableView *table = [self tableView];
+	[table setScrollEnabled:[TiUtils boolValue:args]];
+}
+
 -(void)setEditing_:(id)args withObject:(id)properties
 {
 	[self changeEditing:[TiUtils boolValue:args]];
@@ -1062,6 +1173,46 @@
 	maxRowHeight = [TiUtils dimensionValue:height];
 }
 
+-(void)setHeaderPullView_:(id)value
+{
+	ENSURE_TYPE_OR_NIL(value,TiViewProxy);
+	if (value==nil)
+	{
+		[tableHeaderPullView removeFromSuperview];
+		RELEASE_TO_NIL(tableHeaderPullView);
+	}
+	else 
+	{
+		tableHeaderPullView = [[UIView alloc] initWithFrame:CGRectMake(0.0f, 0.0f - self.tableView.bounds.size.height, self.tableView.bounds.size.width, self.tableView.bounds.size.height)];
+		tableHeaderPullView.backgroundColor = [UIColor lightGrayColor];
+		UIView *view = [value view];
+		[[self tableView] addSubview:tableHeaderPullView];
+		[tableHeaderPullView addSubview:view];
+		[TiUtils setView:view positionRect:[tableHeaderPullView bounds]];
+		CGRect bounds = view.bounds;
+		bounds.origin.x = 0;
+		bounds.origin.y = self.tableView.bounds.size.height - view.bounds.size.height;
+		view.bounds = bounds;
+	}
+}
+
+-(void)setContentInsets_:(id)value withObject:(id)props
+{
+	UIEdgeInsets insets = [TiUtils contentInsets:value];
+	BOOL animated = [TiUtils boolValue:@"animated" properties:props def:NO];
+	if (animated)
+	{
+		[UIView beginAnimations:nil context:nil];
+		double duration = [TiUtils doubleValue:@"duration" properties:props def:300]/1000;
+		[UIView setAnimationDuration:duration];
+	}
+	[[self tableView] setContentInset:insets];
+	if (animated)
+	{
+		[UIView commitAnimations];
+	}
+}
+
 #pragma mark Datasource 
 
 
@@ -1096,32 +1247,19 @@ if(ourTableView != tableview)	\
 
 - (UITableViewCell *)tableView:(UITableView *)ourTableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	if(ourTableView != tableview)
-	{
-		UITableViewCell * result = [ourTableView dequeueReusableCellWithIdentifier:@"__search__"];
-		if(result==nil)
-		{
-			result = [[[UITableViewCell alloc] initWithFrame:CGRectZero reuseIdentifier:@"__search__"] autorelease];
-		}
-		TiUITableViewRowProxy *row = [self rowForIndexPath:[self indexPathFromSearchIndex:[indexPath row]]];
-		NSString *searchFilterField = filterAttribute;
-		if (searchFilterField==nil)
-		{
-			searchFilterField = @"title";
-		}
-		NSString* value = [TiUtils stringValue:[row valueForKey:searchFilterField]];
-		[(id)result setText:value];
-		return result;
+	NSIndexPath* index = indexPath;
+	if (ourTableView != tableview) {
+		index = [self indexPathFromSearchIndex:[indexPath row]];
 	}
 	
-	TiUITableViewRowProxy *row = [self rowForIndexPath:indexPath];
+	TiUITableViewRowProxy *row = [self rowForIndexPath:index];
 	
 	// the classname for all rows that have the same substainal layout will be the same
 	// we reuse them for speed
 	UITableViewCell *cell = [ourTableView dequeueReusableCellWithIdentifier:row.tableClass];
 	if (cell == nil)
 	{
-		cell = [[[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:row.tableClass] autorelease];
+		cell = [[[TiUITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:row.tableClass row:row] autorelease];
 		[row initializeTableViewCell:cell];
 	}
 	else
@@ -1166,7 +1304,7 @@ if(ourTableView != tableview)	\
 		NSIndexPath *path = [self indexPathFromInt:index];
 		
 		// note, trigger action before the update since on the last delete it will be gone..
-		[self triggerActionForIndexPath:indexPath fromPath:nil wasAccessory:NO search:NO name:@"delete"];
+		[self triggerActionForIndexPath:indexPath fromPath:nil tableView:ourTableView wasAccessory:NO search:NO name:@"delete"];
 		
 		[[section rows] removeObjectAtIndex:[indexPath row]];
         
@@ -1277,7 +1415,7 @@ if(ourTableView != tableview)	\
 	[fromRow autorelease];
 	[toRow autorelease];
 	
-	[self triggerActionForIndexPath:destinationIndexPath fromPath:sourceIndexPath wasAccessory:NO search:NO name:@"move"];
+	[self triggerActionForIndexPath:destinationIndexPath fromPath:sourceIndexPath tableView:ourTableView wasAccessory:NO search:NO name:@"move"];
 }
 
 #pragma mark Collation
@@ -1332,25 +1470,28 @@ if(ourTableView != tableview)	\
 
 - (void)tableView:(UITableView *)ourTableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+	BOOL search = NO;
 	if (allowsSelectionSet==NO || [ourTableView allowsSelection]==NO)
 	{
 		[ourTableView deselectRowAtIndexPath:indexPath animated:YES];
 	}
 	if(ourTableView != tableview)
 	{
-		[self hideSearchScreen:nil];
-		indexPath = [self indexPathFromSearchIndex:[indexPath row]];
+		search = YES;
 	}
-	[self triggerActionForIndexPath:indexPath fromPath:nil wasAccessory:NO search:NO name:@"click"];
+	[self triggerActionForIndexPath:indexPath fromPath:nil tableView:ourTableView wasAccessory:NO search:search name:@"click"];
 }
 
 
 -(void)tableView:(UITableView *)ourTableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	RETURN_IF_SEARCH_TABLE_VIEW();
+	NSIndexPath* index = indexPath;
+	if (ourTableView != tableview) {
+		index = [self indexPathFromSearchIndex:[indexPath row]];
+	}
 	
-	TiUITableViewSectionProxy *section = [sections objectAtIndex:[indexPath section]];
-	TiUITableViewRowProxy *row = [section rowAtIndex:[indexPath row]];
+	TiUITableViewRowProxy *row = [self rowForIndexPath:index];
+	
 	NSString *color = [row valueForKey:@"backgroundColor"];
 	if (color==nil)
 	{
@@ -1360,26 +1501,27 @@ if(ourTableView != tableview)	\
 			color = [self.proxy valueForKey:@"backgroundColor"];
 		}
 	}
-	if (color!=nil)
-	{
-		cell.backgroundColor = UIColorWebColorNamed(color);
-	}
+	UIColor * cellColor = UIColorWebColorNamed(color);
+	cell.backgroundColor = (cellColor != nil)?cellColor:[UIColor whiteColor];
 	
-	if (initiallyDisplayed==NO && [indexPath section]==[sections count]-1 && [indexPath row]==[section rowCount]-1)
-	{
-		// we need to track when we've initially rendered the last row
-		initiallyDisplayed = YES;
-		
-		// trigger the initial selection
-		if (initialSelection!=nil)
+	if (tableview == ourTableView) {
+		TiUITableViewSectionProxy *section = [sections objectAtIndex:[indexPath section]];
+		if (initiallyDisplayed==NO && [indexPath section]==[sections count]-1 && [indexPath row]==[section rowCount]-1)
 		{
-			// we seem to have to do this after this has fully completed so we 
-			// just spin off and do this just a few ms later
-			NSInteger index = [self indexForIndexPath:initialSelection];
-			NSDictionary *dict = [NSDictionary dictionaryWithObject:NUMBOOL(NO) forKey:@"animated"];
-			NSArray *args = [NSArray arrayWithObjects:NUMINT(index),dict,nil];
-			[self performSelector:@selector(selectRow:) withObject:args afterDelay:0.09];
-			RELEASE_TO_NIL(initialSelection);
+			// we need to track when we've initially rendered the last row
+			initiallyDisplayed = YES;
+			
+			// trigger the initial selection
+			if (initialSelection!=nil)
+			{
+				// we seem to have to do this after this has fully completed so we 
+				// just spin off and do this just a few ms later
+				NSInteger index = [self indexForIndexPath:initialSelection];
+				NSDictionary *dict = [NSDictionary dictionaryWithObject:NUMBOOL(NO) forKey:@"animated"];
+				NSArray *args = [NSArray arrayWithObjects:NUMINT(index),dict,nil];
+				[self performSelector:@selector(selectRow:) withObject:args afterDelay:0.09];
+				RELEASE_TO_NIL(initialSelection);
+			}
 		}
 	}
 }
@@ -1387,7 +1529,6 @@ if(ourTableView != tableview)	\
 - (NSString *)tableView:(UITableView *)ourTableView titleForDeleteConfirmationButtonForRowAtIndexPath:(NSIndexPath *)indexPath
 {
 	RETURN_IF_SEARCH_TABLE_VIEW(nil);
-	//TODO
 	TiUITableViewRowProxy * ourRow = [self rowForIndexPath:indexPath];
 	NSString * result = [TiUtils stringValue:[ourRow valueForKey:@"deleteButtonTitle"]];
 	if (result == nil)
@@ -1404,7 +1545,7 @@ if(ourTableView != tableview)	\
 
 - (void)tableView:(UITableView *)ourTableView accessoryButtonTappedForRowWithIndexPath:(NSIndexPath *)indexPath
 {
-	[self triggerActionForIndexPath:indexPath fromPath:nil wasAccessory:YES search:NO name:@"click"];
+	[self triggerActionForIndexPath:indexPath fromPath:nil tableView:ourTableView wasAccessory:YES search:NO name:@"click"];
 }
 
 - (NSInteger)tableView:(UITableView *)ourTableView indentationLevelForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -1418,9 +1559,12 @@ if(ourTableView != tableview)	\
 
 - (CGFloat)tableView:(UITableView *)ourTableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-	RETURN_IF_SEARCH_TABLE_VIEW(ourTableView.rowHeight);
+	NSIndexPath* index = indexPath;
+	if (ourTableView != tableview) {
+		index = [self indexPathFromSearchIndex:[indexPath row]];
+	}
 	
-	TiUITableViewRowProxy *row = [self rowForIndexPath:indexPath];
+	TiUITableViewRowProxy *row = [self rowForIndexPath:index];
 	CGFloat height = [row rowHeight:tableview.bounds];
 	height = [self tableRowHeight:height];
 	return height < 1 ? tableview.rowHeight : height;
@@ -1552,6 +1696,22 @@ if(ourTableView != tableview)	\
 	return YES;
 }
 
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView
+{	
+	if (scrollView.isDragging) 
+	{
+		if ([self.proxy _hasListeners:@"scroll"])
+		{
+			NSMutableDictionary *event = [NSMutableDictionary dictionary];
+			[event setObject:[TiUtils pointToDictionary:scrollView.contentOffset] forKey:@"contentOffset"];
+			[event setObject:[TiUtils sizeToDictionary:scrollView.contentSize] forKey:@"contentSize"];
+			[event setObject:[TiUtils sizeToDictionary:tableview.bounds.size] forKey:@"size"];
+			[self.proxy fireEvent:@"scroll" withObject:event];
+		}
+	}
+}
+
+
 - (void)scrollViewDidScrollToTop:(UIScrollView *)scrollView 
 {
 	// resume image loader when we're done scrolling
@@ -1571,6 +1731,14 @@ if(ourTableView != tableview)	\
 		// resume image loader when we're done scrolling
 		[[ImageLoader sharedLoader] resume];
 	}
+	if ([self.proxy _hasListeners:@"scrollEnd"])
+	{
+		NSMutableDictionary *event = [NSMutableDictionary dictionary];
+		[event setObject:[TiUtils pointToDictionary:scrollView.contentOffset] forKey:@"contentOffset"];
+		[event setObject:[TiUtils sizeToDictionary:scrollView.contentSize] forKey:@"contentSize"];
+		[event setObject:[TiUtils sizeToDictionary:tableview.bounds.size] forKey:@"size"];
+		[self.proxy fireEvent:@"scrollEnd" withObject:event];
+	}
 }
 
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView 
@@ -1588,7 +1756,6 @@ if(ourTableView != tableview)	\
     [tableView setBackgroundColor:[[self tableView] backgroundColor]];
     [tableView setSeparatorStyle:[[self tableView] separatorStyle]];
     [tableView setSeparatorColor:[[self tableView] separatorColor]];
-    [tableView setRowHeight:[[self tableView] rowHeight]];
 }
 
 - (void) searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller

@@ -38,6 +38,7 @@ DEFINE_EXCEPTIONS
 	RELEASE_TO_NIL(container);
 	RELEASE_TO_NIL(previous);
 	RELEASE_TO_NIL(urlRequest);
+	RELEASE_TO_NIL(imageView);
 	[super dealloc];
 }
 
@@ -198,9 +199,9 @@ DEFINE_EXCEPTIONS
 	[self.proxy fireEvent:@"load" withObject:event];
 }
 
-
 -(UIImage*)scaleImageIfRequired:(UIImage*)theimage
 {
+	UIImage* newImage = theimage;
 	// attempt to scale the image
 	if (width > 0 || height > 0)
 	{
@@ -213,9 +214,9 @@ DEFINE_EXCEPTIONS
 			autoHeight = theimage.size.height;
 		}
 
-		theimage = [UIImageResize resizedImage:CGSizeMake(width, height) interpolationQuality:kCGInterpolationDefault image:theimage];
+		newImage = [UIImageResize resizedImage:CGSizeMake(width, height) interpolationQuality:kCGInterpolationDefault image:theimage];
 	}
-	return theimage;
+	return newImage;
 }
 
 -(void)setImageOnUIThread:(NSArray*)args
@@ -284,53 +285,34 @@ DEFINE_EXCEPTIONS
 	}
 }
 
+
+-(UIImageView *)imageView
+{
+	if (imageView==nil)
+	{
+		imageView = [[UIImageView alloc] initWithFrame:[self bounds]];
+		[imageView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
+		[imageView setContentMode:UIViewContentModeCenter];
+		[self addSubview:imageView];
+	}
+	return imageView;
+}
+
 -(void)setURLImageOnUIThread:(UIImage*)image
 {
-	// don't stomp on the animations
+	UIImageView *iv = [self imageView];
+	iv.image = image;
 	if (placeholderLoading)
 	{
-		UIImageView *iv = [[UIImageView alloc] initWithImage:image];
-		iv.autoresizingMask = UIViewAutoresizingNone;
-		iv.contentMode = UIViewContentModeCenter;
-		iv.alpha = 0;
-		
-		autoWidth = image.size.width;
-		autoHeight = image.size.height;
-
-		[self addSubview:iv];
-		[TiUtils setView:iv positionRect:[self bounds]];
-		[self sendSubviewToBack:iv];
-		[iv release];
-		[(TiViewProxy *)[self proxy] setNeedsReposition];
-
-		// do a nice fade in animation to replace the new incoming image
-		// with our placeholder
-		[UIView beginAnimations:nil context:nil];
-		[UIView setAnimationDuration:0.5];
-		[UIView setAnimationDelegate:self];
-		[UIView setAnimationDidStopSelector:@selector(animationCompleted:finished:context:)];
-		
-		for (UIView *view in [self subviews])
-		{
-			if (view!=iv)
-			{	
-				[view setAlpha:0];
-			}
-		}
-		
-		iv.alpha = 1;
-		
-		[UIView commitAnimations];
+		placeholderLoading = NO;
+		[self fireLoadEventWithState:@"url"];
 	}
-	
-	placeholderLoading = NO;
 }
 
 -(void)loadURLImageInBackground:(NSURL*)url
 {
 	UIImage *image = [[ImageLoader sharedLoader] loadRemote:url];
 	image = [self scaleImageIfRequired:image];
-	[self fireLoadEventWithState:@"url"];
 	[self performSelectorOnMainThread:@selector(setURLImageOnUIThread:) withObject:image waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 }
 
@@ -355,28 +337,118 @@ DEFINE_EXCEPTIONS
 	}
 }
 
--(UIImageView *)imageView
+-(void)removeAllImagesFromContainer
 {
-	UIImageView * imageView = nil;
+	// remove any existing images
+	if (container!=nil)
+	{
+		for (UIView *view in [container subviews])
+		{
+			[view removeFromSuperview];
+		}
+	}
+	if (imageView!=nil)
+	{
+		imageView.image = nil;
+	}
+}
 
-	if (imageView == nil)
+-(void)cancelPendingImageLoads
+{
+	// cancel a pending request if we have one pending
+	if (urlRequest!=nil)
 	{
-		imageView = [[UIImageView alloc] initWithFrame:[self bounds]];
-		[imageView setAutoresizingMask:UIViewAutoresizingFlexibleWidth|UIViewAutoresizingFlexibleHeight];
-		[imageView setContentMode:UIViewContentModeCenter];
+		[urlRequest cancel];
+		RELEASE_TO_NIL(urlRequest);
 	}
-	if ([imageView superview] != self)
+	placeholderLoading = NO;
+}
+
+-(void)loadUrl:(id)img
+{
+	[self cancelPendingImageLoads];
+	
+	if (img!=nil)
 	{
-		[self addSubview:imageView];
+		[self removeAllImagesFromContainer];
+		
+		NSURL *url_ = [TiUtils toURL:img proxy:self.proxy];
+		CGSize imageSize = CGSizeMake(width, height);
+		
+		UIImage *image = [[ImageLoader sharedLoader] loadImmediateImage:url_ withSize:imageSize];
+		if (image==nil)
+		{
+			// use a placeholder image - which the dev can specify with the
+			// defaultImage property or we'll provide the MyTunesRSS stock one
+			// if not specified
+			NSURL *defURL = [TiUtils toURL:[self.proxy valueForKey:@"defaultImage"] proxy:self.proxy];
+			
+			if ((defURL == nil) && ![TiUtils boolValue:[self.proxy valueForKey:@"preventDefaultImage"] def:NO])
+			{
+				NSString * filePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"modules/ui/images/photoDefault.png"];
+				defURL = [NSURL fileURLWithPath:filePath];
+			}
+			if (defURL!=nil)
+			{
+				UIImage *poster = [[ImageLoader sharedLoader] loadImmediateImage:defURL withSize:imageSize];
+				[self imageView].image = poster;
+			}
+			placeholderLoading = YES;
+			urlRequest = [[[ImageLoader sharedLoader] loadImage:url_ delegate:self userInfo:nil] retain];
+			return;
+		}
+		if (image!=nil)
+		{
+			[self imageView].image = image;
+			[self fireLoadEventWithState:@"url"];
+		}
+		else 
+		{
+			NSLog(@"[ERROR] couldn't find image for ImageView at: %@",img);
+		}
 	}
-	
-	[imageView autorelease];
-	
-	return imageView;
 }
 
 
+-(UIView*)container
+{
+	if (container==nil)
+	{
+		// we use a separate container view so we can both have an image
+		// and a set of images
+		container = [[UIView alloc] initWithFrame:self.bounds];
+		[self addSubview:container];
+	}
+	return container;
+}
 
+-(UIImage*)convertToUIImage:(id)arg
+{
+	UIImage *image = nil;
+	
+	if ([arg isKindOfClass:[TiBlob class]])
+	{
+		TiBlob *blob = (TiBlob*)arg;
+		image = [self scaleImageIfRequired:[blob image]];
+	}
+	else if ([arg isKindOfClass:[TiFile class]])
+	{
+		TiFile *file = (TiFile*)arg;
+		NSURL * fileUrl = [NSURL fileURLWithPath:[file path]];		
+		image = [[ImageLoader sharedLoader] loadImmediateImage:fileUrl withSize:CGSizeMake(width, height)];
+	}
+	else if ([arg isKindOfClass:[NSString class]]) {
+		NSURL *url_ = [TiUtils toURL:arg proxy:self.proxy];
+		image = [[ImageLoader sharedLoader] loadImmediateImage:url_ withSize:CGSizeMake(width, height)];
+	}
+	else if ([arg isKindOfClass:[UIImage class]])
+	{
+		// called within this class
+		image = (UIImage*)arg;
+	}
+	
+	return image;
+}
 
 #pragma mark Public APIs
 
@@ -461,40 +533,78 @@ DEFINE_EXCEPTIONS
 -(void)setWidth_:(id)width_
 {
 	width = [TiUtils floatValue:width_];
+	if (imageView!=nil)
+	{
+		id image = [[self proxy] valueForUndefinedKey:@"image"];
+		if (image != nil) {
+			[self setImage_:[self scaleImageIfRequired:[self convertToUIImage:image]]];
+		}
+	}
 }
 
 -(void)setHeight_:(id)height_
 {
 	height = [TiUtils floatValue:height_];
+	if (imageView!=nil)
+	{
+		id image = [[self proxy] valueForUndefinedKey:@"image"];
+		if (image != nil) {
+			[self setImage_:[self scaleImageIfRequired:[self convertToUIImage:image]]];
+		}
+	}
 }
 
 -(void)setImage_:(id)arg
 {
-	if ([arg isKindOfClass:[TiBlob class]])
+	id currentImage = [self.proxy valueForUndefinedKey:@"image"];
+	
+	UIImageView *imageview = [self imageView];
+	
+	[self removeAllImagesFromContainer];
+	[self cancelPendingImageLoads];
+	
+	[self.proxy replaceValue:arg forKey:@"image" notification:NO];
+	
+	if (arg==nil || arg==imageview.image)
 	{
-		TiBlob *blob = (TiBlob*)arg;
-		UIImage *image = [self scaleImageIfRequired:[blob image]];
-		[[self imageView] setImage:image];
-
-		autoHeight = image.size.height;
-		autoWidth = image.size.width;
-		[self.proxy replaceValue:arg forKey:@"image" notification:NO];
+		return;
 	}
-	else if ([arg isKindOfClass:[TiFile class]])
+	
+	BOOL replaceProperty = YES;
+	UIImage *image = nil;
+	
+	if ([arg isKindOfClass:[UIImage class]]) 
 	{
-		TiFile *file = (TiFile*)arg;
-		NSURL * fileUrl = [NSURL fileURLWithPath:[file path]];		
-		UIImage *image = [[ImageLoader sharedLoader] loadImmediateImage:fileUrl withSize:CGSizeMake(width, height)];
-
-		autoHeight = image.size.height;
-		autoWidth = image.size.width;
-		[[self imageView] setImage:image];
-
-		[self.proxy replaceValue:arg forKey:@"image" notification:NO];
+		// called within this class
+		image = (UIImage*)arg;
 	}
-	else
+	else 
 	{
-		[self throwException:@"invalid image type" subreason:[NSString stringWithFormat:@"expected either TiBlob or TiFile, was: %@",[arg class]] location:CODELOCATION];
+		image = [self convertToUIImage:arg];
+	}
+	
+	if (image == nil) 
+	{
+		if ([arg isKindOfClass:[NSString class]])
+		{
+			[self loadUrl:arg];
+			return;
+		}
+		else
+		{
+			[self throwException:@"invalid image type" subreason:[NSString stringWithFormat:@"expected either TiBlob or TiFile, was: %@",[arg class]] location:CODELOCATION];
+			return;
+		}
+	}
+
+	autoHeight = image.size.height;
+	autoWidth = image.size.width;
+	
+	[imageview setImage:image];
+	
+	if (currentImage!=image)
+	{
+		[self fireLoadEventWithState:@"url"];
 	}
 }
 
@@ -504,27 +614,20 @@ DEFINE_EXCEPTIONS
 	
 	[self stop];
 	
-	// remove any existing images
-	if (container!=nil)
+	if (imageView!=nil)
 	{
-		for (UIView *view in [container subviews])
-		{
-			[view removeFromSuperview];
-		}
+		imageView.image = nil;
 	}
+	
+	// remove any existing images
+	[self removeAllImagesFromContainer];
 	
 	RELEASE_TO_NIL(images);
 	ENSURE_TYPE_OR_NIL(args,NSArray);
 
 	if (args!=nil)
 	{
-		if (container==nil)
-		{
-			// we use a separate container view so we can both have an image
-			// and a set of images
-			container = [[UIView alloc] initWithFrame:self.bounds];
-			[self addSubview:container];
-		}
+		[self container];
 		images = [[NSMutableArray alloc] initWithCapacity:[args count]];
 		loadTotal = [args count];
 		for (size_t c = 0; c < [args count]; c++)
@@ -544,80 +647,15 @@ DEFINE_EXCEPTIONS
 	}
 }
 
+// we can't have dualing properties that do the same thing or we get into big
+// trouble in tableview repaints
 -(void)setUrl_:(id)img
 {
-	// wait until the view is completely sent properties before we do this
-	if ([self viewConfigured]==NO)
-	{
-		return;
-	}
-	
-	// cancel a pending request if we have one pending
-	if (urlRequest!=nil)
-	{
-		[urlRequest cancel];
-		RELEASE_TO_NIL(urlRequest);
-	}
-	
-	if (img!=nil)
-	{
-		// remove current subview
-		for (UIView *view in [self subviews])
-		{
-			if ([view isKindOfClass:[UIImageView class]])
-			{
-				[view removeFromSuperview];
-			}
-		}
-		
-		NSURL *url_ = [TiUtils toURL:img proxy:self.proxy];
-		CGSize imageSize = CGSizeMake(width, height);
-
-		UIImage *image = [[ImageLoader sharedLoader] loadImmediateImage:url_ withSize:imageSize];
-		if (image==nil)
-		{
-			// use a placeholder image - which the dev can specify with the
-			// defaultImage property or we'll provide the MyTunesRSS stock one
-			// if not specified
-			NSURL *defURL = [TiUtils toURL:[self.proxy valueForKey:@"defaultImage"] proxy:self.proxy];
-
-			if ((defURL == nil) && ![TiUtils boolValue:[self.proxy valueForKey:@"preventDefaultImage"] def:NO])
-			{
-				NSString * filePath = [[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:@"modules/ui/images/photoDefault.png"];
-				defURL = [NSURL fileURLWithPath:filePath];
-			}
-			if (defURL!=nil)
-			{
-				UIImage *poster = [[ImageLoader sharedLoader] loadImmediateImage:defURL withSize:imageSize];
-				autoWidth = poster.size.width;
-				autoHeight = poster.size.height;
-				[[self imageView] setImage:poster];
-
-			}
-			placeholderLoading = YES;
-			urlRequest = [[[ImageLoader sharedLoader] loadImage:url_ delegate:self userInfo:nil] retain];
-			return;
-		}
-		if (image!=nil)
-		{
-			[[self imageView] setImage:image];
-
-			
-			if (width == 0 || height == 0)
-			{
-				autoWidth = image.size.width;
-				autoHeight = image.size.height;
-				[(TiViewProxy *)[self proxy] setNeedsReposition];
-			}
-			
-			[self fireLoadEventWithState:@"url"];
-		}
-		else 
-		{
-			NSLog(@"[ERROR] couldn't find image for ImageView at: %@",img);
-		}
-	}
+	NSLog(@"[WARN] the 'url' property on ImageView has been deprecated. Please use 'image' instead");
+	[self.proxy replaceValue:img forKey:@"image" notification:YES];
+	return;
 }
+
 
 -(void)setDuration_:(id)duration
 {
@@ -632,21 +670,6 @@ DEFINE_EXCEPTIONS
 -(void)setReverse_:(id)value
 {
 	reverse = [TiUtils boolValue:value];
-}
-
--(void)setReload__:(id)value
-{
-	// this is internally called when we cancelled this image load to force
-	// the url to be reloaded - otherwise the tableview cell will think we 
-	// have the same url and not call us to re-render
-	[self setUrl_:[self.proxy valueForKey:@"url"]];
-}
-
-#pragma mark Configuration 
-
--(void)configurationSet
-{
-	[self setUrl_:[self.proxy valueForKey:@"url"]];
 }
 
 
@@ -665,7 +688,6 @@ DEFINE_EXCEPTIONS
 		{
 			image = [self scaleImageIfRequired:image];
 		}
-		[self fireLoadEventWithState:@"url"];
 		[self performSelectorOnMainThread:@selector(setURLImageOnUIThread:) withObject:image waitUntilDone:NO modes:[NSArray arrayWithObject:NSRunLoopCommonModes]];
 		RELEASE_TO_NIL(urlRequest);
 	}
@@ -682,10 +704,6 @@ DEFINE_EXCEPTIONS
 
 -(void)imageLoadCancelled:(ImageLoaderRequest *)request
 {
-	// we place a value in the proxy to cause us to force a reload - since on a cancel
-	// the url will be the same and the table view won't call us unless the proxy value
-	// is different
-	[self.proxy replaceValue:NUMLONG([NSDate timeIntervalSinceReferenceDate]) forKey:@"reload_" notification:NO];	
 }
 
 

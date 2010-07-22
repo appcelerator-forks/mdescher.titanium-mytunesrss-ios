@@ -6,30 +6,33 @@
  * 
  * WARNING: This is generated code. Modify at your own risk and without support.
  */
+#import "TiBase.h"
+
 #ifdef USE_TI_UIIPADSPLITWINDOW
+#ifndef USE_TI_UIIPADSPLITWINDOWBUTTON
+#define USE_TI_UIIPADSPLITWINDOWBUTTON
+#endif
+
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_3_2
 
 #import "TiUIiPadSplitWindow.h"
 #import "TiUtils.h"
 #import "TiViewController.h"
 #import "TiApp.h"
 #import "TiUIiPadPopoverProxy.h"
-
-#ifndef USE_TI_UIIPADSPLITWINDOWBUTTON
-#define USE_TI_UIIPADSPLITWINDOWBUTTON
-#endif
+#import "TiSplitViewController.h"
 
 #ifdef USE_TI_UIIPADSPLITWINDOWBUTTON
 #import "TiUIiPadSplitWindowButtonProxy.h"
 #endif
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_3_2
 
 @implementation TiUIiPadSplitWindow
 
 -(void)dealloc
 {
 	[[[TiApp app] controller] windowClosed:controller];
-	RELEASE_TO_NIL(popoverProxy);
 	RELEASE_TO_NIL(controller);
 	[super dealloc];
 }
@@ -38,33 +41,19 @@
 {
 	if (controller==nil)
 	{
-		masterProxy = [self.proxy valueForUndefinedKey:@"masterView"];
-		detailProxy = [self.proxy valueForUndefinedKey:@"detailView"];
+		TiViewProxy* masterProxy = [self.proxy valueForUndefinedKey:@"masterView"];
+		TiViewProxy* detailProxy = [self.proxy valueForUndefinedKey:@"detailView"];
 
-		TiViewController *mc = [[TiViewController alloc] initWithViewProxy:masterProxy];
-		TiViewController *dc = [[TiViewController alloc] initWithViewProxy:detailProxy];
-
-		UINavigationController *leftNav = [[UINavigationController alloc] initWithRootViewController:mc];
-		UINavigationController *rightNav = [[UINavigationController alloc] initWithRootViewController:dc];
-		
-		leftNav.navigationBarHidden = YES;
-		rightNav.navigationBarHidden = YES;
-
-		controller = [[UISplitViewController alloc] init];
-		controller.viewControllers = [NSArray arrayWithObjects:leftNav,rightNav,nil];
+		controller = [[TiSplitViewController alloc] initWithRootController:(TiRootViewController*)[[TiApp app] controller] masterProxy:masterProxy detailProxy:detailProxy];
 		controller.delegate = self;
 		
-		//		[self addSubview:controller.view];
-		
-		//		[[[TiApp app] controller] windowFocused:controller];
-
 		UIWindow *window = [TiApp app].window;
-		TiRootViewController *viewController = [[TiApp app] controller];
+		UIViewController<TiRootController> *viewController = [[TiApp app] controller];
 		[[viewController view] removeFromSuperview];
+		[[TiApp app] setController:controller];
 		[window addSubview:[controller view]];
-				
-		[mc release];
-		[dc release];
+		[controller resizeView];
+		[controller repositionSubviews];
 	}
 	return controller;
 }
@@ -113,25 +102,6 @@
 
 #pragma mark Delegate 
 
--(TiUIiPadPopoverProxy*)makePopoverProxy:(UIPopoverController*)pc
-{
-	// we can re-use a cached version
-	
-	if (pc == popover && popoverProxy!=nil)
-	{
-		return popoverProxy;
-	}
-	
-	RELEASE_TO_NIL(popoverProxy);
-	
-	popover = pc; // assign only
-	
-	popoverProxy = [[TiUIiPadPopoverProxy alloc] _initWithPageContext:[self.proxy pageContext]];
-	// we assign this as a special proxy property that the popover proxy can use
-	[popoverProxy replaceValue:pc forKey:@"popoverController" notification:NO];
-	return popoverProxy;
-}
-
 - (void)splitViewController:(UISplitViewController*)svc willHideViewController:(UIViewController *)aViewController withBarButtonItem:(UIBarButtonItem*)barButtonItem forPopoverController:(UIPopoverController*)pc
 {
 	if ([self.proxy _hasListeners:@"visible"])
@@ -142,7 +112,6 @@
 		[event setObject:button forKey:@"button"];
 		[button release];
 #endif		
-		[event setValue:[self makePopoverProxy:pc] forKey:@"popover"];
 		[self.proxy fireEvent:@"visible" withObject:event];
 	}
 }
@@ -161,7 +130,6 @@
 	if ([self.proxy _hasListeners:@"visible"])
 	{
 		NSMutableDictionary *event = [NSMutableDictionary dictionaryWithObject:@"popover" forKey:@"view"];
-		[event setValue:[self makePopoverProxy:pc] forKey:@"popover"];
 		[self.proxy fireEvent:@"visible" withObject:event];
 	}
 }

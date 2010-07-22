@@ -6,6 +6,8 @@
  * 
  * WARNING: This is generated code. Modify at your own risk and without support.
  */
+#import "TiBase.h"
+
 #ifdef USE_TI_UIIPADSPLITWINDOW
 
 // if we use a split window, we need to include the ipad popover
@@ -13,21 +15,16 @@
 #define USE_TI_UIIPADPOPOVER
 #endif
 
-
-#import "TiUIView.h"
-
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_3_2
+#import "TiUIView.h"
+#import "TiSplitViewController.h"
 
 @class TiUIiPadPopoverProxy;
 
 @interface TiUIiPadSplitWindow : TiUIView<UISplitViewControllerDelegate> {
 
 @private
-	UISplitViewController *controller;
-	TiViewProxy *masterProxy; // don't retain
-	TiViewProxy *detailProxy; // don't retain
-	TiUIiPadPopoverProxy *popoverProxy;
-	UIPopoverController *popover;
+	TiSplitViewController *controller;
 }
 
 -(UIViewController*)controller;

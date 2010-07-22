@@ -10,6 +10,9 @@
 #import <UIKit/UIKit.h>
 #import "defines.h"
 
+#ifndef TI_BASE_H
+#define TI_BASE_H
+
 #define MEMORY_DEBUG 0
 
 #ifdef DEBUG
@@ -56,6 +59,7 @@ if (![NSThread isMainThread]) { \
 return; \
 } \
 
+// TODO: This is wrong for functions which do not take any argument.
 #define ENSURE_UI_THREAD_0_ARGS		ENSURE_UI_THREAD_1_ARG(nil)
 
 //TODO: Is there any time where @selector(x:) is not _sel (IE, the called method for 1 arg?
@@ -277,6 +281,12 @@ return (NSString*)map;\
 return [NSNumber numberWithUnsignedInt:map];\
 }\
 
+#define MAKE_SYSTEM_NUMBER(name,map) \
+-(NSNumber*)name \
+{\
+return map;\
+}\
+
 #define NUMBOOL(x) \
 [NSNumber numberWithBool:x]\
 
@@ -417,7 +427,10 @@ typedef enum {
 
 
 extern NSString * const kKrollShutdownNotification;
+extern NSString * const kTiWillShutdownNotification;
 extern NSString * const kTiShutdownNotification;
+extern NSString * const kTiSuspendNotification;
+extern NSString * const kTiResumeNotification;
 extern NSString * const kTiAnalyticsNotification;
 extern NSString * const kTiRemoteDeviceUUIDNotification;
 extern NSString * const kTiGestureShakeNotification;
@@ -427,3 +440,17 @@ extern NSString * const kTiGestureShakeNotification;
 #define __IPHONE_3_2 30200
 #endif
 
+#ifndef __IPHONE_4_0
+#define __IPHONE_4_0 40000
+#endif
+
+
+#ifndef ASI_AUTOUPDATE_NETWORK_INDICATOR
+	#define ASI_AUTOUPDATE_NETWORK_INDICATOR 0
+#endif
+
+#ifndef ASI_AUTOUPDATE_NETWORK_INDICATOR
+	#define REACHABILITY_20_API 1
+#endif
+
+#endif

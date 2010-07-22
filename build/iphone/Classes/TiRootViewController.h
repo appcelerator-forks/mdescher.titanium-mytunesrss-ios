@@ -7,12 +7,14 @@
  * WARNING: This is generated code. Modify at your own risk and without support.
  */
 
+#import "TiRootController.h"
+
 @class TiProxy;
 @class TiWindowProxy;
 
 #define MAX_ORIENTATIONS	7
 
-@interface TiRootViewController : UIViewController<UIApplicationDelegate> {
+@interface TiRootViewController : UIViewController<UIApplicationDelegate,TiRootController> {
 @private
 	NSMutableArray *windowViewControllers;	
 	TiWindowProxy *currentWindow;	//NOT RETAINED
@@ -31,12 +33,15 @@
 @property(nonatomic,readwrite,retain)	UIColor * backgroundColor;
 @property(nonatomic,readwrite,retain)	UIImage * backgroundImage;
 
+-(UIViewController *)focusedViewController;
+
 -(void)windowFocused:(UIViewController*)focusedViewController;
 -(void)windowClosed:(UIViewController *)closedViewController;
 
 -(CGRect)resizeView;
+-(void)repositionSubviews;
 
--(void) manuallyRotateToOrientation:(UIInterfaceOrientation)orientation;
+-(void)manuallyRotateToOrientation:(UIInterfaceOrientation)orientation;
 -(void)manuallyRotateToOrientation:(UIInterfaceOrientation)newOrientation duration:(NSTimeInterval)duration;
 
 -(void)refreshOrientationModesIfNeeded:(TiWindowProxy *)oldCurrentWindow;
