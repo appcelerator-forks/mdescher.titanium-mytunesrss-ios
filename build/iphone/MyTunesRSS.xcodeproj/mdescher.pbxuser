@@ -49,6 +49,27 @@
 			sepNavVisRange = "{0, 2814}";
 		};
 	};
+	24CA8A071111618F0084E2DE /* TiValueRef.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 3835}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 2669}";
+		};
+	};
+	24CA8A18111161FD0084E2DE /* TiViewProxy.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 14404}}";
+			sepNavSelRange = "{21708, 24}";
+			sepNavVisRange = "{20820, 1626}";
+		};
+	};
+	24CA8A1B111161FD0084E2DE /* TiViewController.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 932}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 521}";
+		};
+	};
 	24CA8A22111161FD0084E2DE /* TiUIWindowProxy.m */ = {
 		uiCtxt = {
 			sepNavIntBoundsRect = "{{0, 0}, {1414, 7709}}";
@@ -70,6 +91,34 @@
 			sepNavSelRange = "{19444, 0}";
 			sepNavVisRange = "{18798, 2058}";
 			sepNavWindowFrame = "{{38, 291}, {1293, 1101}}";
+		};
+	};
+	24CA8A8D111161FD0084E2DE /* TiUICanvasView.h */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 932}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 527}";
+		};
+	};
+	24CA8A8E111161FD0084E2DE /* TiUIButtonProxy.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 1677}}";
+			sepNavSelRange = "{0, 0}";
+			sepNavVisRange = "{0, 1548}";
+		};
+	};
+	24CA8AB0111161FD0084E2DE /* TiProxy.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 12246}}";
+			sepNavSelRange = "{17921, 0}";
+			sepNavVisRange = "{17713, 1674}";
+		};
+	};
+	24CA8ABA111161FD0084E2DE /* TiMediaVideoPlayerProxy.m */ = {
+		uiCtxt = {
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 13598}}";
+			sepNavSelRange = "{6960, 0}";
+			sepNavVisRange = "{14535, 1468}";
 		};
 	};
 	24CA8ABE111161FD0084E2DE /* TiMediaAudioPlayerProxy.m */ = {
@@ -107,9 +156,9 @@
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Release;
+		activeBuildConfigurationName = Debug;
 		activeExecutable = D2752CD0119DF8F5002C5D0E /* MyTunesRSS */;
-		activeSDKPreference = iphonesimulator3.2;
+		activeSDKPreference = iphoneos4.0;
 		activeTarget = 1D6058900D05DD3D006BFB54 /* MyTunesRSS */;
 		codeSenseManager = D2752D06119DF915002C5D0E /* Code sense */;
 		executables = (
@@ -175,8 +224,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 298845616;
-			PBXWorkspaceStateSaveDate = 298845616;
+			PBXPerProjectTemplateStateSaveDate = 301522777;
+			PBXWorkspaceStateSaveDate = 301522777;
 		};
 		perUserProjectItems = {
 			D238DC8D11C0090800BE1517 /* PBXTextBookmark */ = D238DC8D11C0090800BE1517 /* PBXTextBookmark */;
@@ -185,6 +234,14 @@
 			D238DC9011C0090800BE1517 /* PBXTextBookmark */ = D238DC9011C0090800BE1517 /* PBXTextBookmark */;
 			D238DC9111C0090800BE1517 /* PBXTextBookmark */ = D238DC9111C0090800BE1517 /* PBXTextBookmark */;
 			D238DCDC11C014EF00BE1517 /* PBXTextBookmark */ = D238DCDC11C014EF00BE1517 /* PBXTextBookmark */;
+			D2593DF611F8E4980023681D /* PBXTextBookmark */ = D2593DF611F8E4980023681D /* PBXTextBookmark */;
+			D2593DF711F8E4980023681D /* PBXTextBookmark */ = D2593DF711F8E4980023681D /* PBXTextBookmark */;
+			D2593DF811F8E4980023681D /* PBXTextBookmark */ = D2593DF811F8E4980023681D /* PBXTextBookmark */;
+			D2593DF911F8E4980023681D /* PBXTextBookmark */ = D2593DF911F8E4980023681D /* PBXTextBookmark */;
+			D2593DFA11F8E4980023681D /* PBXTextBookmark */ = D2593DFA11F8E4980023681D /* PBXTextBookmark */;
+			D2593DFB11F8E4980023681D /* PBXTextBookmark */ = D2593DFB11F8E4980023681D /* PBXTextBookmark */;
+			D2593DFC11F8E4980023681D /* PBXTextBookmark */ = D2593DFC11F8E4980023681D /* PBXTextBookmark */;
+			D2593DFD11F8E4980023681D /* PBXTextBookmark */ = D2593DFD11F8E4980023681D /* PBXTextBookmark */;
 			D2752D3A119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3A119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D3B119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3B119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D3C119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3C119DFC93002C5D0E /* PBXTextBookmark */;
@@ -263,6 +320,86 @@
 		rType = 0;
 		vrLen = 2677;
 		vrLoc = 4494;
+	};
+	D2593DF611F8E4980023681D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8ABA111161FD0084E2DE /* TiMediaVideoPlayerProxy.m */;
+		name = "TiMediaVideoPlayerProxy.m: 262";
+		rLen = 0;
+		rLoc = 6960;
+		rType = 0;
+		vrLen = 1468;
+		vrLoc = 14535;
+	};
+	D2593DF711F8E4980023681D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A8E111161FD0084E2DE /* TiUIButtonProxy.m */;
+		name = "TiUIButtonProxy.m: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 1548;
+		vrLoc = 0;
+	};
+	D2593DF811F8E4980023681D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A8D111161FD0084E2DE /* TiUICanvasView.h */;
+		name = "TiUICanvasView.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 527;
+		vrLoc = 0;
+	};
+	D2593DF911F8E4980023681D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A071111618F0084E2DE /* TiValueRef.h */;
+		name = "TiValueRef.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 2669;
+		vrLoc = 0;
+	};
+	D2593DFA11F8E4980023681D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A1B111161FD0084E2DE /* TiViewController.h */;
+		name = "TiViewController.h: 1";
+		rLen = 0;
+		rLoc = 0;
+		rType = 0;
+		vrLen = 521;
+		vrLoc = 0;
+	};
+	D2593DFB11F8E4980023681D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8AB0111161FD0084E2DE /* TiProxy.m */;
+		name = "TiProxy.m: 734";
+		rLen = 0;
+		rLoc = 17921;
+		rType = 0;
+		vrLen = 1674;
+		vrLoc = 17713;
+	};
+	D2593DFC11F8E4980023681D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A18111161FD0084E2DE /* TiViewProxy.m */;
+		name = "TiViewProxy.m: 980";
+		rLen = 0;
+		rLoc = 21725;
+		rType = 0;
+		vrLen = 1684;
+		vrLoc = 20759;
+	};
+	D2593DFD11F8E4980023681D /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A18111161FD0084E2DE /* TiViewProxy.m */;
+		name = "TiViewProxy.m: 980";
+		rLen = 24;
+		rLoc = 21708;
+		rType = 0;
+		vrLen = 1626;
+		vrLoc = 20820;
 	};
 	D2752CD0119DF8F5002C5D0E /* MyTunesRSS */ = {
 		isa = PBXExecutable;

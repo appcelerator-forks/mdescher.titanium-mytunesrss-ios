@@ -91,3 +91,12 @@ function handleUnexpectedServerError(msg) {
 function showServerError(error) {
     Titanium.UI.createAlertDialog({message:error.msg,buttonNames:['Ok']}).show();
 }
+
+function removeUnsupportedTracks(items) {
+    for (var i = items.length - 1; i >= 0; i--) {
+        if (items[i].mediaType != 'Audio' && items[i].mediaType != 'Video') {
+            items = items.slice(0, i).concat(items.slice(i + 1));
+        }
+    }
+    return items;
+}
