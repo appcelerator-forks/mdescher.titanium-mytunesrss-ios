@@ -158,7 +158,7 @@ buttonRowArtists.addEventListener('click', function() {
 
 buttonRowGenres.addEventListener('click', function() {
     actIndicatorView.show();
-    ajaxCall('GenreService.getGenres', [1, -1, -1], function(result, error) {
+    ajaxCall('GenreService.getGenres', [-1, -1, -1], function(result, error) {
         if (result) {
             var winGenres = Titanium.UI.createWindow({url:'win_genres.js',backgroundColor:'#FFF'});
             winGenres.ajaxResult = result;
