@@ -32,9 +32,9 @@ if (tableData.length == 0) {
     tableData.push(Titanium.UI.createTableViewRow({height:48,className:'track_row',title:'No supported tracks'}));
 } else {
     tableView.addEventListener('click', function(e) {
-        ajaxCall('LoginService.ping', null, function(result, error) {
-            if (!result && !error) {
-                Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+        ajaxCall('LoginService.ping', [], function(result, error) {
+            if (!result) {
+                handleServerError(error);
             } else {
                 if (items[e.index].mediaType === 'Video') {
                     Titanium.App.fireEvent('mytunesrss_stop');

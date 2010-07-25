@@ -88,8 +88,8 @@ var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
 var controlRewind = Titanium.UI.createImageView({image:'back.png',width:45,height:45});
 controlRewind.addEventListener('click', function() {
     ajaxCall('LoginService.ping', null, function(result, error) {
-        if (!result && !error) {
-            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+        if (!result) {
+            handleServerError(error);
         } else {
             Titanium.App.fireEvent('mytunesrss_rewind');
         }
@@ -98,8 +98,8 @@ controlRewind.addEventListener('click', function() {
 var controlPlay = Titanium.UI.createImageView({image:'play.png',width:45,height:45});
 controlPlay.addEventListener('click', function() {
     ajaxCall('LoginService.ping', null, function(result, error) {
-        if (!result && !error) {
-            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+        if (!result) {
+            handleServerError(error);
         } else {
             Titanium.App.fireEvent('mytunesrss_play');
         }
@@ -123,8 +123,8 @@ controlStop.addEventListener('click', function() {
 var controlFastForward = Titanium.UI.createImageView({image:'forward.png',width:45,height:45});
 controlFastForward.addEventListener('click', function() {
     ajaxCall('LoginService.ping', null, function(result, error) {
-        if (!result && !error) {
-            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+        if (!result) {
+            handleServerError(error);
         } else {
             Titanium.App.fireEvent('mytunesrss_fastforward');
         }
@@ -133,8 +133,8 @@ controlFastForward.addEventListener('click', function() {
 var controlShuffle = Titanium.UI.createImageView({image:'shuffle.png',width:45,height:45});
 controlShuffle.addEventListener('click', function() {
     ajaxCall('LoginService.ping', null, function(result, error) {
-        if (!result && !error) {
-            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+        if (!result) {
+            handleServerError(error);
         } else {
             Titanium.App.fireEvent('mytunesrss_shuffle');
         }

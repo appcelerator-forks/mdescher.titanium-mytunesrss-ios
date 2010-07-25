@@ -34,12 +34,9 @@ tableView.addEventListener('click', function(e) {
             var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundColor:'#FFF'});
             winAlbums.ajaxResult = result;
             winAlbums.open();
-        } else if (error) {
-            actIndicatorView.hide();
-            handleUnexpectedServerError(error.msg);
         } else {
             actIndicatorView.hide();
-            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+            handleServerError(error);
         }
     });
 });

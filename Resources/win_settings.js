@@ -44,12 +44,9 @@ buttonSave.addEventListener('click', function() {
                 Titanium.App.Properties.setBool('transcoder_' + transcoderName, transcoderSwitches[i].value);
             }
             win.close();
-        } else if (error) {
-            actIndicatorView.hide();
-            handleUnexpectedServerError(error.msg);
         } else {
             actIndicatorView.hide();
-            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+            handleServerError(error);
         }
     });
 });

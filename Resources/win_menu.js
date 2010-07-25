@@ -95,12 +95,9 @@ buttonSettings.addEventListener('click', function() {
             var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundColor:'#FFF'});
             winSettings.ajaxResult = result;
             winSettings.open();
-        } else if (error) {
-            actIndicatorView.hide();
-            handleUnexpectedServerError(error.msg);
         } else {
             actIndicatorView.hide();
-            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+            handleServerError(error);
         }
     });
 });
@@ -112,12 +109,9 @@ buttonRowPlaylists.addEventListener('click', function() {
             var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js',backgroundColor:'#FFF'});
             winPlaylists.ajaxResult = result;
             winPlaylists.open();
-        } else if (error) {
-            actIndicatorView.hide();
-            handleUnexpectedServerError(error.msg);
         } else {
             actIndicatorView.hide();
-            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+            handleServerError(error);
         }
     });
 });
@@ -129,12 +123,9 @@ buttonRowAlbums.addEventListener('click', function() {
             var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundColor:'#FFF'});
             winAlbums.ajaxResult = result;
             winAlbums.open();
-        } else if (error) {
-            actIndicatorView.hide();
-            handleUnexpectedServerError(error.msg);
         } else {
             actIndicatorView.hide();
-            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+            handleServerError(error);
         }
     });
 });
@@ -146,12 +137,9 @@ buttonRowArtists.addEventListener('click', function() {
             var winArtists = Titanium.UI.createWindow({url:'win_artists.js',backgroundColor:'#FFF'});
             winArtists.ajaxResult = result;
             winArtists.open();
-        } else if (error) {
-            actIndicatorView.hide();
-            handleUnexpectedServerError(error.msg);
         } else {
             actIndicatorView.hide();
-            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+            handleServerError(error);
         }
     });
 });
@@ -163,12 +151,9 @@ buttonRowGenres.addEventListener('click', function() {
             var winGenres = Titanium.UI.createWindow({url:'win_genres.js',backgroundColor:'#FFF'});
             winGenres.ajaxResult = result;
             winGenres.open();
-        } else if (error) {
-            actIndicatorView.hide();
-            handleUnexpectedServerError(error.msg);
         } else {
             actIndicatorView.hide();
-            Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+            handleServerError(error);
         }
     });
 });
@@ -188,15 +173,9 @@ searchBar.addEventListener('return', function() {
             } else if (result && result.tracks && result.tracks.length === 0) {
                 actIndicatorView.hide();
                 Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
-            } else if (error && error.msg) {
-                actIndicatorView.hide();
-                showServerError(error);
-            } else if (error) {
-                actIndicatorView.hide();
-                handleUnexpectedServerError(error.msg);
             } else {
                 actIndicatorView.hide();
-                Titanium.UI.createAlertDialog({message:'No response from server, please make sure the server is running.',buttonNames:['Ok']}).show();
+                handleServerError(error);
             }
         });
     }

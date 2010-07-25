@@ -4,11 +4,15 @@ var tableViewGroupStyle = Titanium.UI.iPhone.TableViewStyle.GROUPED;
 function ajaxCall(func, parameterArray, resultCallback) {
     var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
     httpClient.onload = function() {
-        var response = JSON.parse(this.responseText);
-        resultCallback(response.result, response.error);
+        if (this.status == 200) {
+            var response = JSON.parse(this.responseText);
+            resultCallback(response.result, response.error);
+        } else {
+            resultCallback(undefined, {'msg':'The MyTunesRSS server encountered an internal error, please contact the server admin.'});
+        }
     };
     httpClient.onerror = function() {
-        resultCallback();
+        resultCallback(undefined, undefined);
     };
     httpClient.open('POST', Titanium.App.Properties.getString('resolvedServerUrl') + '/jsonrpc');
     httpClient.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
@@ -80,16 +84,14 @@ function addTopToolbar(window, titleText, leftButton, rightButton) {
     }
 }
 
-function handleUnexpectedServerError(msg) {
-    if (msg.toUpperCase() === 'UNAUTHORIZED') {
+function handleServerError(error) {
+    if (error && error.msg && error.msg.toUpperCase() === 'UNAUTHORIZED') {
         Titanium.UI.createAlertDialog({message:'You are not authorized to access the server. Maybe your session has expired. Please go back to the menu and logout.',buttonNames:['Ok']}).show();
+    } else if (error && error.msg) {
+        Titanium.UI.createAlertDialog({message:error.msg,buttonNames:['Ok']}).show();
     } else {
-        Titanium.UI.createAlertDialog({message:'Unexpected server error.',buttonNames:['Ok']}).show();
+        Titanium.UI.createAlertDialog({message:'No valid response from server, please contact the server admin.',buttonNames:['Ok']}).show();
     }
-}
-
-function showServerError(error) {
-    Titanium.UI.createAlertDialog({message:error.msg,buttonNames:['Ok']}).show();
 }
 
 function removeUnsupportedTracks(items) {

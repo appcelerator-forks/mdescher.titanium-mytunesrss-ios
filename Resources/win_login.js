@@ -55,18 +55,15 @@ function doLogin() {
                 ajaxCall('LoginService.login', [inputUsername.value, inputPassword.value, 180], function(result, error) {
                     if (result) {
                         onLogin(result);
-                    } else if (error) {
-                        actIndicatorView.hide();
-                        Titanium.UI.createAlertDialog({message:'Login failed, please check username and password.',buttonNames:['Ok']}).show();
                     } else {
                         actIndicatorView.hide();
-                        Titanium.UI.createAlertDialog({message:'No response from server, please check server URL and make sure the server is running.',buttonNames:['Ok']}).show();
+                        handleServerError(error);
                     }
                 });
             }
         } else {
             actIndicatorView.hide();
-            Titanium.UI.createAlertDialog({message:'No response from server, please check server URL and make sure the server is running.',buttonNames:['Ok']}).show();
+            handleServerError(error);
         }
     });
 }
