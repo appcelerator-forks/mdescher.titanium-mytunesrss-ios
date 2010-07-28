@@ -13,8 +13,8 @@
 	<key>CFBundleIconFiles</key>
 	<array>
 		<string>appicon.png</string>
-		<string>appicon_pad.png</string>
-		<string>appicon_hi.png</string>
+		<string>appicon@2x.png</string>
+		<string>appicon-ipad.png</string>
 	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
