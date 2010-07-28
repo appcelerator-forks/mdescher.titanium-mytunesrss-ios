@@ -15,7 +15,7 @@
 
 - (TiHost*)host;
 
-- (void)evalJS:(NSString*)code;
+- (void)evalJSWithoutResult:(NSString*)code;
 
 - (void)evalFile:(NSString*)file;
 

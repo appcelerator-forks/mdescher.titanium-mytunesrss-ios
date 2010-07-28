@@ -119,7 +119,7 @@
     if (!TiDimensionEqual(leftCap, cap)) {
         leftCap = cap;
         recapStretchableImage = YES;
-    }
+    } 
 }
 
 -(void)setTopCap:(TiDimension)cap
@@ -136,7 +136,7 @@
         [stretchableImage release];
         
         CGSize imageSize = [fullImage size];
-        
+		
         NSInteger left = (TiDimensionIsAuto(leftCap) || TiDimensionIsUndefined(leftCap) || leftCap.value == 0) ?
                                 imageSize.width/2  : 
                                 TiDimensionCalculateValue(leftCap, imageSize.width);
@@ -371,6 +371,21 @@ DEFINE_EXCEPTIONS
 	return [self setImage:image forKey:urlString cache:YES];
 }
 
+-(CGFloat)imageScale:(UIImage*)image
+{
+	// we have to check both what's being compiled as 
+	// well as if we're running on device that supports it.
+	// i.e. a 4.0 built iphone app running in emulation mode
+	// on an iPad will not have scale
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+	if ([image respondsToSelector:@selector(scale)])
+	{
+		return [image scale];
+	}
+#endif
+	return 1.0;
+}
+
 -(ImageCacheEntry *)entryForKey:(NSURL *)url
 {
 	if (url == nil)
@@ -386,7 +401,27 @@ DEFINE_EXCEPTIONS
 		if (result == nil)
 		{
 			//Well, let's make it for them!
-			UIImage * resultImage = [UIImage imageWithContentsOfFile:[url path]];
+			NSString * path = [url path];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+			BOOL scaleUp = NO;
+			if ([TiUtils isRetinaDisplay] && [path rangeOfString:@"@2x"].location!=NSNotFound)
+			{
+				scaleUp = YES;
+			}
+#endif
+			UIImage * resultImage = [UIImage imageWithContentsOfFile:path];
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+			if (scaleUp && [self imageScale:resultImage]==1.0)
+			{
+				// on the ipad running iphone app in emulation mode, this won't exist when
+				// do click 2x to scale it up so we have to check for this method
+				if ([UIImage instancesRespondToSelector:@selector(imageWithCGImage:scale:orientation:)])
+				{
+					// if we specified a 2x, we need to upscale it
+					resultImage = [UIImage imageWithCGImage:[resultImage CGImage] scale:2.0 orientation:[resultImage imageOrientation]];
+				}
+			}
+#endif
 			result = [self setImage:resultImage forKey:urlString];
 			[result setIsLocalImage:YES];
 		}
@@ -535,6 +570,18 @@ DEFINE_EXCEPTIONS
 	if (queue!=nil)
 	{
 		[queue setSuspended:YES];
+	}
+	[lock unlock];
+}
+
+-(void)cancel
+{
+	//NOTE: this should only be called on suspend
+	//to cause the queue to be stopped
+	[lock lock];
+	if (queue!=nil)
+	{
+		[queue reset];
 	}
 	[lock unlock];
 }

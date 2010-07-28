@@ -1,10 +1,11 @@
-//
-//  TiLayoutQueue.m
-//  MyTunesRSS
-//
-//  Created by Blain Hamon on 6/1/10.
-//  Copyright 2010 __MyCompanyName__. All rights reserved.
-//
+/**
+ * Appcelerator Titanium Mobile
+ * Copyright (c) 2009-2010 by Appcelerator, Inc. All Rights Reserved.
+ * Licensed under the terms of the Apache Public License
+ * Please see the LICENSE included with this distribution for details.
+ * 
+ * WARNING: This is generated code. Modify at your own risk and without support.
+ */
 
 #import "TiLayoutQueue.h"
 #import "TiViewProxy.h"

@@ -18,8 +18,8 @@
 
 //Internal values
 -(void)noteValueChange:(NSString *)newValue;
-
-
+-(void)fireHideNotification;
+-(void)fireShowNotification;
 
 
 -(BOOL)focused;

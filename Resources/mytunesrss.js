@@ -1,6 +1,3 @@
-var buttonStyle = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
-var tableViewGroupStyle = Titanium.UI.iPhone.TableViewStyle.GROUPED;
-
 function ajaxCall(func, parameterArray, resultCallback) {
     var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
     httpClient.onload = function() {

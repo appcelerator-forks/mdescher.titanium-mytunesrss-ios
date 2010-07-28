@@ -9,7 +9,7 @@ if (!items) {
 items = removeUnsupportedTracks(items);
 
 var tableView = Titanium.UI.createTableView({top:45});
-var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
+var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 
 buttonBack.addEventListener('click', function() {
     win.close();

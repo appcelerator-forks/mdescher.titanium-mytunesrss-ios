@@ -21,7 +21,7 @@
 	
 	UIColor * backgroundColor;
 	UIImage * backgroundImage;
-	
+
 	BOOL	allowedOrientations[MAX_ORIENTATIONS];
 	NSTimeInterval	orientationRequestTimes[MAX_ORIENTATIONS];
 	UIInterfaceOrientation lastOrientation;

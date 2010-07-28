@@ -16,7 +16,17 @@
 
 -(id)version
 {
-	return [NSString stringWithCString:TI_VERSION_STR encoding:NSUTF8StringEncoding];
+	return @"1.4.0";
+}
+
+-(id)buildDate
+{
+	return @"07/27/10 18:21";
+}
+
+-(id)buildHash
+{
+	return @"d1e8c8";
 }
 
 -(id)userAgent

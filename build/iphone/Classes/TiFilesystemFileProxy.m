@@ -6,9 +6,10 @@
  * 
  * WARNING: This is generated code. Modify at your own risk and without support.
  */
+#import "TiFilesystemFileProxy.h"
+
 #ifdef USE_TI_FILESYSTEM
 
-#import "TiFilesystemFileProxy.h"
 #import "TiUtils.h"
 #import "TiBlob.h"
 

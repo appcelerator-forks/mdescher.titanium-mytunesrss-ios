@@ -138,7 +138,8 @@
 	self.view = rootView;
 	[self updateBackground];
 	[self resizeView];
-	for (TiWindowViewController * thisWindowController in windowViewControllers)
+	// we have to make a copy since this code can cause a mutation
+	for (TiWindowViewController * thisWindowController in [[windowViewControllers mutableCopy] autorelease])
 	{
 		if ([thisWindowController isKindOfClass:[TiWindowViewController class]])
 		{
@@ -164,9 +165,10 @@
 
 -(void)repositionSubviews
 {
+	SEL sel = @selector(proxy);
 	for (UIView * subView in [[self view] subviews])
 	{
-		if ([subView respondsToSelector:@selector(proxy)])
+		if ([subView respondsToSelector:sel])
 		{
 			[(TiViewProxy *)[(TiUIView *)subView proxy] reposition];
 		}
@@ -455,5 +457,14 @@
 {
 	return [windowViewControllers lastObject];
 }
+
+#pragma mark Remote Control Notifications
+
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+- (void)remoteControlReceivedWithEvent:(UIEvent *)event 
+{ 
+	[[NSNotificationCenter defaultCenter] postNotificationName:kTiRemoteControlNotification object:self userInfo:[NSDictionary dictionaryWithObject:event forKey:@"event"]];
+}
+#endif
 
 @end

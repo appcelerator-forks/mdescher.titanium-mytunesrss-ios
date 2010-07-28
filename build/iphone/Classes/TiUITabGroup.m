@@ -120,7 +120,6 @@ DEFINE_EXCEPTIONS
 
 -(void)setEditButton:(UINavigationController*)moreController
 {
-	NSString* editTitle = [[self proxy] valueForUndefinedKey:@"editButtonTitle"];
 	if ([[moreController viewControllers] count] == 1) {
 		UINavigationBar* navBar = [moreController navigationBar];
 		UINavigationItem* navItem = [navBar topItem];
@@ -129,8 +128,18 @@ DEFINE_EXCEPTIONS
 			editButton.title = editTitle;
 		}
 		else {
+			// TODO: Need to get the localized value here
 			editButton.title = @"Edit";
 		}
+	}
+}
+
+-(void)removeEditButton:(UINavigationController*)moreController
+{
+	if ([[moreController viewControllers] count] == 1) {
+		UINavigationBar* navBar = [moreController navigationBar];
+		UINavigationItem* navItem = [navBar topItem];
+		[navItem setRightBarButtonItem:nil];
 	}
 }
 
@@ -152,6 +161,10 @@ DEFINE_EXCEPTIONS
 		[self updateMoreBar:navigationController];
 		if (allowConfiguration) {
 			[self setEditButton:navigationController];
+		}
+		// However, under iOS4, we have to manage the appearance/disappearance of the edit button ourselves.
+		else if ([TiUtils isIOS4OrGreater]) {
+			[self removeEditButton:navigationController];
 		}
 	}
 }
@@ -319,10 +332,18 @@ DEFINE_EXCEPTIONS
 	allowConfiguration = [TiUtils boolValue:value def:YES];
 	if (allowConfiguration) {
 		[self tabController].customizableViewControllers = [self tabController].viewControllers;
+		[self setEditButton:[controller moreNavigationController]];
 	}
 	else {
 		[self tabController].customizableViewControllers = nil;
+		[self removeEditButton:[controller moreNavigationController]];
 	}
+}
+
+-(void)setEditButtonTitle_:(id)value
+{
+	editTitle = [TiUtils stringValue:value];
+	[self setEditButton:[controller moreNavigationController]];
 }
 
 -(void)setTabs_:(id)tabs
@@ -383,7 +404,6 @@ DEFINE_EXCEPTIONS
 		{
 			UINavigationController *navController = (UINavigationController*)c;
 			TiUITabProxy *tab = (TiUITabProxy*)navController.delegate;
-			[tab close:nil];
 			[tab removeFromTabGroup];
 		}
 		controller.viewControllers = nil;

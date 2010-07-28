@@ -14,6 +14,8 @@
 @private
 }
 
+-(UINavigationController*)controller;
+
 @end
 
 #endif

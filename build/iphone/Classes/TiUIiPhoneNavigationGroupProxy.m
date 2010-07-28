@@ -55,6 +55,11 @@
 	}
 }
 
+-(UINavigationController*)controller
+{
+	return [(TiUIiPhoneNavigationGroup*)[self view] controller];
+}
+
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration
 {
 	if ([self viewAttached])

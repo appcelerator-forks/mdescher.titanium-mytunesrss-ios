@@ -28,12 +28,15 @@ extern NSString * const TI_APPLICATION_ID;
 +(NSURL*)resourceBasedURL:(NSString*)fn baseURL:(NSString**)base
 {
 	NSString *path = [[NSBundle mainBundle] bundlePath];
-	const char *start = getenv("TI_STARTPAGE");
 #ifdef TARGET_IPHONE_SIMULATOR
 	if (TI_APPLICATION_RESOURCE_DIR!=nil && [TI_APPLICATION_RESOURCE_DIR isEqualToString:@""]==NO)
 	{
-		// we use our app resource directory
-		path = TI_APPLICATION_RESOURCE_DIR;
+		// if the .local file exists and we're in the simulator, then force load from resources bundle
+		if (![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/.local",[[NSBundle mainBundle] resourcePath]]])
+		{
+			// we use our app resource directory
+			path = TI_APPLICATION_RESOURCE_DIR;
+		}
 	}
 #endif
 	NSString *fullpath = [NSString stringWithFormat:@"%@/%@",path,fn];
@@ -51,7 +54,6 @@ extern NSString * const TI_APPLICATION_ID;
 		modules = [[NSMutableDictionary alloc] init];
 		contexts = [[NSMutableDictionary alloc] init];
 		 
-		NSString *path = [[NSBundle mainBundle] bundlePath];
 		NSString *fn = @"app.js";
 		const char *start = getenv("TI_STARTPAGE");
 		if (start!=NULL)
@@ -124,7 +126,7 @@ extern NSString * const TI_APPLICATION_ID;
 
 -(void)evaluateJS:(NSString*)js context:(id<TiEvaluator>)evaluator
 {
-	[evaluator evalJS:js];
+	[evaluator evalJSWithoutResult:js];
 }	
 
 -(void)fireEvent:(id)listener withObject:(id)obj remove:(BOOL)yn context:(id<TiEvaluator>)evaluator thisObject:(TiProxy*)thisObject_

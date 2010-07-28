@@ -33,7 +33,7 @@ CGPoint midpointBetweenPoints(CGPoint a, CGPoint b)
 }
 
 
-NSString * const kKrollShutdownNotification = @"KrollShutdown";
+NSString * const kTiContextShutdownNotification = @"TiContextShutdown";
 NSString * const kTiWillShutdownNotification = @"TiWillShutdown";
 NSString * const kTiShutdownNotification = @"TiShutdown";
 NSString * const kTiSuspendNotification = @"TiSuspend";
@@ -41,6 +41,7 @@ NSString * const kTiResumeNotification = @"TiResume";
 NSString * const kTiAnalyticsNotification = @"TiAnalytics";
 NSString * const kTiRemoteDeviceUUIDNotification = @"TiDeviceUUID";
 NSString * const kTiGestureShakeNotification = @"TiGestureShake";
+NSString * const kTiRemoteControlNotification = @"TiRemoteControl";
 
 
 

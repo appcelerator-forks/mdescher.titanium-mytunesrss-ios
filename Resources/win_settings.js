@@ -17,12 +17,12 @@ win.addEventListener('focus', function() {
     actIndicatorView.hide();
 });
 
-var buttonCancel = Titanium.UI.createButton({title:'Cancel',style:buttonStyle});
+var buttonCancel = Titanium.UI.createButton({title:'Cancel',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 buttonCancel.addEventListener('click', function() {
     win.close();
 });
 
-var buttonSave = Titanium.UI.createButton({title:'Save',style:buttonStyle});
+var buttonSave = Titanium.UI.createButton({title:'Save',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 buttonSave.addEventListener('click', function() {
     var names = [];
     for (var i = 0; i < win.ajaxResult.transcoderNames.length; i++) {
@@ -62,7 +62,7 @@ if (win.ajaxResult.transcoderNames.length > 0) {
     }
 }
 
-var tableView = Titanium.UI.createTableView({data:tableViewData,style:tableViewGroupStyle,top:45});
+var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45});
 
 addTopToolbar(win, 'Settings', buttonCancel, buttonSave);
 win.add(tableView);

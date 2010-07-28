@@ -16,10 +16,14 @@
 @interface TiMediaVideoPlayer : TiUIView {
 @private
 	MPMoviePlayerController *controller;
+	UIActivityIndicatorView *spinner;
+	
+	BOOL loaded;
 }
 
--(id)initWithPlayer:(MPMoviePlayerController*)controller;
+-(id)initWithPlayer:(MPMoviePlayerController*)controller proxy:(TiProxy*)proxy;
 -(void)setMovie:(MPMoviePlayerController*)controller;
+-(void)movieLoaded;
 
 @end
 

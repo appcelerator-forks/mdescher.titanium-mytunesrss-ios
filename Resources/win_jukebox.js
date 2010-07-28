@@ -22,7 +22,7 @@ function setTrackInformation(track) {
     if (progressBar) {
         win.remove(progressBar);
     }
-    tableView = Titanium.UI.createTableView({top:45,bottom:44,style:tableViewGroupStyle,touchEnabled:false});
+    tableView = Titanium.UI.createTableView({top:45,bottom:44,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,touchEnabled:false});
     var imageRow;
     if (track.imageUrl) {
         imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:240});
@@ -83,7 +83,7 @@ Titanium.App.addEventListener('mytunesrss_hideJukeboxActivityView', function() {
     }
 });
 
-var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
+var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 
 var controlRewind = Titanium.UI.createImageView({image:'back.png',width:45,height:45});
 controlRewind.addEventListener('click', function() {

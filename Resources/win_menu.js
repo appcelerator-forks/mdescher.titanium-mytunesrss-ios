@@ -57,8 +57,8 @@ var labelAlbums = Titanium.UI.createLabel({text:'Albums',left:10,font:{fontSize:
 var labelArtists = Titanium.UI.createLabel({text:'Artists',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var labelGenres = Titanium.UI.createLabel({text:'Genres',left:10,font:{fontSize:20,fontWeight:'bold'}});
 var labelNowPlaying = Titanium.UI.createLabel({text:'Currently playing',left:10,font:{fontSize:20,fontWeight:'bold'}});
-var buttonLogout = Titanium.UI.createButton({title:'Logout',style:buttonStyle});
-var buttonSettings = Titanium.UI.createButton({title:'Settings',style:buttonStyle});
+var buttonLogout = Titanium.UI.createButton({title:'Logout',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+var buttonSettings = Titanium.UI.createButton({title:'Settings',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 
 var tableViewData = [];
 tableViewData.push(Titanium.UI.createTableViewSection());
@@ -77,7 +77,7 @@ tableViewData[0].add(buttonRowGenres);
 var buttonRowNowPlaying = wrap([labelNowPlaying]);
 tableViewData[1].add(buttonRowNowPlaying);
 
-var tableView = Titanium.UI.createTableView({data:tableViewData,style:tableViewGroupStyle,top:90});
+var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:90});
 
 buttonLogout.addEventListener('click', function() {
     audioPlayer.stop();

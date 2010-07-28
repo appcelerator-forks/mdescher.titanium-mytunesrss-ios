@@ -58,9 +58,9 @@
 	};
 	24CA8A18111161FD0084E2DE /* TiViewProxy.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1414, 14404}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 17121}}";
 			sepNavSelRange = "{21708, 24}";
-			sepNavVisRange = "{20820, 1626}";
+			sepNavVisRange = "{20519, 2009}";
 		};
 	};
 	24CA8A1B111161FD0084E2DE /* TiViewController.h */ = {
@@ -158,7 +158,7 @@
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
 		activeBuildConfigurationName = Debug;
 		activeExecutable = D2752CD0119DF8F5002C5D0E /* MyTunesRSS */;
-		activeSDKPreference = iphoneos4.0;
+		activeSDKPreference = iphonesimulator4.0;
 		activeTarget = 1D6058900D05DD3D006BFB54 /* MyTunesRSS */;
 		codeSenseManager = D2752D06119DF915002C5D0E /* Code sense */;
 		executables = (
@@ -224,8 +224,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 301522777;
-			PBXWorkspaceStateSaveDate = 301522777;
+			PBXPerProjectTemplateStateSaveDate = 302035507;
+			PBXWorkspaceStateSaveDate = 302035507;
 		};
 		perUserProjectItems = {
 			D238DC8D11C0090800BE1517 /* PBXTextBookmark */ = D238DC8D11C0090800BE1517 /* PBXTextBookmark */;
@@ -240,8 +240,6 @@
 			D2593DF911F8E4980023681D /* PBXTextBookmark */ = D2593DF911F8E4980023681D /* PBXTextBookmark */;
 			D2593DFA11F8E4980023681D /* PBXTextBookmark */ = D2593DFA11F8E4980023681D /* PBXTextBookmark */;
 			D2593DFB11F8E4980023681D /* PBXTextBookmark */ = D2593DFB11F8E4980023681D /* PBXTextBookmark */;
-			D2593DFC11F8E4980023681D /* PBXTextBookmark */ = D2593DFC11F8E4980023681D /* PBXTextBookmark */;
-			D2593DFD11F8E4980023681D /* PBXTextBookmark */ = D2593DFD11F8E4980023681D /* PBXTextBookmark */;
 			D2752D3A119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3A119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D3B119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3B119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D3C119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3C119DFC93002C5D0E /* PBXTextBookmark */;
@@ -249,6 +247,8 @@
 			D2752D3E119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3E119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D3F119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3F119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D40119DFC93002C5D0E /* PBXTextBookmark */ = D2752D40119DFC93002C5D0E /* PBXTextBookmark */;
+			D2B386E31200B42B009C29FF /* PBXTextBookmark */ = D2B386E31200B42B009C29FF /* PBXTextBookmark */;
+			D2D606491200AEC100828A1A /* PBXTextBookmark */ = D2D606491200AEC100828A1A /* PBXTextBookmark */;
 		};
 		sourceControlManager = D2752D05119DF915002C5D0E /* Source Control */;
 		userBuildSettings = {
@@ -380,26 +380,6 @@
 		rType = 0;
 		vrLen = 1674;
 		vrLoc = 17713;
-	};
-	D2593DFC11F8E4980023681D /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 24CA8A18111161FD0084E2DE /* TiViewProxy.m */;
-		name = "TiViewProxy.m: 980";
-		rLen = 0;
-		rLoc = 21725;
-		rType = 0;
-		vrLen = 1684;
-		vrLoc = 20759;
-	};
-	D2593DFD11F8E4980023681D /* PBXTextBookmark */ = {
-		isa = PBXTextBookmark;
-		fRef = 24CA8A18111161FD0084E2DE /* TiViewProxy.m */;
-		name = "TiViewProxy.m: 980";
-		rLen = 24;
-		rLoc = 21708;
-		rType = 0;
-		vrLen = 1626;
-		vrLoc = 20820;
 	};
 	D2752CD0119DF8F5002C5D0E /* MyTunesRSS */ = {
 		isa = PBXExecutable;
@@ -541,5 +521,25 @@
 		rType = 0;
 		vrLen = 1961;
 		vrLoc = 5896;
+	};
+	D2B386E31200B42B009C29FF /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A18111161FD0084E2DE /* TiViewProxy.m */;
+		name = "TiViewProxy.m: 980";
+		rLen = 24;
+		rLoc = 21708;
+		rType = 0;
+		vrLen = 2009;
+		vrLoc = 20519;
+	};
+	D2D606491200AEC100828A1A /* PBXTextBookmark */ = {
+		isa = PBXTextBookmark;
+		fRef = 24CA8A18111161FD0084E2DE /* TiViewProxy.m */;
+		name = "TiViewProxy.m: 980";
+		rLen = 24;
+		rLoc = 21708;
+		rType = 0;
+		vrLen = 2009;
+		vrLoc = 20519;
 	};
 }

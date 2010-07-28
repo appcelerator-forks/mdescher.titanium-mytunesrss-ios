@@ -22,9 +22,11 @@
 	NSMutableArray *views;
 	TiFile *tempFile;
 	KrollCallback *thumbnailCallback;
-	UIView *oldparent;
 	
 	NSMutableDictionary* loadProperties; // Used to set properties when the player is created
+	NSMutableDictionary* returnCache; // Return values from UI thread functions
+	
+	NSRecursiveLock* playerLock;
 }
 
 @property(nonatomic,readwrite,assign) id url;
@@ -33,6 +35,8 @@
 
 -(void)add:(id)proxy;
 -(void)remove:(id)proxy;
+-(void)deliverEventOnBackgroundThread:(NSString*)event withObject:(id)object;
+
 
 @end
 

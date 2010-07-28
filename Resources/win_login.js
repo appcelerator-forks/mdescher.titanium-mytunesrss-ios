@@ -25,7 +25,7 @@ var inputServerUrl = Titanium.UI.createTextField({hintText:'Server URL',left:10,
 var inputUsername = Titanium.UI.createTextField({hintText:'Username',left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('username'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false});
 var inputPassword = Titanium.UI.createTextField({hintText:'Password',left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true});
 var inputSaveCredentials = Titanium.UI.createSwitch({right:10,value:Titanium.App.Properties.getBool('saveCredentials', false)});
-var buttonLogin = Titanium.UI.createButton({title:'Login',style:buttonStyle});
+var buttonLogin = Titanium.UI.createButton({title:'Login',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 var labelDefaultInterface = Titanium.UI.createLabel({text:'Open in browser',left:10,font:{fontSize:20,fontWeight:'bold'}});
 
 var tableViewData = [];
@@ -40,7 +40,7 @@ var buttonDefaultInterfaceRow = wrap([labelDefaultInterface]);
 buttonDefaultInterfaceRow.hasChild = true;
 tableViewData[2].add(buttonDefaultInterfaceRow);
 
-var tableView = Titanium.UI.createTableView({data:tableViewData,style:tableViewGroupStyle,top:45});
+var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45});
 
 function doLogin() {
     ajaxCall('ServerService.getServerInfo', [], function(result, error) {

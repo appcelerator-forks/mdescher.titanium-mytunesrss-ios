@@ -9,7 +9,7 @@ win.addEventListener('focus', function() {
 });
 
 var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
-var buttonBack = Titanium.UI.createButton({title:'Back',style:buttonStyle});
+var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 
 buttonBack.addEventListener('click', function() {
     win.close();
