@@ -16,7 +16,7 @@ NSString * const TI_APPLICATION_VERSION = @"1.0.2";
 NSString * const TI_APPLICATION_DESCRIPTION = @"MyTunesRSS Mobile Client";
 NSString * const TI_APPLICATION_COPYRIGHT = @"2010 by Codewave Software Michael Descher";
 NSString * const TI_APPLICATION_GUID = @"2e282319-3d2a-48e2-a97a-02ef46881a6d";
-BOOL const TI_APPLICATION_ANALYTICS = true;
+BOOL const TI_APPLICATION_ANALYTICS = false;
 
 #ifdef TARGET_IPHONE_SIMULATOR
 NSString * const TI_APPLICATION_RESOURCE_DIR = @"/Users/mdescher/Projekte/titanium/MyTunesRSS/Resources";
