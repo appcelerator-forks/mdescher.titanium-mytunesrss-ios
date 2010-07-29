@@ -7,13 +7,13 @@
 <url>http://www.codewave.de</url>
 <description>MyTunesRSS Mobile Client</description>
 <copyright>2010 by Codewave Software Michael Descher</copyright>
-<icon>default_app_logo.png</icon>
+<icon>appicon.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>
     <statusbar-style>default</statusbar-style>
     <statusbar-hidden>false</statusbar-hidden>
     <fullscreen>false</fullscreen>
     <navbar-hidden>false</navbar-hidden>
-    <analytics>true</analytics>
+    <analytics>false</analytics>
 <guid>2e282319-3d2a-48e2-a97a-02ef46881a6d</guid>
 </ti:app>
