@@ -7,7 +7,7 @@
 #define _QUOTEME(x) #x
 #define STRING(x) _QUOTEME(x)
 
-NSString * const TI_APPLICATION_DEPLOYTYPE = @"development";
+NSString * const TI_APPLICATION_DEPLOYTYPE = @"production";
 NSString * const TI_APPLICATION_ID = @"de.codewave.mytunesrss";
 NSString * const TI_APPLICATION_PUBLISHER = @"Codewave Software Michael Descher";
 NSString * const TI_APPLICATION_URL = @"http://www.codewave.de";
@@ -19,7 +19,7 @@ NSString * const TI_APPLICATION_GUID = @"2e282319-3d2a-48e2-a97a-02ef46881a6d";
 BOOL const TI_APPLICATION_ANALYTICS = false;
 
 #ifdef TARGET_IPHONE_SIMULATOR
-NSString * const TI_APPLICATION_RESOURCE_DIR = @"/Users/mdescher/Projekte/titanium/MyTunesRSS/Resources";
+NSString * const TI_APPLICATION_RESOURCE_DIR = @"";
 #endif
 
 int main(int argc, char *argv[]) {
