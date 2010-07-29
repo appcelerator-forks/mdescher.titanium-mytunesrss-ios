@@ -6,19 +6,22 @@ win.orientationModes = [
     Titanium.UI.LANDSCAPE_LEFT
 ];
 
-var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-var videoPlayer = Titanium.Media.createVideoPlayer({url:win.data,mediaControlStyle:Titanium.Media.VIDEO_CONTROL_FULLSCREEN,scalingMode:Titanium.Media.VIDEO_SCALING_ASPECT_FIT,top:32});
+var videoPlayer = Titanium.Media.createVideoPlayer({url:win.data,mediaControlStyle:Titanium.Media.VIDEO_CONTROL_FULLSCREEN,scalingMode:Titanium.Media.VIDEO_SCALING_ASPECT_FIT,fullscreen:true});
 
-buttonBack.addEventListener('click', function() {
-    videoPlayer.release();
-    win.close();
-});
 videoPlayer.addEventListener('complete', function (e) {
+    videoPlayer.stop();
     videoPlayer.release();
     win.close();
 });
 
-addTopToolbar(win, undefined, buttonBack, undefined);
+videoPlayer.addEventListener('fullscreen', function (e) {
+    if (!e.entering) {
+        videoPlayer.stop();
+        videoPlayer.release();
+        win.close();
+    }
+});
+
 win.add(videoPlayer);
 
 videoPlayer.play();

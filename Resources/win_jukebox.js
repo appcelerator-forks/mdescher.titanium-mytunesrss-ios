@@ -87,7 +87,7 @@ var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone
 
 var controlRewind = Titanium.UI.createImageView({image:'back.png',width:45,height:45});
 controlRewind.addEventListener('click', function() {
-    ajaxCall('LoginService.ping', null, function(result, error) {
+    ajaxCall('LoginService.ping', [], function(result, error) {
         if (!result) {
             handleServerError(error);
         } else {
@@ -97,7 +97,7 @@ controlRewind.addEventListener('click', function() {
 });
 var controlPlay = Titanium.UI.createImageView({image:'play.png',width:45,height:45});
 controlPlay.addEventListener('click', function() {
-    ajaxCall('LoginService.ping', null, function(result, error) {
+    ajaxCall('LoginService.ping', [], function(result, error) {
         if (!result) {
             handleServerError(error);
         } else {
@@ -107,22 +107,34 @@ controlPlay.addEventListener('click', function() {
 });
 var controlPause = Titanium.UI.createImageView({image:'pause.png',width:45,height:45});
 controlPause.addEventListener('click', function() {
-    Titanium.App.fireEvent('mytunesrss_pause');
-    Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
+    ajaxCall('LoginService.ping', [], function(result, error) {
+        if (!result) {
+            handleServerError(error);
+        } else {
+            Titanium.App.fireEvent('mytunesrss_pause');
+            Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
+        }
+    });
 });
 var controlStop = Titanium.UI.createImageView({image:'stop.png',width:45,height:45});
 controlStop.addEventListener('click', function() {
-    if (progressBar) {
-        progressBar.value = 0;
-    }
-    timePlayed.text = '';
-    timeRemaining.text = '';
-    Titanium.App.fireEvent('mytunesrss_stop');
-    Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
+    ajaxCall('LoginService.ping', [], function(result, error) {
+        if (!result) {
+            handleServerError(error);
+        } else {
+            if (progressBar) {
+                progressBar.value = 0;
+            }
+            timePlayed.text = '';
+            timeRemaining.text = '';
+            Titanium.App.fireEvent('mytunesrss_stop');
+            Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
+        }
+    });
 });
 var controlFastForward = Titanium.UI.createImageView({image:'forward.png',width:45,height:45});
 controlFastForward.addEventListener('click', function() {
-    ajaxCall('LoginService.ping', null, function(result, error) {
+    ajaxCall('LoginService.ping', [], function(result, error) {
         if (!result) {
             handleServerError(error);
         } else {
@@ -132,7 +144,7 @@ controlFastForward.addEventListener('click', function() {
 });
 var controlShuffle = Titanium.UI.createImageView({image:'shuffle.png',width:45,height:45});
 controlShuffle.addEventListener('click', function() {
-    ajaxCall('LoginService.ping', null, function(result, error) {
+    ajaxCall('LoginService.ping', [], function(result, error) {
         if (!result) {
             handleServerError(error);
         } else {

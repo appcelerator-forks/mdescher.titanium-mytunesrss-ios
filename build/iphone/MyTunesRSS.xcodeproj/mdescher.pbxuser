@@ -58,9 +58,9 @@
 	};
 	24CA8A18111161FD0084E2DE /* TiViewProxy.m */ = {
 		uiCtxt = {
-			sepNavIntBoundsRect = "{{0, 0}, {1414, 17121}}";
+			sepNavIntBoundsRect = "{{0, 0}, {1414, 14443}}";
 			sepNavSelRange = "{21708, 24}";
-			sepNavVisRange = "{20519, 2009}";
+			sepNavVisRange = "{20917, 1631}";
 		};
 	};
 	24CA8A1B111161FD0084E2DE /* TiViewController.h */ = {
@@ -156,9 +156,9 @@
 		};
 	};
 	29B97313FDCFA39411CA2CEA /* Project object */ = {
-		activeBuildConfigurationName = Debug;
+		activeBuildConfigurationName = Release;
 		activeExecutable = D2752CD0119DF8F5002C5D0E /* MyTunesRSS */;
-		activeSDKPreference = iphonesimulator4.0;
+		activeSDKPreference = iphoneos4.0;
 		activeTarget = 1D6058900D05DD3D006BFB54 /* MyTunesRSS */;
 		codeSenseManager = D2752D06119DF915002C5D0E /* Code sense */;
 		executables = (
@@ -224,8 +224,8 @@
 					PBXFileDataSource_Warnings_ColumnID,
 				);
 			};
-			PBXPerProjectTemplateStateSaveDate = 302035507;
-			PBXWorkspaceStateSaveDate = 302035507;
+			PBXPerProjectTemplateStateSaveDate = 302042106;
+			PBXWorkspaceStateSaveDate = 302042106;
 		};
 		perUserProjectItems = {
 			D238DC8D11C0090800BE1517 /* PBXTextBookmark */ = D238DC8D11C0090800BE1517 /* PBXTextBookmark */;
@@ -248,7 +248,7 @@
 			D2752D3F119DFC93002C5D0E /* PBXTextBookmark */ = D2752D3F119DFC93002C5D0E /* PBXTextBookmark */;
 			D2752D40119DFC93002C5D0E /* PBXTextBookmark */ = D2752D40119DFC93002C5D0E /* PBXTextBookmark */;
 			D2B386E31200B42B009C29FF /* PBXTextBookmark */ = D2B386E31200B42B009C29FF /* PBXTextBookmark */;
-			D2D606491200AEC100828A1A /* PBXTextBookmark */ = D2D606491200AEC100828A1A /* PBXTextBookmark */;
+			D2B723771200CD980092D6F9 /* PBXTextBookmark */ = D2B723771200CD980092D6F9 /* PBXTextBookmark */;
 		};
 		sourceControlManager = D2752D05119DF915002C5D0E /* Source Control */;
 		userBuildSettings = {
@@ -532,14 +532,14 @@
 		vrLen = 2009;
 		vrLoc = 20519;
 	};
-	D2D606491200AEC100828A1A /* PBXTextBookmark */ = {
+	D2B723771200CD980092D6F9 /* PBXTextBookmark */ = {
 		isa = PBXTextBookmark;
 		fRef = 24CA8A18111161FD0084E2DE /* TiViewProxy.m */;
 		name = "TiViewProxy.m: 980";
 		rLen = 24;
 		rLoc = 21708;
 		rType = 0;
-		vrLen = 2009;
-		vrLoc = 20519;
+		vrLen = 1631;
+		vrLoc = 20917;
 	};
 }

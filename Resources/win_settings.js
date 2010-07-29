@@ -1,7 +1,7 @@
 Titanium.include('mytunesrss.js');
 
 function wrap(components) {
-    var row = Titanium.UI.createTableViewRow();
+    var row = Titanium.UI.createTableViewRow({className:'settingsRow'});
     for (var i = 0; i < components.length; i++) {
         row.add(components[i]);
     }
