@@ -18,12 +18,10 @@
 
 #pragma mark Internal
 
--(NSArray *)keySequence
+-(void)_configure
 {
-	return [NSArray arrayWithObjects:
-			@"animate",
-			@"location",
-			nil];
+	annotationsToAdd = [[NSMutableArray alloc] init];
+	annotationsToRemove = [[NSMutableArray alloc] init];
 }
 
 -(void)_destroy
@@ -31,57 +29,27 @@
 	RELEASE_TO_NIL(selectedAnnotation);
 	RELEASE_TO_NIL(annotationsToAdd);
 	RELEASE_TO_NIL(annotationsToRemove);
-	RELEASE_TO_NIL(routesToAdd);
-	RELEASE_TO_NIL(routesToRemove);
-	[super _destroy];
 }
 
 -(void)viewDidAttach
 {
-	ENSURE_UI_THREAD_0_ARGS;
-	TiMapView * ourView = (TiMapView *)[self view];
-
-	if (annotationsToAdd!=nil)
-	{
-		[ourView addAnnotations:annotationsToAdd];
-	}
-	if (annotationsToRemove!=nil)
-	{
-		[ourView removeAnnotations:annotationsToRemove];
-	}
-	if (routesToAdd!=nil)
-	{
-		for (id arg in routesToAdd)
-		{
-			[ourView addRoute:arg];
-		}
-	}
-	if (routesToRemove!=nil)
-	{
-		for (id arg in routesToRemove)
-		{
-			[ourView removeRoute:arg];
-		}
-	}
-	[ourView selectAnnotation:selectedAnnotation];
+	VIEW_METHOD_ON_UI_THREAD(addAnnotations,annotationsToAdd);
+	VIEW_METHOD_ON_UI_THREAD(removeAnnotations,annotationsToRemove);
+	VIEW_METHOD_ON_UI_THREAD(selectAnnotation,selectedAnnotation);
 	if (zoomCount > 0) {
 		for (int i=0; i < zoomCount; i++) {
-			[ourView zoom:[NSNumber numberWithDouble:1.0]];
+			VIEW_METHOD_ON_UI_THREAD(zoom,[NSNumber numberWithDouble:1.0]);
 		}
 	}
 	else {
 		for (int i=zoomCount;i < 0;i++) {
-			[ourView zoom:[NSNumber numberWithDouble:-1.0]];
+			VIEW_METHOD_ON_UI_THREAD(zoom,[NSNumber numberWithDouble:-1.0]);
 		}
 	}
 	
 	RELEASE_TO_NIL(selectedAnnotation);
 	RELEASE_TO_NIL(annotationsToAdd);
 	RELEASE_TO_NIL(annotationsToRemove);
-	RELEASE_TO_NIL(routesToAdd);
-	RELEASE_TO_NIL(routesToRemove);
-	
-	[super viewDidAttach];
 }
 
 #pragma mark Public API
@@ -138,18 +106,11 @@
 	if ([self viewAttached]) {
 		VIEW_METHOD_ON_UI_THREAD(addAnnotation,arg)
 	}
-	else 
-	{
-		if (annotationsToAdd==nil)
-		{
-			annotationsToAdd = [[NSMutableArray alloc] init];
-		}
-		if (annotationsToRemove!=nil && [annotationsToRemove containsObject:arg]) 
-		{
+	else {
+		if ([annotationsToRemove containsObject:arg]) {
 			[annotationsToRemove removeObject:arg];
 		}
-		else 
-		{
+		else {
 			[annotationsToAdd addObject:arg];
 		}
 	}
@@ -171,22 +132,14 @@
 -(void)removeAnnotation:(id)arg
 {
 	ENSURE_SINGLE_ARG(arg,NSObject)
-	if ([self viewAttached]) 
-	{
+	if ([self viewAttached]) {
 		VIEW_METHOD_ON_UI_THREAD(removeAnnotation,arg)
 	}
-	else 
-	{
-		if (annotationsToRemove==nil)
-		{
-			annotationsToRemove = [[NSMutableArray alloc] init];
-		}
-		if (annotationsToAdd!=nil && [annotationsToAdd containsObject:arg]) 
-		{
+	else {
+		if ([annotationsToAdd containsObject:arg]) {
 			[annotationsToAdd removeObject:arg];
 		}
-		else 
-		{
+		else {
 			[annotationsToRemove addObject:arg];
 		}
 	}
@@ -210,67 +163,11 @@
 	if ([self viewAttached]) {
 		VIEW_METHOD_ON_UI_THREAD(removeAllAnnotations,unused)
 	}
-	else 
-	{
-		if (annotationsToAdd!=nil)
-		{
-			[annotationsToAdd removeAllObjects];
-		}
-		if (annotationsToRemove!=nil)
-		{
-			[annotationsToRemove removeAllObjects];
-		}
+	else {
+		[annotationsToAdd removeAllObjects];
+		[annotationsToRemove removeAllObjects];
 	}
 }
-
--(void)addRoute:(id)arg
-{
-	ENSURE_SINGLE_ARG(arg,NSDictionary)
-	if ([self viewAttached]) 
-	{
-		VIEW_METHOD_ON_UI_THREAD(addRoute,arg)
-	}
-	else 
-	{
-		if (routesToAdd==nil)
-		{
-			routesToAdd = [[NSMutableArray alloc] init];
-		}
-		if (routesToRemove!=nil && [routesToRemove containsObject:arg])
-		{
-			[routesToRemove removeObject:arg];
-		}
-		else 
-		{
-			[routesToAdd addObject:arg];
-		}
-	}
-}
-
--(void)removeRoute:(id)arg
-{
-	ENSURE_SINGLE_ARG(arg,NSDictionary)
-	if ([self viewAttached]) 
-	{
-		VIEW_METHOD_ON_UI_THREAD(removeRoute,arg)
-	}
-	else 
-	{
-		if (routesToRemove==nil)
-		{
-			routesToRemove = [[NSMutableArray alloc] init];
-		}
-		if (routesToAdd!=nil && [routesToAdd containsObject:arg])
-		{
-			[routesToAdd removeObject:arg];
-		}
-		else 
-		{
-			[routesToRemove addObject:arg];
-		}
-	}
-}
-
 
 @end
 

@@ -12,7 +12,6 @@ extern NSString * const kTiMediaAudioSessionInterruptionBegin;
 extern NSString * const kTiMediaAudioSessionInterruptionEnd;
 extern NSString * const kTiMediaAudioSessionRouteChange;
 extern NSString * const kTiMediaAudioSessionVolumeChange;
-extern NSString * const kTiMediaAudioSessionInputChange;
 
 typedef enum
 {
@@ -49,7 +48,6 @@ TiMediaAudioSessionInputType;
 -(TiMediaAudioSessionInputType)inputType;
 -(CGFloat)volume;
 -(BOOL)isAudioPlaying;
--(BOOL)hasInput;
 
 @end
 

@@ -10,19 +10,14 @@
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIconFile</key>
 	<string>appicon.png</string>
-	<key>CFBundleIconFiles</key>
-	<array>
-		<string>appicon.png</string>
-		<string>appicon@2x.png</string>
-	</array>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
 			<key>CFBundleURLName</key>
-			<string>de.codewave.mytunesrss</string>
+			<string>com.appcelerator.kitchensink</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>mytunesrss</string>
+				<string>kitchensink</string>
 			</array>
 		</dict>
 	</array>
@@ -37,7 +32,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.2.1280429023</string>
+	<string>1.0.2</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>

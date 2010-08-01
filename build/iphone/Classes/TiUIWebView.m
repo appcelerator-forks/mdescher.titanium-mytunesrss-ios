@@ -10,8 +10,8 @@
 
 #import "TiUIWebView.h"
 #import "TiUIWebViewProxy.h"
-#import "TiApp.h"
-#import "TiUtils.h" 
+
+#import "TiUtils.h"
 #import "TiProxy.h"
 #import "SBJSON.h"
 #import "TiHost.h"
@@ -39,6 +39,15 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
  
 @implementation TiUIWebView
 
+-(void)unregister
+{
+	if (pageToken!=nil)
+	{
+		[[self.proxy _host] unregisterContext:self forToken:pageToken];
+		RELEASE_TO_NIL(pageToken);
+	}
+}
+
 -(void)dealloc
 {
 	if (webview!=nil)
@@ -55,11 +64,11 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 	{
 		RELEASE_TO_NIL(listeners);
 	}
-	RELEASE_TO_NIL(pageToken);
 	RELEASE_TO_NIL(webview);
 	RELEASE_TO_NIL(url);
 	RELEASE_TO_NIL(spinner);
 	RELEASE_TO_NIL(basicCredentials);
+	[self unregister];
 	[super dealloc];
 }
 
@@ -97,31 +106,17 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 {
 	if (webview==nil)
 	{
-		// we attach the XHR bridge the first time we need a webview
-		[[TiApp app] attachXHRBridgeIfRequired];
-		
-		webview = [[UIWebView alloc] initWithFrame:CGRectMake(0, 0, 10, 1)];
+		webview = [[UIWebView alloc] initWithFrame:CGRectZero];
 		webview.delegate = self;
 		webview.opaque = NO;
 		webview.backgroundColor = [UIColor whiteColor];
-		webview.contentMode = UIViewContentModeRedraw;
+       webview.contentMode = UIViewContentModeRedraw;
 		[self addSubview:webview];
 		
 		// only show the loading indicator if it's a remote URL
 		if ([self isURLRemote])
 		{
-			TiColor *bgcolor = [TiUtils colorValue:[self.proxy valueForKey:@"backgroundColor"]];
-			UIActivityIndicatorViewStyle style = UIActivityIndicatorViewStyleGray;
-			if (bgcolor!=nil)
-			{
-				// check to see if the background is a dark color and if so, we want to 
-				// show the white indicator instead
-				if ([Webcolor isDarkColor:[bgcolor _color]])
-				{
-					style = UIActivityIndicatorViewStyleWhite;
-				} 
-			}
-			spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:style];
+			spinner = [[UIActivityIndicatorView alloc] initWithActivityIndicatorStyle:UIActivityIndicatorViewStyleWhiteLarge];
 			[spinner setHidesWhenStopped:YES];
 			spinner.autoresizingMask = UIViewAutoresizingFlexibleTopMargin | UIViewAutoresizingFlexibleBottomMargin | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 			[self addSubview:spinner];
@@ -181,18 +176,16 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 
 -(void)prepareInjection
 {
-	if (pageToken==nil)
-	{
-		pageToken = [[NSString stringWithFormat:@"%d",[self hash]] retain];
-		[(TiUIWebViewProxy*)self.proxy setPageToken:pageToken];
-	}
+	RELEASE_TO_NIL(pageToken);
+	[self unregister];
+	pageToken = [[NSString stringWithFormat:@"%d",[self hash]] retain];
+	[[self.proxy _host] registerContext:self forToken:pageToken];
 }
 
 -(void)loadHTML:(NSString*)content 
 	   encoding:(NSStringEncoding)encoding 
 	   textEncodingName:(NSString*)textEncodingName
 	   mimeType:(NSString*)mimeType
-	   baseURL:(NSURL*)baseURL
 {
 	// attempt to make well-formed HTML and inject in our MyTunesRSS bridge code
 	// However, we only do this if the content looks like HTML
@@ -218,8 +211,8 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 		
 		content = [html autorelease];
 	}
-	  
-	NSURL *relativeURL = baseURL == nil ? [self fileURLToAppURL:url] : baseURL;
+	
+	NSURL *relativeURL = [self fileURLToAppURL:url];
 	
 	if (url!=nil)
 	{
@@ -300,7 +293,7 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 
 -(void)setBackgroundColor_:(id)color
 {
-	UIColor *c = [Webcolor webColorNamed:color];
+	UIColor *c = UIColorWebColorNamed(color);
 	[self setBackgroundColor:c];
 	[[self webview] setBackgroundColor:c];
 }
@@ -317,12 +310,13 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 
 -(void)setHtml_:(NSString*)content
 {
-	[self loadHTML:content encoding:NSUTF8StringEncoding textEncodingName:@"utf-8" mimeType:@"text/html" baseURL:nil];
+	[self loadHTML:content encoding:NSUTF8StringEncoding textEncodingName:@"utf-8" mimeType:@"text/html"];
 }
 
 -(void)setData_:(id)args
 {
 	RELEASE_TO_NIL(url);
+	[self unregister];
 	ENSURE_SINGLE_ARG(args,NSObject);
 	if ([args isKindOfClass:[TiBlob class]])
 	{
@@ -376,10 +370,6 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 	[[self webview] setScalesPageToFit:scaling];
 }
 
-#ifndef USE_BASE_URL
-#define USE_BASE_URL	1
-#endif
-
 -(void)setUrl_:(id)args
 {
 	RELEASE_TO_NIL(url);
@@ -391,6 +381,8 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 	{
 		[self stopLoading:nil];
 	}
+	
+	[self unregister];
 	
 	if ([self isURLRemote])
 	{
@@ -409,9 +401,6 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 		NSString *textEncodingName = @"utf-8";
 		NSString *path = [url path];
 		NSError *error = nil;
-#if USE_BASE_URL
-		NSURL *baseURL = [[url retain] autorelease];
-#endif
 		
 		// first check to see if we're attempting to load a file from the 
 		// filesystem and if so, and it exists, use that 
@@ -502,12 +491,7 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 		}
 		if (html!=nil)
 		{
-			//Because local HTML may rely on JS that's stored in the app: schema, we must kee the url in the app: format.
-#if USE_BASE_URL
-			[self loadHTML:html encoding:encoding textEncodingName:textEncodingName mimeType:mimeType baseURL:baseURL];
-#else
-			[self loadHTML:html encoding:encoding textEncodingName:textEncodingName mimeType:mimeType baseURL:url];
-#endif
+			[self loadHTML:html encoding:encoding textEncodingName:textEncodingName mimeType:mimeType];
 		}
 		else 
 		{
@@ -592,7 +576,7 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 -(CGFloat)autoHeightForWidth:(CGFloat)value
 {
 	CGRect oldBounds = [[self webview] bounds];
-	[webview setBounds:CGRectMake(0, 0, MAX(value,10), 1)];
+	[webview setBounds:CGRectMake(0, 0, value, 0)];
 	CGFloat result = [[webview stringByEvaluatingJavaScriptFromString:@"document.height"] floatValue];
 	[webview setBounds:oldBounds];
 	return result;
@@ -602,7 +586,7 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 {
     CGRect oldBounds = [[self webview] bounds];
     CGFloat currentHeight = [[webview stringByEvaluatingJavaScriptFromString:@"document.height"] floatValue];
-    [webview setBounds:CGRectMake(0, 0, 10, currentHeight)];
+    [webview setBounds:CGRectMake(0, 0, 0, currentHeight)];
     CGFloat realWidth = [[webview stringByEvaluatingJavaScriptFromString:@"document.width"] floatValue];
     [webview setBounds:oldBounds];
     return (value < realWidth) ? value : realWidth;
@@ -667,13 +651,18 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 
 #pragma mark TiEvaluator
 
+- (TiHost*)host
+{
+	return [self.proxy _host];
+}
+
 - (void)evalFile:(NSString*)path
 {
 	NSURL *url_ = [path hasPrefix:@"file:"] ? [NSURL URLWithString:path] : [NSURL fileURLWithPath:path];
 	
 	if (![path hasPrefix:@"/"] && ![path hasPrefix:@"file:"])
 	{
-		NSURL *root = [[[self proxy] _host] baseURL];
+		NSURL *root = [[self host] baseURL];
 		url_ = [NSURL fileURLWithPath:[NSString stringWithFormat:@"%@/%@",root,path]];
 	}
 	
@@ -684,14 +673,28 @@ NSString * const kMyTunesRSSJavascript = @"Ti.App={};Ti.API={};Ti.App._listeners
 
 - (void)fireEvent:(id)listener withObject:(id)obj remove:(BOOL)yn thisObject:(id)thisObject_
 {
-	// don't bother firing an app event to the webview if we don't have a webview yet created
-	if (webview!=nil)
-	{
-		NSDictionary *event = (NSDictionary*)obj;
-		NSString *name = [event objectForKey:@"type"];
-		NSString *js = [NSString stringWithFormat:@"Ti.App._dispatchEvent('%@',%@,%@);",name,listener,[SBJSON stringify:event]];
-		[webview performSelectorOnMainThread:@selector(stringByEvaluatingJavaScriptFromString:) withObject:js waitUntilDone:NO];
-	}
+	NSDictionary *event = (NSDictionary*)obj;
+	NSString *name = [event objectForKey:@"type"];
+	NSString *js = [NSString stringWithFormat:@"Ti.App._dispatchEvent('%@',%@,%@);",name,listener,[SBJSON stringify:event]];
+	[[self webview] performSelectorOnMainThread:@selector(stringByEvaluatingJavaScriptFromString:) withObject:js waitUntilDone:NO];
+}
+
+- (id)preloadForKey:(id)key
+{
+	return nil;
+}
+
+- (KrollContext*)krollContext
+{
+	return nil;
+}
+
+- (void)registerProxy:(id)proxy
+{
+}
+
+- (void)unregisterProxy:(id)proxy
+{
 }
 
 @end

@@ -41,7 +41,9 @@
 
 -(void)childWillResize:(TiViewProxy *)child
 {
-	BOOL hasChild = [[self children] containsObject:child];
+	[self lockChildrenForReading];
+		BOOL hasChild = [[self children] containsObject:child];
+	[self unlockChildren];
 
 	if (!hasChild)
 	{
@@ -50,7 +52,6 @@
 	}
 	[super childWillResize:child];
 }
-
 
 
 @end

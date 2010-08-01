@@ -14,7 +14,6 @@
 #import "TiUtils.h"
 #import "TiRange.h"
 #import "Webcolor.h"
-#import "TiApp.h"
 
 @implementation TiUITextArea
 
@@ -59,7 +58,7 @@
 
 -(void)setBackgroundColor_:(id)color
 {
-	[[self textWidgetView] setBackgroundColor:[Webcolor webColorNamed:color]];
+	[[self textWidgetView] setBackgroundColor:UIColorWebColorNamed(color)];
 }
 
 #pragma mark Public Method
@@ -106,9 +105,6 @@
 	{
 		[self.proxy fireEvent:@"blur" withObject:[NSDictionary dictionaryWithObject:[(UITextView *)textWidgetView text] forKey:@"value"] propagate:NO];
 	}
-	
-	// In order to capture gestures properly, we need to force the root view to become the first responder.
-	[[[[TiApp app] controller] view] becomeFirstResponder];
 }
 
 - (void)textViewDidChange:(UITextView *)tv

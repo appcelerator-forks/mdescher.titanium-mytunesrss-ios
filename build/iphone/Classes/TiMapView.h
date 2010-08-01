@@ -6,8 +6,6 @@
  * 
  * WARNING: This is generated code. Modify at your own risk and without support.
  */
-#import "TiBase.h"
-
 #ifdef USE_TI_MAP
 
 #import "TiUIView.h"
@@ -15,24 +13,15 @@
 
 @class TiMapAnnotationProxy;
 
-@protocol TiMapAnnotation
-@required
--(NSString *)lastHitName;
-@end
-
-
 @interface TiMapView : TiUIView<MKMapViewDelegate> {
 @private
 	MKMapView *map;
 	BOOL regionFits;
 	BOOL animate;
 	BOOL loaded;
-	BOOL ignoreClicks;
 	MKCoordinateRegion region;
 	
 	TiMapAnnotationProxy * pendingAnnotationSelection;
-	NSMutableDictionary *routes;
-	NSMutableDictionary *routeViews;
 }
 
 #pragma mark Public APIs
@@ -44,13 +33,11 @@
 -(void)selectAnnotation:(id)args;
 -(void)deselectAnnotation:(id)args;
 -(void)zoom:(id)args;
--(void)addRoute:(id)args;
--(void)removeRoute:(id)args;
 
 #pragma mark Framework
 -(void)refreshAnnotation:(TiMapAnnotationProxy*)proxy readd:(BOOL)yn;
 
--(void)fireClickEvent:(MKAnnotationView *) pinview source:(NSString *)source;
+-(void)fireClickEvent:(MKPinAnnotationView *) pinview source:(NSString *)source;
 
 @end
 

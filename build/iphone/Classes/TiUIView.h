@@ -93,8 +93,6 @@ CGFloat AutoHeightForView(UIView * superView,CGFloat suggestedWidth,BOOL isVerti
 
 -(void)performZIndexRepositioning;
 -(void)repositionZIndex;
--(void)repositionZIndexIfNeeded;
-
 -(UIImage*)loadImage:(id)image;
 
 -(id)proxyValueForKey:(NSString *)key;

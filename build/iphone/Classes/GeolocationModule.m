@@ -166,7 +166,6 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	RELEASE_TO_NIL(locationManager);
 	RELEASE_TO_NIL(singleHeading);
 	RELEASE_TO_NIL(singleLocation);
-	RELEASE_TO_NIL(purpose);
 	[super _destroy];
 }
 
@@ -221,8 +220,6 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	
 	// should we show heading calibration dialog? defaults to YES
 	calibration = YES; 
-	
-	[super _configure]; 
 }
 
 -(CLLocationManager*)locationManager
@@ -231,29 +228,11 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	{
 		locationManager = [[CLLocationManager alloc] init];
 		locationManager.delegate = self;
-		if (accuracy!=-1)
-		{
-			locationManager.desiredAccuracy = accuracy;
-		}
-		else 
-		{
-			locationManager.desiredAccuracy = kCLLocationAccuracyThreeKilometers;
-		}
+		locationManager.desiredAccuracy = accuracy;
 		locationManager.distanceFilter = distance;
 		locationManager.headingFilter = heading;
 		
-		if ([TiUtils isiPhoneOS3_2OrGreater]) {
-			if (purpose==nil)
-			{ 
-				NSLog(@"[ERROR] Starting in iOS 3.2, you must set the Ti.Geolocation.purpose property to indicate the purpose of using Location services for your application");
-			}
-			else
-			{
-				[locationManager setPurpose:purpose];
-			}
-		}
-
-		if ([locationManager locationServicesEnabled]== NO) 
+		if (locationManager.locationServicesEnabled == NO) 
 		{
 			//NOTE: this is from Apple example from LocateMe and it works well. the developer can still check for the
 			//property and do this message themselves before calling geo. But if they don't, we at least do it for them.
@@ -305,38 +284,31 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	if (startHeading || startLocation)
 	{
 		CLLocationManager *lm = [self locationManager];
-		if (startHeading && trackingHeading==NO)
+		if (startHeading)
 		{
 			[lm startUpdatingHeading];
-			trackingHeading = YES;
 		}
-		if (startLocation && trackingLocation==NO)
+		if (startLocation)
 		{
 			[lm startUpdatingLocation];
-			trackingLocation = YES;
 		}
 	}
 	else if ((!startHeading || !startLocation) && locationManager!=nil)
 	{
 		CLLocationManager *lm = [self locationManager];
-		if (startHeading==NO && trackingHeading)
+		if (startHeading==NO)
 		{
-			trackingHeading = NO;
 			[lm stopUpdatingHeading];
 		}
-		if (startLocation==NO && trackingLocation)
+		if (startLocation==NO)
 		{
-			trackingLocation = NO;
 			[lm stopUpdatingLocation];
 		}
-		if ((startHeading==NO && startLocation==NO) ||
-			(trackingHeading==NO && trackingLocation==NO))
+		if (startHeading==NO && startLocation==NO)
 		{
 			locationManager.delegate = nil; 
 			[locationManager autorelease];
 			locationManager = nil;
-			trackingLocation = NO;
-			trackingHeading = NO;
 		}
 	}
 }
@@ -367,30 +339,20 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 	if (count == 0 && [type isEqualToString:@"heading"])
 	{
 		check = YES;
-		if (trackingHeading)
-		{
-			trackingHeading = NO;
-			[locationManager stopUpdatingHeading];
-		}
+		[locationManager stopUpdatingHeading];
 	}
 	else if (count == 0 && [type isEqualToString:@"location"])
 	{
 		check = YES;
-		if (trackingLocation)
-		{
-			trackingLocation = NO;
-			[locationManager stopUpdatingLocation];
-		}
+		[locationManager stopUpdatingLocation];
 	}
 	
 	if (check && ![self _hasListeners:@"heading"] && ![self _hasListeners:@"location"])
 	{
-		[self performSelectorOnMainThread:@selector(startStopLocationManagerIfNeeded) withObject:nil waitUntilDone:YES];
+		[self startStopLocationManagerIfNeeded];
 		locationManager.delegate = nil;
 		[locationManager autorelease];
-		locationManager = nil; 
-		trackingLocation = NO;
-		trackingHeading = NO;
+		locationManager = nil;
 		RELEASE_TO_NIL(singleHeading);
 		RELEASE_TO_NIL(singleLocation);
 	}
@@ -491,7 +453,6 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 
 -(void)setHighAccuracy:(NSNumber *)value
 {
-	ENSURE_UI_THREAD(setHighAccuracy,value);
 	accuracy = kCLLocationAccuracyBest;
 	// don't prematurely start it
 	if (locationManager!=nil)
@@ -507,7 +468,6 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 
 -(void)setAccuracy:(NSNumber *)value
 {
-	ENSURE_UI_THREAD(setAccuracy,value);
 	accuracy = [TiUtils doubleValue:value];
 	// don't prematurely start it
 	if (locationManager!=nil)
@@ -523,7 +483,6 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 
 -(void)setDistanceFilter:(NSNumber *)value
 {
-	ENSURE_UI_THREAD(setDistanceFilter,value);
 	distance = [TiUtils doubleValue:value];
 	// don't prematurely start it
 	if (locationManager!=nil)
@@ -539,7 +498,6 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 
 -(void)setHeadingFilter:(NSNumber *)value
 {
-	ENSURE_UI_THREAD(setHeadingFilter,value);
 	heading = [TiUtils doubleValue:value];
 	// don't prematurely start it
 	if (locationManager!=nil)
@@ -560,7 +518,7 @@ extern BOOL const TI_APPLICATION_ANALYTICS;
 
 -(NSNumber*)locationServicesEnabled
 {
-	return NUMBOOL([[self tempLocationManager] locationServicesEnabled]);
+	return NUMBOOL([self tempLocationManager].locationServicesEnabled);
 }
 
 MAKE_SYSTEM_PROP_DBL(ACCURACY_BEST,kCLLocationAccuracyBest);
@@ -652,34 +610,13 @@ MAKE_SYSTEM_PROP_DBL(ACCURACY_THREE_KILOMETERS,kCLLocationAccuracyThreeKilometer
 		
 		// check to make sure we don't need to stop after the single shot
 		if (stopIfNeeded)
-		{ 
+		{
 			[self startStopLocationManagerIfNeeded];
 		}
 		return YES;
 	}
 	return NO;
-} 
-
-// the purpose for using Location services - now required in 3.2+
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_3_2
--(NSString*)purpose
-{
-	return purpose;
 }
-
--(void)setPurpose:(NSString *)reason
-{
-	ENSURE_UI_THREAD(setPurpose,reason);
-	RELEASE_TO_NIL(purpose);
-	purpose = [reason retain];
-	if (locationManager!=nil)
-	{
-		[locationManager setPurpose:purpose];
-	}
-	
-}
-#endif
-
 
 #pragma mark Delegates
 

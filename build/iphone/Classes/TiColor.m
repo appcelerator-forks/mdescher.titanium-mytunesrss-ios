@@ -20,7 +20,7 @@
 
 	if ([name caseInsensitiveCompare:@"default"] != NSOrderedSame)
 	{	//Default is allowed nil, while still counting as a color to stop inheritance.
-		translatedColor = [Webcolor webColorNamed:name];
+		translatedColor = UIColorWebColorNamed(name);
 		if(translatedColor == nil)
 		{
 			return nil;

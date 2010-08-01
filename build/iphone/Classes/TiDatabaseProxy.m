@@ -12,7 +12,6 @@
 #import "TiDatabaseResultSetProxy.h"
 #import "TiUtils.h"
 
-
 @implementation TiDatabaseProxy
 
 #pragma mark Internal
@@ -28,10 +27,11 @@
 {
 	if (database!=nil)
 	{
-		[self performSelector:@selector(close:) withObject:nil];
+		[database close];
+		RELEASE_TO_NIL(database);
 	}
 }
- 
+
 -(void)_destroy
 {
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:kTiShutdownNotification object:nil];
@@ -42,7 +42,6 @@
 -(void)_configure
 {
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(shutdown:) name:kTiShutdownNotification object:nil];
-	[super _configure];
 }
 
 -(NSString*)dbDir
@@ -175,14 +174,7 @@
 	{
 		if ([database goodConnection])
 		{
-			@try 
-			{
-				[database close];
-			}
-			@catch (NSException * e) 
-			{
-				NSLog(@"[WARN] attempting to close database, returned error: %@",e);
-			}
+			[database close];
 		}
 		RELEASE_TO_NIL(database);
 	}

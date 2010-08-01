@@ -18,7 +18,7 @@
 
 @implementation TiTextField
 
-@synthesize leftButtonPadding, rightButtonPadding, paddingLeft, paddingRight, becameResponder;
+@synthesize leftButtonPadding, rightButtonPadding, paddingLeft, paddingRight;
 
 -(void)configure
 {
@@ -170,8 +170,6 @@
 
 -(BOOL)resignFirstResponder
 {
-	becameResponder = NO;
-	
 	if ([super resignFirstResponder])
 	{
 		[self repaintMode];
@@ -182,20 +180,12 @@
 
 -(BOOL)becomeFirstResponder
 {
-	becameResponder = YES;
-	
 	if ([super becomeFirstResponder])
 	{
 		[self repaintMode];
 		return YES;
 	}
 	return NO;
-}
-
--(BOOL)isFirstResponder
-{
-	if ([TiUtils isiPhoneOS3_2OrGreater] && becameResponder) return YES;
-	return [super isFirstResponder];
 }
 
 -(void)setLeftView:(UIView*)value
@@ -270,10 +260,6 @@
 		[theNC addObserver:self selector:@selector(keyboardWillHide:) name:UIKeyboardWillHideNotification object:nil];
 		[theNC addObserver:self selector:@selector(keyboardWillShow:) name:UIKeyboardWillShowNotification object:nil];
 		[theNC addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
-		if ([TiUtils isiPhoneOS3_2OrGreater]) {
-			[theNC addObserver:self selector:@selector(keyboardWillHideForReal:) name:TiKeyboardHideNotification object:nil];
-			[theNC addObserver:self selector:@selector(keyboardWillShow:) name:TiKeyboardShowNotification object:nil];
-		}
 		[theNC addObserver:self selector:@selector(textFieldDidChange:) name:UITextFieldTextDidChangeNotification object:textWidgetView];
 	}
 	return textWidgetView;
@@ -433,10 +419,6 @@
 
 - (void)textFieldDidBeginEditing:(UITextField *)tf
 {
-	if ([TiUtils isiPhoneOS3_2OrGreater]) {
-		[(TiUITextWidgetProxy*)self.proxy fireShowNotification];
-	}
-
 	if ([self.proxy _hasListeners:@"focus"])
 	{
 		[self.proxy fireEvent:@"focus" withObject:[NSDictionary dictionaryWithObject:[tf text] forKey:@"value"] propagate:NO];
@@ -452,6 +434,7 @@
 {
 	return YES;
 }
+
 
 - (BOOL)textField:(UITextField *)tf shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string
 {
@@ -472,17 +455,10 @@
 
 - (void)textFieldDidEndEditing:(UITextField *)tf
 {
-	if ([TiUtils isiPhoneOS3_2OrGreater]) {
-		[(TiUITextWidgetProxy*)self.proxy fireHideNotification];
-	}
-	
 	if ([self.proxy _hasListeners:@"blur"])
 	{
 		[self.proxy fireEvent:@"blur" withObject:[NSDictionary dictionaryWithObject:[tf text] forKey:@"value"] propagate:NO];
 	}
-	
-	// In order to capture gestures properly, we need to force the root view to become the first responder.
-	[[[[TiApp app] controller] view] becomeFirstResponder];
 }
 
 - (void)textFieldDidChange:(NSNotification *)notification

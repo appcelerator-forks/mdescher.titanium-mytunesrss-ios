@@ -14,11 +14,6 @@
 #import "TiApp.h"
 #import "TiUtils.h"
 
-NSString* const TiKeyboardHideNotification = @"TiHideKeyboard";
-NSString* const TiKeyboardShowNotification = @"TiShowKeyboard";
-
-NSDictionary* keyboardUserInfo;
-
 @implementation TiUITextWidget
 
 - (id) init
@@ -32,14 +27,10 @@ NSDictionary* keyboardUserInfo;
 }
 
 
+
 -(void)setSuppressReturn_:(id)value
 {
 	suppressReturn = [TiUtils boolValue:value def:YES];
-}
-
--(void)windowClosing
-{
-	[self performSelectorOnMainThread:@selector(removeToolbar) withObject:nil waitUntilDone:[NSThread isMainThread]];
 }
 
 - (void) dealloc
@@ -47,15 +38,10 @@ NSDictionary* keyboardUserInfo;
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardDidHideNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillHideNotification object:nil];
 	[[NSNotificationCenter defaultCenter] removeObserver:self name:UIKeyboardWillShowNotification object:nil];
-	if ([TiUtils isiPhoneOS3_2OrGreater]) {
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:TiKeyboardHideNotification object:nil];
-		[[NSNotificationCenter defaultCenter] removeObserver:self name:TiKeyboardShowNotification object:nil];
-	}
 	RELEASE_TO_NIL(textWidgetView);
 	[toolbar removeFromSuperview];
 	RELEASE_TO_NIL(toolbar);
 	RELEASE_TO_NIL(toolbarItems);
-	RELEASE_TO_NIL(keyboardUserInfo);
 	[super dealloc];
 }
 
@@ -64,19 +50,6 @@ NSDictionary* keyboardUserInfo;
 	// since this guy only works with touch events, we always want them
 	// just always return YES no matter what listeners we have registered
 	return YES;
-}
-
--(NSDictionary*)keyboardUserInfo
-{
-	return keyboardUserInfo;
-}
-
--(void)setKeyboardUserInfo:(NSDictionary *)userInfo
-{
-	if (keyboardUserInfo != userInfo) {
-		[keyboardUserInfo release];
-		keyboardUserInfo = [userInfo retain];
-	}
 }
 
 #pragma mark Must override
@@ -99,8 +72,7 @@ NSDictionary* keyboardUserInfo;
 
 -(void)setColor_:(id)color
 {
-	UIColor * newColor = [[TiUtils colorValue:color] _color];
-	[(id)[self textWidgetView] setTextColor:(newColor != nil)?newColor:[UIColor darkTextColor]];
+	[(id)[self textWidgetView] setTextColor:[[TiUtils colorValue:color] _color]];
 }
 
 -(void)setFont_:(id)font
@@ -132,6 +104,53 @@ NSDictionary* keyboardUserInfo;
 -(void)setAutocorrect_:(id)value
 {
 	[[self textWidgetView] setAutocorrectionType:[TiUtils boolValue:value] ? UITextAutocorrectionTypeYes : UITextAutocorrectionTypeNo];
+}
+
+#pragma mark Responder methods
+//These used to be blur/focus, but that's moved to the proxy only.
+//The reason for that is so checking the toolbar can use UIResponder methods.
+
+-(BOOL)resignFirstResponder
+{
+	if (![textWidgetView isFirstResponder])
+	{
+		return NO;
+	}
+	return [[self textWidgetView] resignFirstResponder];
+}
+
+-(BOOL)becomeFirstResponder
+{
+	if ([textWidgetView isFirstResponder])
+	{
+		return NO;
+	}
+	return [[self textWidgetView] becomeFirstResponder];
+}
+
+-(BOOL)isFirstResponder
+{
+	return [textWidgetView isFirstResponder];
+}
+
+-(void)setPasswordMask_:(id)value
+{
+	[[self textWidgetView] setSecureTextEntry:[TiUtils boolValue:value]];
+}
+
+-(void)setAppearance_:(id)value
+{
+	[[self textWidgetView] setKeyboardAppearance:[TiUtils intValue:value]];
+}
+
+-(void)setAutocapitalization_:(id)value
+{
+	[[self textWidgetView] setAutocapitalizationType:[TiUtils intValue:value]];
+}
+
+-(void)setValue_:(id)text
+{
+	[(id)[self textWidgetView] setText:[TiUtils stringValue:text]];
 }
 
 #pragma mark Toolbar
@@ -203,147 +222,48 @@ NSDictionary* keyboardUserInfo;
 	toolbarHeight = [TiUtils floatValue:value];
 }
 
-#pragma mark Responder methods
-//These used to be blur/focus, but that's moved to the proxy only.
-//The reason for that is so checking the toolbar can use UIResponder methods.
-
--(BOOL)resignFirstResponder
-{
-	if (![textWidgetView isFirstResponder])
-	{
-		return NO;
-	}
-	return [[self textWidgetView] resignFirstResponder];
-}
-
--(BOOL)becomeFirstResponder
-{
-	if ([textWidgetView isFirstResponder])
-	{
-		return NO;
-	}
-	
-	return [[self textWidgetView] becomeFirstResponder];
-}
-
--(BOOL)isFirstResponder
-{
-	return [textWidgetView isFirstResponder];
-}
-
--(void)setPasswordMask_:(id)value
-{
-	[[self textWidgetView] setSecureTextEntry:[TiUtils boolValue:value]];
-}
-
--(void)setAppearance_:(id)value
-{
-	[[self textWidgetView] setKeyboardAppearance:[TiUtils intValue:value]];
-}
-
--(void)setAutocapitalization_:(id)value
-{
-	[[self textWidgetView] setAutocapitalizationType:[TiUtils intValue:value]];
-}
-
--(void)setValue_:(id)text
-{
-	[(id)[self textWidgetView] setText:[TiUtils stringValue:text]];
-}
-
 #pragma mark Keyboard Delegates
-
--(void)removeToolbar
-{
-	[toolbar removeFromSuperview];
-	toolbarVisible = NO;
-}
-
--(void)extractKeyboardInfo:(NSDictionary *)userInfo fromRect:(CGRect *)startingFramePtr toRect:(CGRect *)endingFramePtr
-{
-	NSValue *v = nil;
-	CGRect endingFrame;
-	BOOL canUse32Constants = [TiUtils isiPhoneOS3_2OrGreater];
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_3_2
-	if (canUse32Constants)
-	{
-		v = [userInfo valueForKey:UIKeyboardFrameEndUserInfoKey];
-	}
-#endif
-	
-	if (v != nil)
-	{
-		endingFrame = [v CGRectValue];
-	}
-	else
-	{
-		v = [userInfo valueForKey:UIKeyboardBoundsUserInfoKey];
-		endingFrame = [v CGRectValue];
-		v = [userInfo valueForKey:UIKeyboardCenterEndUserInfoKey];
-		CGPoint endingCenter = [v CGPointValue];
-		endingFrame.origin.x = endingCenter.x - endingFrame.size.width/2.0;
-		endingFrame.origin.y = endingCenter.y - endingFrame.size.height/2.0;
-	}
-
-	CGRect startingFrame;
-	v = nil;
-	
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_3_2
-	if (canUse32Constants)
-	{
-		v = [userInfo valueForKey:UIKeyboardFrameBeginUserInfoKey];
-	}
-#endif
-
-	if (v != nil)
-	{
-		startingFrame = [v CGRectValue];
-	}
-	else
-	{
-		startingFrame.size = endingFrame.size;
-		v = [userInfo valueForKey:UIKeyboardCenterBeginUserInfoKey];
-		CGPoint startingCenter = [v CGPointValue];
-		startingFrame.origin.x = startingCenter.x - startingFrame.size.width/2.0;
-		startingFrame.origin.y = startingCenter.y - startingFrame.size.height/2.0;
-	}
-
-	*startingFramePtr = startingFrame;
-	*endingFramePtr = endingFrame;
-}
 
 - (void)keyboardWillShow:(NSNotification*)notification 
 {
-	if (![textWidgetView isFirstResponder] || (notification.userInfo == nil))
+	if (![textWidgetView isFirstResponder])
 	{
 		return;
 	}
+
+	NSDictionary *userInfo = notification.userInfo;
+	NSValue *v = [userInfo valueForKey:UIKeyboardBoundsUserInfoKey];
+	CGRect kbBounds = [v CGRectValue];
+
+	NSValue *v2 = [userInfo valueForKey:UIKeyboardCenterEndUserInfoKey];
+	CGPoint kbEndPoint = [v2 CGPointValue];
 	
-	self.keyboardUserInfo = notification.userInfo;
+	NSValue *v3 = [userInfo valueForKey:UIKeyboardCenterBeginUserInfoKey];
+	CGPoint kbStartPoint = [v3 CGPointValue];
 	
-	CGRect startingFrame;
-	CGRect endingFrame;
-	[self extractKeyboardInfo:keyboardUserInfo fromRect:&startingFrame toRect:&endingFrame];
+	CGFloat kbEndTop = kbEndPoint.y - (kbBounds.size.height / 2);
 
 	if ((toolbar!=nil) && !toolbarVisible)
 	{
 		CGFloat height = MAX(toolbarHeight,40);
-		endingFrame.origin.y -= height;	//So that the effective keyboard top is accounted for below.
 
-		toolbar.frame = CGRectMake(startingFrame.origin.x, startingFrame.origin.y, startingFrame.size.width, height);
+		kbEndTop -= height;	//This also affects tweaking the scroll view.
 		
 		[[self window] addSubview:toolbar];
 
 		[toolbar setHidden:NO];
 
+		toolbar.bounds = CGRectMake(0, 0, kbBounds.size.width, height);
+		
+		// start at the top
+		toolbar.center = CGPointMake(kbStartPoint.x, kbStartPoint.y - (kbBounds.size.height - height)/2);
 		[self attachKeyboardToolbar];
 		
 		// now animate with the keyboard as it moves up
 		[UIView beginAnimations:nil context:nil];
-		[UIView setAnimationCurve:[[keyboardUserInfo valueForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]];
-		[UIView setAnimationDuration:[[keyboardUserInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue]];
-		toolbar.frame = CGRectMake(endingFrame.origin.x, endingFrame.origin.y, endingFrame.size.width, height);
+		[UIView setAnimationCurve:[[userInfo valueForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]];
+		[UIView setAnimationDuration:[[userInfo valueForKey:UIKeyboardAnimationDurationUserInfoKey] floatValue]];
+		toolbar.center = CGPointMake(kbEndPoint.x, kbEndPoint.y - (kbBounds.size.height + height)/2);
 		[UIView commitAnimations];
 
 		toolbarVisible = YES;
@@ -362,13 +282,16 @@ NSDictionary* keyboardUserInfo;
 			possibleScrollView = [possibleScrollView superview];
 		}
 		
-		[parentScrollView keyboardDidShowAtHeight:endingFrame.origin.y forView:self];
+		[parentScrollView keyboardDidShowAtHeight:kbEndTop forView:self];
 	}
 }
 
 - (void)keyboardDidHide:(NSNotification*)notification
 {
-	[self removeToolbar];
+	if (!toolbarVisible)
+	{
+		[toolbar removeFromSuperview];
+	}
 }
 
 - (void)keyboardWillHideForReal:(NSNotification*)notification 
@@ -379,12 +302,6 @@ NSDictionary* keyboardUserInfo;
 		[self setNeedsDisplay];
 		[self setNeedsLayout];
 		stillIsResponder = YES;
-		if (toolbarVisible)
-		{
-			// coming back in focus from a child view
-			// and we're still in focus, just return
-			return;
-		}
 	}
 
 	if (toolbarVisible)
@@ -396,17 +313,16 @@ NSDictionary* keyboardUserInfo;
 				[view setNeedsDisplay];
 				[view setNeedsLayout];
 				stillIsResponder = YES;
-				// going from a toolbar parent to child view on toolbar
-				// we don't need to do anything
-				return;
+				break;
 			}
 		}
 		
 		NSDictionary *userInfo = notification.userInfo;
+		NSValue *v = [userInfo valueForKey:UIKeyboardBoundsUserInfoKey];
+		CGRect kbBounds = [v CGRectValue];
 
-		CGRect startingFrame;
-		CGRect endingFrame;
-		[self extractKeyboardInfo:userInfo fromRect:&startingFrame toRect:&endingFrame];
+		NSValue *v2 = [userInfo valueForKey:UIKeyboardCenterEndUserInfoKey];
+		CGPoint kbEndPoint = [v2 CGPointValue];
 
 		[UIView beginAnimations:nil context:nil];
 		[UIView setAnimationCurve:[[userInfo valueForKey:UIKeyboardAnimationCurveUserInfoKey] intValue]];
@@ -414,20 +330,30 @@ NSDictionary* keyboardUserInfo;
 		
 		CGFloat height = [toolbar bounds].size.height;
 		
+		CGPoint newCenter;
+		newCenter.x = kbEndPoint.x;
+
 		if (stillIsResponder)
 		{
-			endingFrame.origin.y = startingFrame.origin.y;
+			NSValue *v3 = [userInfo valueForKey:UIKeyboardCenterBeginUserInfoKey];
+			CGPoint kbStartPoint = [v3 CGPointValue];
+			newCenter.y = kbStartPoint.y - (kbBounds.size.height + height)/2;
 		}
-		else if (![TiUtils isiPhoneOS3_2OrGreater])
+		else
 		{
-			[UIView setAnimationDelegate:self];
-			[UIView setAnimationDidStopSelector:@selector(removeToolbar)];
+			newCenter.y = kbEndPoint.y - (kbBounds.size.height - height)/2;
 		}
 
-		toolbar.frame = CGRectMake(endingFrame.origin.x,endingFrame.origin.y,endingFrame.size.width,height);
+		toolbar.center = newCenter;
 		[UIView commitAnimations];
 
 		toolbarVisible = stillIsResponder;
+	}
+
+	if (!stillIsResponder)
+	{
+		[parentScrollView keyboardDidHideForView:self];
+		RELEASE_TO_NIL(parentScrollView);
 	}
 }
 

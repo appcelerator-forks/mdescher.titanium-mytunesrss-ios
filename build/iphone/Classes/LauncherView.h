@@ -47,6 +47,7 @@
 	NSMutableArray *buttons;
 	NSInteger columnCount;
 	NSInteger rowCount;
+	NSInteger currentPageIndex;
 	LauncherButton *dragButton;
 	NSTimer* editHoldTimer;
 	NSTimer* springLoadTimer;
@@ -91,8 +92,6 @@
 - (void)launcherViewDidBeginEditing:(LauncherView*)launcher;
 
 - (void)launcherViewDidEndEditing:(LauncherView*)launcher;
-
-- (BOOL)launcherViewShouldWobble:(LauncherView*)launcher;
 
 @end
 

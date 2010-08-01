@@ -44,7 +44,7 @@ NSArray * tableKeySequence;
 	return (TiUITableView*)[self view];
 }
 
--(TiUITableViewRowProxy*)makeTableViewRowFromDict:(NSDictionary*)data
+-(TiUITableViewRowProxy*)newTableViewRowFromDict:(NSDictionary*)data
 {
 	TiUITableViewRowProxy *proxy = [[[TiUITableViewRowProxy alloc] _initWithPageContext:[self executionContext]] autorelease];
 	[proxy _initWithProperties:data];
@@ -57,7 +57,7 @@ NSArray * tableKeySequence;
 	
 	if ([data isKindOfClass:[NSDictionary class]])
 	{
-		row = [self makeTableViewRowFromDict:data];
+		row = [self newTableViewRowFromDict:data];
 	}
 	else if ([data isKindOfClass:[TiUITableViewRowProxy class]])
 	{
@@ -254,7 +254,7 @@ NSArray * tableKeySequence;
 	
 	if ([sections count]==0)
 	{
-		NSLog(@"[WARN] no rows found in table, ignoring delete");
+		[self throwException:@"no rows found" subreason:nil location:CODELOCATION];
 		return;
 	}
 	
@@ -263,7 +263,7 @@ NSArray * tableKeySequence;
 	
 	if (section==nil || row == nil)
 	{
-		NSLog(@"[WARN] no row found for index: %d",index);
+		[self throwException:@"no row found for index" subreason:nil location:CODELOCATION];
 		return;
 	}
 	
@@ -364,8 +364,7 @@ NSArray * tableKeySequence;
         TiUITableViewActionType actionType = TiUITableViewActionAppendRow;
         if (header != nil) {
             TiUITableViewSectionProxy *newSection = [[[TiUITableViewSectionProxy alloc] _initWithPageContext:[self executionContext] args:nil] autorelease];
-			[newSection replaceValue:header forKey:@"headerTitle" notification:NO];
-			
+            
             newSection.section = [sections count];
             newSection.table = table;
 			newSection.parent = [table proxy];
@@ -383,7 +382,7 @@ NSArray * tableKeySequence;
         
         // Have to do this after the action or else there's an update of a nonexistant section
         if (header != nil) {
-			[section replaceValue:header forKey:@"headerTitle" notification:NO];
+            [section setValue:header forUndefinedKey:@"headerTitle"];
         }
 	}	
 }
@@ -391,6 +390,7 @@ NSArray * tableKeySequence;
 -(void)setData:(id)args withObject:(id)properties
 {
 	ENSURE_TYPE_OR_NIL(args,NSArray);
+	ENSURE_UI_THREAD_WITH_OBJ(setData,args,properties);
 	
 	// this is on the non-UI thread. let's do the work here before we pass
 	// it over to the view which will be on the UI thread
@@ -408,7 +408,7 @@ NSArray * tableKeySequence;
 		if ([row isKindOfClass:dictionaryClass])
 		{
 			NSDictionary *dict = (NSDictionary*)row;
-			TiUITableViewRowProxy *rowProxy = [self makeTableViewRowFromDict:dict];
+			TiUITableViewRowProxy *rowProxy = [self newTableViewRowFromDict:dict];
 			NSString *header = [dict objectForKey:@"header"];
 			if (section == nil || header!=nil)
 			{
@@ -419,12 +419,12 @@ NSArray * tableKeySequence;
 			}
 			if (header!=nil)
 			{
-				[section replaceValue:header forKey:@"headerTitle" notification:NO];
+				[section setValue:header forUndefinedKey:@"headerTitle"];
 			}
 			NSString *footer = [dict objectForKey:@"footer"];
 			if (footer!=nil)
 			{
-				[section replaceValue:footer forKey:@"footerTitle" notification:NO];
+				[section setValue:footer forUndefinedKey:@"footerTitle"];
 			}
 			[section add:rowProxy];
 		}
@@ -442,25 +442,22 @@ NSArray * tableKeySequence;
 				section = [[[TiUITableViewSectionProxy alloc] _initWithPageContext:[self executionContext] args:nil] autorelease];
 				if (rowHeader!=nil)
 				{
-					[section replaceValue:rowHeader forKey:@"headerTitle" notification:NO];
+					[section setValue:rowHeader forUndefinedKey:@"headerTitle"];
 				}
-				section.section = [data count];
-				TiUITableView *table = [self tableView];
-				section.table = table;
-				section.parent = [table proxy];
 				[data addObject:section];
 			}
 			if (rowFooter!=nil)
 			{
-				[section replaceValue:rowFooter forKey:@"footerTitle" notification:NO];
+				[section setValue:rowFooter forUndefinedKey:@"footerTitle"];
 			}
 			[section add:row];
 		}
 	}
 	
 	[self replaceValue:data forKey:@"data" notification:NO];
-	
+
 	TiUITableViewAction *action = [[[TiUITableViewAction alloc] initWithRow:nil animation:properties section:0 type:TiUITableViewActionSetData] autorelease];
+
 	TiUITableView *table = [self tableView];
 	[table dispatchAction:action];
 }
@@ -488,7 +485,6 @@ NSArray * tableKeySequence;
 	}
 	[[self view] performSelector:@selector(setContentInsets_:withObject:) withObject:arg1 withObject:arg2];
 }
-
 
 @end 
 

@@ -19,7 +19,6 @@
 #pragma mark Public APIs
 
 -(BOOL)hasText;
--(void)windowClosing;
 
 @end
 
@@ -34,6 +33,7 @@
 	CGFloat toolbarHeight;
 	NSArray *toolbarItems;
 	BOOL toolbarVisible;
+
 	BOOL suppressReturn;
 	
 	TiUIView<TiUIScrollView> *	parentScrollView;
@@ -42,17 +42,7 @@
 
 
 }
-@property(nonatomic,readwrite,retain) NSDictionary* keyboardUserInfo;
+
 @end
-
-// Okay, here's why we need this.  In 3.2, Apple made the awesome mistake of no longer firing
-// UIKeyboardWillHideNotification (OR UIKeyboardWillShowNotification) when the first responder changes.  
-// This means that for these iOSes and later, we have to fire our OWN notification that indicates 
-// the first responder changed and the keyboard needs to "hide".
-// FIXME: Every new OS, see if Apple's fixed this obnoxious bug.
-extern NSString* const TiKeyboardHideNotification;
-extern NSString* const TiKeyboardShowNotification;
-
-
 
 #endif

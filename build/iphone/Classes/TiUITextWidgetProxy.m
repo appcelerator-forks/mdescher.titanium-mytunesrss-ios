@@ -63,29 +63,6 @@ DEFINE_DEF_BOOL_PROP(suppressReturn,YES);
 	}
 }
 
--(void)fireHideNotification
-{
-	[[NSNotificationCenter defaultCenter] postNotificationName:TiKeyboardHideNotification 
-													object:nil 
-												  userInfo:[(TiUITextWidget*)[self view] keyboardUserInfo]];
-}
-
--(void)fireShowNotification
-{	
-	[[NSNotificationCenter defaultCenter] postNotificationName:TiKeyboardShowNotification 
-														object:nil
-													  userInfo:[(TiUITextWidget*)[self view] keyboardUserInfo]];
-}
-
--(void)windowWillClose
-{
-	if ([self viewAttached])
-	{
-		[[self view] performSelectorOnMainThread:@selector(windowClosing) withObject:nil waitUntilDone:[NSThread isMainThread]];
-	}
-	[super windowWillClose];
-}
-
 @end
 
 #endif
