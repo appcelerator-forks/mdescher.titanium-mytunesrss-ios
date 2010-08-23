@@ -1,0 +1,22 @@
+<document>
+    <properties>
+        <title>MyTunesRSS iPhone App</title>
+        <author email="mdescher@codewave.de">Michael Descher</author>
+    </properties>
+    <body>
+
+        <release version="1.0.3" date="????-??-??">
+            <action dev="mdescher" type="fix">
+                Added missing transcoding parameter to video playback URL.
+            </action>
+        </release>
+
+        <!--
+        <release version="???.???.???" date="????-??-??" description="???">
+            <action dev="???" type="add|update|fix|remove" issue="???" due-to="???" due-to-email="???">
+                ???
+            </action>
+        </release>
+        -->
+    </body>
+</document>

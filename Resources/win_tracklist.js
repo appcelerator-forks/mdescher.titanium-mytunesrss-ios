@@ -38,7 +38,11 @@ if (tableData.length == 0) {
             } else {
                 if (items[e.index].mediaType === 'Video') {
                     Titanium.App.fireEvent('mytunesrss_stop');
-                    Titanium.UI.createWindow({url:'win_videoplayer.js',data:items[e.index].playbackUrl,backgroundColor:'#000'}).open();
+                    var url = items[e.index].playbackUrl;
+                    if (Titanium.App.Properties.getString('tcParam') != undefined) {
+                        url += '/' + Titanium.App.Properties.getString('tcParam');
+                    }
+                    Titanium.UI.createWindow({url:'win_videoplayer.js',data:url,backgroundColor:'#000'}).open();
                 } else {
                     Titanium.App.fireEvent('mytunesrss_playlist', {playlist:items,index:e.index});
                 }
