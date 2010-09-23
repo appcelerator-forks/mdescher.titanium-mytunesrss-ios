@@ -118,16 +118,18 @@ buttonRowPlaylists.addEventListener('click', function() {
 
 buttonRowAlbums.addEventListener('click', function() {
     actIndicatorView.show();
-    ajaxCall('AlbumService.getAlbums', [null, null, null, -1, -1, -1, false, -1, -1], function(result, error) {
-        if (result) {
-            var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundColor:'#FFF'});
-            winAlbums.ajaxResult = result;
-            winAlbums.open();
-        } else {
-            actIndicatorView.hide();
-            handleServerError(error);
-        }
-    });
+	var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundColor:'#FFF'});
+	winAlbums.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
+		ajaxCall('AlbumService.getAlbums', [null, null, null, -1, -1, -1, false, fetchStart, fetchSize], function(result, error) {
+			if (result) {
+				fetchResultCallback(result.results);
+			} else {
+				actIndicatorView.hide();
+				handleServerError(error);
+			}
+		});
+	}
+	winAlbums.open();
 });
 
 buttonRowArtists.addEventListener('click', function() {

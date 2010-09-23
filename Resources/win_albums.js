@@ -19,7 +19,7 @@ addTopToolbar(win, 'Albums', buttonBack, undefined);
 
 win.add(tableView);
 
-setTableDataAndIndex(win.ajaxResult.results, tableView, function(item, index) {
+setTableDataAndIndex(tableView, win.fetchItemsCallback, function(item, index) {
     var displayName = getDisplayName(item.name);
     var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:item.imageUrl ? 'album_row_img' : 'album_row'});
     if (item.imageUrl) {
