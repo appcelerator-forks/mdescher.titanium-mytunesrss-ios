@@ -300,10 +300,45 @@ DEFINE_EXCEPTIONS
 
 -(void)setURLImageOnUIThread:(UIImage*)image
 {
+	ENSURE_UI_THREAD(setURLImageOnUIThread,image);
+	if (self.proxy==nil)
+	{
+		// this can happen after receiving an async callback for loading the image
+		// but after we've detached our view.  In which case, we need to just ignore this
+		return;
+	}
 	UIImageView *iv = [self imageView];
 	iv.image = image;
 	if (placeholderLoading)
 	{
+		iv.autoresizingMask = UIViewAutoresizingNone;
+		iv.contentMode = UIViewContentModeCenter;
+		iv.alpha = 0;
+		
+		autoWidth = image.size.width;
+		autoHeight = image.size.height;
+		
+		[(TiViewProxy *)[self proxy] setNeedsReposition];
+		
+		// do a nice fade in animation to replace the new incoming image
+		// with our placeholder
+		[UIView beginAnimations:nil context:nil];
+		[UIView setAnimationDuration:0.5];
+		[UIView setAnimationDelegate:self];
+		[UIView setAnimationDidStopSelector:@selector(animationCompleted:finished:context:)];
+		
+		for (UIView *view in [self subviews])
+		{
+			if (view!=iv)
+			{	
+				[view setAlpha:0];
+			}
+		}
+		
+		iv.alpha = 1;
+		
+		[UIView commitAnimations];
+		
 		placeholderLoading = NO;
 		[self fireLoadEventWithState:@"url"];
 	}
@@ -391,6 +426,8 @@ DEFINE_EXCEPTIONS
 			if (defURL!=nil)
 			{
 				UIImage *poster = [[ImageLoader sharedLoader] loadImmediateImage:defURL withSize:imageSize];
+				autoWidth = poster.size.width;
+				autoHeight = poster.size.height;
 				[self imageView].image = poster;
 			}
 			placeholderLoading = YES;
@@ -444,7 +481,7 @@ DEFINE_EXCEPTIONS
 	else if ([arg isKindOfClass:[UIImage class]])
 	{
 		// called within this class
-		image = (UIImage*)arg;
+		image = (UIImage*)arg; 
 	}
 	
 	return image;
@@ -533,25 +570,11 @@ DEFINE_EXCEPTIONS
 -(void)setWidth_:(id)width_
 {
 	width = [TiUtils floatValue:width_];
-	if (imageView!=nil)
-	{
-		id image = [[self proxy] valueForUndefinedKey:@"image"];
-		if (image != nil) {
-			[self setImage_:[self scaleImageIfRequired:[self convertToUIImage:image]]];
-		}
-	}
 }
 
 -(void)setHeight_:(id)height_
 {
 	height = [TiUtils floatValue:height_];
-	if (imageView!=nil)
-	{
-		id image = [[self proxy] valueForUndefinedKey:@"image"];
-		if (image != nil) {
-			[self setImage_:[self scaleImageIfRequired:[self convertToUIImage:image]]];
-		}
-	}
 }
 
 -(void)setImage_:(id)arg

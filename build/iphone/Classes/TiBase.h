@@ -31,7 +31,24 @@
 	#define KMETHOD_DEBUG MEMORY_DEBUG
 #endif
 
+// in simulator we redefine to format for MyTunesRSS Developer console
+
+
 #define TI_INLINE static __inline__
+
+#define NSLog(...) {\
+const char *__s = [[NSString stringWithFormat:__VA_ARGS__] UTF8String];\
+if (__s[0]=='[')\
+{\
+fprintf(stderr,"%s\n", __s);\
+fflush(stderr);\
+}\
+else\
+{\
+fprintf(stderr,"[DEBUG] %s\n", __s);\
+fflush(stderr);\
+}\
+}
 
 // create a mutable array that doesn't retain internal references to objects
 NSMutableArray* TiCreateNonRetainingArray();
@@ -82,13 +99,6 @@ return; \
 
 #define ENSURE_UI_THREAD_WITH_OBJ(x,y,z) \
 ENSURE_UI_THREAD_WITH_OBJS(x,NULL_IF_NIL(y),NULL_IF_NIL(z))
-
-//if (![NSThread isMainThread]) { \
-//id o = [NSArray arrayWithObjects:[NSString stringWithFormat:@"%s",#x],y==nil?[NSNull null]:y,z==nil?[NSNull null]:z,nil];\
-//[self performSelectorOnMainThread:@selector(_dispatchWithObjectOnUIThread:) withObject:o waitUntilDone:NO]; \
-//return; \
-//} \
-
 
 #define BEGIN_UI_THREAD_PROTECTED_VALUE(method,type) \
 -(id)_sync_##method:(NSMutableArray*)array_\
@@ -231,16 +241,20 @@ if ((__x<__minX) || (__x>__maxX)) \
 {\
 	NSString * exceptionName = [@"org.mytunesrss." stringByAppendingString:NSStringFromClass([self class])];\
 	NSString * message = [NSString stringWithFormat:@"%@. %@ %@",reason,(subreason!=nil?subreason:@""),(location!=nil?location:@"")];\
-	NSLog(@"[WARN] %@",message);\
-	@throw [NSException exceptionWithName:exceptionName reason:message userInfo:nil];\
+	NSLog(@"[ERROR] %@",message);\
+	if ([NSThread isMainThread]==NO) {\
+		@throw [NSException exceptionWithName:exceptionName reason:message userInfo:nil];\
+	}\
 }\
 \
 + (void) throwException:(NSString *) reason subreason:(NSString*)subreason location:(NSString *)location\
 {\
-	NSString * exceptionName = [@"org.mytunesrss." stringByAppendingString:NSStringFromClass([self class])];\
+	NSString * exceptionName = @"org.mytunesrss";\
 	NSString * message = [NSString stringWithFormat:@"%@. %@ %@",reason,(subreason!=nil?subreason:@""),(location!=nil?location:@"")];\
-	NSLog(@"[WARN] %@",message);\
-	@throw [NSException exceptionWithName:exceptionName reason:message userInfo:nil];\
+	NSLog(@"[ERROR] %@",message);\
+	if ([NSThread isMainThread]==NO) {\
+		@throw [NSException exceptionWithName:exceptionName reason:message userInfo:nil];\
+	}\
 }\
 
 
@@ -386,21 +400,6 @@ return value;\
  
 #define TI_VERSION_STR STRING(TI_VERSION)
  
-// in simulator we redefine to format for MyTunesRSS Developer console
- 
-#define NSLog(...) {\
-	const char *__s = [[NSString stringWithFormat:__VA_ARGS__] UTF8String];\
-	if (__s[0]=='[')\
-	{\
-	    fprintf(stderr,"%s\n", __s);\
-		fflush(stderr);\
-	}\
-	else\
-	{\
-	    fprintf(stderr,"[DEBUG] %s\n", __s);\
-		fflush(stderr);\
-	}\
-}
 
 #ifdef VERBOSE
 
@@ -414,6 +413,8 @@ return value;\
 
 #define VAL_OR_NSNULL(foo)	(((foo) != nil)?((id)foo):[NSNull null])
 
+
+
 NSData * dataWithHexString (NSString * hexString);
 NSString * hexString (NSData * thedata);
 
@@ -426,7 +427,7 @@ typedef enum {
 } TiNetworkConnectionState;
 
 
-extern NSString * const kKrollShutdownNotification;
+extern NSString * const kTiContextShutdownNotification;
 extern NSString * const kTiWillShutdownNotification;
 extern NSString * const kTiShutdownNotification;
 extern NSString * const kTiSuspendNotification;
@@ -434,7 +435,7 @@ extern NSString * const kTiResumeNotification;
 extern NSString * const kTiAnalyticsNotification;
 extern NSString * const kTiRemoteDeviceUUIDNotification;
 extern NSString * const kTiGestureShakeNotification;
-
+extern NSString * const kTiRemoteControlNotification;
 
 #ifndef __IPHONE_3_2
 #define __IPHONE_3_2 30200
@@ -452,5 +453,6 @@ extern NSString * const kTiGestureShakeNotification;
 #ifndef ASI_AUTOUPDATE_NETWORK_INDICATOR
 	#define REACHABILITY_20_API 1
 #endif
+
 
 #endif

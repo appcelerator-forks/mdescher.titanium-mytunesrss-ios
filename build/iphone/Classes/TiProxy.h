@@ -10,6 +10,7 @@
 #import "TiEvaluator.h"
 #import "KrollCallback.h"
 #import "KrollObject.h"
+#import <pthread.h>
 
 @class KrollBridge;
 
@@ -37,7 +38,7 @@ typedef enum {
 } TiProxyBridgeType;
 
 
-@protocol TiProxyDelegate
+@protocol TiProxyDelegate<NSObject>
 
 @required
 
@@ -49,6 +50,8 @@ typedef enum {
 
 -(void)listenerAdded:(NSString*)type count:(int)count;
 -(void)listenerRemoved:(NSString*)type count:(int)count;
+
+-(void)detachProxy;
 
 @end
 
@@ -67,8 +70,8 @@ void DoProxyDelegateReadValuesWithKeysFromProxy(UIView<TiProxyDelegate> * target
 	id<TiProxyDelegate> modelDelegate;
 	NSURL *baseURL;
 	NSString *krollDescription;
-	NSMutableDictionary *contextListeners;
-	NSRecursiveLock *destroyLock;
+	pthread_rwlock_t listenerLock;
+	BOOL reproxying;
 @protected
 	BOOL	ignoreValueChanged;	//This is done only at initialization where we know the dynprops were properly set by _initWithProperties.
 	NSMutableDictionary *dynprops;
@@ -80,7 +83,7 @@ void DoProxyDelegateReadValuesWithKeysFromProxy(UIView<TiProxyDelegate> * target
 @property(readonly,nonatomic)			id<TiEvaluator> pageContext;
 @property(readonly,nonatomic)			id<TiEvaluator> executionContext;
 
-@property(nonatomic,assign,readwrite)	id<TiProxyDelegate> modelDelegate;
+@property(nonatomic,retain,readwrite)	id<TiProxyDelegate> modelDelegate;
 
 
 #pragma mark Private 
@@ -91,8 +94,6 @@ void DoProxyDelegateReadValuesWithKeysFromProxy(UIView<TiProxyDelegate> * target
 -(BOOL)_hasListeners:(NSString*)type;
 -(void)_fireEventToListener:(NSString*)type withObject:(id)obj listener:(KrollCallback*)listener thisObject:(TiProxy*)thisObject_;
 -(id)_proxy:(TiProxyBridgeType)type;
--(void)_willChangeValue:(id)property value:(id)value;
--(void)_didChangeValue:(id)property value:(id)value;
 -(void)_contextDestroyed;
 -(void)contextWasShutdown:(id<TiEvaluator>)context;
 -(TiHost*)_host;
@@ -106,6 +107,9 @@ void DoProxyDelegateReadValuesWithKeysFromProxy(UIView<TiProxyDelegate> * target
 -(TiProxy*)currentWindow;
 -(void)contextShutdown:(id)sender;
 -(id)toString:(id)args;
+-(BOOL)destroyed;
+-(void)setReproxying:(BOOL)yn;
+-(BOOL)inReproxy;
 
 #pragma mark Public 
 -(id<NSFastEnumeration>)allKeys;

@@ -15,11 +15,20 @@
 #import "TiErrorController.h"
 #import "NSData+Additions.h"
 #import "TiDebugger.h"
+#import "ImageLoader.h"
 #import <QuartzCore/QuartzCore.h>
+#import <AVFoundation/AVFoundation.h>
 
 TiApp* sharedApp;
 
 extern NSString * const TI_APPLICATION_DEPLOYTYPE;
+extern NSString * const TI_APPLICATION_NAME;
+extern NSString * const TI_APPLICATION_VERSION;
+
+extern void UIColorFlushCache();
+
+#define SHUTDOWN_TIMEOUT_IN_SEC	10
+#define TIV @"TiVerify"
 
 //
 // thanks to: http://www.restoroot.com/Blog/2008/10/18/crash-reporter-for-iphone-applications/
@@ -233,8 +242,21 @@ void MyUncaughtExceptionHandler(NSException *exception)
 	}
 }
 
+-(void)attachXHRBridgeIfRequired
+{
+#ifdef USE_TI_UIWEBVIEW
+	if (xhrBridge==nil)
+	{
+		xhrBridge = [[XHRBridge alloc] initWithHost:self];
+		[xhrBridge boot:self url:nil preload:nil];
+	}
+#endif
+}
+
 - (void)boot
 {
+	NSLog(@"[INFO] %@/%@ (%s.8a222e)",TI_APPLICATION_NAME,TI_APPLICATION_VERSION,TI_VERSION_STR);
+	
 	sessionId = [[TiUtils createUUID] retain];
 
 #ifdef DEBUGGER_ENABLED
@@ -242,17 +264,24 @@ void MyUncaughtExceptionHandler(NSException *exception)
 #endif
 	
 	kjsBridge = [[KrollBridge alloc] initWithHost:self];
-#ifdef USE_TI_UIWEBVIEW
-	xhrBridge = [[XHRBridge alloc] initWithHost:self];
-#endif
 	
 	[kjsBridge boot:self url:nil preload:nil];
-#ifdef USE_TI_UIWEBVIEW
-	[xhrBridge boot:self url:nil preload:nil];
-#endif
-	
+
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidHide:) name:UIKeyboardDidHideNotification object:nil];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(keyboardDidShow:) name:UIKeyboardDidShowNotification object:nil];
+	
+	
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
+	if ([TiUtils isIOS4OrGreater])
+	{
+		[[UIApplication sharedApplication] beginReceivingRemoteControlEvents];
+	}
+#endif
+}
+
+- (void)validator
+{
+	[[[NSClassFromString(TIV) alloc] init] autorelease];
 }
 
 - (void)booted:(id)bridge
@@ -261,6 +290,7 @@ void MyUncaughtExceptionHandler(NSException *exception)
 	{
 		NSLog(@"[DEBUG] application booted in %f ms", ([NSDate timeIntervalSinceReferenceDate]-started) * 1000);
 		fflush(stderr);
+		[self performSelectorOnMainThread:@selector(validator) withObject:nil waitUntilDone:YES];
 	}
 }
 
@@ -315,29 +345,38 @@ void MyUncaughtExceptionHandler(NSException *exception)
 	return YES;
 }
 
+- (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
+{
+	[launchOptions removeObjectForKey:UIApplicationLaunchOptionsURLKey];	
+	[launchOptions setObject:[url absoluteString] forKey:@"url"];
+}
+
 - (void)applicationWillTerminate:(UIApplication *)application
 {
 	NSNotificationCenter * theNotificationCenter = [NSNotificationCenter defaultCenter];
 
-//This will send out the 'close' message.
+	//This will send out the 'close' message.
 	[theNotificationCenter postNotificationName:kTiWillShutdownNotification object:self];
+	
+	NSCondition *condition = [[NSCondition alloc] init];
 
-//These shutdowns return immediately, yes, but the main will still run the close that's in their queue.	
-	[kjsBridge shutdown];
 #ifdef USE_TI_UIWEBVIEW
-	[xhrBridge shutdown];
+	[xhrBridge shutdown:nil];
 #endif	
 
-	while ([kjsBridge krollContext] != nil)
-	{
-		[NSThread sleepForTimeInterval:0.05];
-	}
-
-//This will shut down the modules.
+	//These shutdowns return immediately, yes, but the main will still run the close that's in their queue.	
+	[kjsBridge shutdown:condition];
+	
+	[condition lock];
+	[condition waitUntilDate:[NSDate dateWithTimeIntervalSinceNow:SHUTDOWN_TIMEOUT_IN_SEC]];
+	[condition unlock];
+	
+	//This will shut down the modules.
 	[theNotificationCenter postNotificationName:kTiShutdownNotification object:self];
-
+	
+	RELEASE_TO_NIL(condition);
 	RELEASE_TO_NIL(kjsBridge);
-#ifdef USE_TI_UIWEBVIEW
+#ifdef USE_TI_UIWEBVIEW 
 	RELEASE_TO_NIL(xhrBridge);
 #endif	
 	RELEASE_TO_NIL(remoteNotification);
@@ -346,21 +385,47 @@ void MyUncaughtExceptionHandler(NSException *exception)
 
 - (void)applicationDidReceiveMemoryWarning:(UIApplication *)application
 {
-	//FIXME: UIColorFlushCache();
-	[kjsBridge gc];
+	[Webcolor flushCache];
+	// don't worry about KrollBridge since he's already listening
 #ifdef USE_TI_UIWEBVIEW
 	[xhrBridge gc];
-#endif
+#endif 
 }
 
 -(void)applicationWillResignActive:(UIApplication *)application
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName:kTiSuspendNotification object:self];
+	
+	// suspend any image loading
+	[[ImageLoader sharedLoader] suspend];
+	
+	[kjsBridge gc];
+	
+#ifdef USE_TI_UIWEBVIEW
+	[xhrBridge gc];
+#endif 
+}
+
+- (void)applicationDidBecomeActive:(UIApplication *)application
+{
+	// you can get a resign when you have to show a system dialog or you get
+	// an incoming call, for example, and then you'll get this message afterwards
+	// this is slightly different than enter foreground
+	[[NSNotificationCenter defaultCenter] postNotificationName:kTiResumeNotification object:self];
+	
+	// resume any image loading
+	[[ImageLoader sharedLoader] resume];
+}
+
+-(void)applicationDidEnterBackground:(UIApplication *)application
+{
+	[TiUtils queueAnalytics:@"ti.background" name:@"ti.background" data:nil];
 }
 
 -(void)applicationWillEnterForeground:(UIApplication *)application
 {
 	[[NSNotificationCenter defaultCenter] postNotificationName:kTiResumeNotification object:self];
+	[TiUtils queueAnalytics:@"ti.foreground" name:@"ti.foreground" data:nil];
 }
 
 -(id)remoteNotification

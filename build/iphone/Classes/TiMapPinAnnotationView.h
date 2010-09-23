@@ -6,12 +6,14 @@
  * 
  * WARNING: This is generated code. Modify at your own risk and without support.
  */
+#import "TiBase.h"
+
 #ifdef USE_TI_MAP
 
 #import <MapKit/MapKit.h>
 #import "TiMapView.h"
 
-@interface TiMapPinAnnotationView : MKPinAnnotationView {
+@interface TiMapPinAnnotationView : MKPinAnnotationView<TiMapAnnotation> {
 @private
 	TiMapView *map;
 	BOOL observing;

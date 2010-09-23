@@ -16,10 +16,12 @@
 	UINavigationController *controller;
 	TiWindowProxy *root;
 	TiWindowProxy *current;
+	TiWindowProxy *visibleProxy;
 	BOOL opening;
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration;
+- (UINavigationController*)controller;
 
 @end
 

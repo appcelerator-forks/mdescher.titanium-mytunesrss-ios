@@ -34,10 +34,12 @@
 
 #import "LauncherItem.h"
 #import "LauncherButton.h"
+#import "TiUIView.h"
+#import "TiUIViewProxy.h"
 
 @implementation LauncherItem
 
-@synthesize title, canDelete, badgeValue, image, selectedImage, button, userData;
+@synthesize title, canDelete, badgeValue, image, selectedImage, button, userData, view;
 
 -(id)init
 {
@@ -55,6 +57,7 @@
 	[image release];
 	[selectedImage release];
 	[userData release];
+	[view release];
 	[super dealloc];
 }
 
@@ -89,6 +92,13 @@
 -(void)setButton:(LauncherButton *)button_
 {
 	button = button_;
+	[self repaint];
+}
+
+-(void)setView:(UIView*)view_
+{
+	[view release];
+	view = [view_ retain];
 	[self repaint];
 }
 

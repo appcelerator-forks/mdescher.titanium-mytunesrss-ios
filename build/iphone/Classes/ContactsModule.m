@@ -248,6 +248,7 @@
 	}
 	
 	ABRecordRef record = ABPersonCreate();
+	[(id)record autorelease];
 	CFErrorRef error;
 	if (!ABAddressBookAddRecord([self addressBook], record, &error)) {
 		CFStringRef errorStr = CFErrorCopyDescription(error);
@@ -289,6 +290,7 @@
 	}
 	
 	ABRecordRef record = ABGroupCreate();
+	[(id)record autorelease];
 	CFErrorRef error;
 	if (!ABAddressBookAddRecord([self addressBook], record, &error)) {
 		CFStringRef errorStr = CFErrorCopyDescription(error);
@@ -338,7 +340,7 @@ MAKE_SYSTEM_PROP(CONTACTS_SORT_LAST_NAME,kABPersonSortByLastName);
 {
 	if (selectedPersonCallback) {
 		ABRecordID id_ = ABRecordGetRecordID(person);
-		TiContactsPerson* person = [[TiContactsPerson alloc] _initWithPageContext:[self executionContext] recordId:id_ module:self];
+		TiContactsPerson* person = [[[TiContactsPerson alloc] _initWithPageContext:[self executionContext] recordId:id_ module:self] autorelease];
 		[self _fireEventToListener:@"selectedPerson"
 						withObject:[NSDictionary dictionaryWithObject:person forKey:@"person"] 
 						listener:selectedPersonCallback 
@@ -353,7 +355,7 @@ MAKE_SYSTEM_PROP(CONTACTS_SORT_LAST_NAME,kABPersonSortByLastName);
 {
 	if (selectedPropertyCallback) {
 		ABRecordID id_ = ABRecordGetRecordID(person);
-		TiContactsPerson* personObject = [[TiContactsPerson alloc] _initWithPageContext:[self executionContext] recordId:id_ module:self];
+		TiContactsPerson* personObject = [[[TiContactsPerson alloc] _initWithPageContext:[self executionContext] recordId:id_ module:self] autorelease];
 		NSString* propertyName = nil;
 		id value = nil;
 		id label = [NSNull null];

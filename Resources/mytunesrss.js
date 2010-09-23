@@ -1,3 +1,5 @@
+var FETCH_SIZE = 1000;
+
 function ajaxCall(func, parameterArray, resultCallback) {
     var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
     httpClient.onload = function() {
@@ -33,13 +35,8 @@ function getDisplayName(name) {
     return name;
 }
 
-function setTableDataAndIndex(tableView, fetchItemsCallback, createTableViewRowCallback, getSectionAndIndexNameCallback) {
-	internalSetTableDataAndIndex(new Array(27), 0, tableView, fetchItemsCallback, createTableViewRowCallback, getSectionAndIndexNameCallback);
-}
-
-function internalSetTableDataAndIndex(section, startIndex, tableView, fetchItemsCallback, createTableViewRowCallback, getSectionAndIndexNameCallback) {
-	var fetchItemCount = 100;
-	fetchItemsCallback(startIndex, fetchItemCount, function(items) {
+function internalSetTableDataAndIndex(section, startIndex, tableView, fetchItemsCallback, tableCompleteCallback, createTableViewRowCallback, getSectionAndIndexNameCallback) {
+	fetchItemsCallback(startIndex, FETCH_SIZE, function(items, more) {
 		var sectionTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '123'];
 		var indexTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#'];
 		for (var i = 0; i < items.length; i++) {
@@ -53,7 +50,7 @@ function internalSetTableDataAndIndex(section, startIndex, tableView, fetchItems
 			}
 			section[index].add(createTableViewRowCallback(items[i], i));
 		}
-		if (items.length < fetchItemCount) {
+		if (items.length < FETCH_SIZE) {
 			var indexData = [];
 			var tableData = [];
 			var globalIndex = 0;
@@ -68,10 +65,15 @@ function internalSetTableDataAndIndex(section, startIndex, tableView, fetchItems
 			if (indexData.length > 5) {
 				tableView.setIndex(indexData);
 			}
+            tableCompleteCallback();
 		} else {
-			internalSetTableDataAndIndex(section, startIndex + fetchItemCount, tableView, fetchItemsCallback, createTableViewRowCallback, getSectionAndIndexNameCallback);
+			internalSetTableDataAndIndex(section, startIndex + FETCH_SIZE, tableView, fetchItemsCallback, tableCompleteCallback, createTableViewRowCallback, getSectionAndIndexNameCallback);
 		}
-	}
+	});
+}
+
+function setTableDataAndIndex(tableView, fetchItemsCallback, tableCompleteCallback, createTableViewRowCallback, getSectionAndIndexNameCallback) {
+	internalSetTableDataAndIndex(new Array(27), 0, tableView, fetchItemsCallback, tableCompleteCallback, createTableViewRowCallback, getSectionAndIndexNameCallback);
 }
 
 function addTopToolbar(window, titleText, leftButton, rightButton) {
@@ -108,4 +110,67 @@ function removeUnsupportedTracks(items) {
         }
     }
     return items;
+}
+
+function loadAndDisplayAlbums(artistName, genreName) {
+    var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundColor:'#FFF'});
+    winAlbums.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
+        ajaxCall('AlbumService.getAlbums', [null, artistName, genreName, -1, -1, -1, false, fetchStart, fetchSize], function(result, error) {
+            if (result) {
+                fetchResultCallback(result.results);
+            } else {
+                actIndicatorView.hide();
+                handleServerError(error);
+            }
+        });
+    };
+    winAlbums.open();    
+}
+
+function loadAndDisplayArtists() {
+    var winArtists = Titanium.UI.createWindow({url:'win_artists.js',backgroundColor:'#FFF'});
+    winArtists.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
+        ajaxCall('ArtistService.getArtists', [null, null, null, -1, fetchStart, fetchSize], function(result, error) {
+            if (result) {
+                fetchResultCallback(result.results);
+            } else {
+                actIndicatorView.hide();
+                handleServerError(error);
+            }
+        });
+    };
+    winArtists.open();
+}
+
+function loadAndDisplayGenres() {
+    var winGenres = Titanium.UI.createWindow({url:'win_genres.js',backgroundColor:'#FFF'});
+    winGenres.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
+        ajaxCall('GenreService.getGenres', [-1, fetchStart, fetchSize], function(result, error) {
+            if (result) {
+                fetchResultCallback(result.results);
+            } else {
+                actIndicatorView.hide();
+                handleServerError(error);
+            }
+        });
+    };
+    winGenres.open();
+}
+
+function loadAndDisplayPlaylists() {
+    var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js',backgroundColor:'#FFF'});
+    winPlaylists.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
+        if (fetchStart > 0) {
+            return new Array(0);
+        }
+        ajaxCall('PlaylistService.getPlaylists', [], function(result, error) {
+            if (result) {
+                fetchResultCallback(result.results);
+            } else {
+                actIndicatorView.hide();
+                handleServerError(error);
+            }
+        });
+    };
+    winPlaylists.open();
 }

@@ -21,7 +21,6 @@
 	TiUITableViewRowProxy* row;
 }
 
--(id)initWithFrame:(CGRect)frame_ reuseIdentifier:(NSString *)reuseIdentifier_ row:(TiUITableViewRowProxy*)row_;
 -(id)initWithStyle:(UITableViewCellStyle)style_ reuseIdentifier:(NSString *)reuseIdentifier_ row:(TiUITableViewRowProxy*)row_;
 
 -(void)handleEvent:(NSString*)type;
@@ -57,7 +56,6 @@
 	UITableViewController *tableController;
 	UISearchDisplayController *searchController;
 	BOOL searchHiddenSet;
-	BOOL headerPulling;
 	NSInteger frameChanges;
 }
 
@@ -67,6 +65,7 @@
 -(TiUITableViewRowProxy*)rowForIndex:(NSInteger)index section:(NSInteger*)section;
 -(void)updateSearchView;
 -(NSMutableArray*)sections;
+-(void)replaceData:(UITableViewRowAnimation)animation;
 
 -(void)dispatchAction:(TiUITableViewAction*)action;
 -(void)scrollToIndex:(NSInteger)index position:(UITableViewScrollPosition)position animated:(BOOL)animated;

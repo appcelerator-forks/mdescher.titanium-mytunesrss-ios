@@ -120,6 +120,10 @@
 
 -(void)setTitle:(id)title
 {
+	title = [TiUtils replaceString:[TiUtils stringValue:title]
+			characters:[NSCharacterSet newlineCharacterSet] withString:@" "];
+	//The label will strip out these newlines anyways (Technically, replace them with spaces)
+
 	id current = [self valueForUndefinedKey:@"title"];
 	[self replaceValue:title forKey:@"title" notification:NO];
 	if (![title isEqualToString:current])
@@ -135,6 +139,10 @@
 
 -(void)setSubtitle:(id)subtitle
 {
+	subtitle = [TiUtils replaceString:[TiUtils stringValue:subtitle]
+			characters:[NSCharacterSet newlineCharacterSet] withString:@" "];
+	//The label will strip out these newlines anyways (Technically, replace them with spaces)
+
 	id current = [self valueForUndefinedKey:@"subtitle"];
 	[self replaceValue:subtitle forKey:@"subtitle" notification:NO];
 	if (![subtitle isEqualToString:current])

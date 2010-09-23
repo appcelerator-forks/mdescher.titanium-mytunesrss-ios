@@ -122,7 +122,7 @@
 	[wrapperView setBounds:wrapperBounds];
 	[wrapperView setCenter:CGPointMake(newContentSize.width/2, newContentSize.height/2)];
 	needsHandleContentSize = NO;
-	[(TiViewProxy *)[self proxy] layoutChildren];
+	[(TiViewProxy *)[self proxy] layoutChildren:NO];
 }
 
 -(void)setContentWidth_:(id)value
@@ -178,6 +178,7 @@
 {
 	CGFloat scale = [TiUtils floatValue:args];
 	[[self scrollView] setZoomScale:scale];
+	[[self proxy] replaceValue:args forKey:@"scale" notification:NO];
 	if ([self.proxy _hasListeners:@"scale"])
 	{
 		[self.proxy fireEvent:@"scale" withObject:[NSDictionary dictionaryWithObjectsAndKeys:

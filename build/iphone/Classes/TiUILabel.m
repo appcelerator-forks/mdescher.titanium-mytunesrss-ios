@@ -87,7 +87,6 @@
 	[super setCenter:CGPointMake(floorf(newCenter.x), floorf(newCenter.y))];
 }
 
-
 -(void)frameSizeChanged:(CGRect)frame bounds:(CGRect)bounds
 {
 	[label setFrame:bounds];
@@ -138,12 +137,14 @@
 
 -(void)setColor_:(id)color
 {
-	[[self label] setTextColor:[[TiUtils colorValue:color] _color]];
+	UIColor * newColor = [[TiUtils colorValue:color] _color];
+	[[self label] setTextColor:(newColor != nil)?newColor:[UIColor darkTextColor]];
 }
 
 -(void)setHighlightedColor_:(id)color
 {
-	[[self label] setHighlightedTextColor:[[TiUtils colorValue:color] _color]];
+	UIColor * newColor = [[TiUtils colorValue:color] _color];
+	[[self label] setHighlightedTextColor:(newColor != nil)?newColor:[UIColor lightTextColor]];
 }
 
 -(void)setFont_:(id)font
@@ -183,7 +184,6 @@
         if (backgroundView == nil) {
             backgroundView = [[UIImageView alloc] initWithImage:bgImage];
             backgroundView.userInteractionEnabled = NO;
-            backgroundView.contentMode = UIViewContentModeRedraw;
             
             [label removeFromSuperview];
             [backgroundView addSubview:label];

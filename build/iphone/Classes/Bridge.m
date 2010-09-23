@@ -36,7 +36,7 @@
 	return host;
 }
 
--(void)shutdown
+-(void)shutdown:(NSCondition*)condition
 {
 }
 
@@ -48,7 +48,7 @@
 {
 	if (callback!=nil)
 	{
-		[callback performSelectorOnMainThread:@selector(booted:) withObject:self waitUntilDone:NO];
+		[callback performSelector:@selector(booted:) withObject:self];
 		[callback release];
 		callback = nil;
 	}

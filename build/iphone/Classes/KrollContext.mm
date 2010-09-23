@@ -89,6 +89,7 @@ static TiValueRef MakeTimer(TiContextRef context, TiObjectRef jsFunction, TiValu
 	static double kjsNextTimer = 0;
 	[timerIDLock lock];
 	double timerID = ++kjsNextTimer;
+	[timerIDLock unlock];
 	
 	KrollContext *ctx = GetKrollContext(context);
 	TiGlobalContextRef globalContext = TiContextGetGlobalContext(context);
@@ -102,7 +103,6 @@ static TiValueRef MakeTimer(TiContextRef context, TiObjectRef jsFunction, TiValu
 	[ctx registerTimer:timer timerId:timerID];
 	[timer start];
 	[timer release];
-	[timerIDLock unlock];
 	return TiValueMakeNumber(context, timerID);
 }
 
@@ -281,6 +281,9 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 		[lock setName:[NSString stringWithFormat:@"%@ Lock",[self threadName]]];
 		stopped = YES;
 		KrollContextCount++;
+		
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(suspend:) name:kTiSuspendNotification object:nil];
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(resume:) name:kTiResumeNotification object:nil];
 	}
 	return self;
 }
@@ -321,7 +324,7 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 -(oneway void)release 
 {
 	NSLog(@"RELEASE: %@ (%d)",self,[self retainCount]-1);
-	[super release];
+	[super release]; 
 }
 #endif
 
@@ -330,6 +333,8 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 #if CONTEXT_MEMORY_DEBUG==1
 	NSLog(@"DEALLOC: %@",self);
 #endif
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:kTiSuspendNotification object:nil];
+	[[NSNotificationCenter defaultCenter] removeObserver:self name:kTiResumeNotification object:nil];
 	assert(!destroyed);
 	destroyed = YES;
 	[self destroy];
@@ -409,6 +414,21 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 	}
 }
 
+- (void)suspend:(id)note
+{
+	[condition lock];
+	suspended = YES;
+	[condition unlock];
+}
+
+- (void)resume:(id)note
+{
+	[condition lock];
+	suspended = NO;
+	[condition signal];
+	[condition unlock];
+}
+
 -(BOOL)running
 {
 	return stopped==NO;
@@ -440,6 +460,8 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 
 -(void)enqueue:(id)obj
 {
+	[condition lock];
+
 	BOOL mythread = [self isKJSThread];
 	
 	if (!mythread) 
@@ -452,10 +474,10 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 	if (!mythread)
 	{
 		[lock unlock];
-		[condition lock];
 		[condition signal];
-		[condition unlock];
 	}
+	
+	[condition unlock];
 }
 
 -(void)evalJS:(NSString*)code
@@ -504,8 +526,9 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 
 -(void)invokeEvent:(KrollCallback*)callback_ args:(NSArray*)args_ thisObject:(id)thisObject_
 {
-	KrollEvent *event = [[[KrollEvent alloc] initWithCallback:callback_ args:args_ thisObject:thisObject_] autorelease];
+	KrollEvent *event = [[KrollEvent alloc] initWithCallback:callback_ args:args_ thisObject:thisObject_];
 	[self enqueue:event];
+	[event release];
 }
 
 - (void)bindCallback:(NSString*)name callback:(TiObjectCallAsFunctionCallback)fn
@@ -589,6 +612,17 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 	{
 		loopCount++;
 		
+		// if we're suspended, we simply wait for resume
+		if (suspended)
+		{
+			[condition lock];
+			if (suspended)
+			{
+				[condition wait];
+			} 
+			[condition unlock];
+		}
+		
 		// we're stopped, we need to check to see if we have stuff that needs to
 		// be executed before we can exit.  if we have stuff in the queue, we 
 		// process just those events and then we immediately exit and clean up
@@ -602,6 +636,10 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 			queue_count = [queue count];
 			[lock unlock];
 
+#if CONTEXT_DEBUG == 1	
+			NSLog(@"CONTEXT<%@>: shutdown, queue_count = %d",self,queue_count);
+#endif
+			
 			// we're stopped, nothing in the queue, time to bail
 			if (queue_count==0)
 			{
@@ -609,7 +647,6 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 			}
 		}
 		
-		NSAutoreleasePool *pool_ = [[NSAutoreleasePool alloc] init];
 		
 		// we have a pending GC request to try and reclaim memory
 		if (gcrequest)
@@ -652,7 +689,9 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 #if CONTEXT_DEBUG == 1	
 					NSLog(@"CONTEXT<%@>: before action event invoke: %@, queue size: %d",self,entry,queueSize-1);
 #endif
+					NSAutoreleasePool *pool_ = [[NSAutoreleasePool alloc] init];
 					[self invoke:entry];
+					[pool_ drain];
 #if CONTEXT_DEBUG == 1	
 					NSLog(@"CONTEXT<%@>: after action event invoke: %@",self,entry);
 #endif
@@ -683,8 +722,6 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 			loopCount = 0;
 		}
 		
-		[pool_ drain];
-
 		// check to see if we're already stopped and in the flush queue state, in which case,
 		// we can now immediately exit
 		if (exit_after_flush)
@@ -700,13 +737,13 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 		[condition lock];
 		[lock lock];
 		int queue_count = [queue count];
-
 		[lock unlock];
 		if (queue_count == 0)
 		{
 			// wait only 10 seconds and then loop, this will allow us to garbage
 			// collect every so often
-			[condition waitUntilDate:[NSDate dateWithTimeIntervalSinceNow:10]];		
+			//[condition waitUntilDate:[NSDate dateWithTimeIntervalSinceNow:60]];		
+			[condition wait];
 		}
 		[condition unlock]; 
 		
@@ -714,6 +751,10 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 		NSLog(@"CONTEXT<%@>: woke up for new event (count=%d)",self,KrollContextCount);
 #endif
 	}
+
+#if CONTEXT_DEBUG == 1	
+	NSLog(@"CONTEXT<%@>: is shutting down",self);
+#endif
 	
 	// call before we start the shutdown while context and timers are alive
 	if (delegate!=nil && [delegate respondsToSelector:@selector(willStopNewContext:)])
@@ -734,19 +775,19 @@ static TiValueRef CommonJSRequireCallback (TiContextRef jsContext, TiObjectRef j
 	}
 	[timerLock unlock]; 
 	
+	[KrollCallback shutdownContext:self];
 	
 	// now we can notify listeners we're done
 	if (delegate!=nil && [delegate respondsToSelector:@selector(didStopNewContext:)])
 	{
-		[delegate performSelector:@selector(didStopNewContext:) withObject:self];
+		[(NSObject*)delegate performSelector:@selector(didStopNewContext:) withObject:self];
 	}
-
 
 #if CONTEXT_MEMORY_DEBUG==1
 	NSLog(@"SHUTDOWN: %@",self);
 	NSLog(@"KROLL RETAIN COUNT: %d",[kroll retainCount]);
 #endif
-	
+	 
 	[self destroy];
 
 	// cause the global context to be released and all objects internally to be finalized

@@ -12,9 +12,6 @@ var win = Titanium.UI.currentWindow;
 
 var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
-win.addEventListener('focus', function() {
-    actIndicatorView.hide();
-});
 
 var audioPlayer = Titanium.Media.createAudioPlayer({audioSessionMode:Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK});
 var currentPlaylist;
@@ -103,61 +100,19 @@ buttonSettings.addEventListener('click', function() {
 });
 
 buttonRowPlaylists.addEventListener('click', function() {
-    actIndicatorView.show();
-    ajaxCall('PlaylistService.getPlaylists', [], function(result, error) {
-        if (result) {
-            var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js',backgroundColor:'#FFF'});
-            winPlaylists.ajaxResult = result;
-            winPlaylists.open();
-        } else {
-            actIndicatorView.hide();
-            handleServerError(error);
-        }
-    });
+    loadAndDisplayPlaylists();
 });
 
 buttonRowAlbums.addEventListener('click', function() {
-    actIndicatorView.show();
-	var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundColor:'#FFF'});
-	winAlbums.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
-		ajaxCall('AlbumService.getAlbums', [null, null, null, -1, -1, -1, false, fetchStart, fetchSize], function(result, error) {
-			if (result) {
-				fetchResultCallback(result.results);
-			} else {
-				actIndicatorView.hide();
-				handleServerError(error);
-			}
-		});
-	}
-	winAlbums.open();
+    loadAndDisplayAlbums(null, null);
 });
 
 buttonRowArtists.addEventListener('click', function() {
-    actIndicatorView.show();
-    ajaxCall('ArtistService.getArtists', [null, null, null, -1, -1, -1], function(result, error) {
-        if (result) {
-            var winArtists = Titanium.UI.createWindow({url:'win_artists.js',backgroundColor:'#FFF'});
-            winArtists.ajaxResult = result;
-            winArtists.open();
-        } else {
-            actIndicatorView.hide();
-            handleServerError(error);
-        }
-    });
+    loadAndDisplayArtists();
 });
 
 buttonRowGenres.addEventListener('click', function() {
-    actIndicatorView.show();
-    ajaxCall('GenreService.getGenres', [-1, -1, -1], function(result, error) {
-        if (result) {
-            var winGenres = Titanium.UI.createWindow({url:'win_genres.js',backgroundColor:'#FFF'});
-            winGenres.ajaxResult = result;
-            winGenres.open();
-        } else {
-            actIndicatorView.hide();
-            handleServerError(error);
-        }
-    });
+    loadAndDisplayGenres();
 });
 
 searchBar.addEventListener('return', function() {
@@ -167,16 +122,15 @@ searchBar.addEventListener('return', function() {
         Titanium.UI.createAlertDialog({message:'Please enter a search term.',buttonNames:['Ok']}).show();
     } else {
         actIndicatorView.show();
-        ajaxCall('TrackService.search', [searchBar.value, 30, 'KeepOrder', 0, -1], function(result, error) {
+        ajaxCall('TrackService.search', [searchBar.value, 30, 'KeepOrder', 0, FETCH_SIZE], function(result, error) {
+            actIndicatorView.hide();
             if (result && result.tracks && result.tracks.length > 0) {
                 var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
                 winTracks.ajaxResult = result;
                 winTracks.open();
             } else if (result && result.tracks && result.tracks.length === 0) {
-                actIndicatorView.hide();
                 Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
             } else {
-                actIndicatorView.hide();
                 handleServerError(error);
             }
         });
@@ -268,13 +222,6 @@ Titanium.App.addEventListener('mytunesrss_shuffle', function() {
         Titanium.App.fireEvent('mytunesrss_setTrackInfo', currentPlaylist[currentPlaylistIndex]);
     }
 });
-
-/*Titanium.App.addEventListener('mytunesrss_moveplayhead', function(e) {
-    alert(e.value);
-    audioPlayer.pause();
-    audioPlayer.progress = e.value;
-    audioPlayer.start();
-});*/
 
 addTopToolbar(win, 'MyTunesRSS', buttonLogout, buttonSettings);
 win.add(searchBar);
