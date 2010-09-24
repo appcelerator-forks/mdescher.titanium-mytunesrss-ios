@@ -10,13 +10,12 @@
 
 #import "TiViewProxy.h"
 
+// TODO: Can we split this into Picker and DatePicker classes?  It would make things a lot easier (and faster!) during view setup.
 @interface TiUIPickerProxy : TiViewProxy {
 
 @private
-	NSArray* selectOnLoad;
-}
 
--(void)setSelectedRow:(id)args;
+}
 
 @end
 

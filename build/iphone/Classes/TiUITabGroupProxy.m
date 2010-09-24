@@ -136,8 +136,7 @@
 
 -(BOOL)_handleOpen:(id)args
 {
-	TiUITabGroup *tg = (TiUITabGroup*)self.view;
-	[tg open:args];
+	[(TiUITabGroup*)self.view open:args];
 	return YES;
 }
 
@@ -149,11 +148,6 @@
 		[tabGroup close:args];
 	}
 	return YES;
-}
-
--(void)didReceiveMemoryWarning:(NSNotification*)notification
-{
-	// override but don't drop the tab group, causes problems
 }
 
 

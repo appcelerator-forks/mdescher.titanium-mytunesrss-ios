@@ -8,7 +8,7 @@
  */
 #ifdef USE_TI_UITABLEVIEW
 
-#ifndef USE_TI_UISEARCHBAR
+#ifdef USE_TI_UISEARCHBAR
 #define USE_TI_UISEARCHBAR
 #endif
 

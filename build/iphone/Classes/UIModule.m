@@ -147,7 +147,7 @@ MAKE_SYSTEM_PROP(AUTODETECT_LINK,UIDataDetectorTypeLink);
 -(void)setBackgroundColor:(id)color
 {
 	UIViewController<TiRootController> *controller = [[TiApp app] controller];
-	[controller setBackgroundColor:[Webcolor webColorNamed:color]];
+	[controller setBackgroundColor:UIColorWebColorNamed(color)];
 }
 
 -(void)setBackgroundImage:(id)image

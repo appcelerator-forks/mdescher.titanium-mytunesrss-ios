@@ -9,30 +9,8 @@
 #import "KrollCallback.h"
 #import "KrollObject.h"
 
-static NSMutableArray * callbacks;
-static NSLock *callbackLock;
-
-@interface KrollCallback()
-@property(nonatomic,assign)KrollContext *context;
-@end
-
 
 @implementation KrollCallback
-
-@synthesize context, type;
-
-+(void)shutdownContext:(KrollContext*)context
-{
-	[callbackLock lock];
-	for (KrollCallback *callback in callbacks)
-	{
-		if ([callback context]==context)
-		{
-			callback.context = nil;
-		}
-	}
-	[callbackLock unlock];
-}
 
 -(id)initWithCallback:(TiValueRef)function_ thisObject:(TiObjectRef)thisObject_ context:(KrollContext*)context_
 {
@@ -44,28 +22,16 @@ static NSLock *callbackLock;
 		thisObj = thisObject_;
 		TiValueProtect(jsContext, function);
 		TiValueProtect(jsContext, thisObj);
-		if (callbacks==nil)
-		{
-			callbackLock = [[NSLock alloc] init];
-			callbacks = TiCreateNonRetainingArray();
-		}
-		[callbacks addObject:self];
 	}
 	return self;
 }
 
 -(void)dealloc
 {
-	[callbackLock lock];
-	[callbacks removeObject:self];
-	[callbackLock unlock];
-
-	[type release];
 	TiValueUnprotect(jsContext, function);
 	TiValueUnprotect(jsContext, thisObj);
 	function = NULL;
 	thisObj = NULL;
-	context = NULL;
 	[super dealloc];
 }
 
@@ -79,15 +45,10 @@ static NSLock *callbackLock;
 	{
 		return NO;
 	}
-	if ([anObject isKindOfClass:[KrollCallback class]]==NO)
-	{
-		return NO;
-	}
-	KrollCallback *otherCallback = (KrollCallback*)anObject;
-	if (function!=NULL)
+	if (function!=NULL && [anObject isKindOfClass:[KrollCallback class]])
 	{
 		TiObjectRef ref1 = function;
-		TiObjectRef ref2 = [otherCallback function];
+		TiObjectRef ref2 = [(KrollCallback*)anObject function];
 		return TiValueIsStrictEqual(jsContext,ref1,ref2);
 	}
 	return NO;
@@ -95,11 +56,6 @@ static NSLock *callbackLock;
 
 -(void)call:(NSArray*)args thisObject:(id)thisObject_
 {
-	if (context==nil)
-	{
-		return;
-	}
-	
 	[[context retain] autorelease];
 	
 	TiValueRef _args[[args count]];
@@ -122,12 +78,7 @@ static NSLock *callbackLock;
 		TiValueProtect(jsContext,tp);
 		TiValueProtect(jsContext,top);
 	}
-	TiValueRef exception = NULL;
-	TiObjectCallAsFunction(jsContext,function,tp,[args count],_args,&exception);
-	if (exception!=NULL)
-	{
-		NSLog(@"[WARN] Exception in event callback. %@",[KrollObject toID:context value:exception]);
-	}
+	TiObjectCallAsFunction(jsContext,function,tp,[args count],_args,NULL);
 	if (top!=NULL)
 	{
 		TiValueUnprotect(jsContext,tp);

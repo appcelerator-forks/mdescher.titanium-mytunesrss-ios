@@ -16,7 +16,6 @@ NSString * const kTiMediaAudioSessionInterruptionBegin = @"TiMediaAudioSessionIn
 NSString * const kTiMediaAudioSessionInterruptionEnd = @"TiMediaAudioSessionInterruptionEnd";
 NSString * const kTiMediaAudioSessionRouteChange = @"TiMediaAudioSessionRouteChange";
 NSString * const kTiMediaAudioSessionVolumeChange = @"TiMediaAudioSessionVolumeChange";
-NSString * const kTiMediaAudioSessionInputChange = @"TiMediaAudioSessionInputChange";
 
 void TiAudioSessionInterruptionCallback(void *inUserData,UInt32 interruptionState)
 {
@@ -97,12 +96,6 @@ void TiAudioSessionAudioRouteChangeCallback(void *inUserData, AudioSessionProper
 	[[NSNotificationCenter defaultCenter] postNotificationName:kTiMediaAudioSessionRouteChange object:session userInfo:event];
 }
 
-void TiAudioSessionInputAvailableCallback(void* inUserData, AudioSessionPropertyID inID, UInt32 dataSize, const void* inData)
-{
-	TiMediaAudioSession* session = (TiMediaAudioSession*)inUserData;
-	[[NSNotificationCenter defaultCenter] postNotificationName:kTiMediaAudioSessionInputChange object:session];
-}
-
 @implementation TiMediaAudioSession
 
 @synthesize defaultSessionMode;
@@ -153,14 +146,6 @@ void TiAudioSessionInputAvailableCallback(void* inUserData, AudioSessionProperty
 	size = sizeof(CGFloat);
 	AudioSessionGetProperty(kAudioSessionProperty_CurrentHardwareOutputVolume, &size, &volume);
 	return volume;
-}
-
--(BOOL)hasInput
-{
-	UInt32 hasInput;
-	UInt32 size = sizeof(hasInput);
-	AudioSessionGetProperty(kAudioSessionProperty_AudioInputAvailable, &size, &hasInput);
-	return hasInput;
 }
 
 -(TiMediaAudioSessionInputType)inputType
@@ -248,9 +233,6 @@ void TiAudioSessionInputAvailableCallback(void* inUserData, AudioSessionProperty
 			
 			// register for audio volume changes
 			AudioSessionAddPropertyListener(kAudioSessionProperty_CurrentHardwareOutputVolume, TiAudioSessionAudioVolumeCallback, self);
-		
-			// register for input availability changes
-			AudioSessionAddPropertyListener(kAudioSessionProperty_AudioInputAvailable, TiAudioSessionInputAvailableCallback, self);
 		}
 
 		// make our audio session active

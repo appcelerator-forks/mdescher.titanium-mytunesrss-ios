@@ -88,12 +88,16 @@ buttonLogout.addEventListener('click', function() {
 buttonSettings.addEventListener('click', function() {
     actIndicatorView.show();
     ajaxCall('LoginService.getUserInfo', [], function(result, error) {
+        actIndicatorView.hide();
         if (result) {
-            var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundColor:'#FFF'});
-            winSettings.ajaxResult = result;
-            winSettings.open();
+            if (result.transcoderNames.length == 0) {
+                Titanium.UI.createAlertDialog({message:'No transcoders defined on the MyTunesRSS server.',buttonNames:['Ok']}).show();
+            } else {
+                var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundColor:'#FFF'});
+                winSettings.ajaxResult = result;
+                winSettings.open();
+            }
         } else {
-            actIndicatorView.hide();
             handleServerError(error);
         }
     });

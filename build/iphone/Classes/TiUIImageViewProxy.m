@@ -18,18 +18,7 @@
 
 @implementation TiUIImageViewProxy
 
-static NSArray* imageKeySequence;
-
 #pragma mark Internal
-
--(NSArray *)keySequence
-{
-	if (imageKeySequence == nil)
-	{
-		imageKeySequence = [[NSArray arrayWithObjects:@"width",@"height",nil] retain];
-	}
-	return imageKeySequence;
-}
 
 -(void)_configure
 {
@@ -50,14 +39,11 @@ static NSArray* imageKeySequence;
 //Don't put this in UIThread, because it doesn't need to go in UIThread.
 //Furthermore, by the time this is run, if this stop was called by a destroy
 //Bad things(tm) happen.
-	
-	[destroyLock lock];
 	if ([self viewAttached])
 	{
 		TiUIImageView *iv= (TiUIImageView*)[self view];
 		[iv stop];
 	}
-	[destroyLock unlock];
 }
 
 -(void)pause:(id)args

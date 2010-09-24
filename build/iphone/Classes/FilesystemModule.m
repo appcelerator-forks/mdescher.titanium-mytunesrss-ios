@@ -10,7 +10,6 @@
 
 #import "FilesystemModule.h"
 #import "TiFilesystemFileProxy.h"
-#import "TiFilesystemBlobProxy.h"
 
 #ifdef TARGET_IPHONE_SIMULATOR 
 extern NSString * TI_APPLICATION_RESOURCE_DIR;
@@ -54,11 +53,7 @@ extern NSString * TI_APPLICATION_RESOURCE_DIR;
 #ifdef TARGET_IPHONE_SIMULATOR 
 	if (TI_APPLICATION_RESOURCE_DIR!=nil && [TI_APPLICATION_RESOURCE_DIR isEqualToString:@""]==NO)
 	{
-		// if the .local file exists and we're in the simulator, then force load from resources bundle
-		if (![[NSFileManager defaultManager] fileExistsAtPath:[NSString stringWithFormat:@"%@/.local",[[NSBundle mainBundle] resourcePath]]])
-		{
-			return TI_APPLICATION_RESOURCE_DIR;
-		}
+		return TI_APPLICATION_RESOURCE_DIR;
 	}
 #endif
 	return [[NSBundle mainBundle] resourcePath];
@@ -124,20 +119,6 @@ extern NSString * TI_APPLICATION_RESOURCE_DIR;
 			[newpath appendFormat:@"/%@",[self resolveFile:[args objectAtIndex:c]]];
 		}
 	}
-	
-	if ([newpath hasPrefix:[self resourcesDirectory]] &&
-		([newpath hasSuffix:@".html"]||
-		 [newpath hasSuffix:@".js"]||
-		 [newpath hasSuffix:@".css"]))
-	{
-		NSURL *url = [NSURL fileURLWithPath:newpath];
-		NSData *data = [TiUtils loadAppResource:url];
-		if (data!=nil)
-		{
-			return [[[TiFilesystemBlobProxy alloc] initWithURL:url data:data] autorelease];
-		}
-	}
-	
 	return [[[TiFilesystemFileProxy alloc] initWithFile:newpath] autorelease];
 }
 

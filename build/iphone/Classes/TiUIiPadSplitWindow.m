@@ -43,11 +43,8 @@
 	{
 		TiViewProxy* masterProxy = [self.proxy valueForUndefinedKey:@"masterView"];
 		TiViewProxy* detailProxy = [self.proxy valueForUndefinedKey:@"detailView"];
-		
-		controller = [[TiSplitViewController alloc] initWithRootController:(TiRootViewController*)[[TiApp app] controller] 
-															   masterProxy:masterProxy 
-															   detailProxy:detailProxy
-																splitProxy:(TiUIiPadSplitWindowProxy*)self.proxy];
+
+		controller = [[TiSplitViewController alloc] initWithRootController:(TiRootViewController*)[[TiApp app] controller] masterProxy:masterProxy detailProxy:detailProxy];
 		controller.delegate = self;
 		
 		UIWindow *window = [TiApp app].window;
@@ -55,16 +52,8 @@
 		[[viewController view] removeFromSuperview];
 		[[TiApp app] setController:controller];
 		[window addSubview:[controller view]];
-		[window bringSubviewToFront:[controller view]];
-		
 		[controller resizeView];
 		[controller repositionSubviews];
-		
-		[masterProxy windowWillOpen];
-		[masterProxy windowDidOpen];
-		
-		[detailProxy windowWillOpen];
-		[detailProxy windowDidOpen];
 	}
 	return controller;
 }
@@ -109,6 +98,7 @@
 		[c setToolbarHidden:YES animated:animated];
 	}
 }
+
 
 #pragma mark Delegate 
 

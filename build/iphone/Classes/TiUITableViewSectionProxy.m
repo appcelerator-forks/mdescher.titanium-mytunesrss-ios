@@ -86,7 +86,7 @@
 -(void)add:(id)proxy
 {
 	ENSURE_SINGLE_ARG(proxy,TiUITableViewRowProxy);
-	if (rows==nil) 
+	if (rows==nil)
 	{
 		rows = [[NSMutableArray array] retain];
 	}
@@ -100,11 +100,6 @@
 	{
 		[rows removeObject:proxy];
 	}
-}
-
--(UIView*)view
-{
-	return nil;
 }
 
 -(NSString*)headerTitle
@@ -132,7 +127,7 @@
 	}
 	
 	
-	if ([TableViewSectionProperties member:key]!=nil && table!=nil)
+	if ([TableViewSectionProperties member:key]!=nil)
 	{
 		[self triggerSectionUpdate];
 	}

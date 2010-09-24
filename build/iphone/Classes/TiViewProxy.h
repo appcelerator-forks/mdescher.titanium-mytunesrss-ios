@@ -8,7 +8,6 @@
  */
 #import "TiProxy.h"
 #import "TiUIView.h"
-#import <pthread.h>
 
 #define NEEDS_REPOSITION	0 
 #define NEEDS_LAYOUT_CHILDREN	1
@@ -20,33 +19,35 @@
 @interface TiViewProxy : TiProxy<LayoutAutosizing> 
 {
 @protected
-	NSRecursiveLock *destroyLock;
 	CGFloat verticalLayoutBoundary;
 	CGFloat horizontalLayoutBoundary;
 	CGFloat horizontalLayoutRowHeight;	//Note, this has nothing to do with table views.
 
 	LayoutConstraint layoutProperties;
 
-	BOOL windowOpened;
-	BOOL windowOpening;
 	int dirtyflags;	//For atomic actions, best to be explicit about the 32 bitness.
 
+//From TiUIWidgetProxy
 	BOOL isUsingBarButtonItem;
 	UIBarButtonItem * barButtonItem;
 
 @private
-	pthread_rwlock_t childrenLock;
+	//Cocoa doesn't have a readwrite lock, so we use pthreads.
+	pthread_rwlock_t rwChildrenLock;
 	NSMutableArray *children;
 	TiUIView *view;
 	TiViewProxy *parent;
 	BOOL viewInitialized;
-	NSMutableArray *pendingAdds;
-	BOOL needsZIndexRepositioning;
-	
 #if USE_VISIBLE_BOOL
 	BOOL visible;
 #endif
 }
+
+//ALWAYS use these when accessing children. For best results, treat this as brackets in a block (IE, indent code inside)
+-(void)lockChildrenForReading;
+-(void)lockChildrenForWriting;
+-(void)unlockChildren;
+
 
 @property(nonatomic,readwrite,assign) LayoutConstraint * layoutProperties;
 
@@ -74,20 +75,12 @@
 
 -(BOOL)viewAttached;
 -(BOOL)viewInitialized;
--(void)layoutChildren:(BOOL)optimize;
+-(void)layoutChildren;
 -(void)layoutChildrenIfNeeded;
--(void)layoutChild:(TiViewProxy*)child optimize:(BOOL)optimize;
--(void)windowWillOpen;
--(void)windowDidOpen;
--(BOOL)windowHasOpened;
--(BOOL)windowIsOpening;
-
--(void)setWidth:(id)value;
--(void)setHeight:(id)value;
+-(void)layoutChild:(TiViewProxy*)child;
 
 -(void)animationCompleted:(TiAnimation*)animation;
 -(void)detachView;
--(BOOL)shouldDetachViewOnUnload;
 -(void)destroy;
 -(void)setParent:(TiProxy*)parent;
 
@@ -117,12 +110,10 @@
 -(void)setNeedsReposition;
 -(void)clearNeedsReposition;
 -(void)setNeedsRepositionIfAutoSized;
--(void)setNeedsZIndexRepositioning;
--(BOOL)needsZIndexRepositioning;
 
 -(BOOL)willBeRelaying;
 -(void)childWillResize:(TiViewProxy *)child;
--(BOOL)isAutoHeightOrWidth;
+
 -(BOOL)canHaveControllerParent;
 
 @end

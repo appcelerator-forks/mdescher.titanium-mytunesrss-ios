@@ -30,7 +30,7 @@
 
 -(id)initWithProxy:(TiWindowProxy*)window_ tab:(TiUITabProxy*)tab_
 {
-	if (self = [self init])
+	if (self = [super init])
 	{
 		window = [window_ retain];
 		tab = [tab_ retain];

@@ -16,7 +16,6 @@
 	NSTimer *retryTimer;
 	NSTimer *flushTimer;
 	NSURL *url;
-	NSRecursiveLock *lock;
 }
 
 @end

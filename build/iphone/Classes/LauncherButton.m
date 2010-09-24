@@ -34,9 +34,6 @@
 #import <QuartzCore/QuartzCore.h>
 #import "LauncherButton.h"
 #import "LauncherItem.h"
-#import "TiUtils.h"
-#import "TiUIView.h"
-#import "TiViewProxy.h"
 
 
 @implementation LauncherButton
@@ -61,21 +58,6 @@
 	[super dealloc];
 }
 
--(void)setFrame:(CGRect)frame
-{
-	[super setFrame:frame];
-	
-	if (item.view!=nil)
-	{
-		TiUIView *v = (TiUIView*)item.view;
-		TiViewProxy *p =(TiViewProxy*) v.proxy;
-		[p windowWillOpen];
-		[p windowDidOpen];
-		[p reposition];
-		[p layoutChildren:NO];
-	}
-}
-
 -(void)setItem:(LauncherItem *)item_
 {
 	if (item!=nil)
@@ -89,19 +71,10 @@
 	{
 		item = [item_ retain];
 		item.button = self;
-		
-		if (item.view!=nil)
+		[self setImage:item.image forState:UIControlStateNormal];
+		if (item.selectedImage!=nil)
 		{
-			item.view.userInteractionEnabled = NO;
-			[self addSubview:item.view];
-		}
-		else
-		{
-			[self setImage:item.image forState:UIControlStateNormal];
-			if (item.selectedImage!=nil)
-			{
-				[self setImage:item.selectedImage forState:UIControlStateHighlighted];
-			}
+			[self setImage:item.selectedImage forState:UIControlStateHighlighted];
 		}
 	}
 	[self setNeedsLayout];
@@ -258,7 +231,6 @@
 			closeButton.frame = CGRectMake(4, 2, closeButton.frame.size.width, closeButton.frame.size.height);
 		}
 	}
-
 }
 
 @end

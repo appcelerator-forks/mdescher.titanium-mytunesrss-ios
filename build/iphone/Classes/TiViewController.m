@@ -34,12 +34,7 @@
 
 - (void)viewDidUnload
 {
-//TODO: The if is commented out for now since this check is not pushed yet and I want to keep it consistent with HEAD. Remove the comment when pushing.
-	if ([proxy shouldDetachViewOnUnload])
-	{
-		[proxy detachView];
-	}
-	[super viewDidUnload];
+	[proxy detachView];
 }
 
 - (void)willAnimateRotationToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration

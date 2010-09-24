@@ -14,38 +14,13 @@
 #import "TiUIPicker.h"
 #import "TiUtils.h"
 
-NSArray* pickerKeySequence;
-
 @implementation TiUIPickerProxy
-
--(NSArray *)keySequence
-{
-	if (pickerKeySequence == nil)
-	{
-		pickerKeySequence = [[NSArray arrayWithObjects:@"type",@"minDate",@"maxDate",nil] retain];
-	}
-	return pickerKeySequence;
-}
 
 -(void)_configure
 {
 	[self replaceValue:NUMINT(-1) forKey:@"type" notification:NO];
 	[self replaceValue:nil forKey:@"value" notification:NO];
 	[super _configure];
-}
-
--(void)_destroy
-{
-	RELEASE_TO_NIL(selectOnLoad);
-	[super _destroy];
-}
-
--(void)viewDidAttach
-{
-	if (selectOnLoad != nil) {
-		[self setSelectedRow:selectOnLoad];
-		RELEASE_TO_NIL(selectOnLoad);
-	}
 }
 
 -(BOOL)supportsNavBarPositioning
@@ -62,19 +37,6 @@ NSArray* pickerKeySequence;
 		[self replaceValue:columns forKey:@"columns" notification:NO];
 	}
 	return columns;
-}
-
--(void)windowWillOpen
-{
-	[super windowWillOpen];
-	
-	// Tell all of the picker bits that their window has opened.  Can't operate
-	// on the rows array directly; they're returned as a copy from the column.
-	for (TiUIPickerColumnProxy* column in [self columns]) {
-		for (NSInteger i=0; i < [column rowCount]; i++) {
-			[[column rowAt:i] windowWillOpen];
-		}
-	}
 }
 
 -(TiUIPicker*)picker
@@ -100,52 +62,30 @@ NSArray* pickerKeySequence;
 
 -(void)add:(id)args
 {
-	// TODO: Probably take advantage of Jeff's performance improvements in ordinary views.
-	// But DO NOT do this until after release!
-	ENSURE_UI_THREAD(add,args);
-	
 	id data = [args objectAtIndex:0];
-		
+	
+	TiUIPicker *picker = [self picker];
+	
 	if ([data isKindOfClass:[TiUIPickerRowProxy class]])
 	{
 		TiUIPickerRowProxy *row = (TiUIPickerRowProxy*)data;
 		TiUIPickerColumnProxy *column = [self columnAt:0];
 		NSNumber* rowIndex = [column addRow:row];
-		
-		if (windowOpened) {
-			[row windowWillOpen];
-			[row windowDidOpen];
-		}
-		
 		if ([self viewAttached])
 		{
-			TiUIPicker *picker = [self picker];
 			[picker performSelectorOnMainThread:@selector(reloadColumn:) withObject:column waitUntilDone:NO];
 		}
 		if ([TiUtils boolValue:[row valueForUndefinedKey:@"selected"] def:NO])
 		{
-			TiUIPicker *picker = [self picker];
 			[picker performSelectorOnMainThread:@selector(selectRow:) withObject:[NSArray arrayWithObjects:NUMINT(0),rowIndex,nil] waitUntilDone:NO];
 		}
 	}
 	else if ([data isKindOfClass:[TiUIPickerColumnProxy class]])
 	{
 		NSMutableArray *columns = [self columns];
-		TiUIPickerColumnProxy* column = (TiUIPickerColumnProxy*)data;
-		
-		if (windowOpened) {
-			for (NSInteger i=0; i < [column rowCount]; i++) {
-				TiUIPickerRowProxy* row = [column rowAt:i];
-				
-				[row windowWillOpen];
-				[row windowDidOpen];
-			}
-		}
-		
-		[columns addObject:column];
+		[columns addObject:data];
 		if ([self viewAttached])
 		{
-			TiUIPicker *picker = [self picker];
 			[picker performSelectorOnMainThread:@selector(reloadColumn:) withObject:data waitUntilDone:NO];
 		}
 	}
@@ -160,15 +100,6 @@ NSArray* pickerKeySequence;
 			NSMutableArray *columns = [self columns];
 			for (id column in data)
 			{
-				if (windowOpened) {
-					for (NSInteger i=0; i < [column rowCount]; i++) {
-						TiUIPickerRowProxy* row = [column rowAt:i];
-						
-						[row windowWillOpen];
-						[row windowDidOpen];
-					}
-				}
-				
 				[columns addObject:column];
 			}
 		}
@@ -177,22 +108,9 @@ NSArray* pickerKeySequence;
 			for (id rowdata in data)
 			{
 				TiUIPickerRowProxy *row = [[TiUIPickerRowProxy alloc] _initWithPageContext:[self executionContext] args:[NSArray arrayWithObject:rowdata]];
-								
 				TiUIPickerColumnProxy *column = [self columnAt:0];
 				NSNumber* rowIndex = [column addRow:row];
-				
-				if (windowOpened) {
-					[row windowWillOpen];
-					[row windowDidOpen];
-				}
-				
 				[row release];
-				
-				if ([self viewAttached])
-				{
-					TiUIPicker *picker = [self picker];
-					[picker performSelectorOnMainThread:@selector(reloadColumn:) withObject:column waitUntilDone:NO];
-				}
 				if ([TiUtils boolValue:[row valueForUndefinedKey:@"selected"] def:NO])
 				{
 					[[self view] performSelectorOnMainThread:@selector(selectRow:) withObject:[NSArray arrayWithObjects:NUMINT(0),rowIndex,nil] waitUntilDone:NO];
@@ -205,17 +123,10 @@ NSArray* pickerKeySequence;
 			for (id item in data)
 			{
 				ENSURE_TYPE(item,TiUIPickerRowProxy);
-				
-				if (windowOpened) {
-					[item windowWillOpen];
-					[item windowDidOpen];
-				}
-				
 				[column addRow:item];
 			}
 			if ([self viewAttached])
 			{
-				TiUIPicker *picker = [self picker];
 				[picker performSelectorOnMainThread:@selector(reloadColumn:) withObject:column waitUntilDone:NO];
 			}
 		}
@@ -247,12 +158,6 @@ NSArray* pickerKeySequence;
 		NSInteger row = [TiUtils intValue:[args objectAtIndex:1]];
 		BOOL animated = [args count]>2 ? [TiUtils boolValue:[args objectAtIndex:2]] : YES;
 		[(TiUIPicker*)[self view] selectRowForColumn:column row:row animated:animated];
-	}
-	else {
-		if (selectOnLoad != args) {
-			RELEASE_TO_NIL(selectOnLoad);
-			selectOnLoad = [args retain];
-		}
 	}
 }
 

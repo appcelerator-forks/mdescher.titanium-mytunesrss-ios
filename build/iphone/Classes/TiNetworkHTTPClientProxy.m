@@ -244,34 +244,6 @@ extern NSString * const TI_APPLICATION_DEPLOYTYPE;
 	}
 	if (onload!=nil && state==NetworkClientStateDone && connected)
 	{
-		if (ondatastream && downloadProgress>0)
-		{
-			CGFloat progress = (CGFloat)((CGFloat)downloadProgress/(CGFloat)downloadLength);
-			if (progress < 1.0)
-			{
-				// seems to be a problem in ASI where we'll get .999999 but never 1.0
-				// so we need to synthesize this
-				progress = 1.0;
-				TiNetworkHTTPClientResultProxy *thisPointer = [[TiNetworkHTTPClientResultProxy alloc] initWithDelegate:self];
-				NSDictionary *event = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:progress] forKey:@"progress"];
-				[self _fireEventToListener:@"datastream" withObject:event listener:ondatastream thisObject:thisPointer];
-				[thisPointer release];
-			}
-		}
-		else if (onsendstream && uploadProgress>0)
-		{
-			CGFloat progress = (CGFloat)((CGFloat)uploadProgress/(CGFloat)uploadLength);
-			if (progress < 1.0)
-			{
-				// seems to be a problem in ASI where we'll get .999999 but never 1.0
-				// so we need to synthesize this
-				progress = 1.0;
-				TiNetworkHTTPClientResultProxy *thisPointer = [[TiNetworkHTTPClientResultProxy alloc] initWithDelegate:self];
-				NSDictionary *event = [NSDictionary dictionaryWithObject:[NSNumber numberWithFloat:progress] forKey:@"progress"];
-				[self _fireEventToListener:@"sendstream" withObject:event listener:onsendstream thisObject:thisPointer];
-				[thisPointer release];
-			}
-		}
 		[self _fireEventToListener:@"load" withObject:nil listener:onload thisObject:thisPointer];
 	}
 }
@@ -336,8 +308,7 @@ extern NSString * const TI_APPLICATION_DEPLOYTYPE;
 	[request setUseCookiePersistence:YES];
 	[request setShowAccurateProgress:YES];
 	[request setShouldUseRFC2616RedirectBehaviour:YES];
-	BOOL keepAlive = [TiUtils boolValue:[self valueForKey:@"enableKeepAlive"] def:YES];
-	[request setShouldAttemptPersistentConnection:keepAlive];
+	[request setShouldAttemptPersistentConnection:YES];
 	[request setShouldRedirect:YES];
 	[request setShouldPerformCallbacksOnMainThread:NO];
 	[self _fireReadyStateChange:NetworkClientStateOpened];
@@ -428,7 +399,6 @@ extern NSString * const TI_APPLICATION_DEPLOYTYPE;
 					[request appendPostData:data];
 				}
 			}
-			//TODO: support TiFile post 1.4
 		}
 	}
 	

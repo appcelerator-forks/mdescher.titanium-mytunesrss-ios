@@ -10,18 +10,8 @@
 
 #import "TiUISliderProxy.h"
 
-NSArray* sliderKeySequence;
-
 @implementation TiUISliderProxy
 
--(NSArray *)keySequence
-{
-	if (sliderKeySequence == nil)
-	{
-		sliderKeySequence = [[NSArray arrayWithObjects:@"min",@"max",@"value",nil] retain];
-	}
-	return sliderKeySequence;
-}
 
 -(UIViewAutoresizing)verifyAutoresizing:(UIViewAutoresizing)suggestedResizing
 {

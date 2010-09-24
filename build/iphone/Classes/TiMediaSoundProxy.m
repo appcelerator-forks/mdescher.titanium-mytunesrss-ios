@@ -10,7 +10,6 @@
 
 #import <AudioToolbox/AudioToolbox.h>
 #import <AVFoundation/AVAudioPlayer.h>
-#import <AVFoundation/AVAudioSession.h>
 
 #import "TiMediaSoundProxy.h"
 #import "TiUtils.h"
@@ -81,15 +80,14 @@
 		}
 		volume = 1.0;
 		resumeTime = 0;
-
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0		
-		if ([TiUtils isIOS4OrGreater])
-		{
-			[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(remoteControlEvent:) name:kTiRemoteControlNotification object:nil];
-		}
-#endif
 	}
 	return self;
+}
+
+-(void)dealloc
+{
+	[[TiMediaAudioSession sharedSession] stopAudioSession];
+	[super dealloc];
 }
 
 -(void)configurationSet
@@ -113,15 +111,6 @@
 		[player stop];
 		[player setDelegate:nil];
 	}
-	
-	[[TiMediaAudioSession sharedSession] stopAudioSession];
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0	
-	if ([TiUtils isIOS4OrGreater])
-	{
-		[[NSNotificationCenter defaultCenter] removeObserver:self];
-	}
-#endif	
-	
 	RELEASE_TO_NIL(player);
 	RELEASE_TO_NIL(url);
 	RELEASE_TO_NIL(tempFile);
@@ -161,7 +150,6 @@
 	// indicate we're going to start playing
 	[[TiMediaAudioSession sharedSession] playback:sessionMode];
 	
-	paused = NO;
 	[[self player] play];
 }
 
@@ -173,7 +161,6 @@
 		[player setCurrentTime:0];
 	}
 	resumeTime = 0;
-	paused = NO;
 }
 
 -(void)pause:(id)args
@@ -181,7 +168,6 @@
 	if (player!=nil)
 	{
 		[player pause];
-		paused = YES;
 	}
 }
 
@@ -194,7 +180,6 @@
 		[player play];
 	}
 	resumeTime = 0;
-	paused = NO;
 }
 
 -(void)release:(id)args
@@ -202,7 +187,6 @@
 	if (player!=nil)
 	{
 		resumeTime = 0;
-		paused = NO;
 		[player stop];
 		RELEASE_TO_NIL(player);
 	}
@@ -337,7 +321,7 @@
 {
     UInt32 newMode = [mode unsignedIntegerValue]; // Close as we can get to UInt32
     if (newMode == kAudioSessionCategory_RecordAudio) {
-        NSLog(@"[WARN] Invalid mode for audio player... setting to default.");
+        NSLog(@"Invalid mode for audio player... setting to default.");
         newMode = kAudioSessionCategory_SoloAmbientSound;
     }
     sessionMode = newMode;
@@ -385,57 +369,6 @@
 	}
 }
 
-#if __IPHONE_OS_VERSION_MAX_ALLOWED >= __IPHONE_4_0
-
-- (void)audioPlayerEndInterruption:(AVAudioPlayer *)player withFlags:(NSUInteger)flags
-{
-	if (flags != AVAudioSessionInterruptionFlags_ShouldResume)
-	{
-		[self stop:nil];
-	}
-	
-	if ([self _hasListeners:@"resume"])
-	{
-		NSDictionary *event = [NSDictionary dictionaryWithObjectsAndKeys:NUMBOOL(YES),@"interruption",nil];
-		[self fireEvent:@"resume" withObject:event];
-	}
-}
-
-- (void)remoteControlEvent:(NSNotification*)note
-{
-	UIEvent *event = [[note userInfo]objectForKey:@"event"];
-	switch(event.subtype)
-	{
-		case UIEventSubtypeRemoteControlTogglePlayPause:
-		{
-			if (paused)
-			{ 
-				[self play:nil];
-			}
-			else 
-			{
-				[self pause:nil];
-			}
-			break;
-		}
-		case UIEventSubtypeRemoteControlPause:
-		{
-			[self pause:nil];
-			break;
-		}
-		case UIEventSubtypeRemoteControlStop:
-		{
-			[self stop:nil];
-			break;
-		}
-		case UIEventSubtypeRemoteControlPlay:
-		{
-			[self play:nil];
-			break;
-		}
-	}
-}
-#endif
 
 @end
 

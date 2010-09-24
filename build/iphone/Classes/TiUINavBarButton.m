@@ -46,11 +46,6 @@ DEFINE_EXCEPTIONS
 	[super dealloc];
 }
 
--(void)detachProxy
-{
-	proxy = nil;
-}
-
 -(UIBarButtonItemStyle)style:(TiUIButtonProxy*)proxy_
 {
 	id value = [proxy_ valueForKey:@"style"];
@@ -195,7 +190,7 @@ DEFINE_EXCEPTIONS
 	else
 	{
 		BOOL enabled = [TiUtils boolValue:value];
-		[self setEnabled:enabled];
+		[super setEnabled:enabled];
 	}
 }
 
@@ -218,7 +213,7 @@ DEFINE_EXCEPTIONS
 	}
 	else if ([key isEqualToString:@"enabled"])
 	{
-		[self performSelectorOnMainThread:@selector(setEnabled_:) withObject:newValue waitUntilDone:NO];
+		[changeView performSelectorOnMainThread:@selector(setEnabled_:) withObject:newValue waitUntilDone:NO];
 	}
 }
 

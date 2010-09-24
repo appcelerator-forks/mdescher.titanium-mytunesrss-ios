@@ -41,6 +41,7 @@
 @property (nonatomic,readonly) NSNumber *STATE_STOPPED;
 @property (nonatomic,readonly) NSNumber *STATE_PAUSED;
 
+
 @end
 
 #endif
