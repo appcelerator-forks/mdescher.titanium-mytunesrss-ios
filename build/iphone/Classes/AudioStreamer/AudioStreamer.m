@@ -217,12 +217,13 @@ void ASReadStreamCallBack
 //
 // Init method for the object.
 //
-- (id)initWithURL:(NSURL *)aURL
+- (id)initWithURL:(NSURL *)aURL andBufferSize:(SInt32)aBufSize
 {
 	self = [super init];
 	if (self != nil)
 	{
 		url = [aURL retain];
+		kAQBufSize = aBufSize;
 	}
 	return self;
 }
@@ -457,7 +458,7 @@ void ASReadStreamCallBack
 //
 - (BOOL)isPlaying
 {
-	if (state == AS_PLAYING)
+	if (state == AS_PLAYING || state == AS_STOPPING)
 	{
 		return YES;
 	}
@@ -876,9 +877,9 @@ cleanup:
 {
 	@synchronized(self)
 	{
-		if (sampleRate > 0 && ![self isFinishing])
+		if (sampleRate > 0)
 		{
-			if (state != AS_PLAYING && state != AS_PAUSED && state != AS_BUFFERING)
+			if (state != AS_PLAYING && state != AS_PAUSED && state != AS_BUFFERING && state != AS_STOPPING)
 			{
 				return lastProgress;
 			}

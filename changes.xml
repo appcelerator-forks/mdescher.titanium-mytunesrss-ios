@@ -7,6 +7,12 @@
 
         <release version="1.0.3" date="????-??-??">
             <action dev="mdescher" type="fix">
+                Fixed progress reporting in audio streamer. Needed to report in AS_STOPPING as well.
+            </action>
+            <action dev="mdescher" type="fix">
+                Increased buffer size for audio streamer from 2 KB to 20 KB.
+            </action>
+            <action dev="mdescher" type="fix">
                 Fixed display of track remaining time
             </action>
             <action dev="mdescher" type="fix">

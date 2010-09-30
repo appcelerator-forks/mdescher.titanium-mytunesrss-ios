@@ -66,7 +66,7 @@
 		{
 			[self throwException:@"invalid url" subreason:@"url has not been set" location:CODELOCATION];
 		}
-		player = [[AudioStreamer alloc] initWithURL:url];
+		player = [[AudioStreamer alloc] initWithURL:url andBufferSize:20480];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playbackStateChanged:)
 												name:ASStatusChangedNotification
 												object:player];
