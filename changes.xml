@@ -7,6 +7,9 @@
 
         <release version="1.0.3" date="????-??-??">
             <action dev="mdescher" type="fix">
+                Fixed display of track remaining time
+            </action>
+            <action dev="mdescher" type="fix">
                 Added missing transcoding parameter to video playback URL.
             </action>
         </release>
