@@ -36,7 +36,7 @@ function getDisplayName(name) {
 }
 
 function internalSetTableDataAndIndex(section, startIndex, tableView, fetchItemsCallback, tableCompleteCallback, createTableViewRowCallback, getSectionAndIndexNameCallback) {
-	fetchItemsCallback(startIndex, FETCH_SIZE, function(items, more) {
+	fetchItemsCallback(startIndex, FETCH_SIZE, function(items) {
 		var sectionTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '123'];
 		var indexTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#'];
 		for (var i = 0; i < items.length; i++) {

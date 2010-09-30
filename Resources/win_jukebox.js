@@ -61,10 +61,10 @@ function wrapInSection(rows) {
 
 function addTouchListener(control, name) {
     control.addEventListener('touchstart', function() {
-        control.url = name + '_touched.png';
+        control.image = name + '_touched.png';
     });
     control.addEventListener('touchend', function() {
-        control.url = name + '.png';
+        control.image = name + '.png';
     });
 }
 
@@ -170,7 +170,8 @@ var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.System
 win.add(Titanium.UI.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace, controlShuffle, flexSpace]}));
 
 Titanium.App.addEventListener('mytunesrss_setTrackInfo', function(track) {
-    setTrackInformation(track);
+    win.data = track;
+    setTrackInformation(win.data);
 });
 
 Titanium.App.addEventListener('mytunesrss_progress', function(e) {
@@ -178,5 +179,5 @@ Titanium.App.addEventListener('mytunesrss_progress', function(e) {
         progressBar.value = Math.floor(e.value);
     }
     timePlayed.text = getDisplayTime(e.value);
-    timeRemaining.text = getDisplayTime(win.data.time - e.value);
+    timeRemaining.text = getDisplayTime(win.data.time - Math.floor(e.value));
 });
