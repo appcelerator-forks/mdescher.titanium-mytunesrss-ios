@@ -1,4 +1,5 @@
 var FETCH_SIZE = 1000;
+var DEFAULT_AUDIO_BUFFER_SIZE = 2048;
 
 function ajaxCall(func, parameterArray, resultCallback) {
     var httpClient = Titanium.Network.createHTTPClient({timeout:30000});

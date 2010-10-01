@@ -14,6 +14,8 @@
 
 @implementation TiMediaAudioPlayerProxy
 
+@synthesize bufferSize;
+
 #pragma mark Internal
 
 -(void)_initWithProperties:(NSDictionary *)properties
@@ -23,6 +25,9 @@
                              properties:properties
                                     def:[[TiMediaAudioSession sharedSession] defaultSessionMode]];
     [self setAudioSessionMode:[NSNumber numberWithInt:initialMode]];
+ 	[self setBufferSize: [TiUtils intValue:@"bufferSize" 
+ 								properties:properties
+ 									   def:2048]];
 	[[TiMediaAudioSession sharedSession] startAudioSession];
 }
 
@@ -66,7 +71,7 @@
 		{
 			[self throwException:@"invalid url" subreason:@"url has not been set" location:CODELOCATION];
 		}
-		player = [[AudioStreamer alloc] initWithURL:url andBufferSize:20480];
+		player = [[AudioStreamer alloc] initWithURL:url andBufferSize:bufferSize];
 		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(playbackStateChanged:)
 												name:ASStatusChangedNotification
 												object:player];

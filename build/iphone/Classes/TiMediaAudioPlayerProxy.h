@@ -19,6 +19,7 @@
 	BOOL progress;
 	NSTimer *timer;
     UInt32 sessionMode;
+    SInt32 bufferSize;
 }
 
 @property (nonatomic,readonly) NSURL *url;
@@ -30,6 +31,7 @@
 @property (nonatomic,readonly) NSNumber *progress;
 @property (nonatomic,readonly) NSNumber *state;
 @property (nonatomic,readwrite,assign) NSNumber* audioSessionMode;
+@property (nonatomic,readwrite) SInt32 bufferSize;
 
 @property (nonatomic,readonly) NSNumber *STATE_INITIALIZED;
 @property (nonatomic,readonly) NSNumber *STATE_STARTING;

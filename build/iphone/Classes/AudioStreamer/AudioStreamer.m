@@ -41,7 +41,7 @@ NSString * const AS_AUDIO_QUEUE_FLUSH_FAILED_STRING = @"Audio queue flush failed
 NSString * const AS_GET_AUDIO_TIME_FAILED_STRING = @"Audio queue get current time failed.";
 NSString * const AS_AUDIO_STREAMER_FAILED_STRING = @"Audio playback failed";
 NSString * const AS_NETWORK_CONNECTION_FAILED_STRING = @"Network connection failed";
-NSString * const AS_AUDIO_BUFFER_TOO_SMALL_STRING = @"Audio packets are larger than kAQBufSize.";
+NSString * const AS_AUDIO_BUFFER_TOO_SMALL_STRING = @"Audio packets are larger than buffer size.";
 
 @interface AudioStreamer ()
 @property (readwrite) AudioStreamerState state;

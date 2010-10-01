@@ -8,14 +8,9 @@ function wrap(components) {
     return row;
 }
 
-var win = Titanium.UI.currentWindow;
-
-var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
-actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
-
-var audioPlayer = Titanium.Media.createAudioPlayer({audioSessionMode:Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK});
 var currentPlaylist;
 var currentPlaylistIndex;
+var audioPlayer;
 
 function setPlayerUrl(url) {
     audioPlayer.url = url;
@@ -32,20 +27,31 @@ function playTrack() {
     audioPlayer.start();
 }
 
-audioPlayer.addEventListener('progress', function(e) {
-    Titanium.App.fireEvent('mytunesrss_progress', {value:e.progress});
-});
+function createPlayer() {
+    audioPlayer = Titanium.Media.createAudioPlayer({audioSessionMode:Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK, bufferSize:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)});
 
-audioPlayer.addEventListener('change', function(e) {
-    if (e.state == audioPlayer.STATE_STOPPED && currentPlaylistIndex < currentPlaylist.length - 1) {
-        currentPlaylistIndex++;
-        playTrack();
-    } else if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
-        Titanium.App.fireEvent('mytunesrss_showJukeboxActivityView');
-    } else if (e.state === audioPlayer.STATE_PLAYING) {
-        Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
-    }
-});
+    audioPlayer.addEventListener('progress', function(e) {
+        Titanium.App.fireEvent('mytunesrss_progress', {value:e.progress});
+    });
+
+    audioPlayer.addEventListener('change', function(e) {
+        if (e.state == audioPlayer.STATE_STOPPED && currentPlaylistIndex < currentPlaylist.length - 1) {
+            currentPlaylistIndex++;
+            playTrack();
+        } else if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
+            Titanium.App.fireEvent('mytunesrss_showJukeboxActivityView');
+        } else if (e.state === audioPlayer.STATE_PLAYING) {
+            Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
+        }
+    });
+}
+
+var win = Titanium.UI.currentWindow;
+
+var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
+actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
+
+createPlayer();
 
 var searchBar = Titanium.UI.createSearchBar({hintText:'Search',left:0,right:0,top:45,height:45,autocorrect:false,autocapitalization:false,autocomplete:false});
 
@@ -225,6 +231,11 @@ Titanium.App.addEventListener('mytunesrss_shuffle', function() {
         setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUrl);
         Titanium.App.fireEvent('mytunesrss_setTrackInfo', currentPlaylist[currentPlaylistIndex]);
     }
+});
+
+Titanium.App.addEventListener('mytunesrss_audiobuffersize_changed', function() {
+    audioPlayer.stop();
+    createPlayer();
 });
 
 addTopToolbar(win, 'MyTunesRSS', buttonLogout, buttonSettings);
