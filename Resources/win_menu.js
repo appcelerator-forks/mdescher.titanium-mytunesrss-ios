@@ -96,13 +96,9 @@ buttonSettings.addEventListener('click', function() {
     ajaxCall('LoginService.getUserInfo', [], function(result, error) {
         actIndicatorView.hide();
         if (result) {
-            if (result.transcoderNames.length == 0) {
-                Titanium.UI.createAlertDialog({message:'No transcoders defined on the MyTunesRSS server.',buttonNames:['Ok']}).show();
-            } else {
-                var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundColor:'#FFF'});
-                winSettings.ajaxResult = result;
-                winSettings.open();
-            }
+            var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundColor:'#FFF'});
+            winSettings.ajaxResult = result;
+            winSettings.open();
         } else {
             handleServerError(error);
         }
