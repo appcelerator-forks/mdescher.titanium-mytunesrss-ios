@@ -9,14 +9,12 @@ function wrap(components) {
 }
 
 var win = Titanium.UI.currentWindow;
+
 var transcoderSwitches = [];
-var bufferSizeInput = Titanium.UI.createTextField({hintText:'Size in Bytes',left:180,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
+var bufferSizeInput = Titanium.UI.createTextField({hintText:'Size in Bytes',left:180,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
 
 var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
-win.addEventListener('focus', function() {
-    actIndicatorView.hide();
-});
 
 var buttonCancel = Titanium.UI.createButton({title:'Cancel',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 buttonCancel.addEventListener('click', function() {

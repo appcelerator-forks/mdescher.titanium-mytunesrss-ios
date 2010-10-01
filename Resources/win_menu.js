@@ -94,7 +94,6 @@ buttonLogout.addEventListener('click', function() {
 buttonSettings.addEventListener('click', function() {
     actIndicatorView.show();
     ajaxCall('LoginService.getUserInfo', [], function(result, error) {
-        actIndicatorView.hide();
         if (result) {
             var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundColor:'#FFF'});
             winSettings.ajaxResult = result;
@@ -102,6 +101,7 @@ buttonSettings.addEventListener('click', function() {
         } else {
             handleServerError(error);
         }
+        actIndicatorView.hide();
     });
 });
 
