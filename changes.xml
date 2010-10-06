@@ -18,6 +18,9 @@
             <action dev="mdescher" type="fix">
                 Added missing transcoding parameter to video playback URL.
             </action>
+            <action dev="mdescher" type="fix">
+                Load item lists in chunks of 1000 to prevent OutOfMemory on server.
+            </action>
         </release>
 
         <!--
