@@ -37,7 +37,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.4</string>
+	<string>1.0.4.1286700926</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>UISupportedInterfaceOrientations</key>
@@ -55,6 +55,12 @@
 	</array>
     <key>UIStatusBarStyle</key>
     <string>UIStatusBarStyleDefault</string>
+        <key>UIStatusBarStyle</key>
+        <string>UIStatusBarStyleDefault</string>
+        <key>UIStatusBarStyle</key>
+        <string>UIStatusBarStyleDefault</string>
+        <key>UIStatusBarStyle</key>
+        <string>UIStatusBarStyleDefault</string>
         <key>UIStatusBarStyle</key>
         <string>UIStatusBarStyleDefault</string>
 </dict>
