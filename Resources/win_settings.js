@@ -59,7 +59,7 @@ var tableViewData = [];
 tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Audio Player'}));
 tableViewData[0].add(wrap([Titanium.UI.createLabel({text:'Buffer Size',left:10,right:120,minimumFontSize:12}), bufferSizeInput]));
 
-if (win.ajaxResult.transcoderNames.length > 0) {
+if (win.ajaxResult.transcoderNames && win.ajaxResult.transcoderNames.length > 0) {
     tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Transcoder'}));
     for (var i = 0; i < win.ajaxResult.transcoderNames.length; i++) {
         var transcoderName = win.ajaxResult.transcoderNames[i];

@@ -7,6 +7,13 @@
 
         <release version="1.0.3" date="2010-10-01">
             <action dev="mdescher" type="add">
+                Fixed exception when opening settings page without any transcoder returned from
+                the server.
+            </action>
+        </release>
+
+        <release version="1.0.3" date="2010-10-01">
+            <action dev="mdescher" type="add">
                 Configurable audio buffer size (default still is 2048 byte).
             </action>
             <action dev="mdescher" type="fix">
