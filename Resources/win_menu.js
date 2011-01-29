@@ -24,7 +24,9 @@ function setPlayerUrl(url) {
 function playTrack() {
     setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUrl);
     Titanium.App.fireEvent('mytunesrss_setTrackInfo', currentPlaylist[currentPlaylistIndex]);
-    audioPlayer.start();
+    if (!audioPlayer.playing) {
+        audioPlayer.start();
+    }
 }
 
 function createPlayer() {
@@ -32,7 +34,7 @@ function createPlayer() {
 
     audioPlayer.addEventListener('progress', function(e) {
         Titanium.App.fireEvent('mytunesrss_progress', {value:e.progress});
-        //if (currentPlaylist[currentPlaylistIndex].time - Math.floor(e.progress) < 2 && currentPlaylistIndex < currentPlaylist.length - 1) {
+        // if (currentPlaylist[currentPlaylistIndex].time - Math.floor(e.progress) < 2 && currentPlaylistIndex < currentPlaylist.length - 1) {
         if (Math.floor(e.progress) > 10 && currentPlaylistIndex < currentPlaylist.length - 1) {
             // less than 2 seconds left => skip to next track
             Titanium.App.fireEvent('mytunesrss_fastforward');
@@ -40,9 +42,7 @@ function createPlayer() {
     });
 
     audioPlayer.addEventListener('change', function(e) {
-        if (e.state == audioPlayer.STATE_STOPPED) {
-            Titanium.App.fireEvent('mytunesrss_fastforward');
-        } else if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
+        if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
             Titanium.App.fireEvent('mytunesrss_showJukeboxActivityView');
         } else if (e.state === audioPlayer.STATE_PLAYING) {
             Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
@@ -211,7 +211,9 @@ Titanium.App.addEventListener('mytunesrss_play', function() {
 });
 
 Titanium.App.addEventListener('mytunesrss_pause', function() {
-    audioPlayer.pause();
+    if (audioPlayer.playing) {
+        audioPlayer.pause();
+    }
 });
 
 Titanium.App.addEventListener('mytunesrss_shuffle', function() {
