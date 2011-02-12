@@ -13,7 +13,6 @@ var currentPlaylistIndex;
 var audioPlayer;
 
 function setPlayerUrl(url) {
-    audioPlayer.url = url;
     if (Titanium.App.Properties.getString('tcParam') != undefined) {
         audioPlayer.url = url + '/' + Titanium.App.Properties.getString('tcParam');
     } else {
@@ -34,8 +33,8 @@ function createPlayer() {
 
     audioPlayer.addEventListener('progress', function(e) {
         Titanium.App.fireEvent('mytunesrss_progress', {value:e.progress});
-        // if (currentPlaylist[currentPlaylistIndex].time - Math.floor(e.progress) < 2 && currentPlaylistIndex < currentPlaylist.length - 1) {
-        if (Math.floor(e.progress) > 10 && currentPlaylistIndex < currentPlaylist.length - 1) {
+        if (currentPlaylist[currentPlaylistIndex].time - Math.floor(e.progress) < 2 && currentPlaylistIndex < currentPlaylist.length - 1) {
+        //if (Math.floor(e.progress) > 10 && currentPlaylistIndex < currentPlaylist.length - 1) {
             // less than 2 seconds left => skip to next track
             Titanium.App.fireEvent('mytunesrss_fastforward');
         }
