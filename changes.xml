@@ -5,6 +5,12 @@
     </properties>
     <body>
 
+        <release version="1.0.5" date="___D___">
+            <action dev="mdescher" type="add">
+                Background audio playback, skips to next track 2 seconds before playback would end.
+            </action>
+        </release>
+
         <release version="1.0.4" date="2010-10-10">
             <action dev="mdescher" type="add">
                 Fixed exception when opening settings page without any transcoder returned from
