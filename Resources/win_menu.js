@@ -90,6 +90,7 @@ var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.U
 buttonLogout.addEventListener('click', function() {
     audioPlayer.removeEventListener("change", autoSkipEventListener);
     audioPlayer.stop();
+    keepAliveSound.pause();
     Titanium.App.Properties.removeProperty('jsonRpcSessionId');
     Titanium.App.Properties.removeProperty('serverMajor');
     Titanium.App.Properties.removeProperty('serverMinor');
@@ -208,6 +209,8 @@ Titanium.App.addEventListener('mytunesrss_fastforward', function() {
         audioPlayer.stop();
         currentPlaylistIndex++;
         playTrack();
+    } else {
+        keepAliveSound.pause();
     }
 });
 
