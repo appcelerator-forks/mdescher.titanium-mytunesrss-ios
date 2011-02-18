@@ -126,5 +126,5 @@ buttonDefaultInterfaceRow.addEventListener('click', function() {
 
 addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogin);
 win.add(tableView);
-win.add(Titanium.UI.createLabel({text:'v1.0.5',textAlign:'center',bottom:10,height:10,font:{fontSize:10}}));
+win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:10,height:10,font:{fontSize:10}}));
 win.add(actIndicatorView);
