@@ -15,7 +15,7 @@
         <string>${EXECUTABLE_NAME}</string>
 
         <key>CFBundleIconFile</key>
-        <string>default_app_logo.png</string>
+        <string>appicon.png</string>
 
         <key>CFBundleIconFiles</key>
         <array>
