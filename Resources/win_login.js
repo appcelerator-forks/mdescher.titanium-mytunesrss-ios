@@ -126,4 +126,4 @@ buttonDefaultInterfaceRow.addEventListener('click', function() {
 
 addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogin);
 win.add(tableView);
-win.add(actIndicatorView);
+ win.add(actIndicatorView);
