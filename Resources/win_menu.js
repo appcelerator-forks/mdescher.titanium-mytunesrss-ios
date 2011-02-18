@@ -13,7 +13,7 @@ var currentPlaylistIndex;
 var audioPlayer;
 var keepAliveSound = Titanium.Media.createSound({url:"white_noise.wav",volume:0,looping:true,preload:true});
 var autoSkipEventListener = function(e) {
-    if (e.state === audioPlayer.STATE_STOPPING) {
+    if (e.state === audioPlayer.STATE_STOPPED) {
         Titanium.App.fireEvent('mytunesrss_fastforward');
     }
 };
