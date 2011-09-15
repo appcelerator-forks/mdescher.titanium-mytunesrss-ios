@@ -1,3 +1,6 @@
+Titanium.App;
+Titanium.Network;
+
 Titanium.include('mytunesrss.js');
 
 var win = Titanium.UI.currentWindow;

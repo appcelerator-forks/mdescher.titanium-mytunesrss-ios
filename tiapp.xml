@@ -1,13 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
-<id>de.codewave.mytunesrss</id>
-<name>MyTunesRSS</name>
-<version>1.0.5</version>
-<publisher>Codewave Software Michael Descher</publisher>
-<url>http://www.codewave.de</url>
-<description>MyTunesRSS iPhone Client</description>
-<copyright>2011 by Codewave Software Michael Descher</copyright>
-<icon>default_app_logo.png</icon>
+    <deployment-targets>
+        <target device="mobileweb">false</target>
+        <target device="iphone">true</target>
+        <target device="ipad">true</target>
+        <target device="android">false</target>
+        <target device="blackberry">false</target>
+    </deployment-targets>
+    <id>de.codewave.mytunesrss</id>
+    <name>MyTunesRSS</name>
+    <version>1.0.6</version>
+    <publisher>Codewave Software Michael Descher</publisher>
+    <url>http://www.codewave.de</url>
+    <description>MyTunesRSS iOS client</description>
+    <copyright>2011 by Codewave Software Michael Descher</copyright>
+    <icon>appicon.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>
     <statusbar-style>default</statusbar-style>
@@ -15,20 +22,18 @@
     <fullscreen>false</fullscreen>
     <navbar-hidden>false</navbar-hidden>
     <analytics>true</analytics>
-<guid>d7ea2e0d-e2f6-4af1-9e80-b51e99b993d6</guid>
-	<iphone>
-		<orientations device="iphone">
-			<orientation>Ti.UI.PORTRAIT</orientation>
-		</orientations>
-		<orientations device="ipad">
-			<orientation>Ti.UI.PORTRAIT</orientation>
-			<orientation>Ti.UI.UPSIDE_PORTRAIT</orientation>
-			<orientation>Ti.UI.LANDSCAPE_LEFT</orientation>
-			<orientation>Ti.UI.LANDSCAPE_RIGHT</orientation>
-		</orientations>
-	</iphone>
-	<android xmlns:android="http://schemas.android.com/apk/res/android">
-	</android>
-	<modules>
-	</modules>
+    <guid>5d7f6b5d-f3ff-4590-9c82-ee0e74ee4a65</guid>
+    <iphone>
+        <orientations device="iphone">
+            <orientation>Ti.UI.PORTRAIT</orientation>
+        </orientations>
+        <orientations device="ipad">
+            <orientation>Ti.UI.PORTRAIT</orientation>
+            <orientation>Ti.UI.UPSIDE_PORTRAIT</orientation>
+            <orientation>Ti.UI.LANDSCAPE_LEFT</orientation>
+            <orientation>Ti.UI.LANDSCAPE_RIGHT</orientation>
+        </orientations>
+    </iphone>
+    <android xmlns:android="http://schemas.android.com/apk/res/android"/>
+    <modules/>
 </ti:app>

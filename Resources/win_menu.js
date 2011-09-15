@@ -1,3 +1,5 @@
+Titanium.Network;
+
 Titanium.include('mytunesrss.js');
 
 function wrap(components) {
@@ -15,7 +17,7 @@ var keepAliveSound = Titanium.Media.createSound({url:"white_noise.wav",volume:0,
 var autoSkipEventListener = function(e) {
     if (e.state === audioPlayer.STATE_PLAYING && keepAliveSound.isPlaying()) {
         keepAliveSound.pause();
-    } else if (e.state === audioPlayer.STATE_STOPPING && !keepAliveSound.isPlaying()) {
+    } else if ((e.state === audioPlayer.STATE_STOPPING || e.state === audioPlayer.STATE_BUFFERING) && !keepAliveSound.isPlaying()) {
         keepAliveSound.play();
     } else if (e.state === audioPlayer.STATE_STOPPED) {
         Titanium.App.fireEvent('mytunesrss_fastforward');
