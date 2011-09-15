@@ -24,7 +24,7 @@ tableView.addEventListener('click', function(e) {
     ajaxCall('AlbumService.getTracks', [[e.rowData.jsonItem.name]], function(result, error) {
         actIndicatorView.hide();
         if (result) {
-            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
+            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundGradient : WINDOW_BG});
             winTracks.ajaxResult = result;
             winTracks.open();
         } else {

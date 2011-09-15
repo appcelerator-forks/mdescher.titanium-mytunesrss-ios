@@ -108,7 +108,7 @@ buttonSettings.addEventListener('click', function() {
     actIndicatorView.show();
     ajaxCall('LoginService.getUserInfo', [], function(result, error) {
         if (result) {
-            var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundColor:'#FFF'});
+            var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundGradient : WINDOW_BG});
             winSettings.ajaxResult = result;
             winSettings.open();
         } else {
@@ -144,7 +144,7 @@ searchBar.addEventListener('return', function() {
         ajaxCall('TrackService.search', [searchBar.value, 30, 'KeepOrder', 0, FETCH_SIZE], function(result, error) {
             actIndicatorView.hide();
             if (result && result.tracks && result.tracks.length > 0) {
-                var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundColor:'#FFF'});
+                var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundGradient : WINDOW_BG});
                 winTracks.ajaxResult = result;
                 winTracks.open();
             } else if (result && result.tracks && result.tracks.length === 0) {
@@ -167,7 +167,7 @@ searchBar.addEventListener('cancel', function() {
 
 buttonRowNowPlaying.addEventListener('click', function() {
     if (currentPlaylist && audioPlayer) {
-        Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundColor:'#FFF'}).open();
+        Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundGradient : WINDOW_BG}).open();
     } else {
         Titanium.UI.createAlertDialog({message:'There is no active playlist.',buttonNames:['Ok']}).show();
     }
@@ -191,7 +191,7 @@ Titanium.App.addEventListener('mytunesrss_playlist', function(e) {
     setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUrl);
     audioPlayer.addEventListener("change", autoSkipEventListener);
     audioPlayer.start();
-    Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundColor:'#FFF'}).open();
+    Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundGradient : WINDOW_BG}).open();
 });
 
 Titanium.App.addEventListener('mytunesrss_rewind', function() {

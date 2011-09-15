@@ -8,5 +8,5 @@ Titanium.App.Properties.removeProperty('jsonRpcSessionId');
 
 Titanium.UI.setBackgroundColor('#000');
 
-var win = Titanium.UI.createWindow({url:'win_login.js',backgroundColor:'#FFF'});
+var win = Titanium.UI.createWindow({url : 'win_login.js', backgroundGradient : WINDOW_BG});
 win.open();

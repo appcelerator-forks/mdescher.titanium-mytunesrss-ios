@@ -1,6 +1,13 @@
 var FETCH_SIZE = 1000;
 var DEFAULT_AUDIO_BUFFER_SIZE = 2048;
-
+var WINDOW_BG = {
+	type : 'linear',
+	colors : ['#8290bd', '#111419'],
+	startPoint : {x : 0, y : 0},
+	endPoint : {x : '100%', y : '100%'},
+	backFillStart : false
+};
+			
 function ajaxCall(func, parameterArray, resultCallback) {
     var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
     httpClient.onload = function() {
@@ -89,7 +96,7 @@ function addTopToolbar(window, titleText, leftButton, rightButton) {
     }
     window.add(Titanium.UI.createToolbar({top:0,height:45,items:toolbarItems}));
     if (titleText) {
-        var title = Titanium.UI.createLabel({text:titleText,left:0,right:0,top:0,height:45,textAlign:'center',color:'#FFF',font:{fontSize:20,fontWeight:'bold'}});
+        var title = Titanium.UI.createLabel({text:titleText,left:0,right:0,top:0,height:45,textAlign:'center',color:'#000000',font:{fontSize:20,fontWeight:'bold'}});
         window.add(title);
     }
 }
@@ -114,7 +121,7 @@ function removeUnsupportedTracks(items) {
 }
 
 function loadAndDisplayAlbums(artistName, genreName) {
-    var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundColor:'#FFF'});
+    var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundGradient : WINDOW_BG});
     winAlbums.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
         ajaxCall('AlbumService.getAlbums', [null, artistName, genreName, -1, -1, -1, false, fetchStart, fetchSize], function(result, error) {
             if (result) {
@@ -129,7 +136,7 @@ function loadAndDisplayAlbums(artistName, genreName) {
 }
 
 function loadAndDisplayArtists() {
-    var winArtists = Titanium.UI.createWindow({url:'win_artists.js',backgroundColor:'#FFF'});
+    var winArtists = Titanium.UI.createWindow({url:'win_artists.js',backgroundGradient : WINDOW_BG});
     winArtists.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
         ajaxCall('ArtistService.getArtists', [null, null, null, -1, fetchStart, fetchSize], function(result, error) {
             if (result) {
@@ -144,7 +151,7 @@ function loadAndDisplayArtists() {
 }
 
 function loadAndDisplayGenres() {
-    var winGenres = Titanium.UI.createWindow({url:'win_genres.js',backgroundColor:'#FFF'});
+    var winGenres = Titanium.UI.createWindow({url:'win_genres.js',backgroundGradient : WINDOW_BG});
     winGenres.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
         ajaxCall('GenreService.getGenres', [-1, fetchStart, fetchSize], function(result, error) {
             if (result) {
@@ -159,7 +166,7 @@ function loadAndDisplayGenres() {
 }
 
 function loadAndDisplayPlaylists() {
-    var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js',backgroundColor:'#FFF'});
+    var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js',backgroundGradient : WINDOW_BG});
     winPlaylists.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
         if (fetchStart > 0) {
             return new Array(0);

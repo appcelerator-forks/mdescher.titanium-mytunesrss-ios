@@ -45,9 +45,9 @@ function setTrackInformation(track) {
         Titanium.App.fireEvent('mytunesrss_moveplayhead', {value:val});
     });
     win.add(progressLabel); */
-    timePlayed = Titanium.UI.createLabel({bottom:60,left:10,height:10,width:40,font:{fontSize:12},text:'',textAlign:'right'});
+    timePlayed = Titanium.UI.createLabel({bottom:60,left:10,height:10,width:40,font:{fontSize:12},text:'',textAlign:'right',color:'#FFFFFF'});
     win.add(timePlayed);
-    timeRemaining = Titanium.UI.createLabel({bottom:60,right:10,width:40,height:10,font:{fontSize:12},text:''});
+    timeRemaining = Titanium.UI.createLabel({bottom:60,right:10,width:40,height:10,font:{fontSize:12},text:'',color:'#FFFFFF'});
     win.add(timeRemaining);
 }
 

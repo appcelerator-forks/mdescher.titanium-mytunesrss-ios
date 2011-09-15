@@ -10,7 +10,7 @@ function wrap(components) {
 
 function onLogin(result) {
     Titanium.App.Properties.setString('jsonRpcSessionId', result);
-    Titanium.UI.createWindow({url:'win_menu.js',backgroundColor:'#FFF'}).open();
+    Titanium.UI.createWindow({url:'win_menu.js',backgroundGradient : WINDOW_BG}).open();
 }
 
 var win = Titanium.UI.currentWindow;
