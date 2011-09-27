@@ -1,0 +1,59 @@
+<document>
+    <properties>
+        <title>MyTunesRSS iPhone App</title>
+        <author email="mdescher@codewave.de">Michael Descher</author>
+    </properties>
+    <body>
+
+        <release version="1.0.7" date="___D___">
+            <action dev="mdescher" type="update">
+                Bigger images in album list and currently playing view on iPad.
+            </action>
+        </release>
+
+        <release version="1.0.6" date="2011-09-17">
+            <action dev="mdescher" type="update">
+                Use full iPad screen.
+            </action>
+        </release>
+
+        <release version="1.0.5" date="___D___">
+            <action dev="mdescher" type="add">
+                Background audio playback.
+            </action>
+        </release>
+
+        <release version="1.0.4" date="2010-10-10">
+            <action dev="mdescher" type="add">
+                Fixed exception when opening settings page without any transcoder returned from
+                the server.
+            </action>
+        </release>
+
+        <release version="1.0.3" date="2010-10-01">
+            <action dev="mdescher" type="add">
+                Configurable audio buffer size (default still is 2048 byte).
+            </action>
+            <action dev="mdescher" type="fix">
+                Fixed progress reporting in audio streamer. Needed to report in AS_STOPPING as well.
+            </action>
+            <action dev="mdescher" type="fix">
+                Fixed display of track remaining time
+            </action>
+            <action dev="mdescher" type="fix">
+                Added missing transcoding parameter to video playback URL.
+            </action>
+            <action dev="mdescher" type="fix">
+                Load item lists in chunks of 1000 to prevent OutOfMemory on server.
+            </action>
+        </release>
+
+        <!--
+        <release version="???.???.???" date="????-??-??" description="???">
+            <action dev="???" type="add|update|fix|remove" issue="???" due-to="???" due-to-email="???">
+                ???
+            </action>
+        </release>
+        -->
+    </body>
+</document>

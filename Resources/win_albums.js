@@ -41,13 +41,27 @@ setTableDataAndIndex(
         },
         function(item, index) {
             var displayName = getDisplayName(item.name);
-            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:item.imageUrl ? 'album_row_img' : 'album_row'});
+			var size;
+			var albumHeight;
+			var artistHeight;
+			if (Titanium.Platform.osname === "ipad") {
+				size = 60;
+				albumHeight = 36;
+				artistHeight = 26;
+				spacer = 6;
+			} else if (Titanium.Platform.osname === "iphone") {
+				size = 40;
+				albumHeight = 24;
+				artistHeight = 18;
+				spacer = 4;
+			}
+            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:size + (2 * spacer),className:item.imageUrl ? 'album_row_img' : 'album_row'});
             if (item.imageUrl) {
-                var albumImage = Titanium.UI.createImageView({image:(item.imageUrl + '/size=64'),top:4,left:4,width:40,height:40,defaultImage:'appicon.png'});
+                var albumImage = Titanium.UI.createImageView({image:(item.imageUrl + '/size=64'),top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
                 row.add(albumImage);
             }
-            var albumName = Titanium.UI.createLabel({text:displayName,top:4,left:48,height:24,right:10,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
-            var artistName = Titanium.UI.createLabel({text:getDisplayName(item.artist),bottom:4,left:48,height:18,font:{fontSize:12}});
+            var albumName = Titanium.UI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:albumHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
+            var artistName = Titanium.UI.createLabel({text:getDisplayName(item.artist),bottom:spacer,left:size + (2 * spacer),height:artistHeight,font:{fontSize:12}});
             row.add(albumName);
             row.add(artistName);
             row.jsonItem = item;

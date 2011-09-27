@@ -5,6 +5,12 @@ var tableView;
 var progressBar;
 var timePlayed;
 var timeRemaining;
+var size;
+if (Titanium.Platform.osname === "ipad") {
+	size = 440;
+} else if (Titanium.Platform.osname === "iphone") {
+	size = 220;
+}
 
 function getDisplayTime(time) {
     var mins = Math.floor(time / 60);
@@ -25,8 +31,8 @@ function setTrackInformation(track) {
     tableView = Titanium.UI.createTableView({top:45,bottom:44,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,touchEnabled:false});
     var imageRow;
     if (track.imageUrl) {
-        imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:240});
-        imageRow.add(Titanium.UI.createImageView({top:10,image:track.imageUrl + '/size=256',width:220,height:220}));
+        imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:size});
+        imageRow.add(Titanium.UI.createImageView({top:10,image:track.imageUrl,width:size - 20,height:size - 20}));
     } else {
         imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:77});
         imageRow.add(Titanium.UI.createImageView({top:10,image:'appicon.png',width:57,height:57}));
