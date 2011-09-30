@@ -7,6 +7,9 @@
 
         <release version="1.0.7" date="___D___">
             <action dev="mdescher" type="update">
+                Load hires images on iPhone retina display.
+            </action>
+            <action dev="mdescher" type="update">
                 Bigger images in album list and currently playing view on iPad.
             </action>
         </release>

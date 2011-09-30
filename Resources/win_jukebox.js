@@ -6,10 +6,12 @@ var progressBar;
 var timePlayed;
 var timeRemaining;
 var size;
+var hires = false;
 if (Titanium.Platform.osname === "ipad") {
 	size = 440;
 } else if (Titanium.Platform.osname === "iphone") {
 	size = 220;
+	hires = Titanium.Platform.displayCaps.density == "high";
 }
 
 function getDisplayTime(time) {
@@ -32,10 +34,18 @@ function setTrackInformation(track) {
     var imageRow;
     if (track.imageUrl) {
         imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:size});
-        imageRow.add(Titanium.UI.createImageView({top:10,image:track.imageUrl,width:size - 20,height:size - 20}));
+        if (hires) {
+    	    imageRow.add(Titanium.UI.createImageView({top:10,hires:true,image:track.imageUrl,width:size - 20,height:size - 20}));
+        } else {
+	        imageRow.add(Titanium.UI.createImageView({top:10,image:track.imageUrl,width:size - 20,height:size - 20}));
+        }
     } else {
         imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:77});
-        imageRow.add(Titanium.UI.createImageView({top:10,image:'appicon.png',width:57,height:57}));
+        if (hires) {
+    	    imageRow.add(Titanium.UI.createImageView({top:10,hires:true,image:'appicon.png',width:57,height:57}));
+        } else {
+	        imageRow.add(Titanium.UI.createImageView({top:10,image:'appicon.png',width:57,height:57}));
+        }
     }
     var infoRow = Titanium.UI.createTableViewRow({height:60,className:'jukebox_info'});
     infoRow.add(Titanium.UI.createLabel({top:7,left:10,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name)}));

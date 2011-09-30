@@ -44,6 +44,7 @@ setTableDataAndIndex(
 			var size;
 			var albumHeight;
 			var artistHeight;
+			var hires = false;
 			if (Titanium.Platform.osname === "ipad") {
 				size = 60;
 				albumHeight = 36;
@@ -54,10 +55,16 @@ setTableDataAndIndex(
 				albumHeight = 24;
 				artistHeight = 18;
 				spacer = 4;
+				hires = Titanium.Platform.displayCaps.density == "high";
 			}
             var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:size + (2 * spacer),className:item.imageUrl ? 'album_row_img' : 'album_row'});
             if (item.imageUrl) {
-                var albumImage = Titanium.UI.createImageView({image:(item.imageUrl + '/size=64'),top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+                var albumImage;
+                if (hires) {
+                	albumImage = Titanium.UI.createImageView({hires:true,image:item.imageUrl + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+                } else {
+                	albumImage = Titanium.UI.createImageView({image:item.imageUrl + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+                }
                 row.add(albumImage);
             }
             var albumName = Titanium.UI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:albumHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});

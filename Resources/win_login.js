@@ -8,12 +8,12 @@ function wrap(components) {
     return row;
 }
 
+var win = Titanium.UI.currentWindow;
+
 function onLogin(result) {
     Titanium.App.Properties.setString('jsonRpcSessionId', result);
     Titanium.UI.createWindow({url:'win_menu.js',backgroundGradient : WINDOW_BG}).open();
 }
-
-var win = Titanium.UI.currentWindow;
 
 var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
