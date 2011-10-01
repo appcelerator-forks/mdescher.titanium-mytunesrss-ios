@@ -5,7 +5,7 @@
     </properties>
     <body>
 
-        <release version="1.0.7" date="___D___">
+        <release version="1.0.7" date="2011-10-01">
             <action dev="mdescher" type="update">
                 Load hires images on iPhone retina display.
             </action>
