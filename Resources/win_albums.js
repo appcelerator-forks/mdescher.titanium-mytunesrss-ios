@@ -41,9 +41,10 @@ setTableDataAndIndex(
         },
         function(item, index) {
             var displayName = getDisplayName(item.name);
-			var size;
-			var albumHeight;
-			var artistHeight;
+			var size = 40;
+			var albumHeight = 24;
+			var artistHeight = 18;
+			var spacer = 4;
 			var hires = false;
 			if (Titanium.Platform.osname === "ipad") {
 				size = 60;
@@ -51,10 +52,6 @@ setTableDataAndIndex(
 				artistHeight = 26;
 				spacer = 6;
 			} else if (Titanium.Platform.osname === "iphone") {
-				size = 40;
-				albumHeight = 24;
-				artistHeight = 18;
-				spacer = 4;
 				hires = Titanium.Platform.displayCaps.density == "high";
 			}
             var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:size + (2 * spacer),className:item.imageUrl ? 'album_row_img' : 'album_row'});

@@ -5,12 +5,11 @@ var tableView;
 var progressBar;
 var timePlayed;
 var timeRemaining;
-var size;
+var size = 220;
 var hires = false;
 if (Titanium.Platform.osname === "ipad") {
 	size = 440;
 } else if (Titanium.Platform.osname === "iphone") {
-	size = 220;
 	hires = Titanium.Platform.displayCaps.density == "high";
 }
 
