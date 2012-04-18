@@ -126,5 +126,10 @@ buttonDefaultInterfaceRow.addEventListener('click', function() {
 
 addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogin);
 win.add(tableView);
-win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:10,height:10,font:{fontSize:10}}));
+if (Titanium.App.version.indexOf('SNAPSHOT') > 0) {
+	win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:20,height:10,font:{fontSize:10}}));
+	win.add(Titanium.UI.createLabel({text: Titanium.Filesystem.getFile('white_noise.wav').modificationTimestamp(), textAlign:'center',bottom:10,height:10,font:{fontSize:10}}));
+} else {
+	win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:10,height:10,font:{fontSize:10}}));
+}
 win.add(actIndicatorView);

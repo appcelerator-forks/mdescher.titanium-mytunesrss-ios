@@ -182,7 +182,7 @@ addTopToolbar(win, 'Jukebox', buttonBack, undefined);
 setTrackInformation(win.data);
 
 var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
-win.add(Titanium.UI.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace, controlShuffle, flexSpace]}));
+win.add(Titanium.UI.iOS.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace, controlShuffle, flexSpace]}));
 
 Titanium.App.addEventListener('mytunesrss_setTrackInfo', function(track) {
     win.data = track;
@@ -191,8 +191,8 @@ Titanium.App.addEventListener('mytunesrss_setTrackInfo', function(track) {
 
 Titanium.App.addEventListener('mytunesrss_progress', function(e) {
     if (progressBar) {
-        progressBar.value = Math.floor(e.value);
+        progressBar.value = Math.floor(e.value / 1000);
     }
-    timePlayed.text = getDisplayTime(e.value);
-    timeRemaining.text = getDisplayTime(win.data.time - Math.floor(e.value));
+    timePlayed.text = getDisplayTime(e.value / 1000);
+    timeRemaining.text = getDisplayTime(win.data.time - Math.floor(e.value / 1000));
 });

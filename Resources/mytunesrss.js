@@ -94,7 +94,7 @@ function addTopToolbar(window, titleText, leftButton, rightButton) {
     if (rightButton) {
         toolbarItems.push(rightButton);
     }
-    window.add(Titanium.UI.createToolbar({top:0,height:45,items:toolbarItems}));
+    window.add(Titanium.UI.iOS.createToolbar({top:0,height:45,items:toolbarItems}));
     if (titleText) {
         var title = Titanium.UI.createLabel({text:titleText,left:0,right:0,top:0,height:45,textAlign:'center',color:'#000000',font:{fontSize:20,fontWeight:'bold'}});
         window.add(title);
