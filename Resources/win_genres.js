@@ -23,22 +23,21 @@ win.add(actIndicatorView);
 actIndicatorView.show();
 
 tableView.addEventListener('click', function(e) {
-    loadAndDisplayAlbums(null, e.rowData.jsonItem.name);
+    loadAndDisplayAlbums(e.rowData.albumsUri);
 });
 
 setTableDataAndIndex(
         tableView,
-        win.fetchItemsCallback,
-        function() {
-            actIndicatorView.hide();
-        },
+        win.data,
         function(item) {
             var displayName = getDisplayName(item.name);
-            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'genre_row'});
+            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'genre_row',height:TABLE_VIEW_ROW_HEIGHT});
             row.add(Titanium.UI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'},minimumFontSize:12}));
-            row.jsonItem = item;
+            row.albumsUri = item.albumsUri;
             return row;
         },
         function(item) {
             return item.name;
         });
+
+actIndicatorView.hide();

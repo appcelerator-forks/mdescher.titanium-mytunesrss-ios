@@ -1,7 +1,7 @@
 Titanium.include('mytunesrss.js');
 
 function wrap(components) {
-    var row = Titanium.UI.createTableViewRow({className:'loginRow'});
+    var row = Titanium.UI.createTableViewRow({className:'loginRow',height:TABLE_VIEW_ROW_HEIGHT});
     for (var i = 0; i < components.length; i++) {
         row.add(components[i]);
     }
@@ -43,29 +43,14 @@ tableViewData[2].add(buttonDefaultInterfaceRow);
 var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45});
 
 function doLogin() {
-    ajaxCall('ServerService.getServerInfo', [], function(result, error) {
-        if (result) {
-            Titanium.App.Properties.setString('serverMajor', result.major);
-            Titanium.App.Properties.setString('serverMinor', result.minor);
-            Titanium.App.Properties.setString('serverRevision', result.revision);
-            if (result.major < 3 || (result.major == 3 && (result.minor < 8 || (result.minor == 8 && result.revision < 13)))) {
-                actIndicatorView.hide();
-                Titanium.UI.createAlertDialog({message:'The MyTunesRSS server must be version 3.8.13 or better and is version ' + result.version + ' only.',buttonNames:['Ok']}).show();
-            } else {
-                ajaxCall('LoginService.login', [inputUsername.value, inputPassword.value, 180], function(result, error) {
-                    if (result) {
-                        onLogin(result);
-                    } else {
-                        actIndicatorView.hide();
-                        handleServerError(error);
-                    }
-                });
-            }
-        } else {
-            actIndicatorView.hide();
-            handleServerError(error);
-        }
-    });
+	var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value});
+	if (response.status / 100 === 2) {
+		Titanium.UI.createWindow({url:'win_menu.js',backgroundGradient : WINDOW_BG}).open();
+		Titanium.App.Properties.setString("libraryBase", JSON.stringify(restCall("GET", response.result.libraryUri, {}).result));
+	} else {
+	    actIndicatorView.hide();
+	    Titanium.UI.createAlertDialog({message:'Login failed, please check server URI and credentials.',buttonNames:['Ok']}).show();
+	}
 }
 
 function getServerUrl() {

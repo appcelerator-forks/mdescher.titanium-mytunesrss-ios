@@ -20,25 +20,12 @@ win.add(actIndicatorView);
 actIndicatorView.show();
 
 tableView.addEventListener('click', function(e) {
-    actIndicatorView.show();
-    ajaxCall('AlbumService.getTracks', [[e.rowData.jsonItem.name]], function(result, error) {
-        actIndicatorView.hide();
-        if (result) {
-            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundGradient : WINDOW_BG});
-            winTracks.ajaxResult = result;
-            winTracks.open();
-        } else {
-            handleServerError(error);
-        }
-    });
+    loadAndDisplayTracks(e.rowData.tracksUri);
 });
 
 setTableDataAndIndex(
         tableView,
-        win.fetchItemsCallback,
-        function() {
-            actIndicatorView.hide();
-        },
+        win.data,
         function(item, index) {
             var displayName = getDisplayName(item.name);
 			var size = 40;
@@ -54,13 +41,13 @@ setTableDataAndIndex(
 			} else if (Titanium.Platform.osname === "iphone") {
 				hires = Titanium.Platform.displayCaps.density == "high";
 			}
-            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:size + (2 * spacer),className:item.imageUrl ? 'album_row_img' : 'album_row'});
-            if (item.imageUrl) {
+            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:size + (2 * spacer),className:item.imageUri ? 'album_row_img' : 'album_row'});
+            if (item.imageUri !== undefined) {
                 var albumImage;
                 if (hires) {
-                	albumImage = Titanium.UI.createImageView({hires:true,image:item.imageUrl + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+                	albumImage = Titanium.UI.createImageView({hires:true,image:item.imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
                 } else {
-                	albumImage = Titanium.UI.createImageView({image:item.imageUrl + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+                	albumImage = Titanium.UI.createImageView({image:item.imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
                 }
                 row.add(albumImage);
             }
@@ -68,9 +55,10 @@ setTableDataAndIndex(
             var artistName = Titanium.UI.createLabel({text:getDisplayName(item.artist),bottom:spacer,left:size + (2 * spacer),height:artistHeight,font:{fontSize:12}});
             row.add(albumName);
             row.add(artistName);
-            row.jsonItem = item;
+            row.tracksUri = item.tracksUri;
             return row;
         },
         function(item) {
             return item.name;
         });
+actIndicatorView.hide();

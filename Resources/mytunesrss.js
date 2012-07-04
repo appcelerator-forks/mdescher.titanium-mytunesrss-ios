@@ -1,4 +1,5 @@
 var FETCH_SIZE = 1000;
+var TABLE_VIEW_ROW_HEIGHT = 40;
 var DEFAULT_AUDIO_BUFFER_SIZE = 2048;
 var WINDOW_BG = {
 	type : 'linear',
@@ -7,81 +8,54 @@ var WINDOW_BG = {
 	endPoint : {x : '100%', y : '100%'},
 	backFillStart : false
 };
-			
-function ajaxCall(func, parameterArray, resultCallback) {
-    var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
-    httpClient.onload = function() {
-        if (this.status == 200) {
-            var response = JSON.parse(this.responseText);
-            resultCallback(response.result, response.error);
-        } else {
-            resultCallback(undefined, {'msg':'The MyTunesRSS server encountered an internal error, please contact the server admin.'});
-        }
-    };
-    httpClient.onerror = function() {
-        resultCallback(undefined, undefined);
-    };
-    httpClient.open('POST', Titanium.App.Properties.getString('resolvedServerUrl') + '/jsonrpc');
-    httpClient.setRequestHeader('Content-Type', 'application/json; charset=UTF-8');
-    if (Titanium.App.Properties.getString('jsonRpcSessionId') != undefined) {
-        httpClient.setRequestHeader('X-MyTunesRSS-ID', Titanium.App.Properties.getString('jsonRpcSessionId'));
-    }
-    httpClient.setRequestHeader('Accept-Encoding', 'gzip,deflate');
-    var data = {
-        'version' : '1.1',
-        'method' : func,
-        'id' : '0',
-        'params' : parameterArray
-    };
-    httpClient.send(JSON.stringify(data));
+
+function restCall(method, uri, params) {
+	var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
+	httpClient.open(method,  uri, false);
+	httpClient.send(params);
+	if (httpClient.status / 100 == 2) {
+		return {status:httpClient.status,result:JSON.parse(httpClient.getResponseText())};
+	} else {
+		return {status:httpClient.status,result:httpClient.getResponseText()};
+	}
 }
 
 function getDisplayName(name) {
-    if (name == 'undefined' || name == null || name == '!') {
+    if (name === undefined || name === null || name === '!') {
         return 'Unknown';
     }
     return name;
 }
 
-function internalSetTableDataAndIndex(section, startIndex, tableView, fetchItemsCallback, tableCompleteCallback, createTableViewRowCallback, getSectionAndIndexNameCallback) {
-	fetchItemsCallback(startIndex, FETCH_SIZE, function(items) {
-		var sectionTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '123'];
-		var indexTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#'];
-		for (var i = 0; i < items.length; i++) {
-			var itemName = getSectionAndIndexNameCallback(items[i]);
-			var index = itemName[0].toUpperCase().charCodeAt(0) - 65;
-			if (index < 0 || index > 25) {
-				index = 26;
-			}
-			if (!section[index]) {
-				section[index] = Titanium.UI.createTableViewSection({headerTitle:sectionTitle[index]});
-			}
-			section[index].add(createTableViewRowCallback(items[i], i));
+function setTableDataAndIndex(tableView, items, createTableViewRowCallback, getSectionAndIndexNameCallback) {
+	var sectionTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '123'];
+	var indexTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#'];
+	var section = new Array(27);
+	for (var i = 0; i < items.length; i++) {
+		var itemName = getSectionAndIndexNameCallback(items[i]);
+		var index = itemName[0].toUpperCase().charCodeAt(0) - 65;
+		if (index < 0 || index > 25) {
+			index = 26;
 		}
-		if (items.length < FETCH_SIZE) {
-			var indexData = [];
-			var tableData = [];
-			var globalIndex = 0;
-			for (i = 0; i < 27; i++) {
-				if (section[i]) {
-					tableData.push(section[i]);
-					indexData.push({title:indexTitle[i],index:globalIndex});
-					globalIndex += section[i].rowCount;
-				}
-			}
-			tableView.setData(tableData);
-			if (indexData.length > 5) {
-				tableView.setIndex(indexData);
-			}
-            tableCompleteCallback();
-		} else {
-			internalSetTableDataAndIndex(section, startIndex + FETCH_SIZE, tableView, fetchItemsCallback, tableCompleteCallback, createTableViewRowCallback, getSectionAndIndexNameCallback);
+		if (!section[index]) {
+			section[index] = Titanium.UI.createTableViewSection({headerTitle:sectionTitle[index]});
 		}
-	});
-}
-
-function setTableDataAndIndex(tableView, fetchItemsCallback, tableCompleteCallback, createTableViewRowCallback, getSectionAndIndexNameCallback) {
-	internalSetTableDataAndIndex(new Array(27), 0, tableView, fetchItemsCallback, tableCompleteCallback, createTableViewRowCallback, getSectionAndIndexNameCallback);
+		section[index].add(createTableViewRowCallback(items[i], i));
+	}
+	var indexData = [];
+	var tableData = [];
+	var globalIndex = 0;
+	for (i = 0; i < 27; i++) {
+		if (section[i]) {
+			tableData.push(section[i]);
+			indexData.push({title:indexTitle[i],index:globalIndex});
+			globalIndex += section[i].rowCount;
+		}
+	}
+	tableView.setData(tableData);
+	if (indexData.length > 5) {
+		tableView.setIndex(indexData);
+	}
 }
 
 function addTopToolbar(window, titleText, leftButton, rightButton) {
@@ -120,65 +94,81 @@ function removeUnsupportedTracks(items) {
     return items;
 }
 
-function loadAndDisplayAlbums(artistName, genreName) {
+function isSessionAlive() {
+	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=");
+	return response.status / 100 === 2;
+}
+
+function loadAndDisplayAlbums(uri) {
+	actIndicatorView.show();
     var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundGradient : WINDOW_BG});
-    winAlbums.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
-        ajaxCall('AlbumService.getAlbums', [null, artistName, genreName, -1, -1, -1, false, fetchStart, fetchSize], function(result, error) {
-            if (result) {
-                fetchResultCallback(result.results);
-            } else {
-                actIndicatorView.hide();
-                handleServerError(error);
-            }
-        });
-    };
-    winAlbums.open();    
+    var response = restCall("GET", uri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=artist");
+    if (response.status / 100 === 2) {
+    	winAlbums.data = response.result;
+	    winAlbums.open();
+	    actIndicatorView.hide();
+    } else {
+	    actIndicatorView.hide();
+	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
+    }
 }
 
 function loadAndDisplayArtists() {
+	actIndicatorView.show();
     var winArtists = Titanium.UI.createWindow({url:'win_artists.js',backgroundGradient : WINDOW_BG});
-    winArtists.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
-        ajaxCall('ArtistService.getArtists', [null, null, null, -1, fetchStart, fetchSize], function(result, error) {
-            if (result) {
-                fetchResultCallback(result.results);
-            } else {
-                actIndicatorView.hide();
-                handleServerError(error);
-            }
-        });
-    };
-    winArtists.open();
+    var response = restCall("GET", getLibrary().artistsUri + "?attr.incl=name&attr.incl=albumsUri", {});
+    if (response.status / 100 === 2) {
+    	winArtists.data = response.result;
+    	actIndicatorView.hide();
+	    winArtists.open();    
+    } else {
+	    actIndicatorView.hide();
+	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
+    }
 }
 
 function loadAndDisplayGenres() {
+	actIndicatorView.show();
     var winGenres = Titanium.UI.createWindow({url:'win_genres.js',backgroundGradient : WINDOW_BG});
-    winGenres.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
-        ajaxCall('GenreService.getGenres', [-1, fetchStart, fetchSize], function(result, error) {
-            if (result) {
-                fetchResultCallback(result.results);
-            } else {
-                actIndicatorView.hide();
-                handleServerError(error);
-            }
-        });
-    };
-    winGenres.open();
+    var response = restCall("GET", getLibrary().genresUri + "?attr.incl=name&attr.incl=albumsUri", {});
+    if (response.status / 100 === 2) {
+    	winGenres.data = response.result;
+	    winGenres.open();    
+	    actIndicatorView.hide();
+    } else {
+	    actIndicatorView.hide();
+	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
+    }
 }
 
 function loadAndDisplayPlaylists() {
+	actIndicatorView.show();
     var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js',backgroundGradient : WINDOW_BG});
-    winPlaylists.fetchItemsCallback = function(fetchStart, fetchSize, fetchResultCallback) {
-        if (fetchStart > 0) {
-            return new Array(0);
-        }
-        ajaxCall('PlaylistService.getPlaylists', [], function(result, error) {
-            if (result) {
-                fetchResultCallback(result.results);
-            } else {
-                actIndicatorView.hide();
-                handleServerError(error);
-            }
-        });
-    };
-    winPlaylists.open();
+    var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri", {});
+    if (response.status / 100 === 2) {
+    	winPlaylists.data = response.result;
+	    winPlaylists.open();    
+	    actIndicatorView.hide();
+    } else {
+	    actIndicatorView.hide();
+	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
+    }
+}
+
+function loadAndDisplayTracks(tracksUri) {
+	actIndicatorView.show();
+    var response = restCall("GET", tracksUri + "?attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time", {});
+    if (response.status / 100 === 2) {
+            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundGradient : WINDOW_BG});
+            winTracks.data = removeUnsupportedTracks(response.result);
+            winTracks.open();
+            actIndicatorView.hide();
+    } else {
+    	actIndicatorView.hide();
+    	Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
+    }
+}
+
+function getLibrary() {
+	return JSON.parse(Titanium.App.Properties.getString("libraryBase"));
 }

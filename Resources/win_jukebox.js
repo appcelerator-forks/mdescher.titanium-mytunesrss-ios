@@ -25,18 +25,18 @@ function getDisplayTime(time) {
 function setTrackInformation(track) {
     if (tableView) {
         win.remove(tableView);
-    }
-    if (progressBar) {
         win.remove(progressBar);
+    	win.remove(timePlayed);
+    	win.remove(timeRemaining);
     }
     tableView = Titanium.UI.createTableView({top:45,bottom:44,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,touchEnabled:false});
     var imageRow;
-    if (track.imageUrl) {
+    if (track.imageUri !== undefined) {
         imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:size});
         if (hires) {
-    	    imageRow.add(Titanium.UI.createImageView({top:10,hires:true,image:track.imageUrl,width:size - 20,height:size - 20}));
+    	    imageRow.add(Titanium.UI.createImageView({top:10,hires:true,image:track.imageUri,width:size - 20,height:size - 20}));
         } else {
-	        imageRow.add(Titanium.UI.createImageView({top:10,image:track.imageUrl,width:size - 20,height:size - 20}));
+	        imageRow.add(Titanium.UI.createImageView({top:10,image:track.imageUri,width:size - 20,height:size - 20}));
         }
     } else {
         imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:77});
@@ -54,12 +54,6 @@ function setTrackInformation(track) {
     progressBar = Titanium.UI.createProgressBar({min:0,max:track.time,value:0,bottom:60,left:60,right:60,height:10});
     win.add(progressBar);
     progressBar.show();
-/*    var progressLabel = Titanium.UI.createLabel({bottom:60,left:60,right:60,height:10});
-    progressLabel.addEventListener('click', function(e) {
-        var val = ((e.x - progressBar.left) * track.time) / (Titanium.Platform.displayCaps.platformWidth - progressBar.left - progressBar.right);
-        Titanium.App.fireEvent('mytunesrss_moveplayhead', {value:val});
-    });
-    win.add(progressLabel); */
     timePlayed = Titanium.UI.createLabel({bottom:60,left:10,height:10,width:40,font:{fontSize:12},text:'',textAlign:'right',color:'#FFFFFF'});
     win.add(timePlayed);
     timeRemaining = Titanium.UI.createLabel({bottom:60,right:10,width:40,height:10,font:{fontSize:12},text:'',color:'#FFFFFF'});
@@ -102,71 +96,41 @@ var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone
 
 var controlRewind = Titanium.UI.createImageView({image:'back.png',width:45,height:45});
 controlRewind.addEventListener('click', function() {
-    ajaxCall('LoginService.ping', [], function(result, error) {
-        if (!result) {
-            handleServerError(error);
-        } else {
-            Titanium.App.fireEvent('mytunesrss_rewind');
-        }
-    });
+	Titanium.App.fireEvent('mytunesrss_rewind');
 });
+
 var controlPlay = Titanium.UI.createImageView({image:'play.png',width:45,height:45});
 controlPlay.addEventListener('click', function() {
-    ajaxCall('LoginService.ping', [], function(result, error) {
-        if (!result) {
-            handleServerError(error);
-        } else {
-            Titanium.App.fireEvent('mytunesrss_play');
-        }
-    });
+	Titanium.App.fireEvent('mytunesrss_play');
 });
+
 var controlPause = Titanium.UI.createImageView({image:'pause.png',width:45,height:45});
 controlPause.addEventListener('click', function() {
-    ajaxCall('LoginService.ping', [], function(result, error) {
-        if (!result) {
-            handleServerError(error);
-        } else {
-            Titanium.App.fireEvent('mytunesrss_pause');
-            Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
-        }
-    });
+    Titanium.App.fireEvent('mytunesrss_pause');
+    Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
 });
+
 var controlStop = Titanium.UI.createImageView({image:'stop.png',width:45,height:45});
 controlStop.addEventListener('click', function() {
-    ajaxCall('LoginService.ping', [], function(result, error) {
-        if (!result) {
-            handleServerError(error);
-        } else {
-            if (progressBar) {
-                progressBar.value = 0;
-            }
-            timePlayed.text = '';
-            timeRemaining.text = '';
-            Titanium.App.fireEvent('mytunesrss_stop');
-            Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
-        }
-    });
+    if (progressBar) {
+        progressBar.value = 0;
+    }
+    timePlayed.text = '';
+    timeRemaining.text = '';
+    Titanium.App.fireEvent('mytunesrss_stop');
+    Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
 });
+
 var controlFastForward = Titanium.UI.createImageView({image:'forward.png',width:45,height:45});
 controlFastForward.addEventListener('click', function() {
-    ajaxCall('LoginService.ping', [], function(result, error) {
-        if (!result) {
-            handleServerError(error);
-        } else {
-            Titanium.App.fireEvent('mytunesrss_fastforward');
-        }
-    });
+    Titanium.App.fireEvent('mytunesrss_fastforward');
 });
+
 var controlShuffle = Titanium.UI.createImageView({image:'shuffle.png',width:45,height:45});
 controlShuffle.addEventListener('click', function() {
-    ajaxCall('LoginService.ping', [], function(result, error) {
-        if (!result) {
-            handleServerError(error);
-        } else {
-            Titanium.App.fireEvent('mytunesrss_shuffle');
-        }
-    });
+    Titanium.App.fireEvent('mytunesrss_shuffle');
 });
+
 buttonBack.addEventListener('click', function() {
     win.close();
 });

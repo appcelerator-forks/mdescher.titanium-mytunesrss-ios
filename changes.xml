@@ -5,6 +5,12 @@
     </properties>
     <body>
 
+        <release version="1.0.8" date="___V___">
+            <action dev="mdescher" type="update">
+                Update SDK to 1.8.2 and fixed a few minor bugs.
+            </action>
+        </release>
+
         <release version="1.0.7" date="2011-10-01">
             <action dev="mdescher" type="update">
                 Load hires images on iPhone retina display.

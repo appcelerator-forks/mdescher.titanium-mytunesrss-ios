@@ -3,7 +3,7 @@ Titanium.Network;
 Titanium.include('mytunesrss.js');
 
 function wrap(components) {
-    var row = Titanium.UI.createTableViewRow({hasChild:true,touchEnabled:true,className:'menuRow'});
+    var row = Titanium.UI.createTableViewRow({hasChild:true,touchEnabled:true,className:'menuRow',height:TABLE_VIEW_ROW_HEIGHT});
     for (var i = 0; i < components.length; i++) {
         row.add(components[i]);
     }
@@ -33,7 +33,7 @@ function setPlayerUrl(url) {
 }
 
 function playTrack() {
-    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUrl);
+    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
     Titanium.App.fireEvent('mytunesrss_setTrackInfo', currentPlaylist[currentPlaylistIndex]);
     if (!audioPlayer.playing) {
         audioPlayer.addEventListener("change", autoSkipEventListener);
@@ -94,9 +94,9 @@ tableViewData[1].add(buttonRowNowPlaying);
 var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:90});
 
 buttonLogout.addEventListener('click', function() {
-    audioPlayer.removeEventListener("change", autoSkipEventListener);
-    audioPlayer.stop();
-    keepAliveSound.pause();
+	audioPlayer.removeEventListener("change", autoSkipEventListener);
+	audioPlayer.stop();
+    keepAliveSound.stop();
     Titanium.App.Properties.removeProperty('jsonRpcSessionId');
     Titanium.App.Properties.removeProperty('serverMajor');
     Titanium.App.Properties.removeProperty('serverMinor');
@@ -123,7 +123,7 @@ buttonRowPlaylists.addEventListener('click', function() {
 });
 
 buttonRowAlbums.addEventListener('click', function() {
-    loadAndDisplayAlbums(null, null);
+    loadAndDisplayAlbums(getLibrary().albumsUri);
 });
 
 buttonRowArtists.addEventListener('click', function() {
@@ -188,14 +188,14 @@ Titanium.App.addEventListener('mytunesrss_playlist', function(e) {
         }
     }
     // start playback with the selected track
-    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUrl);
+    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
     audioPlayer.addEventListener("change", autoSkipEventListener);
     audioPlayer.start();
     Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundGradient : WINDOW_BG}).open();
 });
 
 Titanium.App.addEventListener('mytunesrss_rewind', function() {
-    if (audioPlayer.playing && audioPlayer.progress > 2.0) {
+    if (audioPlayer.playing && audioPlayer.progress > 2000) {
         audioPlayer.removeEventListener("change", autoSkipEventListener);
         audioPlayer.stop();
         audioPlayer.addEventListener("change", autoSkipEventListener);
@@ -253,7 +253,7 @@ Titanium.App.addEventListener('mytunesrss_shuffle', function() {
     if (playing) {
         playTrack();
     } else {
-        setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUrl);
+        setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
         Titanium.App.fireEvent('mytunesrss_setTrackInfo', currentPlaylist[currentPlaylistIndex]);
     }
 });

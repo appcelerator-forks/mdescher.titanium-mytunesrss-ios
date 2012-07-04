@@ -20,32 +20,21 @@ win.add(actIndicatorView);
 actIndicatorView.show();
 
 tableView.addEventListener('click', function(e) {
-    actIndicatorView.show();
-    ajaxCall('PlaylistService.getTracks', [e.rowData.jsonItem.id, null], function(result, error) {
-        actIndicatorView.hide();
-        if (result) {
-            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundGradient : WINDOW_BG});
-            winTracks.ajaxResult = result;
-            winTracks.open();
-        } else {
-            handleServerError(error);
-        }
-    });
+    loadAndDisplayTracks(e.rowData.tracksUri);
 });
 
 setTableDataAndIndex(
         tableView,
-        win.fetchItemsCallback,
-        function() {
-            actIndicatorView.hide();
-        },
+        win.data,
         function(item) {
             var displayName = getDisplayName(item.name);
             var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'playlist_row'});
             row.add(Titanium.UI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'},minimumFontSize:12}));
-            row.jsonItem = item;
+            row.tracksUri = item.tracksUri;
             return row;
         },
         function(item) {
             return item.name;
         });
+
+actIndicatorView.hide();
