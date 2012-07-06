@@ -10,11 +10,6 @@ function wrap(components) {
 
 var win = Titanium.UI.currentWindow;
 
-function onLogin(result) {
-    Titanium.App.Properties.setString('jsonRpcSessionId', result);
-    Titanium.UI.createWindow({url:'win_menu.js',backgroundGradient : WINDOW_BG}).open();
-}
-
 var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 win.addEventListener('focus', function() {
@@ -43,6 +38,7 @@ tableViewData[2].add(buttonDefaultInterfaceRow);
 var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45});
 
 function doLogin() {
+	Titanium.Network.createHTTPClient().clearCookies(Titanium.App.Properties.getString('resolvedServerUrl'));
 	var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value});
 	if (response.status / 100 === 2) {
 		Titanium.UI.createWindow({url:'win_menu.js',backgroundGradient : WINDOW_BG}).open();

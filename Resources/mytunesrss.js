@@ -1,6 +1,6 @@
-var FETCH_SIZE = 1000;
 var TABLE_VIEW_ROW_HEIGHT = 40;
 var DEFAULT_AUDIO_BUFFER_SIZE = 2048;
+var DEFAULT_SEARCH_ACCURACY = 40;
 var WINDOW_BG = {
 	type : 'linear',
 	colors : ['#8290bd', '#111419'],
@@ -169,6 +169,41 @@ function loadAndDisplayTracks(tracksUri) {
     }
 }
 
+function searchAndDisplayTracks(searchTerm) {
+	actIndicatorView.show();
+    var response = restCall("GET", getLibrary().tracksUri + "?term=" + Titanium.Network.encodeURIComponent(searchTerm) + "&fuzziness=" + (100 - Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY)) + "&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time", {});
+    if (response.status / 100 === 2) {
+            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundGradient : WINDOW_BG});
+            winTracks.data = removeUnsupportedTracks(response.result);
+            if (winTracks.data.length === 0) {
+	            actIndicatorView.hide();
+            	Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
+            } else {
+            winTracks.open();
+            actIndicatorView.hide();
+            }
+    } else {
+    	actIndicatorView.hide();
+    	Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
+    }
+}
+
 function getLibrary() {
 	return JSON.parse(Titanium.App.Properties.getString("libraryBase"));
+}
+
+function getTcParam() {
+	var transcoders = Titanium.App.Properties.getList("transcoders", []);
+	if (transcoders === undefined || transcoders.length === 0) {
+		return undefined;
+	} else {
+		var tcString = "";
+		for (var i = 0; i < transcoders.length; i++) {
+			tcString += transcoders[i];
+			if (i + 1 < transcoders.length) {
+				tcString += ",";
+			}
+		}
+		return "tc=" + Titanium.Network.encodeURIComponent(tcString);
+	}
 }

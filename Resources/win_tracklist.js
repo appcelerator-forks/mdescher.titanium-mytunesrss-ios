@@ -30,8 +30,9 @@ if (tableData.length == 0) {
         if (items[e.index].mediaType === 'Video') {
             Titanium.App.fireEvent('mytunesrss_stop');
             var url = items[e.index].httpLiveStreamUri !== undefined ? items[e.index].httpLiveStreamUri : items[e.index].playbackUri;
-            if (Titanium.App.Properties.getString('tcParam') != undefined) {
-                url += '/' + Titanium.App.Properties.getString('tcParam');
+            var tcParam = getTcParam();
+            if (tcParam !== undefined) {
+                url += '/' + tcParam;
             }
             Titanium.UI.createWindow({url:'win_videoplayer.js',data:url,backgroundColor:'#000'}).open();
         } else {

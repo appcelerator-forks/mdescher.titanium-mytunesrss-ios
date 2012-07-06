@@ -11,7 +11,8 @@ function wrap(components) {
 var win = Titanium.UI.currentWindow;
 
 var transcoderSwitches = [];
-var bufferSizeInput = Titanium.UI.createTextField({hintText:'Size in Bytes',left:180,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
+var bufferSizeInput = Titanium.UI.createTextField({hintText:'Size in Bytes',left:200,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
+var searchAccuracyInput = Titanium.UI.createTextField({hintText:'Accuracy in Percent',left:200,right:10,value:Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
 
 var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
@@ -23,49 +24,55 @@ buttonCancel.addEventListener('click', function() {
 
 var buttonSave = Titanium.UI.createButton({title:'Save',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 buttonSave.addEventListener('click', function() {
-    if (bufferSizeInput.value != Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)) {
+   	if (bufferSizeInput.value < 1024 || bufferSizeInput.value > 65536) {
+		Titanium.UI.createAlertDialog({message:'Buffer size must be a value from 1024 to 65536.',buttonNames:['Ok']}).show();
+		return;
+	}
+	if (searchAccuracyInput.value < 0 || searchAccuracyInput.value > 100) {
+		Titanium.UI.createAlertDialog({message:'Search accuracy must be a value from 0 to 100.',buttonNames:['Ok']}).show();
+		return;
+	}
+    if (bufferSizeInput.value != Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)) {    	
         Titanium.App.Properties.setInt('audioBufferSize', bufferSizeInput.value);
         Titanium.App.fireEvent('mytunesrss_audiobuffersize_changed');
     }
+    Titanium.App.Properties.setInt('searchAccuracy', searchAccuracyInput.value);
     var names = [];
-    for (var i = 0; i < win.ajaxResult.transcoderNames.length; i++) {
+    for (var i = 0; i < win.transcoders.length; i++) {
         if (transcoderSwitches[i].value === true) {
-            names.push(win.ajaxResult.transcoderNames[i]);
+            names.push(win.transcoders[i]);
         }
     }
-    actIndicatorView.show();
-    var params = Titanium.App.Properties.getString('serverMajor') < 4 ? [names, true] : [names]; // TODO require server 4.0.0 to remove this
-    ajaxCall('TranscodingService.getTranscodingParameter', params, function(result, error) {
-        if (result) {
-            if (names.length > 0) {
-                Titanium.App.Properties.setString('tcParam', result);
-            } else {
-                Titanium.App.Properties.removeProperty('tcParam');
-            }
-            for (var i = 0; i < win.ajaxResult.transcoderNames.length; i++) {
-                var transcoderName = win.ajaxResult.transcoderNames[i];
-                Titanium.App.Properties.setBool('transcoder_' + transcoderName, transcoderSwitches[i].value);
-            }
-            win.close();
-        } else {
-            actIndicatorView.hide();
-            handleServerError(error);
-        }
-    });
+    if (names.length === 0) {
+	    Titanium.App.Properties.removeProperty("transcoders");
+    } else {
+    	Titanium.App.Properties.setList("transcoders", names);
+    }
+    win.close();
 });
 
 var tableViewData = [];
 
 tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Audio Player'}));
 tableViewData[0].add(wrap([Titanium.UI.createLabel({text:'Buffer Size',left:10,right:120,minimumFontSize:12}), bufferSizeInput]));
+tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Search'}));
+tableViewData[1].add(wrap([Titanium.UI.createLabel({text:'Search result accuracy',left:10,right:120,minimumFontSize:12}), searchAccuracyInput]));
 
-if (win.ajaxResult.transcoderNames && win.ajaxResult.transcoderNames.length > 0) {
+if (win.transcoders !== undefined  && win.transcoders.length > 0) {
+	var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
     tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Transcoder'}));
-    for (var i = 0; i < win.ajaxResult.transcoderNames.length; i++) {
-        var transcoderName = win.ajaxResult.transcoderNames[i];
-        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:Titanium.App.Properties.getBool('transcoder_' + transcoderName, false)});
+    for (var i = 0; i < win.transcoders.length; i++) {
+        var transcoderName = win.transcoders[i];
+        var switchValue = false;
+        for (var k = 0; k < activeTranscoders.length; k++) {
+        	if (transcoderName === activeTranscoders[k]) {
+        		switchValue = true;
+        		break;
+        	}
+        }
+        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
         transcoderSwitches.push(transcoderSwitch);
-        tableViewData[1].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
+        tableViewData[2].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
     }
 }
 

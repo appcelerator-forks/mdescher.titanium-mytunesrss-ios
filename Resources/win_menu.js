@@ -25,8 +25,9 @@ var autoSkipEventListener = function(e) {
 };
 
 function setPlayerUrl(url) {
-    if (Titanium.App.Properties.getString('tcParam') != undefined) {
-        audioPlayer.url = url + '/' + Titanium.App.Properties.getString('tcParam');
+	var tcParam = getTcParam();
+    if (tcParam !== undefined) {
+        audioPlayer.url = url + '/' + tcParam;
     } else {
         audioPlayer.url = url;
     }
@@ -97,7 +98,6 @@ buttonLogout.addEventListener('click', function() {
 	audioPlayer.removeEventListener("change", autoSkipEventListener);
 	audioPlayer.stop();
     keepAliveSound.stop();
-    Titanium.App.Properties.removeProperty('jsonRpcSessionId');
     Titanium.App.Properties.removeProperty('serverMajor');
     Titanium.App.Properties.removeProperty('serverMinor');
     Titanium.App.Properties.removeProperty('serverRevision');
@@ -106,16 +106,16 @@ buttonLogout.addEventListener('click', function() {
 
 buttonSettings.addEventListener('click', function() {
     actIndicatorView.show();
-    ajaxCall('LoginService.getUserInfo', [], function(result, error) {
-        if (result) {
-            var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundGradient : WINDOW_BG});
-            winSettings.ajaxResult = result;
-            winSettings.open();
-        } else {
-            handleServerError(error);
-        }
-        actIndicatorView.hide();
-    });
+	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=transcoders", {});
+	if (response.status / 100 === 2) {
+		var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundGradient : WINDOW_BG});
+		winSettings.transcoders = response.result.transcoders;
+		actIndicatorView.hide();
+		winSettings.open();
+	} else {
+	    actIndicatorView.hide();
+	    Titanium.UI.createAlertDialog({message:'Could not load current settings.',buttonNames:['Ok']}).show();
+	}
 });
 
 buttonRowPlaylists.addEventListener('click', function() {
@@ -141,18 +141,7 @@ searchBar.addEventListener('return', function() {
         Titanium.UI.createAlertDialog({message:'Please enter a search term.',buttonNames:['Ok']}).show();
     } else {
         actIndicatorView.show();
-        ajaxCall('TrackService.search', [searchBar.value, 30, 'KeepOrder', 0, FETCH_SIZE], function(result, error) {
-            actIndicatorView.hide();
-            if (result && result.tracks && result.tracks.length > 0) {
-                var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundGradient : WINDOW_BG});
-                winTracks.ajaxResult = result;
-                winTracks.open();
-            } else if (result && result.tracks && result.tracks.length === 0) {
-                Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
-            } else {
-                handleServerError(error);
-            }
-        });
+        searchAndDisplayTracks(searchBar.value);
     }
 });
 
