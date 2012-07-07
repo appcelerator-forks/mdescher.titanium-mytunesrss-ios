@@ -1,6 +1,12 @@
 var TABLE_VIEW_ROW_HEIGHT = 40;
 var DEFAULT_AUDIO_BUFFER_SIZE = 2048;
 var DEFAULT_SEARCH_ACCURACY = 40;
+var MININUM_SERVER_VERSION = {
+	major : 4,
+	minor : 3,
+	bugfix : 2,
+	text : "4.3.2"
+}
 var WINDOW_BG = {
 	type : 'linear',
 	colors : ['#8290bd', '#111419'],
@@ -101,7 +107,8 @@ function isSessionAlive() {
 
 function loadAndDisplayAlbums(uri) {
 	actIndicatorView.show();
-    var winAlbums = Titanium.UI.createWindow({url:'win_albums.js',backgroundGradient : WINDOW_BG});
+    var winAlbums = Titanium.UI.createWindow({url:'win_albums.js'});
+    winAlbums.backgroundGradient = WINDOW_BG;
     var response = restCall("GET", uri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=artist");
     if (response.status / 100 === 2) {
     	winAlbums.data = response.result;
@@ -115,12 +122,13 @@ function loadAndDisplayAlbums(uri) {
 
 function loadAndDisplayArtists() {
 	actIndicatorView.show();
-    var winArtists = Titanium.UI.createWindow({url:'win_artists.js',backgroundGradient : WINDOW_BG});
+    var winArtists = Titanium.UI.createWindow({url:'win_artists.js'});
+    winArtists.backgroundGradient = WINDOW_BG;
     var response = restCall("GET", getLibrary().artistsUri + "?attr.incl=name&attr.incl=albumsUri", {});
     if (response.status / 100 === 2) {
     	winArtists.data = response.result;
-    	actIndicatorView.hide();
 	    winArtists.open();    
+    	actIndicatorView.hide();
     } else {
 	    actIndicatorView.hide();
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
@@ -129,7 +137,8 @@ function loadAndDisplayArtists() {
 
 function loadAndDisplayGenres() {
 	actIndicatorView.show();
-    var winGenres = Titanium.UI.createWindow({url:'win_genres.js',backgroundGradient : WINDOW_BG});
+    var winGenres = Titanium.UI.createWindow({url:'win_genres.js'});
+    winGenres.backgroundGradient = WINDOW_BG;
     var response = restCall("GET", getLibrary().genresUri + "?attr.incl=name&attr.incl=albumsUri", {});
     if (response.status / 100 === 2) {
     	winGenres.data = response.result;
@@ -143,7 +152,8 @@ function loadAndDisplayGenres() {
 
 function loadAndDisplayPlaylists() {
 	actIndicatorView.show();
-    var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js',backgroundGradient : WINDOW_BG});
+    var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js'});
+    winPlaylists.backgroundGradient = WINDOW_BG;
     var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri", {});
     if (response.status / 100 === 2) {
     	winPlaylists.data = response.result;
@@ -159,7 +169,8 @@ function loadAndDisplayTracks(tracksUri) {
 	actIndicatorView.show();
     var response = restCall("GET", tracksUri + "?attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time", {});
     if (response.status / 100 === 2) {
-            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundGradient : WINDOW_BG});
+            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js'});
+            winTracks.backgroundGradient = WINDOW_BG;
             winTracks.data = removeUnsupportedTracks(response.result);
             winTracks.open();
             actIndicatorView.hide();
@@ -173,7 +184,8 @@ function searchAndDisplayTracks(searchTerm) {
 	actIndicatorView.show();
     var response = restCall("GET", getLibrary().tracksUri + "?term=" + Titanium.Network.encodeURIComponent(searchTerm) + "&fuzziness=" + (100 - Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY)) + "&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time", {});
     if (response.status / 100 === 2) {
-            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js',backgroundGradient : WINDOW_BG});
+            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js'});
+            winTracks.backgroundGradient = WINDOW_BG;
             winTracks.data = removeUnsupportedTracks(response.result);
             if (winTracks.data.length === 0) {
 	            actIndicatorView.hide();
@@ -186,6 +198,25 @@ function searchAndDisplayTracks(searchTerm) {
     	actIndicatorView.hide();
     	Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
+}
+
+function getServerVersion() {
+	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest?attr.incl=version", {});
+	if (response.status / 100 === 2 && response.result.version !== undefined && response.result.version.text !== undefined) {
+		return response.result.version;
+	} else {
+	    return undefined;
+	}
+}
+
+function compareVersions(left, right) {
+	if (left.major !== right.major) {
+		return left.major - right.major;
+	}
+	if (left.minor !== right.minor) {
+		return left.minor - right.minor;
+	}
+	return left.bugfix - right.bugfix;
 }
 
 function getLibrary() {

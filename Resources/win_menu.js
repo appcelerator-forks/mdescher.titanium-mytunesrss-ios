@@ -14,6 +14,7 @@ var currentPlaylist;
 var currentPlaylistIndex;
 var audioPlayer;
 var keepAliveSound = Titanium.Media.createSound({url:"white_noise.wav",volume:0,looping:true,preload:true});
+
 var autoSkipEventListener = function(e) {
     if (e.state === audioPlayer.STATE_PLAYING && keepAliveSound.isPlaying()) {
         keepAliveSound.pause();
@@ -24,12 +25,17 @@ var autoSkipEventListener = function(e) {
     }
 };
 
+var progressEventListener = function(e) {
+	Titanium.App.fireEvent('mytunesrss_progress', {value:e.progress});
+}
+
 function setPlayerUrl(url) {
 	var tcParam = getTcParam();
+	audioPlayer.stop();
     if (tcParam !== undefined) {
-        audioPlayer.url = url + '/' + tcParam;
+        audioPlayer.setUrl(url + '/' + tcParam);
     } else {
-        audioPlayer.url = url;
+        audioPlayer.setUrl(url);
     }
 }
 
@@ -45,9 +51,7 @@ function playTrack() {
 function createPlayer() {
     audioPlayer = Titanium.Media.createAudioPlayer({allowBackground:true, bufferSize:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)});
 
-    audioPlayer.addEventListener('progress', function(e) {
-        Titanium.App.fireEvent('mytunesrss_progress', {value:e.progress});
-    });
+    audioPlayer.addEventListener('progress', progressEventListener);
 
     audioPlayer.addEventListener('change', function(e) {
         if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
@@ -96,11 +100,12 @@ var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.U
 
 buttonLogout.addEventListener('click', function() {
 	audioPlayer.removeEventListener("change", autoSkipEventListener);
-	audioPlayer.stop();
+	audioPlayer.removeEventListener('progress', progressEventListener);
+	if (audioPlayer.url) {
+		audioPlayer.start();
+		audioPlayer.stop();
+	}
     keepAliveSound.stop();
-    Titanium.App.Properties.removeProperty('serverMajor');
-    Titanium.App.Properties.removeProperty('serverMinor');
-    Titanium.App.Properties.removeProperty('serverRevision');
     win.close();
 });
 
@@ -108,7 +113,8 @@ buttonSettings.addEventListener('click', function() {
     actIndicatorView.show();
 	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=transcoders", {});
 	if (response.status / 100 === 2) {
-		var winSettings = Titanium.UI.createWindow({url:'win_settings.js',backgroundGradient : WINDOW_BG});
+		var winSettings = Titanium.UI.createWindow({url:'win_settings.js'});
+		winSettings.backgroundGradient = WINDOW_BG;
 		winSettings.transcoders = response.result.transcoders;
 		actIndicatorView.hide();
 		winSettings.open();
@@ -156,7 +162,9 @@ searchBar.addEventListener('cancel', function() {
 
 buttonRowNowPlaying.addEventListener('click', function() {
     if (currentPlaylist && audioPlayer) {
-        Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundGradient : WINDOW_BG}).open();
+        var winJukebox = Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex]});
+        winJukebox.backgroundGradient = WINDOW_BG;
+        winJukebox.open();
     } else {
         Titanium.UI.createAlertDialog({message:'There is no active playlist.',buttonNames:['Ok']}).show();
     }
@@ -180,7 +188,9 @@ Titanium.App.addEventListener('mytunesrss_playlist', function(e) {
     setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
     audioPlayer.addEventListener("change", autoSkipEventListener);
     audioPlayer.start();
-    Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex],backgroundGradient : WINDOW_BG}).open();
+    var winJukebox = Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex]});
+    winJukebox.backgroundGradient = WINDOW_BG;
+    winJukebox.open();
 });
 
 Titanium.App.addEventListener('mytunesrss_rewind', function() {

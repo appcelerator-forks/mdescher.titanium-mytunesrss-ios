@@ -39,13 +39,24 @@ var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.U
 
 function doLogin() {
 	Titanium.Network.createHTTPClient().clearCookies(Titanium.App.Properties.getString('resolvedServerUrl'));
-	var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value});
-	if (response.status / 100 === 2) {
-		Titanium.UI.createWindow({url:'win_menu.js',backgroundGradient : WINDOW_BG}).open();
-		Titanium.App.Properties.setString("libraryBase", JSON.stringify(restCall("GET", response.result.libraryUri, {}).result));
-	} else {
+	var serverVersion = getServerVersion();
+	if (serverVersion === undefined) {
 	    actIndicatorView.hide();
-	    Titanium.UI.createAlertDialog({message:'Login failed, please check server URI and credentials.',buttonNames:['Ok']}).show();
+	    Titanium.UI.createAlertDialog({message:'The server did not respond. Either the URL is wrong, the server is down or it is a version below ' + MININUM_SERVER_VERSION.text + '.',buttonNames:['Ok']}).show();
+	} else if (compareVersions(serverVersion, MININUM_SERVER_VERSION) < 0) {
+	    actIndicatorView.hide();
+	    Titanium.UI.createAlertDialog({message:'The server version is ' + serverVersion.text + ' and we need ' + MININUM_SERVER_VERSION.text + ' or better.',buttonNames:['Ok']}).show();
+	} else {
+		var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value});
+		if (response.status / 100 === 2) {
+			var winMenu = Titanium.UI.createWindow({url:'win_menu.js'});
+			winMenu.backgroundGradient = WINDOW_BG;
+			winMenu.open();
+			Titanium.App.Properties.setString("libraryBase", JSON.stringify(restCall("GET", response.result.libraryUri, {}).result));
+		} else {
+		    actIndicatorView.hide();
+		    Titanium.UI.createAlertDialog({message:'Login failed, please check server URI and credentials.',buttonNames:['Ok']}).show();
+		}
 	}
 }
 
