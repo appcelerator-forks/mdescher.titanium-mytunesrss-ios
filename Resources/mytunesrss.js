@@ -106,96 +106,77 @@ function isSessionAlive() {
 }
 
 function loadAndDisplayAlbums(uri) {
-	actIndicatorView.show();
-    var winAlbums = Titanium.UI.createWindow({url:'win_albums.js'});
-    winAlbums.backgroundGradient = WINDOW_BG;
     var response = restCall("GET", uri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=artist");
     if (response.status / 100 === 2) {
-    	winAlbums.data = response.result;
-	    winAlbums.open();
-	    actIndicatorView.hide();
+    	albumsWindow.clearData();
+	    albumsWindow.open();
+    	albumsWindow.loadData(response.result);
     } else {
-	    actIndicatorView.hide();
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
 }
 
 function loadAndDisplayArtists() {
-	actIndicatorView.show();
-    var winArtists = Titanium.UI.createWindow({url:'win_artists.js'});
-    winArtists.backgroundGradient = WINDOW_BG;
     var response = restCall("GET", getLibrary().artistsUri + "?attr.incl=name&attr.incl=albumsUri", {});
     if (response.status / 100 === 2) {
-    	winArtists.data = response.result;
-	    winArtists.open();    
-    	actIndicatorView.hide();
+    	artistsWindow.clearData();
+    	artistsWindow.open();
+    	artistsWindow.loadData(response.result);
     } else {
-	    actIndicatorView.hide();
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
 }
 
 function loadAndDisplayGenres() {
-	actIndicatorView.show();
-    var winGenres = Titanium.UI.createWindow({url:'win_genres.js'});
-    winGenres.backgroundGradient = WINDOW_BG;
     var response = restCall("GET", getLibrary().genresUri + "?attr.incl=name&attr.incl=albumsUri", {});
     if (response.status / 100 === 2) {
-    	winGenres.data = response.result;
-	    winGenres.open();    
-	    actIndicatorView.hide();
+    	genresWindow.clearData();
+    	genresWindow.open();
+    	genresWindow.loadData(response.result);
     } else {
-	    actIndicatorView.hide();
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
 }
 
 function loadAndDisplayPlaylists() {
-	actIndicatorView.show();
-    var winPlaylists = Titanium.UI.createWindow({url:'win_playlists.js'});
-    winPlaylists.backgroundGradient = WINDOW_BG;
     var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri", {});
     if (response.status / 100 === 2) {
-    	winPlaylists.data = response.result;
-	    winPlaylists.open();    
-	    actIndicatorView.hide();
+    	playlistsWindow.clearData();
+    	playlistsWindow.open();
+    	playlistsWindow.loadData(response.result);
     } else {
-	    actIndicatorView.hide();
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
 }
 
 function loadAndDisplayTracks(tracksUri) {
-	actIndicatorView.show();
     var response = restCall("GET", tracksUri + "?attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time", {});
     if (response.status / 100 === 2) {
-            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js'});
-            winTracks.backgroundGradient = WINDOW_BG;
-            winTracks.data = removeUnsupportedTracks(response.result);
-            winTracks.open();
-            actIndicatorView.hide();
+    	var data = removeUnsupportedTracks(response.result);
+        if (data.length === 0) {
+        	Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
+        } else {
+	    	tracksWindow.clearData();
+	    	tracksWindow.open();
+	    	tracksWindow.loadData(data);
+	    }
     } else {
-    	actIndicatorView.hide();
     	Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
 }
 
 function searchAndDisplayTracks(searchTerm) {
-	actIndicatorView.show();
     var response = restCall("GET", getLibrary().tracksUri + "?term=" + Titanium.Network.encodeURIComponent(searchTerm) + "&fuzziness=" + (100 - Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY)) + "&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time", {});
     if (response.status / 100 === 2) {
-            var winTracks = Titanium.UI.createWindow({url:'win_tracklist.js'});
-            winTracks.backgroundGradient = WINDOW_BG;
-            winTracks.data = removeUnsupportedTracks(response.result);
-            if (winTracks.data.length === 0) {
-	            actIndicatorView.hide();
-            	Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
-            } else {
-            winTracks.open();
-            actIndicatorView.hide();
-            }
+    	var data = removeUnsupportedTracks(response.result);
+        if (data.length === 0) {
+        	Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
+        } else {
+	    	tracksWindow.clearData();
+	    	tracksWindow.open();
+	    	tracksWindow.loadData(data);
+	    }
     } else {
-    	actIndicatorView.hide();
     	Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
 }
