@@ -1,5 +1,7 @@
 function LoginWindow() {	
 	
+	var self = this;
+	
 	function wrap(components) {
 	    var row = Titanium.UI.createTableViewRow({className:'loginRow',height:TABLE_VIEW_ROW_HEIGHT});
 	    for (var i = 0; i < components.length; i++) {
@@ -13,9 +15,6 @@ function LoginWindow() {
 	
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
-	win.addEventListener('focus', function() {
-	    actIndicatorView.hide();
-	});
 	
 	var inputServerUrl = Titanium.UI.createTextField({hintText:'Server URL',left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,minimumFontSize:12});
 	var inputUsername = Titanium.UI.createTextField({hintText:'Username',left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('username'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false});
@@ -39,24 +38,25 @@ function LoginWindow() {
 	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45});
 	
 	function doLogin() {
+		var busyView = createBusyView();
+		win.add(busyView);
 		Titanium.Network.createHTTPClient().clearCookies(Titanium.App.Properties.getString('resolvedServerUrl'));
 		var serverVersion = getServerVersion();
 		if (serverVersion === undefined) {
-		    actIndicatorView.hide();
 		    Titanium.UI.createAlertDialog({message:'The server did not respond. Either the URL is wrong, the server is down or it is a version below ' + MININUM_SERVER_VERSION.text + '.',buttonNames:['Ok']}).show();
 		} else if (compareVersions(serverVersion, MININUM_SERVER_VERSION) < 0) {
-		    actIndicatorView.hide();
 		    Titanium.UI.createAlertDialog({message:'The server version is ' + serverVersion.text + ' and we need ' + MININUM_SERVER_VERSION.text + ' or better.',buttonNames:['Ok']}).show();
 		} else {
 			var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value});
 			if (response.status / 100 === 2) {
 				Titanium.App.Properties.setString("libraryBase", JSON.stringify(restCall("GET", response.result.libraryUri, {}).result));
-				menuWindow.open();
+				new MenuWindow().open(self);
+				win.close();
 			} else {
-			    actIndicatorView.hide();
 			    Titanium.UI.createAlertDialog({message:'Login failed, please check server URI and credentials.',buttonNames:['Ok']}).show();
 			}
 		}
+		win.remove(busyView);
 	}
 	
 	function getServerUrl() {
@@ -82,15 +82,12 @@ function LoginWindow() {
 	        Titanium.App.Properties.removeProperty('password');
 	    }
 	
-	    actIndicatorView.show();
-	
 	    if (serverUrl.toLowerCase().search(/https?:\/\/mytunesrss.com\//) === 0) {
 	        // mytunesrss.com handling => resolve real server url and then login
 	        var httpClient = Titanium.Network.createHTTPClient({timeout:5000});
 	        httpClient.onload = function() {
 	            var resolvedServerUrl = this.location.match(/https?:\/\/[^\/]+/)[0];
 	            if (resolvedServerUrl.toLowerCase().search(/https?:\/\/mytunesrss.com/) === 0) {
-	                actIndicatorView.hide();
 	                Titanium.UI.createAlertDialog({message:'The mytunesrss.com username seems to be wrong. Please check the server URL.',buttonNames:['Ok']}).show();
 	            } else {
 	                Titanium.App.Properties.setString('resolvedServerUrl', resolvedServerUrl);
@@ -98,7 +95,6 @@ function LoginWindow() {
 	            }
 	        };
 	        httpClient.onerror = function() {
-	            actIndicatorView.hide();
 	            Titanium.UI.createAlertDialog({message:'The mytunesrss.com username seems to be wrong. Please check the server URL.',buttonNames:['Ok']}).show();
 	        };
 	        httpClient.open('GET', Titanium.App.Properties.getString('serverUrl'));
@@ -129,7 +125,4 @@ function LoginWindow() {
 		win.open();
 	}
 	
-	this.close = function() {
-		win.close();
-	}
 }

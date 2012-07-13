@@ -1,4 +1,7 @@
-function JukeboxWindow() {
+function Jukebox() {
+	
+	var self = this;
+	var myParent;
 	
 	var win = Titanium.UI.createWindow();
 	win.setBackgroundGradient(WINDOW_BG);
@@ -64,7 +67,7 @@ function JukeboxWindow() {
 	    win.add(timeRemaining);
 	}
 	
-	this.setProgress = function(progress) {
+	function setProgress(progress) {
 	    if (progressBar) {
 	        progressBar.value = Math.floor(progress / 1000);
 	    }
@@ -91,35 +94,37 @@ function JukeboxWindow() {
 	
 	var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:44,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
-	Titanium.App.addEventListener('mytunesrss_showJukeboxActivityView', function() {
+	
+	function showJukeboxActivityView() {
 	    if (!actIndicatorView.visible) {
 	        win.add(actIndicatorView);
 	        actIndicatorView.show();
 	    }
-	});
-	Titanium.App.addEventListener('mytunesrss_hideJukeboxActivityView', function() {
+	};
+	
+	function hideJukeboxActivityView() {
 	    if (actIndicatorView.visible) {
 	        actIndicatorView.hide();
 	        win.remove(actIndicatorView);
 	    }
-	});
+	};
 	
 	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	var controlRewind = Titanium.UI.createImageView({image:'back.png',width:45,height:45});
 	controlRewind.addEventListener('click', function() {
-		Titanium.App.fireEvent('mytunesrss_rewind');
+		rewind();
 	});
 	
 	var controlPlay = Titanium.UI.createImageView({image:'play.png',width:45,height:45});
 	controlPlay.addEventListener('click', function() {
-		Titanium.App.fireEvent('mytunesrss_play');
+		jukebox.play();
 	});
 	
 	var controlPause = Titanium.UI.createImageView({image:'pause.png',width:45,height:45});
 	controlPause.addEventListener('click', function() {
-	    Titanium.App.fireEvent('mytunesrss_pause');
-	    Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
+	    jukebox.pause();
+	    hideJukeboxActivityView();
 	});
 	
 	var controlStop = Titanium.UI.createImageView({image:'stop.png',width:45,height:45});
@@ -129,21 +134,22 @@ function JukeboxWindow() {
 	    }
 	    timePlayed.text = '';
 	    timeRemaining.text = '';
-	    Titanium.App.fireEvent('mytunesrss_stop');
-	    Titanium.App.fireEvent('mytunesrss_hideJukeboxActivityView');
+	    jukebox.stop();
+	    hideJukeboxActivityView();
 	});
 	
 	var controlFastForward = Titanium.UI.createImageView({image:'forward.png',width:45,height:45});
 	controlFastForward.addEventListener('click', function() {
-	    Titanium.App.fireEvent('mytunesrss_fastforward');
+	    fastForward();
 	});
 	
 	var controlShuffle = Titanium.UI.createImageView({image:'shuffle.png',width:45,height:45});
 	controlShuffle.addEventListener('click', function() {
-	    Titanium.App.fireEvent('mytunesrss_shuffle');
+	    jukebox.shuffle();
 	});
 	
 	buttonBack.addEventListener('click', function() {
+		myParent.open();
 	    win.close();
 	});
 	
@@ -162,15 +168,172 @@ function JukeboxWindow() {
 	/**
 	 * Open the jukebox window. 
 	 */
-	this.open = function() {
+	this.open = function(parent) {
+		if (parent !== undefined) {
+			myParent = parent;
+		}
 		win.open();
 	}
 	
-	/**
-	 * Close the jukebox window.
-	 */
-	this.close = function() {
-		win.close();
+	// =================================
+	// player stuff
+	
+	var currentPlaylist;
+	var currentPlaylistIndex;
+	var audioPlayer;
+	var keepAliveSound = Titanium.Media.createSound({url:"white_noise.wav",volume:0,looping:true,preload:true});
+	
+	var autoSkipEventListener = function(e) {
+	    if (e.state === audioPlayer.STATE_PLAYING && keepAliveSound.isPlaying()) {
+	        keepAliveSound.pause();
+	    } else if ((e.state === audioPlayer.STATE_STOPPING || e.state === audioPlayer.STATE_BUFFERING) && !keepAliveSound.isPlaying()) {
+	        keepAliveSound.play();
+	    } else if (e.state === audioPlayer.STATE_STOPPED) {
+	        fastForward();
+	    }
+	};
+	
+	var progressEventListener = function(e) {
+		setProgress(e.progress);
+	}
+	
+	function setPlayerUrl(url) {
+		var tcParam = getTcParam();
+		audioPlayer.stop();
+	    if (tcParam !== undefined) {
+	        audioPlayer.setUrl(url + '/' + tcParam);
+	    } else {
+	        audioPlayer.setUrl(url);
+	    }
+	}
+	
+	function playTrack() {
+	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
+	    self.setTrackInformation(currentPlaylist[currentPlaylistIndex]);
+	    if (!audioPlayer.playing) {
+	        audioPlayer.addEventListener("change", autoSkipEventListener);
+	        audioPlayer.start();
+	    }
+	}
+	
+	function createPlayer() {
+	    audioPlayer = Titanium.Media.createAudioPlayer({allowBackground:true, bufferSize:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)});
+	
+	    audioPlayer.addEventListener('progress', progressEventListener);
+	
+	    audioPlayer.addEventListener('change', function(e) {
+	        if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
+	            showJukeboxActivityView();
+	        } else if (e.state === audioPlayer.STATE_PLAYING) {
+	            hideJukeboxActivityView();
+	        }
+	    });
+	}
+	
+	this.destroy = function() {
+		audioPlayer.removeEventListener("change", autoSkipEventListener);
+		audioPlayer.removeEventListener('progress', progressEventListener);
+		if (audioPlayer.url) {
+			audioPlayer.start();
+			audioPlayer.stop();
+		}
+	    keepAliveSound.stop();
 	}
 
+	this.isActive = function() {
+		return currentPlaylist && audioPlayer;
+	}
+
+	this.setPlaylist = function(playlist, index) {
+	    audioPlayer.removeEventListener("change", autoSkipEventListener);
+	    audioPlayer.stop();
+	    currentPlaylist = playlist;
+	    currentPlaylistIndex = index;
+	    // remove all non-audio tracks
+	    for (var i = currentPlaylist.length - 1; i >= 0; i--) {
+	        if (currentPlaylist[i].mediaType != 'Audio') {
+	            currentPlaylist = currentPlaylist.slice(0, i).concat(currentPlaylist.slice(i + 1));
+	            if (i < currentPlaylistIndex) {
+	                currentPlaylistIndex--;
+	            }
+	        }
+	    }
+	    // start playback with the selected track
+	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
+	    audioPlayer.addEventListener("change", autoSkipEventListener);
+	    audioPlayer.start();
+    	self.setTrackInformation(currentPlaylist[currentPlaylistIndex]);
+	};
+	
+	function rewind() {
+	    if (audioPlayer.playing && audioPlayer.progress > 2000) {
+	        audioPlayer.removeEventListener("change", autoSkipEventListener);
+	        audioPlayer.stop();
+	        audioPlayer.addEventListener("change", autoSkipEventListener);
+	        audioPlayer.start();
+	    } else if (currentPlaylistIndex > 0) {
+	        audioPlayer.removeEventListener("change", autoSkipEventListener);
+	        audioPlayer.stop();
+	        currentPlaylistIndex--;
+	        playTrack();
+	    }
+	};
+	
+	function fastForward() {
+	    if (currentPlaylistIndex + 1 < currentPlaylist.length) {
+	        audioPlayer.removeEventListener("change", autoSkipEventListener);
+	        audioPlayer.stop();
+	        currentPlaylistIndex++;
+	        playTrack();
+	    } else {
+	        keepAliveSound.pause();
+	    }
+	};
+	
+	this.stop = function() {
+	    audioPlayer.removeEventListener("change", autoSkipEventListener);
+	    audioPlayer.stop();
+	    keepAliveSound.pause();
+	};
+	
+	this.play = function() {
+	    audioPlayer.addEventListener("change", autoSkipEventListener);
+	    audioPlayer.start();
+	};
+	
+	this.pause = function() {
+	    if (audioPlayer.playing) {
+	        audioPlayer.removeEventListener("change", autoSkipEventListener);
+	        audioPlayer.pause();
+	        keepAliveSound.pause();
+	    }
+	};
+	
+	this.shuffle = function() {
+	    var playing = audioPlayer.playing;
+	    audioPlayer.removeEventListener("change", autoSkipEventListener);
+	    audioPlayer.stop();
+	    var tmp, rand;
+	    for (var i = 0; i < currentPlaylist.length; i++){
+	      rand = Math.floor(Math.random() * currentPlaylist.length);
+	      tmp = currentPlaylist[i];
+	      currentPlaylist[i] = currentPlaylist[rand];
+	      currentPlaylist[rand] = tmp;
+	    }
+	    currentPlaylistIndex = 0;
+	    if (playing) {
+	        playTrack();
+	    } else {
+	        setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
+	        self.setTrackInformation(currentPlaylist[currentPlaylistIndex]);
+	    }
+	};
+	
+	this.restart = function() {
+	    audioPlayer.removeEventListener("change", autoSkipEventListener);
+	    audioPlayer.stop();
+	    createPlayer();
+	};
+	
+	createPlayer();
 }

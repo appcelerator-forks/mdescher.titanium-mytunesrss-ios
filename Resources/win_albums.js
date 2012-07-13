@@ -1,4 +1,7 @@
-function AlbumsWindow() {
+function AlbumsWindow(data) {
+
+	var self = this;
+	var myParent;
 
 	var win = Titanium.UI.createWindow();
 	win.setBackgroundGradient(WINDOW_BG);
@@ -10,6 +13,7 @@ function AlbumsWindow() {
 	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
+		myParent.open();
 	    win.close();
 	});
 	
@@ -20,72 +24,59 @@ function AlbumsWindow() {
 	win.add(actIndicatorView);
 	
 	tableView.addEventListener('click', function(e) {
-	    loadAndDisplayTracks(e.rowData.tracksUri);
+		var busyView = createBusyView();
+		win.add(busyView);
+	    loadAndDisplayTracks(self, e.rowData.tracksUri);
+	    win.remove(busyView);
 	});
 	
-	/**
-	 * Remove preveiously loaded data from the view.
-	 */
-	this.clearData = function() {
-		tableView.setData([]);
-	}
-	
-	/**
-	 * Load data into the albums window structure.
-	 */
-	this.loadData = function(data) {
-		setTableDataAndIndex(
-		        tableView,
-		        data,
-		        function(item, index) {
-		            var displayName = getDisplayName(item.name);
-					var size = 40;
-					var albumHeight = 24;
-					var artistHeight = 18;
-					var spacer = 4;
-					var hires = false;
-					if (Titanium.Platform.osname === "ipad") {
-						size = 60;
-						albumHeight = 36;
-						artistHeight = 26;
-						spacer = 6;
-					} else if (Titanium.Platform.osname === "iphone") {
-						hires = Titanium.Platform.displayCaps.density == "high";
-					}
-		            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:size + (2 * spacer),className:item.imageUri ? 'album_row_img' : 'album_row'});
-		            if (item.imageUri !== undefined) {
-		                var albumImage;
-		                if (hires) {
-		                	albumImage = Titanium.UI.createImageView({hires:true,image:item.imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
-		                } else {
-		                	albumImage = Titanium.UI.createImageView({image:item.imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
-		                }
-		                row.add(albumImage);
-		            }
-		            var albumName = Titanium.UI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:albumHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
-		            var artistName = Titanium.UI.createLabel({text:getDisplayName(item.artist),bottom:spacer,left:size + (2 * spacer),height:artistHeight,font:{fontSize:12}});
-		            row.add(albumName);
-		            row.add(artistName);
-		            row.tracksUri = item.tracksUri;
-		            return row;
-		        },
-		        function(item) {
-		            return item.name;
-		        });
-	}
+	setTableDataAndIndex(
+	        tableView,
+	        data,
+	        function(item, index) {
+	            var displayName = getDisplayName(item.name);
+				var size = 40;
+				var albumHeight = 24;
+				var artistHeight = 18;
+				var spacer = 4;
+				var hires = false;
+				if (Titanium.Platform.osname === "ipad") {
+					size = 60;
+					albumHeight = 36;
+					artistHeight = 26;
+					spacer = 6;
+				} else if (Titanium.Platform.osname === "iphone") {
+					hires = Titanium.Platform.displayCaps.density == "high";
+				}
+	            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:size + (2 * spacer),className:item.imageUri ? 'album_row_img' : 'album_row'});
+	            if (item.imageUri !== undefined) {
+	                var albumImage;
+	                if (hires) {
+	                	albumImage = Titanium.UI.createImageView({hires:true,image:item.imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+	                } else {
+	                	albumImage = Titanium.UI.createImageView({image:item.imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+	                }
+	                row.add(albumImage);
+	            }
+	            var albumName = Titanium.UI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:albumHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
+	            var artistName = Titanium.UI.createLabel({text:getDisplayName(item.artist),bottom:spacer,left:size + (2 * spacer),height:artistHeight,font:{fontSize:12}});
+	            row.add(albumName);
+	            row.add(artistName);
+	            row.tracksUri = item.tracksUri;
+	            return row;
+	        },
+	        function(item) {
+	            return item.name;
+	        });
 
 	/**
 	 * Open the albums window. 
 	 */
-	this.open = function() {
+	this.open = function(parent) {
+		if (parent !== undefined) {
+			myParent = parent;
+		}
 		win.open();
-	}
-	
-	/**
-	 * Close the albums window.
-	 */
-	this.close = function() {
-		win.close();
 	}
 
 }

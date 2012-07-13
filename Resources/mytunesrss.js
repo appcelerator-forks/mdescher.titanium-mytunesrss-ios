@@ -15,6 +15,12 @@ var WINDOW_BG = {
 	backFillStart : false
 };
 
+function createBusyView() {
+	var busyView = Titanium.UI.createView({backgroundColor:'#000',opacity:0.8});
+	busyView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
+	return busyView;
+}
+
 function restCall(method, uri, params) {
 	var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
 	httpClient.open(method,  uri, false);
@@ -105,76 +111,64 @@ function isSessionAlive() {
 	return response.status / 100 === 2;
 }
 
-function loadAndDisplayAlbums(uri) {
+function loadAndDisplayAlbums(parent, uri) {
     var response = restCall("GET", uri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=artist");
     if (response.status / 100 === 2) {
-    	albumsWindow.clearData();
-	    albumsWindow.open();
-    	albumsWindow.loadData(response.result);
+    	new AlbumsWindow(response.result).open(parent);
     } else {
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
 }
 
-function loadAndDisplayArtists() {
+function loadAndDisplayArtists(parent) {
     var response = restCall("GET", getLibrary().artistsUri + "?attr.incl=name&attr.incl=albumsUri", {});
     if (response.status / 100 === 2) {
-    	artistsWindow.clearData();
-    	artistsWindow.open();
-    	artistsWindow.loadData(response.result);
+    	new ArtistsWindow(response.result).open(parent);
     } else {
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
 }
 
-function loadAndDisplayGenres() {
+function loadAndDisplayGenres(parent) {
     var response = restCall("GET", getLibrary().genresUri + "?attr.incl=name&attr.incl=albumsUri", {});
     if (response.status / 100 === 2) {
-    	genresWindow.clearData();
-    	genresWindow.open();
-    	genresWindow.loadData(response.result);
+    	new GenresWindow(response.result).open(parent);
     } else {
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
 }
 
-function loadAndDisplayPlaylists() {
+function loadAndDisplayPlaylists(parent) {
     var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri", {});
     if (response.status / 100 === 2) {
-    	playlistsWindow.clearData();
-    	playlistsWindow.open();
-    	playlistsWindow.loadData(response.result);
+    	new PlaylistsWindow(response.result).open(parent);
     } else {
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
 }
 
-function loadAndDisplayTracks(tracksUri) {
+function loadAndDisplayTracks(parent, tracksUri) {
     var response = restCall("GET", tracksUri + "?attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time", {});
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {
         	Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
         } else {
-	    	tracksWindow.clearData();
-	    	tracksWindow.open();
-	    	tracksWindow.loadData(data);
+	    	new TracksWindow(data).open(parent);
 	    }
     } else {
     	Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
 }
 
-function searchAndDisplayTracks(searchTerm) {
+function searchAndDisplayTracks(parent, searchTerm) {
     var response = restCall("GET", getLibrary().tracksUri + "?term=" + Titanium.Network.encodeURIComponent(searchTerm) + "&fuzziness=" + (100 - Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY)) + "&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time", {});
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {
         	Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
         } else {
-	    	tracksWindow.clearData();
-	    	tracksWindow.open();
-	    	tracksWindow.loadData(data);
+	    	new TracksWindow(data).open(parent);
 	    }
     } else {
     	Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();

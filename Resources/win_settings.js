@@ -1,83 +1,100 @@
-Titanium.include('mytunesrss.js');
+function SettingsWindow(transcoders) {
 
-function wrap(components) {
-    var row = Titanium.UI.createTableViewRow({className:'settingsRow',height:TABLE_VIEW_ROW_HEIGHT});
-    for (var i = 0; i < components.length; i++) {
-        row.add(components[i]);
-    }
-    return row;
-}
+	var self = this;
+	var myParent;
 
-var win = Titanium.UI.currentWindow;
-
-var transcoderSwitches = [];
-var bufferSizeInput = Titanium.UI.createTextField({hintText:'Size in Bytes',left:200,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
-var searchAccuracyInput = Titanium.UI.createTextField({hintText:'Accuracy in Percent',left:200,right:10,value:Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
-
-var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
-actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
-
-var buttonCancel = Titanium.UI.createButton({title:'Cancel',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-buttonCancel.addEventListener('click', function() {
-    win.close();
-});
-
-var buttonSave = Titanium.UI.createButton({title:'Save',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-buttonSave.addEventListener('click', function() {
-   	if (bufferSizeInput.value < 1024 || bufferSizeInput.value > 65536) {
-		Titanium.UI.createAlertDialog({message:'Buffer size must be a value from 1024 to 65536.',buttonNames:['Ok']}).show();
-		return;
+	function wrap(components) {
+	    var row = Titanium.UI.createTableViewRow({className:'settingsRow',height:TABLE_VIEW_ROW_HEIGHT});
+	    for (var i = 0; i < components.length; i++) {
+	        row.add(components[i]);
+	    }
+	    return row;
 	}
-	if (searchAccuracyInput.value < 0 || searchAccuracyInput.value > 100) {
-		Titanium.UI.createAlertDialog({message:'Search accuracy must be a value from 0 to 100.',buttonNames:['Ok']}).show();
-		return;
+	
+	var win = Titanium.UI.createWindow();
+	win.setBackgroundGradient(WINDOW_BG);
+	
+	var transcoderSwitches = [];
+	var bufferSizeInput = Titanium.UI.createTextField({hintText:'Size in Bytes',left:200,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
+	var searchAccuracyInput = Titanium.UI.createTextField({hintText:'Accuracy in Percent',left:200,right:10,value:Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
+	
+	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
+	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
+	
+	var buttonCancel = Titanium.UI.createButton({title:'Cancel',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	buttonCancel.addEventListener('click', function() {
+		myParent.open();
+	    win.close();
+	});
+	
+	var buttonSave = Titanium.UI.createButton({title:'Save',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	buttonSave.addEventListener('click', function() {
+	   	if (bufferSizeInput.value < 1024 || bufferSizeInput.value > 65536) {
+			Titanium.UI.createAlertDialog({message:'Buffer size must be a value from 1024 to 65536.',buttonNames:['Ok']}).show();
+			return;
+		}
+		if (searchAccuracyInput.value < 0 || searchAccuracyInput.value > 100) {
+			Titanium.UI.createAlertDialog({message:'Search accuracy must be a value from 0 to 100.',buttonNames:['Ok']}).show();
+			return;
+		}
+	    if (bufferSizeInput.value != Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)) {    	
+	        Titanium.App.Properties.setInt('audioBufferSize', bufferSizeInput.value);
+	        jukebox.restart();
+	    }
+	    Titanium.App.Properties.setInt('searchAccuracy', searchAccuracyInput.value);
+	    var names = [];
+	    for (var i = 0; i < transcoders.length; i++) {
+	        if (transcoderSwitches[i].value === true) {
+	            names.push(transcoders[i]);
+	        }
+	    }
+	    if (names.length === 0) {
+		    Titanium.App.Properties.removeProperty("transcoders");
+	    } else {
+	    	Titanium.App.Properties.setList("transcoders", names);
+	    }
+	    win.close();
+	});
+	
+	var tableViewData = [];
+	
+	tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Audio Player'}));
+	tableViewData[0].add(wrap([Titanium.UI.createLabel({text:'Buffer Size',left:10,right:120,minimumFontSize:12}), bufferSizeInput]));
+	tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Search'}));
+	tableViewData[1].add(wrap([Titanium.UI.createLabel({text:'Search result accuracy',left:10,right:120,minimumFontSize:12}), searchAccuracyInput]));
+	
+	if (transcoders !== undefined  && transcoders.length > 0) {
+		var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
+	    tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Transcoder'}));
+	    for (var i = 0; i < transcoders.length; i++) {
+	        var transcoderName = transcoders[i];
+	        var switchValue = false;
+	        for (var k = 0; k < activeTranscoders.length; k++) {
+	        	if (transcoderName === activeTranscoders[k]) {
+	        		switchValue = true;
+	        		break;
+	        	}
+	        }
+	        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
+	        transcoderSwitches.push(transcoderSwitch);
+	        tableViewData[2].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
+	    }
 	}
-    if (bufferSizeInput.value != Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)) {    	
-        Titanium.App.Properties.setInt('audioBufferSize', bufferSizeInput.value);
-        Titanium.App.fireEvent('mytunesrss_audiobuffersize_changed');
-    }
-    Titanium.App.Properties.setInt('searchAccuracy', searchAccuracyInput.value);
-    var names = [];
-    for (var i = 0; i < win.transcoders.length; i++) {
-        if (transcoderSwitches[i].value === true) {
-            names.push(win.transcoders[i]);
-        }
-    }
-    if (names.length === 0) {
-	    Titanium.App.Properties.removeProperty("transcoders");
-    } else {
-    	Titanium.App.Properties.setList("transcoders", names);
-    }
-    win.close();
-});
+	
+	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45});
+	
+	addTopToolbar(win, 'Settings', buttonCancel, buttonSave);
+	win.add(tableView);
+	win.add(actIndicatorView);
 
-var tableViewData = [];
-
-tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Audio Player'}));
-tableViewData[0].add(wrap([Titanium.UI.createLabel({text:'Buffer Size',left:10,right:120,minimumFontSize:12}), bufferSizeInput]));
-tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Search'}));
-tableViewData[1].add(wrap([Titanium.UI.createLabel({text:'Search result accuracy',left:10,right:120,minimumFontSize:12}), searchAccuracyInput]));
-
-if (win.transcoders !== undefined  && win.transcoders.length > 0) {
-	var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
-    tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Transcoder'}));
-    for (var i = 0; i < win.transcoders.length; i++) {
-        var transcoderName = win.transcoders[i];
-        var switchValue = false;
-        for (var k = 0; k < activeTranscoders.length; k++) {
-        	if (transcoderName === activeTranscoders[k]) {
-        		switchValue = true;
-        		break;
-        	}
-        }
-        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
-        transcoderSwitches.push(transcoderSwitch);
-        tableViewData[2].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
-    }
+	/**
+	 * Open the settings window. 
+	 */
+	this.open = function(parent) {
+		if (parent !== undefined) {
+			myParent = parent;
+		}
+		win.open();
+	}
+	
 }
-
-var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45});
-
-addTopToolbar(win, 'Settings', buttonCancel, buttonSave);
-win.add(tableView);
-win.add(actIndicatorView);

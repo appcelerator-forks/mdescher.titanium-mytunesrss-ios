@@ -1,5 +1,8 @@
-function ArtistsWindow() {
+function ArtistsWindow(data) {
 	
+	var self = this;
+	var myParent;
+
 	var win = Titanium.UI.createWindow();
 	win.setBackgroundGradient(WINDOW_BG);
 	
@@ -10,6 +13,7 @@ function ArtistsWindow() {
 	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
+		myParent.open();
 	    win.close();
 	});
 	
@@ -20,47 +24,34 @@ function ArtistsWindow() {
 	win.add(actIndicatorView);
 	
 	tableView.addEventListener('click', function(e) {
-	    loadAndDisplayAlbums(e.rowData.albumsUri);
+		var busyView = createBusyView();
+		win.add(busyView);
+	    loadAndDisplayAlbums(self, e.rowData.albumsUri);
+	    win.remove(busyView);
 	});
 	
-	/**
-	 * Remove preveiously loaded data from the view.
-	 */
-	this.clearData = function() {
-		tableView.setData([]);
-	}
-
-	/**
-	 * Load data into the albums window structure.
-	 */
-	this.loadData = function(data) {
-		setTableDataAndIndex(
-		        tableView,
-		        data,
-		        function(item, index) {
-		            var displayName = getDisplayName(item.name);
-		            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'artist_row',height:TABLE_VIEW_ROW_HEIGHT});
-		            row.add(Titanium.UI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'},minimumFontSize:12}));
-		            row.albumsUri = item.albumsUri;
-		            return row;
-		        },
-		        function(item) {
-		            return item.name;
-		        });
-	}
+	setTableDataAndIndex(
+	        tableView,
+	        data,
+	        function(item, index) {
+	            var displayName = getDisplayName(item.name);
+	            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'artist_row',height:TABLE_VIEW_ROW_HEIGHT});
+	            row.add(Titanium.UI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'},minimumFontSize:12}));
+	            row.albumsUri = item.albumsUri;
+	            return row;
+	        },
+	        function(item) {
+	            return item.name;
+	        });
 	
 	/**
 	 * Open the artists window. 
 	 */
-	this.open = function() {
+	this.open = function(parent) {
+		if (parent !== undefined) {
+			myParent = parent;
+		}
 		win.open();
-	}
-	
-	/**
-	 * Close the artists window.
-	 */
-	this.close = function() {
-		win.close();
 	}
 
 }

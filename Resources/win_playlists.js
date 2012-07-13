@@ -1,4 +1,7 @@
-function PlaylistsWindow() {
+function PlaylistsWindow(data) {
+
+	var self = this;
+	var myParent;
 
 	var win = Titanium.UI.createWindow();
 	win.setBackgroundGradient(WINDOW_BG);
@@ -10,6 +13,7 @@ function PlaylistsWindow() {
 	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
+		myParent.open();
 	    win.close();
 	});
 	
@@ -20,47 +24,34 @@ function PlaylistsWindow() {
 	win.add(actIndicatorView);
 	
 	tableView.addEventListener('click', function(e) {
-	    loadAndDisplayTracks(e.rowData.tracksUri);
+		var busyView = createBusyView();
+		win.add(busyView);
+	    loadAndDisplayTracks(self, e.rowData.tracksUri);
+	    win.remove(busyView);
 	});
 	
-	/**
-	 * Remove preveiously loaded data from the view.
-	 */
-	this.clearData = function() {
-		tableView.setData([]);
-	}
-
-	/**
-	 * Load data into the playlists window structure.
-	 */
-	this.loadData = function(data) {
-		setTableDataAndIndex(
-		        tableView,
-		        data,
-		        function(item) {
-		            var displayName = getDisplayName(item.name);
-		            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'playlist_row'});
-		            row.add(Titanium.UI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'},minimumFontSize:12}));
-		            row.tracksUri = item.tracksUri;
-		            return row;
-		        },
-		        function(item) {
-		            return item.name;
-		        });
-	}
+	setTableDataAndIndex(
+	        tableView,
+	        data,
+	        function(item) {
+	            var displayName = getDisplayName(item.name);
+	            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'playlist_row'});
+	            row.add(Titanium.UI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'},minimumFontSize:12}));
+	            row.tracksUri = item.tracksUri;
+	            return row;
+	        },
+	        function(item) {
+	            return item.name;
+	        });
 	
 	/**
 	 * Open the genres window. 
 	 */
-	this.open = function() {
+	this.open = function(parent) {
+		if (parent !== undefined) {
+			myParent = parent;
+		}
 		win.open();
-	}
-	
-	/**
-	 * Close the genres window.
-	 */
-	this.close = function() {
-		win.close();
 	}
 
 }
