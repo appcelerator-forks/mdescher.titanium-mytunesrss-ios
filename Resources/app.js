@@ -6,6 +6,7 @@ Titanium.include("win_artists.js");
 Titanium.include("win_genres.js");
 Titanium.include("win_playlists.js");
 Titanium.include("win_tracklist.js");
+Titanium.include("win_jukebox.js");
 
 Titanium.Media.audioSessionMode = Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK;
 
@@ -20,4 +21,6 @@ var artistsWindow = new ArtistsWindow();
 var genresWindow = new GenresWindow();
 var playlistsWindow = new PlaylistsWindow();
 var tracksWindow = new TracksWindow();
+var jukeboxWindow = new JukeboxWindow();
+
 loginWindow.open();

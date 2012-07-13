@@ -24,7 +24,7 @@ function MenuWindow() {
 	};
 	
 	var progressEventListener = function(e) {
-		Titanium.App.fireEvent('mytunesrss_progress', {value:e.progress});
+		jukeboxWindow.setProgress(e.progress);
 	}
 	
 	function setPlayerUrl(url) {
@@ -39,7 +39,7 @@ function MenuWindow() {
 	
 	function playTrack() {
 	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
-	    Titanium.App.fireEvent('mytunesrss_setTrackInfo', currentPlaylist[currentPlaylistIndex]);
+	    jukeboxWindow.setTrackInformation(currentPlaylist[currentPlaylistIndex]);
 	    if (!audioPlayer.playing) {
 	        audioPlayer.addEventListener("change", autoSkipEventListener);
 	        audioPlayer.start();
@@ -161,9 +161,8 @@ function MenuWindow() {
 	
 	buttonRowNowPlaying.addEventListener('click', function() {
 	    if (currentPlaylist && audioPlayer) {
-	        var winJukebox = Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex]});
-	        winJukebox.backgroundGradient = WINDOW_BG;
-	        winJukebox.open();
+	    	jukeboxWindow.setTrackInformation(currentPlaylist[currentPlaylistIndex]);
+	        jukeboxWindow.open();
 	    } else {
 	        Titanium.UI.createAlertDialog({message:'There is no active playlist.',buttonNames:['Ok']}).show();
 	    }
@@ -187,9 +186,8 @@ function MenuWindow() {
 	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
 	    audioPlayer.addEventListener("change", autoSkipEventListener);
 	    audioPlayer.start();
-	    var winJukebox = Titanium.UI.createWindow({url:'win_jukebox.js',data:currentPlaylist[currentPlaylistIndex]});
-	    winJukebox.backgroundGradient = WINDOW_BG;
-	    winJukebox.open();
+    	jukeboxWindow.setTrackInformation(currentPlaylist[currentPlaylistIndex]);
+        jukeboxWindow.open();
 	});
 	
 	Titanium.App.addEventListener('mytunesrss_rewind', function() {
@@ -252,7 +250,7 @@ function MenuWindow() {
 	        playTrack();
 	    } else {
 	        setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
-	        Titanium.App.fireEvent('mytunesrss_setTrackInfo', currentPlaylist[currentPlaylistIndex]);
+	        jukeboxWindow.setTrackInformation(currentPlaylist[currentPlaylistIndex]);
 	    }
 	});
 	
