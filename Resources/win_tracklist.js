@@ -20,10 +20,10 @@ function TracksWindow(data) {
 	
 	var tableData = [];
 	for (var i = 0; i < data.length; i++) {
-		var trackHeight = 12;
-		var artistHeight = 9;
+		var trackHeight = 20;
+		var artistHeight = 15;
 		var spacer = 4;
-		var size = 20;
+		var size = 40;
 		var hires = false;
 		if (Titanium.Platform.osname === "ipad") {
 			size = 30;
