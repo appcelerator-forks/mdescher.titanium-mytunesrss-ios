@@ -61,7 +61,7 @@ function TracksWindow(data) {
 	            if (tcParam !== undefined) {
 	                url += '/' + tcParam;
 	            }
-	            Titanium.UI.createWindow({url:'win_videoplayer.js',data:url,backgroundColor:'#000'}).open();
+	            new VideoPlayerWindow(url).open(this);
 	        } else {
 	            jukebox.setPlaylist(data, e.index);
 	            jukebox.open(self);
