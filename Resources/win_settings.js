@@ -1,4 +1,4 @@
-function SettingsWindow(transcoders) {
+function SettingsWindow(transcoders, searchFuzziness) {
 
 	var self = this;
 	var myParent;
@@ -16,7 +16,10 @@ function SettingsWindow(transcoders) {
 	
 	var transcoderSwitches = [];
 	var bufferSizeInput = Titanium.UI.createTextField({hintText:'Size in Bytes',left:200,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
-	var searchAccuracyInput = Titanium.UI.createTextField({hintText:'Accuracy in Percent',left:200,right:10,value:Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
+	
+	var staticSearchFuzziness = (searchFuzziness >= 0 && searchFuzziness <= 100);
+	var searchAccuracy = staticSearchFuzziness ? 100 - searchFuzziness : Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY);
+	var searchAccuracyInput = Titanium.UI.createTextField({editable:!staticSearchFuzziness,hintText:'Accuracy in Percent',left:200,right:10,value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
 	
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));

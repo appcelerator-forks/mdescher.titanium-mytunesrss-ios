@@ -17,5 +17,6 @@ var view = Titanium.UI.createView();
 Titanium.UI.setBackgroundColor('#000');
 
 var jukebox = new Jukebox();
+var pinger;
 
 new LoginWindow().open();

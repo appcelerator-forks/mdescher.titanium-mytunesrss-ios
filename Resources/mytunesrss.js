@@ -4,8 +4,8 @@ var DEFAULT_SEARCH_ACCURACY = 40;
 var MININUM_SERVER_VERSION = {
 	major : 4,
 	minor : 3,
-	bugfix : 2,
-	text : "4.3.2"
+	bugfix : 4,
+	text : "4.3.4"
 }
 var WINDOW_BG = {
 	type : 'linear',
@@ -99,7 +99,7 @@ function handleServerError(error) {
 
 function removeUnsupportedTracks(items) {
     for (var i = items.length - 1; i >= 0; i--) {
-        if (items[i].mediaType != 'Audio' && items[i].mediaType != 'Video') {
+        if ((items[i].mediaType != 'Audio' && items[i].mediaType != 'Video') || items[i].protected === true) {
             items = items.slice(0, i).concat(items.slice(i + 1));
         }
     }
@@ -148,11 +148,11 @@ function loadAndDisplayPlaylists(parent) {
 }
 
 function loadAndDisplayTracks(parent, tracksUri) {
-    var response = restCall("GET", tracksUri + "?attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time", {});
+    var response = restCall("GET", tracksUri + "?attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time&attr.incl=protected", {});
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {
-        	Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
+        	Titanium.UI.createAlertDialog({message:'No unprotected audio or video tracks found.',buttonNames:['Ok']}).show();
         } else {
 	    	new TracksWindow(data).open(parent);
 	    }
@@ -166,7 +166,7 @@ function searchAndDisplayTracks(parent, searchTerm) {
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {
-        	Titanium.UI.createAlertDialog({message:'No tracks matching the query found.',buttonNames:['Ok']}).show();
+        	Titanium.UI.createAlertDialog({message:'No matching unprotected audio or video tracks found.',buttonNames:['Ok']}).show();
         } else {
 	    	new TracksWindow(data).open(parent);
 	    }

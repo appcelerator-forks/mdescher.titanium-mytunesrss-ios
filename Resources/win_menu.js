@@ -49,6 +49,10 @@ function MenuWindow() {
 	
 	buttonLogout.addEventListener('click', function() {
 		jukebox.destroy();
+		if (pinger !== undefined) {
+			clearInterval(pinger);
+		}
+		pinger = undefined;
 		myParent.open();
 	    win.close();
 	});
@@ -56,9 +60,9 @@ function MenuWindow() {
 	buttonSettings.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-		var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=transcoders", {});
+		var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=transcoders&attr.incl=searchFuzziness", {});
 		if (response.status / 100 === 2) {
-			new SettingsWindow(response.result.transcoders).open(self);
+			new SettingsWindow(response.result.transcoders, response.result.searchFuzziness).open(self);
 		} else {
 		    Titanium.UI.createAlertDialog({message:'Could not load current settings.',buttonNames:['Ok']}).show();
 		}
