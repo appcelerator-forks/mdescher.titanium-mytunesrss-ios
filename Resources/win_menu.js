@@ -24,6 +24,8 @@ function MenuWindow() {
 	var labelAlbums = Titanium.UI.createLabel({text:'Albums',left:10,font:{fontSize:20,fontWeight:'bold'}});
 	var labelArtists = Titanium.UI.createLabel({text:'Artists',left:10,font:{fontSize:20,fontWeight:'bold'}});
 	var labelGenres = Titanium.UI.createLabel({text:'Genres',left:10,font:{fontSize:20,fontWeight:'bold'}});
+	var labelMovies = Titanium.UI.createLabel({text:'Movies',left:10,font:{fontSize:20,fontWeight:'bold'}});
+	var labelTvShows = Titanium.UI.createLabel({text:'TV Shows',left:10,font:{fontSize:20,fontWeight:'bold'}});
 	var labelNowPlaying = Titanium.UI.createLabel({text:'Currently playing',left:10,font:{fontSize:20,fontWeight:'bold'}});
 	var buttonLogout = Titanium.UI.createButton({title:'Logout',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	var buttonSettings = Titanium.UI.createButton({title:'Settings',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
@@ -41,6 +43,10 @@ function MenuWindow() {
 	tableViewData[0].add(buttonRowArtists);
 	var buttonRowGenres = wrap([labelGenres]);
 	tableViewData[0].add(buttonRowGenres);
+	var buttonRowMovies = wrap([labelMovies]);
+	tableViewData[0].add(buttonRowMovies);
+	var buttonRowTvShows = wrap([labelTvShows]);
+	tableViewData[0].add(buttonRowTvShows);
 	
 	var buttonRowNowPlaying = wrap([labelNowPlaying]);
 	tableViewData[1].add(buttonRowNowPlaying);
@@ -97,6 +103,20 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 	
+	buttonRowMovies.addEventListener('click', function() {
+		var busyView = createBusyView();
+		win.add(busyView);
+	    loadAndDisplayMovies(self);
+	    win.remove(busyView);
+	});
+
+	buttonRowTvShows.addEventListener('click', function() {
+		var busyView = createBusyView();
+		win.add(busyView);
+	    loadAndDisplayTvShows(self);
+	    win.remove(busyView);
+	});
+
 	searchBar.addEventListener('return', function() {
 		var busyView = createBusyView();
 		win.add(busyView);

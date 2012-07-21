@@ -8,7 +8,10 @@ Titanium.include("win_playlists.js");
 Titanium.include("win_tracklist.js");
 Titanium.include("jukebox.js");
 Titanium.include("win_settings.js");
-Titanium.include("videoplayer.js")
+Titanium.include("videoplayer.js");
+Titanium.include("win_tvshows.js");
+Titanium.include("win_tvshow_seasons.js");
+Titanium.include("win_movies.js");
 
 Titanium.Media.audioSessionMode = Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK;
 

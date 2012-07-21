@@ -5,9 +5,21 @@
     </properties>
     <body>
 
-        <release version="1.0.8" date="___V___">
+        <release version="2.0" date="2012-07-21">
             <action dev="mdescher" type="update">
-                Update SDK to 1.8.2 and fixed a few minor bugs.
+                Remove protected tracks from results.
+            </action>
+            <action dev="mdescher" type="add">
+                Search accuracy setting added.
+            </action>
+            <action dev="mdescher" type="add">
+                Support for movies and tv shows.
+            </action>
+            <action dev="mdescher" type="update">
+                Use the new MyTunesRSS 4.3.x REST service. Require MyTunesRSS 4.3.4
+            </action>
+            <action dev="mdescher" type="update">
+                Update SDK to 2.1.0.GA and fixed a few minor bugs.
             </action>
         </release>
 

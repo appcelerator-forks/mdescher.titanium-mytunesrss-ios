@@ -34,7 +34,7 @@ function restCall(method, uri, params) {
 
 function getDisplayName(name) {
     if (name === undefined || name === null || name === '!') {
-        return 'Unknown';
+        return "";
     }
     return name;
 }
@@ -45,7 +45,7 @@ function setTableDataAndIndex(tableView, items, createTableViewRowCallback, getS
 	var section = new Array(27);
 	for (var i = 0; i < items.length; i++) {
 		var itemName = getSectionAndIndexNameCallback(items[i]);
-		var index = itemName[0].toUpperCase().charCodeAt(0) - 65;
+		var index = itemName.toUpperCase().charCodeAt(0) - 65;
 		if (index < 0 || index > 25) {
 			index = 26;
 		}
@@ -114,7 +114,11 @@ function isSessionAlive() {
 function loadAndDisplayAlbums(parent, uri) {
     var response = restCall("GET", uri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=artist");
     if (response.status / 100 === 2) {
-    	new AlbumsWindow(response.result).open(parent);
+        if (response.result.length === 0) {
+        	Titanium.UI.createAlertDialog({message:'No albums found.',buttonNames:['Ok']}).show();
+        } else {
+	    	new AlbumsWindow(response.result).open(parent);
+	    }
     } else {
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
@@ -123,7 +127,11 @@ function loadAndDisplayAlbums(parent, uri) {
 function loadAndDisplayArtists(parent) {
     var response = restCall("GET", getLibrary().artistsUri + "?attr.incl=name&attr.incl=albumsUri", {});
     if (response.status / 100 === 2) {
-    	new ArtistsWindow(response.result).open(parent);
+        if (response.result.length === 0) {
+        	Titanium.UI.createAlertDialog({message:'No artists found.',buttonNames:['Ok']}).show();
+        } else {
+	    	new ArtistsWindow(response.result).open(parent);
+	    }
     } else {
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
@@ -132,7 +140,11 @@ function loadAndDisplayArtists(parent) {
 function loadAndDisplayGenres(parent) {
     var response = restCall("GET", getLibrary().genresUri + "?attr.incl=name&attr.incl=albumsUri", {});
     if (response.status / 100 === 2) {
-    	new GenresWindow(response.result).open(parent);
+        if (response.result.length === 0) {
+        	Titanium.UI.createAlertDialog({message:'No genres found.',buttonNames:['Ok']}).show();
+        } else {
+	    	new GenresWindow(response.result).open(parent);
+	    }
     } else {
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
@@ -141,7 +153,11 @@ function loadAndDisplayGenres(parent) {
 function loadAndDisplayPlaylists(parent) {
     var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri", {});
     if (response.status / 100 === 2) {
-    	new PlaylistsWindow(response.result).open(parent);
+        if (response.result.length === 0) {
+        	Titanium.UI.createAlertDialog({message:'No playlists found.',buttonNames:['Ok']}).show();
+        } else {
+	    	new PlaylistsWindow(response.result).open(parent);
+	    }
     } else {
 	    Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
     }
@@ -155,6 +171,46 @@ function loadAndDisplayTracks(parent, tracksUri) {
         	Titanium.UI.createAlertDialog({message:'No unprotected audio or video tracks found.',buttonNames:['Ok']}).show();
         } else {
 	    	new TracksWindow(data).open(parent);
+	    }
+    } else {
+    	Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
+    }
+}
+
+function loadAndDisplayMovies(parent) {
+    var response = restCall("GET", getLibrary().moviesUri + "?attr.incl=name&attr.incl=httpLiveStreamUri&attr.incl=playbackUri&attr.incl=mediaType&attr.incl=imageUri&attr.incl=protected", {});
+    if (response.status / 100 === 2) {
+    	var data = removeUnsupportedTracks(response.result);
+        if (data.length === 0) {
+        	Titanium.UI.createAlertDialog({message:'No unprotected movies found.',buttonNames:['Ok']}).show();
+        } else {
+	    	new MoviesWindow(data).open(parent);
+	    }
+    } else {
+    	Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
+    }
+}
+
+function loadAndDisplayTvShows(parent) {
+    var response = restCall("GET", getLibrary().tvShowsUri, {});
+    if (response.status / 100 === 2) {
+        if (response.result.length === 0) {
+        	Titanium.UI.createAlertDialog({message:'No TV Shows found.',buttonNames:['Ok']}).show();
+        } else {
+	    	new TvShowsWindow(response.result).open(parent);
+	    }
+    } else {
+    	Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();
+    }
+}
+
+function loadAndDisplayTvShowSeasons(parent, seasonsUri) {
+    var response = restCall("GET", seasonsUri, {});
+    if (response.status / 100 === 2) {
+        if (response.result.length === 0) {
+        	Titanium.UI.createAlertDialog({message:'No seasons found.',buttonNames:['Ok']}).show();
+        } else {
+	    	new TvShowSeasonsWindow(response.result).open(parent);
 	    }
     } else {
     	Titanium.UI.createAlertDialog({message:response.result,buttonNames:['Ok']}).show();

@@ -61,7 +61,7 @@ function TracksWindow(data) {
 	            if (tcParam !== undefined) {
 	                url += '/' + tcParam;
 	            }
-	            new VideoPlayerWindow(url).open(this);
+	            new VideoPlayerWindow(url).open(self);
 	        } else {
 	            jukebox.setPlaylist(data, e.index);
 	            jukebox.open(self);

@@ -45,7 +45,7 @@ function LoginWindow() {
 		if (serverVersion === undefined) {
 		    Titanium.UI.createAlertDialog({message:'The server did not respond. Either the URL is wrong, the server is down or it is a version below ' + MININUM_SERVER_VERSION.text + '.',buttonNames:['Ok']}).show();
 		} else if (compareVersions(serverVersion, MININUM_SERVER_VERSION) < 0) {
-		    Titanium.UI.createAlertDialog({message:'The server version is ' + serverVersion.text + ' and we need ' + MININUM_SERVER_VERSION.text + ' or better.',buttonNames:['Ok']}).show();
+		    Titanium.UI.createAlertDialog({message:'The server version is ' + serverVersion.text + ' but this app needs ' + MININUM_SERVER_VERSION.text + ' or better.',buttonNames:['Ok']}).show();
 		} else {
 			var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri&attr.incl=sessionTimeoutSeconds", {username:inputUsername.value,password:inputPassword.value});
 			if (response.status / 100 === 2) {
