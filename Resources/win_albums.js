@@ -52,9 +52,9 @@ function AlbumsWindow(data) {
 	            if (item.imageUri !== undefined) {
 	                var albumImage;
 	                if (hires) {
-	                	albumImage = Titanium.UI.createImageView({hires:true,image:item.imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+	                	albumImage = createCachedImageView({cacheObjectId:item.imageHash + "_128",hires:true,image:item.imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
 	                } else {
-	                	albumImage = Titanium.UI.createImageView({image:item.imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+	                	albumImage = createCachedImageView({cacheObjectId:item.imageHash + "_64",image:item.imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
 	                }
 	                row.add(albumImage);
 	            }

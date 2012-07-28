@@ -52,9 +52,9 @@ function TvShowSeasonsWindow(data) {
 	            if (item.imageUri !== undefined) {
 	                var seasonImage;
 	                if (hires) {
-	                	seasonImage = Titanium.UI.createImageView({hires:true,image:item.imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+	                	seasonImage = createCachedImageView({cacheObjectId:item.imageHash + "_128",hires:true,image:item.imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
 	                } else {
-	                	seasonImage = Titanium.UI.createImageView({image:item.imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+	                	seasonImage = createCachedImageView({cacheObjectId:item.imageHash + "_64",image:item.imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
 	                }
 	                row.add(seasonImage);
 	            }

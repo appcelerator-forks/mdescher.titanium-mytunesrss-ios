@@ -1,12 +1,12 @@
 eclipse.preferences.version=1
+provisioning_profiles/development/530B02AE-E94D-4DA6-A432-B7366400A0A7/appid=*
+provisioning_profiles/development/530B02AE-E94D-4DA6-A432-B7366400A0A7/filepath=/Users/mdescher/Library/MobileDevice/Provisioning Profiles/530B02AE-E94D-4DA6-A432-B7366400A0A7.mobileprovision
+provisioning_profiles/development/530B02AE-E94D-4DA6-A432-B7366400A0A7/name=Michael Descher
+provisioning_profiles/development/530B02AE-E94D-4DA6-A432-B7366400A0A7/uuid=530B02AE-E94D-4DA6-A432-B7366400A0A7
 provisioning_profiles/development/B500AEA0-ABCA-4165-A14E-A0EA6D43373C/appid=*
 provisioning_profiles/development/B500AEA0-ABCA-4165-A14E-A0EA6D43373C/filepath=/Users/mdescher/Library/MobileDevice/Provisioning Profiles/B500AEA0-ABCA-4165-A14E-A0EA6D43373C.mobileprovision
 provisioning_profiles/development/B500AEA0-ABCA-4165-A14E-A0EA6D43373C/name=iOS Team Provisioning Profile\: *
 provisioning_profiles/development/B500AEA0-ABCA-4165-A14E-A0EA6D43373C/uuid=B500AEA0-ABCA-4165-A14E-A0EA6D43373C
-provisioning_profiles/development/D604BB5B-74D7-4358-8BF2-4DC0B29E6A2A/appid=*
-provisioning_profiles/development/D604BB5B-74D7-4358-8BF2-4DC0B29E6A2A/filepath=/Users/mdescher/Library/MobileDevice/Provisioning Profiles/D604BB5B-74D7-4358-8BF2-4DC0B29E6A2A.mobileprovision
-provisioning_profiles/development/D604BB5B-74D7-4358-8BF2-4DC0B29E6A2A/name=Michael Descher
-provisioning_profiles/development/D604BB5B-74D7-4358-8BF2-4DC0B29E6A2A/uuid=D604BB5B-74D7-4358-8BF2-4DC0B29E6A2A
 provisioning_profiles/distribution/530B02AE-E94D-4DA6-A432-B7366400A0A7/appid=*
 provisioning_profiles/distribution/530B02AE-E94D-4DA6-A432-B7366400A0A7/filepath=/Users/mdescher/Library/MobileDevice/Provisioning Profiles/530B02AE-E94D-4DA6-A432-B7366400A0A7.mobileprovision
 provisioning_profiles/distribution/530B02AE-E94D-4DA6-A432-B7366400A0A7/name=Michael Descher

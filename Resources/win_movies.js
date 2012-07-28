@@ -55,9 +55,9 @@ function MoviesWindow(data) {
 	            if (item.imageUri !== undefined) {
 	                var showImage;
 	                if (hires) {
-	                	showImage = Titanium.UI.createImageView({hires:true,image:item.imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+	                	showImage = createCachedImageView({cacheObjectId:item.imageHash + "_128",hires:true,image:item.imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
 	                } else {
-	                	showImage = Titanium.UI.createImageView({image:item.imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
+	                	showImage = createCachedImageView({cacheObjectId:item.imageHash + "_64",image:item.imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
 	                }
 	                row.add(showImage);
 	            }

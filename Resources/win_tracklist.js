@@ -36,9 +36,9 @@ function TracksWindow(data) {
 	    var row = Titanium.UI.createTableViewRow({hasChild:true,height:size + (2 * spacer),className:'track_row'});
         if (data[i].imageUri !== undefined) {
             if (hires) {
-            	row.add(Titanium.UI.createImageView({hires:true,image:data[i].imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'}));
+            	row.add(createCachedImageView({cacheObjectId:data[i].imageHash + "_128",hires:true,image:data[i].imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'}));
             } else {
-            	row.add(albumImage = Titanium.UI.createImageView({image:data[i].imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'}));
+            	row.add(createCachedImageView({cacheObjectId:data[i].imageHash + "_64",image:data[i].imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'}));
             }
         }
         var trackName = Titanium.UI.createLabel({text:getDisplayName(data[i].name),top:spacer,left:size + (2 * spacer),height:trackHeight,right:2 * spacer,font:{fontSize:14,fontWeight:'bold'},minimumFontSize:10});

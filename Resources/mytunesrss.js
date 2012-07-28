@@ -112,7 +112,7 @@ function isSessionAlive() {
 }
 
 function loadAndDisplayAlbums(parent, uri) {
-    var response = restCall("GET", uri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=artist");
+    var response = restCall("GET", uri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=imageHash&attr.incl=artist");
     if (response.status / 100 === 2) {
         if (response.result.length === 0) {
         	Titanium.UI.createAlertDialog({message:'No albums found.',buttonNames:['Ok']}).show();
@@ -164,7 +164,7 @@ function loadAndDisplayPlaylists(parent) {
 }
 
 function loadAndDisplayTracks(parent, tracksUri) {
-    var response = restCall("GET", tracksUri + "?attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time&attr.incl=protected", {});
+    var response = restCall("GET", tracksUri + "?attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected", {});
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {
@@ -178,7 +178,7 @@ function loadAndDisplayTracks(parent, tracksUri) {
 }
 
 function loadAndDisplayMovies(parent) {
-    var response = restCall("GET", getLibrary().moviesUri + "?attr.incl=name&attr.incl=httpLiveStreamUri&attr.incl=playbackUri&attr.incl=mediaType&attr.incl=imageUri&attr.incl=protected", {});
+    var response = restCall("GET", getLibrary().moviesUri + "?attr.incl=name&attr.incl=httpLiveStreamUri&attr.incl=playbackUri&attr.incl=mediaType&attr.incl=imageUri&attr.incl=imageHash&attr.incl=protected", {});
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {
@@ -218,7 +218,7 @@ function loadAndDisplayTvShowSeasons(parent, seasonsUri) {
 }
 
 function searchAndDisplayTracks(parent, searchTerm) {
-    var response = restCall("GET", getLibrary().tracksUri + "?term=" + Titanium.Network.encodeURIComponent(searchTerm) + "&fuzziness=" + (100 - Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY)) + "&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=time", {});
+    var response = restCall("GET", getLibrary().tracksUri + "?term=" + Titanium.Network.encodeURIComponent(searchTerm) + "&fuzziness=" + (100 - Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY)) + "&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time", {});
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {
@@ -267,5 +267,46 @@ function getTcParam() {
 			}
 		}
 		return "tc=" + Titanium.Network.encodeURIComponent(tcString);
+	}
+}
+
+function clearImageCache() {
+	var baseDir = Titanium.Filesystem.applicationCacheDirectory;
+	var dir = Titanium.Filesystem.getFile(baseDir, "cache");
+	if (dir.exists()) {
+		dir.deleteDirectory(true);
+	}
+}
+
+function createCachedImageView(options) {
+	if (Titanium.App.Properties.getBool("imageCacheEnabled", true)) {
+		var baseDir = Titanium.Filesystem.applicationCacheDirectory;
+		var dir = Titanium.Filesystem.getFile(baseDir, "cache");
+		if (!dir.exists()) {
+			//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
+			dir.createDirectory();
+		}
+		dir = Titanium.Filesystem.getFile(baseDir, "cache/images");
+		if (!dir.exists()) {
+			//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
+			dir.createDirectory();
+		}
+		var file = Titanium.Filesystem.getFile(baseDir, "cache/images/" + options.cacheObjectId);
+		delete(options.cacheObjectId);
+		if (file.exists()) {
+			//Titanium.API.info("Found cached image \"" + file.getNativePath() + "\".");
+			options.image = file.getNativePath();
+			return Titanium.UI.createImageView(options);
+		} else {
+			var imageView = Titanium.UI.createImageView(options);
+			imageView.addEventListener("load", function(e) {
+				//Titanium.API.info("Caching image \"" + file.getNativePath() + "\".");
+			    file.write(e.source.toImage());
+			});
+			return imageView;
+		}
+	} else {
+		delete(options.cacheObjectId);
+		return Titanium.UI.createImageView(options);
 	}
 }

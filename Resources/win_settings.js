@@ -21,6 +21,12 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	var searchAccuracy = staticSearchFuzziness ? 100 - searchFuzziness : Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY);
 	var searchAccuracyInput = Titanium.UI.createTextField({editable:!staticSearchFuzziness,hintText:'Accuracy in Percent',left:200,right:10,value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
 	
+	var enableCacheInput = Titanium.UI.createSwitch({right:10,value:Titanium.App.Properties.getBool("imageCacheEnabled", true)});
+	var clearCacheButton = Titanium.UI.createButton({title:'clear cache',right:10});
+	clearCacheButton.addEventListener("click", function() {
+		clearImageCache();
+	});
+	
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
@@ -56,6 +62,10 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	    } else {
 	    	Titanium.App.Properties.setList("transcoders", names);
 	    }
+	    Titanium.App.Properties.setBool("imageCacheEnabled", enableCacheInput.value);
+	    if (!enableCacheInput.value) {
+	    	clearImageCache();
+	    }
 	    win.close();
 	});
 	
@@ -65,6 +75,11 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	tableViewData[0].add(wrap([Titanium.UI.createLabel({text:'Buffer Size',left:10,right:120,minimumFontSize:12}), bufferSizeInput]));
 	tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Search'}));
 	tableViewData[1].add(wrap([Titanium.UI.createLabel({text:'Search result accuracy',left:10,right:120,minimumFontSize:12}), searchAccuracyInput]));
+	tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Image cache'}));
+	tableViewData[2].add(wrap([Titanium.UI.createLabel({text:'Cache images on device',left:10}), enableCacheInput]));
+	if (enableCacheInput.value) {
+		tableViewData[2].add(wrap([clearCacheButton]));
+	}
 	
 	if (transcoders !== undefined  && transcoders.length > 0) {
 		var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
@@ -80,7 +95,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	        }
 	        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
 	        transcoderSwitches.push(transcoderSwitch);
-	        tableViewData[2].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
+	        tableViewData[3].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
 	    }
 	}
 	
