@@ -3,8 +3,7 @@ function Jukebox() {
 	var self = this;
 	var myParent;
 	
-	var win = Titanium.UI.createWindow();
-	win.setBackgroundGradient(WINDOW_BG);
+	var win = createWindow();
 
 	var myTrack;
 	var tableView;
@@ -36,7 +35,7 @@ function Jukebox() {
 	    	win.remove(timePlayed);
 	    	win.remove(timeRemaining);
 	    }
-	    tableView = Titanium.UI.createTableView({top:45,bottom:44,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,touchEnabled:false});
+	    tableView = Titanium.UI.createTableView({top:45,bottom:44,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,touchEnabled:false,backgroundImage:"stripe.png"});
 	    var imageRow;
 	    if (track.imageUri !== undefined) {
 	        imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:size});
@@ -61,9 +60,9 @@ function Jukebox() {
 	    progressBar = Titanium.UI.createProgressBar({min:0,max:track.time,value:0,bottom:60,left:60,right:60,height:10});
 	    win.add(progressBar);
 	    progressBar.show();
-	    timePlayed = Titanium.UI.createLabel({bottom:60,left:10,height:10,width:40,font:{fontSize:12},text:'',textAlign:'right',color:'#FFFFFF'});
+	    timePlayed = Titanium.UI.createLabel({bottom:60,left:10,height:10,width:40,font:{fontSize:12},text:'',textAlign:'right',color:'#000000'});
 	    win.add(timePlayed);
-	    timeRemaining = Titanium.UI.createLabel({bottom:60,right:10,width:40,height:10,font:{fontSize:12},text:'',color:'#FFFFFF'});
+	    timeRemaining = Titanium.UI.createLabel({bottom:60,right:10,width:40,height:10,font:{fontSize:12},text:'',color:'#000000'});
 	    win.add(timeRemaining);
 	}
 	

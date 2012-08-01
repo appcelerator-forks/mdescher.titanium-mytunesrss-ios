@@ -11,10 +11,25 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	    return row;
 	}
 	
-	var win = Titanium.UI.createWindow();
-	win.setBackgroundGradient(WINDOW_BG);
+	function saveTranscoders(transcoderSwitches, suffix) {
+	    var names = [];
+	    for (var i = 0; i < transcoders.length; i++) {
+	        if (transcoderSwitches[i].value === true) {
+	            names.push(transcoders[i]);
+	        }
+	    }
+	    if (names.length === 0) {
+		    Titanium.App.Properties.removeProperty("transcoders" + suffix);
+	    } else {
+	    	Titanium.App.Properties.setList("transcoders" + suffix, names);
+	    }
+	}
 	
-	var transcoderSwitches = [];
+	var win = createWindow();
+	
+	var transcoderSwitchesWifi = [];
+	var transcoderSwitchesMobile = [];
+	
 	var bufferSizeInput = Titanium.UI.createTextField({hintText:'Size in Bytes',left:200,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
 	
 	var staticSearchFuzziness = (searchFuzziness >= 0 && searchFuzziness <= 100);
@@ -51,17 +66,8 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	        jukebox.restart();
 	    }
 	    Titanium.App.Properties.setInt('searchAccuracy', searchAccuracyInput.value);
-	    var names = [];
-	    for (var i = 0; i < transcoders.length; i++) {
-	        if (transcoderSwitches[i].value === true) {
-	            names.push(transcoders[i]);
-	        }
-	    }
-	    if (names.length === 0) {
-		    Titanium.App.Properties.removeProperty("transcoders");
-	    } else {
-	    	Titanium.App.Properties.setList("transcoders", names);
-	    }
+	    saveTranscoders(transcoderSwitchesWifi, "");
+	    saveTranscoders(transcoderSwitchesMobile, "_mobile");
 	    Titanium.App.Properties.setBool("imageCacheEnabled", enableCacheInput.value);
 	    if (!enableCacheInput.value) {
 	    	clearImageCache();
@@ -94,12 +100,30 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	        	}
 	        }
 	        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
-	        transcoderSwitches.push(transcoderSwitch);
+	        transcoderSwitchesWifi.push(transcoderSwitch);
 	        tableViewData[3].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
 	    }
 	}
 	
-	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45});
+	if (transcoders !== undefined  && transcoders.length > 0) {
+		var activeTranscoders = Titanium.App.Properties.getList("transcoders_mobile", []);
+	    tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Transcoder (mobile)'}));
+	    for (var i = 0; i < transcoders.length; i++) {
+	        var transcoderName = transcoders[i];
+	        var switchValue = false;
+	        for (var k = 0; k < activeTranscoders.length; k++) {
+	        	if (transcoderName === activeTranscoders[k]) {
+	        		switchValue = true;
+	        		break;
+	        	}
+	        }
+	        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
+	        transcoderSwitchesMobile.push(transcoderSwitch);
+	        tableViewData[4].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
+	    }
+	}
+
+	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"stripe.png"});
 	
 	addTopToolbar(win, 'Settings', buttonCancel, buttonSave);
 	win.add(tableView);

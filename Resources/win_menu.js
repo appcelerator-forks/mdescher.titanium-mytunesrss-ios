@@ -12,8 +12,7 @@ function MenuWindow() {
 	}
 	
 		
-	var win = Titanium.UI.createWindow();
-	win.backgroundGradient = WINDOW_BG;
+	var win = createWindow();
 	
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
@@ -51,7 +50,7 @@ function MenuWindow() {
 	var buttonRowNowPlaying = wrap([labelNowPlaying]);
 	tableViewData[1].add(buttonRowNowPlaying);
 	
-	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:90});
+	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:90,backgroundImage:"stripe.png"});
 	
 	buttonLogout.addEventListener('click', function() {
 		jukebox.destroy();

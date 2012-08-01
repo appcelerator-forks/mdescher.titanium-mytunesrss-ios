@@ -3,8 +3,7 @@ function TracksWindow(data) {
 	var self = this;
 	var myParent;
 
-	var win = Titanium.UI.createWindow();
-	win.setBackgroundGradient(WINDOW_BG);
+	var win = createWindow();
 
 	var tableView = Titanium.UI.createTableView({top:45});
 	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});

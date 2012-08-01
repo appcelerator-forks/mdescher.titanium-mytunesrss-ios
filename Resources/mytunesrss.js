@@ -255,7 +255,8 @@ function getLibrary() {
 }
 
 function getTcParam() {
-	var transcoders = Titanium.App.Properties.getList("transcoders", []);
+	var networkType = Titanium.Network.getNetworkType();
+	var transcoders = Titanium.App.Properties.getList("transcoders" + (networkType == Titanium.Network.NETWORK_MOBILE ? "_mobile" : ""), []);
 	if (transcoders === undefined || transcoders.length === 0) {
 		return undefined;
 	} else {
@@ -309,4 +310,9 @@ function createCachedImageView(options) {
 		delete(options.cacheObjectId);
 		return Titanium.UI.createImageView(options);
 	}
+}
+
+function createWindow() {
+	var win = Titanium.UI.createWindow({backgroundImage:"stripe.png",backgroundRepeat:true});
+	return win;
 }
