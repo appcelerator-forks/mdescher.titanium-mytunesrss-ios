@@ -7,6 +7,12 @@
 
         <release version="2.1.0" date="___D___">
             <action dev="mdescher" type="add">
+                Individual transcoders for mobile and other networks.
+            </action>
+            <action dev="mdescher" type="add">
+                Same background for iPhone and iPad.
+            </action>
+            <action dev="mdescher" type="add">
                 Image cache.
             </action>
         </release>
