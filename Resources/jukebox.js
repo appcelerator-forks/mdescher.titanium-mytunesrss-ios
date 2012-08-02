@@ -2,6 +2,7 @@ function Jukebox() {
 	
 	var self = this;
 	var myParent;
+	var myPlaylist;
 	
 	var win = createWindow();
 
@@ -35,7 +36,7 @@ function Jukebox() {
 	    	win.remove(timePlayed);
 	    	win.remove(timeRemaining);
 	    }
-	    tableView = Titanium.UI.createTableView({top:45,bottom:44,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,touchEnabled:false,backgroundImage:"stripe.png"});
+	    tableView = Titanium.UI.createTableView({top:45,bottom:44,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,touchEnabled:false,backgroundImage:"images/stripe.png"});
 	    var imageRow;
 	    if (track.imageUri !== undefined) {
 	        imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:size});
@@ -84,10 +85,10 @@ function Jukebox() {
 	
 	function addTouchListener(control, name) {
 	    control.addEventListener('touchstart', function() {
-	        control.image = name + '_touched.png';
+	        control.image = "images/" + name + '_touched.png';
 	    });
 	    control.addEventListener('touchend', function() {
-	        control.image = name + '.png';
+	        control.image = "images/" + name + '.png';
 	    });
 	}
 	
@@ -109,24 +110,25 @@ function Jukebox() {
 	};
 	
 	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonPlaylist = Titanium.UI.createButton({title:'Playlist',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
-	var controlRewind = Titanium.UI.createImageView({image:'back.png',width:45,height:45});
+	var controlRewind = Titanium.UI.createImageView({image:'images/back.png',width:45,height:45});
 	controlRewind.addEventListener('click', function() {
 		rewind();
 	});
 	
-	var controlPlay = Titanium.UI.createImageView({image:'play.png',width:45,height:45});
+	var controlPlay = Titanium.UI.createImageView({image:'images/play.png',width:45,height:45});
 	controlPlay.addEventListener('click', function() {
 		jukebox.play();
 	});
 	
-	var controlPause = Titanium.UI.createImageView({image:'pause.png',width:45,height:45});
+	var controlPause = Titanium.UI.createImageView({image:'images/pause.png',width:45,height:45});
 	controlPause.addEventListener('click', function() {
 	    jukebox.pause();
 	    hideJukeboxActivityView();
 	});
 	
-	var controlStop = Titanium.UI.createImageView({image:'stop.png',width:45,height:45});
+	var controlStop = Titanium.UI.createImageView({image:'images/stop.png',width:45,height:45});
 	controlStop.addEventListener('click', function() {
 	    if (progressBar) {
 	        progressBar.value = 0;
@@ -137,12 +139,12 @@ function Jukebox() {
 	    hideJukeboxActivityView();
 	});
 	
-	var controlFastForward = Titanium.UI.createImageView({image:'forward.png',width:45,height:45});
+	var controlFastForward = Titanium.UI.createImageView({image:'images/forward.png',width:45,height:45});
 	controlFastForward.addEventListener('click', function() {
 	    fastForward();
 	});
 	
-	var controlShuffle = Titanium.UI.createImageView({image:'shuffle.png',width:45,height:45});
+	var controlShuffle = Titanium.UI.createImageView({image:'images/shuffle.png',width:45,height:45});
 	controlShuffle.addEventListener('click', function() {
 	    jukebox.shuffle();
 	});
@@ -152,6 +154,11 @@ function Jukebox() {
 	    win.close();
 	});
 	
+	buttonPlaylist.addEventListener('click', function() {
+		myPlaylist.open();
+	    win.close();
+	});
+
 	addTouchListener(controlRewind, 'back');
 	addTouchListener(controlFastForward, 'forward');
 	addTouchListener(controlPause, 'pause');
@@ -159,7 +166,7 @@ function Jukebox() {
 	addTouchListener(controlStop, 'stop');
 	addTouchListener(controlShuffle, 'shuffle');
 	
-	addTopToolbar(win, 'Jukebox', buttonBack, undefined);
+	addTopToolbar(win, 'Jukebox', buttonBack, buttonPlaylist);
 	
 	var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
 	win.add(Titanium.UI.iOS.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace, controlShuffle, flexSpace]}));
@@ -167,9 +174,15 @@ function Jukebox() {
 	/**
 	 * Open the jukebox window. 
 	 */
-	this.open = function(parent) {
+	this.open = function(playlist, parent) {
 		if (parent !== undefined) {
 			myParent = parent;
+		}
+		myPlaylist = playlist;
+		if (myPlaylist !== undefined) {
+			buttonPlaylist.setEnabled(true);
+		} else {
+			buttonPlaylist.setEnabled(false)
 		}
 		win.open();
 	}
@@ -181,6 +194,10 @@ function Jukebox() {
 	var currentPlaylistIndex;
 	var audioPlayer;
 	var keepAliveSound = Titanium.Media.createSound({url:"white_noise.wav",volume:0,looping:true,preload:true});
+	
+	this.getCurrentPlaylist = function() {
+		return currentPlaylist;
+	}
 	
 	var autoSkipEventListener = function(e) {
 	    if (e.state === audioPlayer.STATE_PLAYING && keepAliveSound.isPlaying()) {

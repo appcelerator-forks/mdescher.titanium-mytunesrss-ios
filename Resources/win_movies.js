@@ -23,7 +23,8 @@ function MoviesWindow(data) {
 	win.add(actIndicatorView);
 	
 	tableView.addEventListener('click', function(e) {
-        jukebox.stop();
+        jukebox.destroy();
+        jukebox = new Jukebox();
         var url = e.rowData.playbackUri;
         var tcParam = getTcParam();
         if (tcParam !== undefined) {
@@ -63,7 +64,6 @@ function MoviesWindow(data) {
 	            var movieName = Titanium.UI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
 	            var showInfo = Titanium.UI.createLabel({text:item.seasonCount + (item.seasonCount === 1 ? " season with " : " seasons with ") + item.episodeCount + (item.episodeCount === 1 ? " episode" : " episodes"),bottom:spacer,left:size + (2 * spacer),height:infoHeight,font:{fontSize:12}});
 	            row.add(movieName);
-	            //row.add(showInfo);
 	            row.playbackUri = item.httpLiveStreamUri !== undefined ? item.httpLiveStreamUri : item.playbackUri;
 	            return row;
 	        },

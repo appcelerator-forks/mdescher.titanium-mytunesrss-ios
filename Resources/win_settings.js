@@ -123,7 +123,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	    }
 	}
 
-	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"stripe.png"});
+	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"images/stripe.png"});
 	
 	addTopToolbar(win, 'Settings', buttonCancel, buttonSave);
 	win.add(tableView);

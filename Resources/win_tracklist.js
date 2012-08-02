@@ -1,7 +1,7 @@
-function TracksWindow(data) {
+function TracksWindow(data, parent) {
 
 	var self = this;
-	var myParent;
+	var myParent = parent;
 
 	var win = createWindow();
 
@@ -9,7 +9,7 @@ function TracksWindow(data) {
 	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
-		myParent.open();
+		myParent.open(myParent === jukebox ? self : undefined);
 	    win.close();
 	});
 	
@@ -52,9 +52,10 @@ function TracksWindow(data) {
 	} else {
 	    tableView.addEventListener('click', function(e) {
 	    	var busyView = createBusyView();
-		win.add(busyView);
+			win.add(busyView);
 	        if (data[e.index].mediaType === 'Video') {
-	            jukebox.stop();
+	            jukebox.destroy();
+	            jukebox = new Jukebox();
 	            var url = data[e.index].httpLiveStreamUri !== undefined ? data[e.index].httpLiveStreamUri : data[e.index].playbackUri;
 	            var tcParam = getTcParam();
 	            if (tcParam !== undefined) {
@@ -63,7 +64,11 @@ function TracksWindow(data) {
 	            new VideoPlayerWindow(url).open(self);
 	        } else {
 	            jukebox.setPlaylist(data, e.index);
-	            jukebox.open(self);
+	            if (myParent === jukebox) {
+			        jukebox.open(self);
+	            } else {
+			        jukebox.open(undefined, self);
+	            }
 	        }
 	        win.remove(busyView);
 	    });

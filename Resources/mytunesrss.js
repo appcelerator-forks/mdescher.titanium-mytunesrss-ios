@@ -313,6 +313,6 @@ function createCachedImageView(options) {
 }
 
 function createWindow() {
-	var win = Titanium.UI.createWindow({backgroundImage:"stripe.png",backgroundRepeat:true});
+	var win = Titanium.UI.createWindow({backgroundImage:"images/stripe.png",backgroundRepeat:true});
 	return win;
 }

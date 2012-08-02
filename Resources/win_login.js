@@ -34,7 +34,7 @@ function LoginWindow() {
 	buttonDefaultInterfaceRow.hasChild = true;
 	tableViewData[2].add(buttonDefaultInterfaceRow);
 	
-	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"stripe.png"});
+	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"images/stripe.png"});
 	
 	function doLogin() {
 		var busyView = createBusyView();
@@ -117,7 +117,9 @@ function LoginWindow() {
 	
 	addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogin);
 	win.add(tableView);
+	
 	win.add(Titanium.UI.iOS.createAdView({adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,bottom:0,height:50}));
+	
 	if (Titanium.App.version.indexOf('SNAPSHOT') > 0) {
 		win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:90,height:10,font:{fontSize:10}}));
 		win.add(Titanium.UI.createLabel({text: Titanium.Filesystem.getFile('white_noise.wav').modificationTimestamp(), textAlign:'center',bottom:80,height:10,font:{fontSize:10}}));
