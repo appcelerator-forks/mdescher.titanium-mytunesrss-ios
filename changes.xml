@@ -7,6 +7,12 @@
 
         <release version="2.1.0" date="___D___">
             <action dev="mdescher" type="add">
+                Added iAd view at the botton of the login and menu windows.
+            </action>
+            <action dev="mdescher" type="update">
+                Replaced menu text items with images. 
+            </action>
+            <action dev="mdescher" type="add">
                 [MYTUNESRSSIPHONE-25] Link to display currently active playlists
             </action>
             <action dev="mdescher" type="add">
