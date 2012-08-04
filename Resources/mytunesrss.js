@@ -6,7 +6,7 @@ var MININUM_SERVER_VERSION = {
 	minor : 3,
 	bugfix : 4,
 	text : "4.3.4"
-}
+};
 var WINDOW_BG = {
 	type : 'linear',
 	colors : ['#8290bd', '#111419'],
@@ -14,6 +14,8 @@ var WINDOW_BG = {
 	endPoint : {x : '100%', y : '100%'},
 	backFillStart : false
 };
+var TRACKROW_BG_LOCAL = "#CCFFCC";
+var TRACKROW_BG_REMOTE = "white";
 
 function createBusyView() {
 	var busyView = Titanium.UI.createView({backgroundColor:'#000',opacity:0.8});
@@ -80,11 +82,13 @@ function addTopToolbar(window, titleText, leftButton, rightButton) {
     if (rightButton) {
         toolbarItems.push(rightButton);
     }
-    window.add(Titanium.UI.iOS.createToolbar({top:0,height:45,items:toolbarItems}));
+    var toolbar = Titanium.UI.iOS.createToolbar({top:0,height:45,items:toolbarItems});
     if (titleText) {
         var title = Titanium.UI.createLabel({text:titleText,left:0,right:0,top:0,height:45,textAlign:'center',color:'#000000',font:{fontSize:20,fontWeight:'bold'}});
-        window.add(title);
+        toolbar.add(title);
     }
+    window.add(toolbar);
+    return toolbar;
 }
 
 function handleServerError(error) {
@@ -164,7 +168,7 @@ function loadAndDisplayPlaylists(parent) {
 }
 
 function loadAndDisplayTracks(parent, tracksUri) {
-    var response = restCall("GET", tracksUri + "?attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected", {});
+    var response = restCall("GET", tracksUri + "?attr.incl=id&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected", {});
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {
@@ -310,6 +314,39 @@ function createCachedImageView(options) {
 		delete(options.cacheObjectId);
 		return Titanium.UI.createImageView(options);
 	}
+}
+
+function getFileForTrackCache(id) {
+	var baseDir = Titanium.Filesystem.applicationCacheDirectory;
+	var dir = Titanium.Filesystem.getFile(baseDir, "cache");
+	if (!dir.exists()) {
+		//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
+		dir.createDirectory();
+	}
+	dir = Titanium.Filesystem.getFile(baseDir, "cache/tracks");
+	if (!dir.exists()) {
+		//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
+		dir.createDirectory();
+	}
+	return Titanium.Filesystem.getFile(baseDir, "cache/tracks/" + id);
+}
+
+function getCachedTrackFile(id, uri) {
+	var file = getFileForTrackCache(id);
+	if (file.exists()) {
+		return file;
+	} else if (uri === undefined) {
+		return undefined;
+	}
+	var httpClient = Titanium.Network.createHTTPClient();
+	httpClient.open("GET", uri, false);
+	httpClient.setFile(file);
+	httpClient.send();
+	return file;
+}
+
+function deleteCachedTrackFile(id) {
+	getFileForTrackCache(id).deleteFile();
 }
 
 function createWindow() {

@@ -213,18 +213,38 @@ function Jukebox() {
 		setProgress(e.progress);
 	}
 	
-	function setPlayerUrl(url) {
+	var localFileServerSocket;
+	
+	function setPlayerUrl(id, url) {
 		var tcParam = getTcParam();
 		audioPlayer.stop();
-	    if (tcParam !== undefined) {
-	        audioPlayer.setUrl(url + '/' + tcParam);
+	    var localFile = getCachedTrackFile(id);
+	    if (localFile !== undefined) {
+	    	if (localFileServerSocket !== undefined) {
+	    		localFileServerSocket.close();
+	    	}
+			localFileServerSocket = Titanium.Network.Socket.createTCP({host:"127.0.0.1",port:34567,accepted:function(e) {
+				e.inbound.write(Titanium.createBuffer({value:"HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: " + localFile.getSize() + "\r\n\r\n"}));
+				Titanium.Stream.writeStream(localFile.open(Titanium.Filesystem.MODE_READ), e.inbound, 102400, function(e2) {
+					if (e2.bytesProcessed === -1) {
+						e.inbound.close();
+					}
+				});
+			}});
+			localFileServerSocket.listen();
+			localFileServerSocket.accept();
+			audioPlayer.setUrl("http://localhost:" + localFileServerSocket.getPort());
 	    } else {
-	        audioPlayer.setUrl(url);
+		    if (tcParam !== undefined) {
+		        audioPlayer.setUrl(url + '/' + tcParam);
+		    } else {
+		        audioPlayer.setUrl(url);
+		    }
 	    }
 	}
 	
 	function playTrack() {
-	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
+	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].id, currentPlaylist[currentPlaylistIndex].playbackUri);
 	    self.setTrackInformation(currentPlaylist[currentPlaylistIndex]);
 	    if (!audioPlayer.playing) {
 	        audioPlayer.addEventListener("change", autoSkipEventListener);
@@ -275,7 +295,7 @@ function Jukebox() {
 	        }
 	    }
 	    // start playback with the selected track
-	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
+	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].id, currentPlaylist[currentPlaylistIndex].playbackUri);
 	    audioPlayer.addEventListener("change", autoSkipEventListener);
 	    audioPlayer.start();
     	self.setTrackInformation(currentPlaylist[currentPlaylistIndex]);
@@ -340,7 +360,7 @@ function Jukebox() {
 	    if (playing) {
 	        playTrack();
 	    } else {
-	        setPlayerUrl(currentPlaylist[currentPlaylistIndex].playbackUri);
+	        setPlayerUrl(currentPlaylist[currentPlaylistIndex].id, currentPlaylist[currentPlaylistIndex].playbackUri);
 	        self.setTrackInformation(currentPlaylist[currentPlaylistIndex]);
 	    }
 	};

@@ -7,6 +7,9 @@
 
         <release version="2.1.0" date="___D___">
             <action dev="mdescher" type="add">
+                Sync view and support for playback of local tracks.
+            </action>
+            <action dev="mdescher" type="add">
                 Added iAd view at the botton of the login and menu windows.
             </action>
             <action dev="mdescher" type="update">
