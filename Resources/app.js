@@ -22,5 +22,6 @@ Titanium.UI.setBackgroundColor('#000');
 
 var jukebox = new Jukebox();
 var pinger;
+var connectedServerId;
 
 new LoginWindow().open();

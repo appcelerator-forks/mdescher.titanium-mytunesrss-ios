@@ -76,6 +76,7 @@ function LoginWindow() {
 	
 	buttonLogin.addEventListener('click', function() {
 	    var serverUrl = getServerUrl();
+	    connectedServerId = Titanium.Utils.sha1(serverUrl);
 	    Titanium.App.Properties.setString('serverUrl', serverUrl);
 	    Titanium.App.Properties.setBool('saveCredentials', inputSaveCredentials.value);
 	    if (inputSaveCredentials.value === true) {

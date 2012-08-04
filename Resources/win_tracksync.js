@@ -72,7 +72,7 @@ function SyncWindow(data) {
 		} else if (Titanium.Platform.osname === "iphone") {
 			hires = Titanium.Platform.displayCaps.density == "high";
 		}
-	    var row = Titanium.UI.createTableViewRow({hasChild:true,height:size + (2 * spacer),className:'track_row',index:i,backgroundColor:(getCachedTrackFile(data[i].id) === undefined ? TRACKROW_BG_REMOTE : TRACKROW_BG_LOCAL)});
+	    var row = Titanium.UI.createTableViewRow({height:size + (2 * spacer),className:'track_row',index:i,backgroundColor:(getCachedTrackFile(data[i].id) === undefined ? TRACKROW_BG_REMOTE : TRACKROW_BG_LOCAL)});
         if (data[i].imageUri !== undefined) {
             if (hires) {
             	row.add(createCachedImageView({cacheObjectId:data[i].imageHash + "_128",hires:true,image:data[i].imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'}));

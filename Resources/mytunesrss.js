@@ -17,6 +17,14 @@ var WINDOW_BG = {
 var TRACKROW_BG_LOCAL = "#CCFFCC";
 var TRACKROW_BG_REMOTE = "white";
 
+function getServerBasedCacheDir() {
+	var dir = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationCacheDirectory, connectedServerId);
+	if (!dir.exists()) {
+		dir.createDirectory();
+	}
+	return dir.getNativePath();
+}
+
 function createBusyView() {
 	var busyView = Titanium.UI.createView({backgroundColor:'#000',opacity:0.8});
 	busyView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
@@ -276,7 +284,7 @@ function getTcParam() {
 }
 
 function clearImageCache() {
-	var baseDir = Titanium.Filesystem.applicationCacheDirectory;
+	var baseDir = getServerBasedCacheDir();;
 	var dir = Titanium.Filesystem.getFile(baseDir, "cache");
 	if (dir.exists()) {
 		dir.deleteDirectory(true);
@@ -285,7 +293,7 @@ function clearImageCache() {
 
 function createCachedImageView(options) {
 	if (Titanium.App.Properties.getBool("imageCacheEnabled", true)) {
-		var baseDir = Titanium.Filesystem.applicationCacheDirectory;
+		var baseDir = getServerBasedCacheDir();
 		var dir = Titanium.Filesystem.getFile(baseDir, "cache");
 		if (!dir.exists()) {
 			//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
@@ -317,7 +325,7 @@ function createCachedImageView(options) {
 }
 
 function getFileForTrackCache(id) {
-	var baseDir = Titanium.Filesystem.applicationCacheDirectory;
+	var baseDir = getServerBasedCacheDir();
 	var dir = Titanium.Filesystem.getFile(baseDir, "cache");
 	if (!dir.exists()) {
 		//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
