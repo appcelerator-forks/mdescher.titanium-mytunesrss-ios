@@ -47,7 +47,7 @@ function TvShowsWindow(data) {
 				} else if (Titanium.Platform.osname === "iphone") {
 					hires = Titanium.Platform.displayCaps.density == "high";
 				}
-	            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:size + (2 * spacer),className:item.imageUri ? 'show_row_img' : 'show_row'});
+	            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:size + (2 * spacer),className:item.imageUri ? 'show_row_img' : 'show_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
 	            if (item.imageUri !== undefined) {
 	                var showImage;
 	                if (hires) {

@@ -34,7 +34,7 @@ function PlaylistsWindow(data) {
 	        data,
 	        function(item) {
 	            var displayName = getDisplayName(item.name);
-	            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'playlist_row'});
+	            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'playlist_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
 	            row.add(Titanium.UI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'},minimumFontSize:12}));
 	            row.tracksUri = item.tracksUri;
 	            return row;

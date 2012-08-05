@@ -34,7 +34,7 @@ function LoginWindow() {
 	buttonDefaultInterfaceRow.hasChild = true;
 	tableViewData[2].add(buttonDefaultInterfaceRow);
 	
-	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"images/stripe.png"});
+	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"images/stripe.png",selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,scrollable:false});
 	
 	function doLogin() {
 		var busyView = createBusyView();

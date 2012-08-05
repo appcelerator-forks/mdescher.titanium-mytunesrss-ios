@@ -7,7 +7,8 @@ function Jukebox() {
 	var win = createWindow();
 
 	var myTrack;
-	var tableView;
+	var imageView;
+	var infoView;
 	var progressBar;
 	var timePlayed;
 	var timeRemaining;
@@ -30,34 +31,32 @@ function Jukebox() {
 	
 	this.setTrackInformation = function(track) {
 		myTrack = track;
-	    if (tableView) {
-	        win.remove(tableView);
+	    if (imageView !== undefined) {
+	        win.remove(imageView);
+	        win.remove(infoView);
 	        win.remove(progressBar);
 	    	win.remove(timePlayed);
 	    	win.remove(timeRemaining);
 	    }
-	    tableView = Titanium.UI.createTableView({top:45,bottom:44,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,touchEnabled:false,backgroundImage:"images/stripe.png"});
-	    var imageRow;
+	    imageView = Titanium.UI.createView({top:55,left:10,right:10,hires:true,image:track.imageUri,height:size,borderWidth:1,borderRadius:5,borderColor:"#000000",backgroundColor:"#FFFFFF"});
 	    if (track.imageUri !== undefined) {
-	        imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:size});
 	        if (hires) {
-	    	    imageRow.add(Titanium.UI.createImageView({top:10,hires:true,image:track.imageUri,width:size - 20,height:size - 20}));
+	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:track.imageUri,width:size-20,height:size-20}));
 	        } else {
-		        imageRow.add(Titanium.UI.createImageView({top:10,image:track.imageUri,width:size - 20,height:size - 20}));
+		        imageView.add(Titanium.UI.createImageView({top:10,image:track.imageUri,width:size-20,height:size-20}));
 	        }
 	    } else {
-	        imageRow = Titanium.UI.createTableViewRow({className:'jukebox_image',height:77});
 	        if (hires) {
-	    	    imageRow.add(Titanium.UI.createImageView({top:10,hires:true,image:'appicon.png',width:57,height:57}));
+	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:'appicon.png',width:size-20,height:size-20}));
 	        } else {
-		        imageRow.add(Titanium.UI.createImageView({top:10,image:'appicon.png',width:57,height:57}));
+		        imageView.add(Titanium.UI.createImageView({top:10,image:'appicon.png',width:size-20,height:size-20}));
 	        }
 	    }
-	    var infoRow = Titanium.UI.createTableViewRow({height:60,className:'jukebox_info'});
-	    infoRow.add(Titanium.UI.createLabel({top:7,left:10,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name)}));
-	    infoRow.add(Titanium.UI.createLabel({bottom:7,left:10,height:24,font:{fontSize:12},text:getDisplayName(track.artist)}));
-	    tableView.setData([imageRow, infoRow]);
-	    win.add(tableView);
+	    infoView = Titanium.UI.createView({height:60,top:size+65,left:10,right:10,borderWidth:1,borderColor:"#000000",borderRadius:5,backgroundColor:"#FFFFFF"});
+	    infoView.add(Titanium.UI.createLabel({top:7,left:0,right:0,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name),textAlign:"center"}));
+	    infoView.add(Titanium.UI.createLabel({bottom:7,left:0,right:0,height:24,font:{fontSize:12},text:getDisplayName(track.artist),textAlign:"center"}));
+	    win.add(imageView);
+	    win.add(infoView);
 	    progressBar = Titanium.UI.createProgressBar({min:0,max:track.time,value:0,bottom:60,left:60,right:60,height:10});
 	    win.add(progressBar);
 	    progressBar.show();
@@ -92,7 +91,7 @@ function Jukebox() {
 	    });
 	}
 	
-	var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:44,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
+	var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:44,right:0,backgroundColor:'#000000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
 	function showJukeboxActivityView() {
@@ -166,10 +165,11 @@ function Jukebox() {
 	addTouchListener(controlStop, 'stop');
 	addTouchListener(controlShuffle, 'shuffle');
 	
-	addTopToolbar(win, 'Jukebox', buttonBack, buttonPlaylist);
+	var topbar = addTopToolbar(win, 'Jukebox', buttonBack, undefined);
 	
 	var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
 	win.add(Titanium.UI.iOS.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace, controlShuffle, flexSpace]}));
+	
 	
 	/**
 	 * Open the jukebox window. 
@@ -179,10 +179,11 @@ function Jukebox() {
 			myParent = parent;
 		}
 		myPlaylist = playlist;
-		if (myPlaylist !== undefined) {
-			buttonPlaylist.setEnabled(true);
+		win.remove(buttonPlaylist);
+		if (myPlaylist === undefined) {
+			topbar.items = [buttonBack, Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE})];
 		} else {
-			buttonPlaylist.setEnabled(false)
+			topbar.items = [buttonBack, Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE}), buttonPlaylist];
 		}
 		win.open();
 	}

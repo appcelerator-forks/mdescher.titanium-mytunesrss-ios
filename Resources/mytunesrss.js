@@ -7,13 +7,6 @@ var MININUM_SERVER_VERSION = {
 	bugfix : 4,
 	text : "4.3.4"
 };
-var WINDOW_BG = {
-	type : 'linear',
-	colors : ['#8290bd', '#111419'],
-	startPoint : {x : 0, y : 0},
-	endPoint : {x : '100%', y : '100%'},
-	backFillStart : false
-};
 var TRACKROW_BG_LOCAL = "#CCFFCC";
 var TRACKROW_BG_REMOTE = "white";
 
@@ -81,22 +74,19 @@ function setTableDataAndIndex(tableView, items, createTableViewRowCallback, getS
 }
 
 function addTopToolbar(window, titleText, leftButton, rightButton) {
-    var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
-    var toolbarItems = [];
-    if (leftButton) {
-        toolbarItems.push(leftButton);
+    var title = Titanium.UI.createLabel({text:titleText,top:0,height:45,textAlign:'center',color:'#FFFFFF',font:{fontSize:20,fontWeight:'bold'}});
+    var buttons = [];
+    if (leftButton !== undefined) {
+	    buttons.push(leftButton);
     }
-    toolbarItems.push(flexSpace);
-    if (rightButton) {
-        toolbarItems.push(rightButton);
+    buttons.push(Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE}));
+    if (rightButton !== undefined) {
+		buttons.push(rightButton);    	
     }
-    var toolbar = Titanium.UI.iOS.createToolbar({top:0,height:45,items:toolbarItems});
-    if (titleText) {
-        var title = Titanium.UI.createLabel({text:titleText,left:0,right:0,top:0,height:45,textAlign:'center',color:'#000000',font:{fontSize:20,fontWeight:'bold'}});
-        toolbar.add(title);
-    }
-    window.add(toolbar);
-    return toolbar;
+	var toolbar = Titanium.UI.iOS.createToolbar({top:0,height:45,items:buttons});
+	toolbar.add(title);
+	window.add(toolbar);
+	return toolbar;
 }
 
 function handleServerError(error) {

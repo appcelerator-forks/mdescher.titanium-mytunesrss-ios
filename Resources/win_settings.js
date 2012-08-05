@@ -4,7 +4,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	var myParent;
 
 	function wrap(components) {
-	    var row = Titanium.UI.createTableViewRow({className:'settingsRow',height:TABLE_VIEW_ROW_HEIGHT});
+	    var row = Titanium.UI.createTableViewRow({className:'settingsRow',height:TABLE_VIEW_ROW_HEIGHT,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
 	    for (var i = 0; i < components.length; i++) {
 	        row.add(components[i]);
 	    }
