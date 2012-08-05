@@ -275,7 +275,15 @@ function getTcParam() {
 
 function clearImageCache() {
 	var baseDir = getServerBasedCacheDir();;
-	var dir = Titanium.Filesystem.getFile(baseDir, "cache");
+	var dir = Titanium.Filesystem.getFile(baseDir, "cache", "images");
+	if (dir.exists()) {
+		dir.deleteDirectory(true);
+	}
+}
+
+function clearTrackCache() {
+	var baseDir = getServerBasedCacheDir();;
+	var dir = Titanium.Filesystem.getFile(baseDir, "cache", "tracks");
 	if (dir.exists()) {
 		dir.deleteDirectory(true);
 	}
@@ -289,7 +297,7 @@ function createCachedImageView(options) {
 			//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
 			dir.createDirectory();
 		}
-		dir = Titanium.Filesystem.getFile(baseDir, "cache/images");
+		dir = Titanium.Filesystem.getFile(baseDir, "cache", "images");
 		if (!dir.exists()) {
 			//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
 			dir.createDirectory();
@@ -321,7 +329,7 @@ function getFileForTrackCache(id) {
 		//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
 		dir.createDirectory();
 	}
-	dir = Titanium.Filesystem.getFile(baseDir, "cache/tracks");
+	dir = Titanium.Filesystem.getFile(baseDir, "cache", "tracks");
 	if (!dir.exists()) {
 		//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
 		dir.createDirectory();
