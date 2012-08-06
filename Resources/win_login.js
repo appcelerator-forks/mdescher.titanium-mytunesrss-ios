@@ -49,10 +49,10 @@ function LoginWindow() {
 			var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri&attr.incl=sessionTimeoutSeconds", {username:inputUsername.value,password:inputPassword.value});
 			if (response.status / 100 === 2) {
 				Titanium.App.Properties.setString("libraryBase", JSON.stringify(restCall("GET", response.result.libraryUri, {}).result));
-				if (response.result.sessionTimeoutSeconds >= 60) {
+				if (response.result.sessionTimeoutMinutes >= 2) {
 					pinger = setInterval(function() {
 						restCall("GET", Titanium.App.Properties.getString("resolvedServerUrl") + "/rest/session?attr.incl=dummy");
-					}, (response.result.sessionTimeoutSeconds / 2) * 1000);
+					}, (response.result.sessionTimeoutMinutes / 2) * 60000);
 				}
 				new MenuWindow().open(self);
 				win.close();

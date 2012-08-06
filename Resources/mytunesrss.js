@@ -4,8 +4,8 @@ var DEFAULT_SEARCH_ACCURACY = 40;
 var MININUM_SERVER_VERSION = {
 	major : 4,
 	minor : 3,
-	bugfix : 4,
-	text : "4.3.4"
+	bugfix : 7,
+	text : "4.3.7"
 };
 var TRACKROW_BG_LOCAL = "#CCFFCC";
 var TRACKROW_BG_REMOTE = "white";
