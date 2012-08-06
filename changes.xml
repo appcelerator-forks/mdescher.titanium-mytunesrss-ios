@@ -7,7 +7,8 @@
 
         <release version="2.1.0" date="___D___">
             <action dev="mdescher" type="add">
-                Fixed keep-alive ping to server (requires server version 4.3.7 or better).
+                [MYTUNESRSSIPHONE-31] Session timout is in minutes, not seconds
+                (requires server version 4.3.7 or better).
             </action>
             <action dev="mdescher" type="add">
                 Sync view and support for playback of local tracks.
