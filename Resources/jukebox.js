@@ -14,10 +14,13 @@ function Jukebox() {
 	var timeRemaining;
 	var size = 220;
 	var hires = false;
+	var noCoverImage;
 	if (Titanium.Platform.osname === "ipad") {
 		size = 440;
+		noCoverImage = "images/nocover_ipad.png";
 	} else if (Titanium.Platform.osname === "iphone") {
 		hires = Titanium.Platform.displayCaps.density == "high";
+		noCoverImage = "images/nocover.png";
 	}
 	
 	function getDisplayTime(time) {
@@ -47,9 +50,9 @@ function Jukebox() {
 	        }
 	    } else {
 	        if (hires) {
-	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:'appicon.png',width:size-20,height:size-20}));
+	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:noCoverImage,width:size-20,height:size-20}));
 	        } else {
-		        imageView.add(Titanium.UI.createImageView({top:10,image:'appicon.png',width:size-20,height:size-20}));
+		        imageView.add(Titanium.UI.createImageView({top:10,image:noCoverImage,width:size-20,height:size-20}));
 	        }
 	    }
 	    infoView = Titanium.UI.createView({height:60,top:size+65,left:10,right:10,borderWidth:1,borderColor:"#000000",borderRadius:5,backgroundColor:"#FFFFFF"});
@@ -179,7 +182,6 @@ function Jukebox() {
 			myParent = parent;
 		}
 		myPlaylist = playlist;
-		win.remove(buttonPlaylist);
 		if (myPlaylist === undefined) {
 			topbar.items = [buttonBack, Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE})];
 		} else {

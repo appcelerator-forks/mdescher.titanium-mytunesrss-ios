@@ -46,14 +46,11 @@ function LoginWindow() {
 		} else if (compareVersions(serverVersion, MININUM_SERVER_VERSION) < 0) {
 		    Titanium.UI.createAlertDialog({message:'The server version is ' + serverVersion.text + ' but this app needs ' + MININUM_SERVER_VERSION.text + ' or better.',buttonNames:['Ok']}).show();
 		} else {
-			var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri&attr.incl=sessionTimeoutMinutes", {username:inputUsername.value,password:inputPassword.value});
+			var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value});
 			if (response.status / 100 === 2) {
 				Titanium.App.Properties.setString("libraryBase", JSON.stringify(restCall("GET", response.result.libraryUri, {}).result));
-				if (response.result.sessionTimeoutMinutes >= 2) {
-					pinger = setInterval(function() {
-						restCall("GET", Titanium.App.Properties.getString("resolvedServerUrl") + "/rest/session?attr.incl=dummy");
-					}, (response.result.sessionTimeoutMinutes / 2) * 60000);
-				}
+				connectedUsername = inputUsername.value;
+				connectedPassword = inputPassword.value;
 				new MenuWindow().open(self);
 				win.close();
 			} else {

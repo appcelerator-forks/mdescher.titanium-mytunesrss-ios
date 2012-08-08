@@ -1,3 +1,5 @@
+var MENU_ITEM_HEIGHT = 44;
+
 function MenuWindow() {
 	
 	var self = this;
@@ -33,10 +35,9 @@ function MenuWindow() {
 	buttonLogout.addEventListener('click', function() {
 		jukebox.destroy();
 	    jukebox = new Jukebox();
-		if (pinger !== undefined) {
-			clearInterval(pinger);
-		}
-		pinger = undefined;
+		connectedServerId = undefined;
+		connectedUsername = undefined;
+		connectedPassword = undefined;
 		myParent.open();
 	    win.close();
 	});
@@ -55,7 +56,7 @@ function MenuWindow() {
 	});
 	
 	function createMenuItem(item) {
-		item.height = 50;
+		item.height = MENU_ITEM_HEIGHT;
 		item.className = "menu_item";
 		item.hasChild = true;
 		item.selectionStyle = Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE;
@@ -63,7 +64,7 @@ function MenuWindow() {
 		return row;
 	}
 	
-	var tableView = Titanium.UI.createTableView({top:45,bottom:50,backgroundImage:"images/stripe.png",scrollable:false});
+	var tableView = Titanium.UI.createTableView({top:90,bottom:50,backgroundImage:"images/stripe.png",scrollable:false});
 	var rowPlaylists = createMenuItem({title:"Playlists"});
 	rowPlaylists.addEventListener('click', function() {
 		var busyView = createBusyView();
@@ -135,10 +136,10 @@ function MenuWindow() {
 			myParent = parent;
 		}
 		var rows = [rowPlaylists, rowAlbums, rowArtists, rowGenres, rowMovies, rowTvShows];
-		tableView.height = 300;
+		tableView.height = MENU_ITEM_HEIGHT * 6;
 		if (jukebox.isActive()) {
 			rows.push(rowNowPlaying);
-			tableView.height = 350;
+			tableView.height = MENU_ITEM_HEIGHT * 7;
 		}
 		tableView.setData(rows);
 		win.open();
