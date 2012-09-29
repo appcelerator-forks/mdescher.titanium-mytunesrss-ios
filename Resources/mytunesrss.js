@@ -9,6 +9,7 @@ var MININUM_SERVER_VERSION = {
 };
 var TRACKROW_BG_LOCAL = "#CCFFCC";
 var TRACKROW_BG_REMOTE = "white";
+var TRACK_ATTRIBUTES = "attr.incl=id&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected";
 
 function getServerBasedCacheDir() {
 	var dir = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationCacheDirectory, connectedServerId);
@@ -185,7 +186,7 @@ function loadAndDisplayPlaylists(parent) {
 }
 
 function loadAndDisplayTracks(parent, tracksUri) {
-    var response = restCall("GET", tracksUri + "?attr.incl=id&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected", {});
+    var response = restCall("GET", tracksUri + "?" + TRACK_ATTRIBUTES, {});
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {
@@ -239,7 +240,7 @@ function loadAndDisplayTvShowSeasons(parent, seasonsUri) {
 }
 
 function searchAndDisplayTracks(parent, searchTerm) {
-    var response = restCall("GET", getLibrary().tracksUri + "?term=" + Titanium.Network.encodeURIComponent(searchTerm) + "&fuzziness=" + (100 - Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY)) + "&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time", {});
+    var response = restCall("GET", getLibrary().tracksUri + "?term=" + Titanium.Network.encodeURIComponent(searchTerm) + "&fuzziness=" + (100 - Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY)) + "&" + TRACK_ATTRIBUTES, {});
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {

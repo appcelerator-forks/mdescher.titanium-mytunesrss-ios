@@ -83,7 +83,7 @@ function TracksWindow(data, parent) {
 			myParent = parent;
 		}
 		for (var i = 0; i < tableView.data[0].rows.length; i++) {
-			tableView.data[0].rows[i].backgroundColor=(getCachedTrackFile(data[i].id) === undefined ? TRACKROW_BG_REMOTE : TRACKROW_BG_LOCAL)
+			tableView.data[0].rows[i].backgroundColor = (getCachedTrackFile(data[i].id) === undefined ? TRACKROW_BG_REMOTE : TRACKROW_BG_LOCAL)
 		}
 		win.open();
 	}
