@@ -31,11 +31,10 @@ function MenuWindow() {
 	    searchBar.blur();        
 	});
 	
-	var buttonLogout = Titanium.UI.createButton({title:"Logout",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonLogout = Titanium.UI.createButton({title:offlineMode ? "Back" : "Logout",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	buttonLogout.addEventListener('click', function() {
 		jukebox.destroy();
 	    jukebox = new Jukebox();
-		connectedServerId = undefined;
 		connectedUsername = undefined;
 		connectedPassword = undefined;
 		myParent.open();
@@ -46,11 +45,15 @@ function MenuWindow() {
 	buttonSettings.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-		var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=transcoders&attr.incl=searchFuzziness", {});
-		if (response.status / 100 === 2) {
-			new SettingsWindow(response.result.transcoders, response.result.searchFuzziness).open(self);
+		if (offlineMode) {
+			new SettingsWindow().open(self);
 		} else {
-		    Titanium.UI.createAlertDialog({message:'Could not load current settings.',buttonNames:['Ok']}).show();
+			var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=transcoders&attr.incl=searchFuzziness", {});
+			if (response.status / 100 === 2) {
+				new SettingsWindow(response.result.transcoders, response.result.searchFuzziness).open(self);
+			} else {
+			    Titanium.UI.createAlertDialog({message:'Could not load current settings.',buttonNames:['Ok']}).show();
+			}
 		}
 		win.remove(busyView);
 	});
@@ -65,6 +68,7 @@ function MenuWindow() {
 	}
 	
 	var tableView = Titanium.UI.createTableView({top:90,bottom:50,backgroundImage:"images/stripe.png",scrollable:false});
+	
 	var rowPlaylists = createMenuItem({title:"Playlists"});
 	rowPlaylists.addEventListener('click', function() {
 		var busyView = createBusyView();
@@ -77,7 +81,11 @@ function MenuWindow() {
 	rowAlbums.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    loadAndDisplayAlbums(self, getLibrary().albumsUri);
+	    if (!offlineMode) {
+	    	loadAndDisplayAlbums(self, getLibrary().albumsUri);
+	    } else {
+	    	loadAndDisplayOfflineAlbums(self, undefined, undefined);
+	    }
 	    win.remove(busyView);
 	});
 
@@ -135,7 +143,7 @@ function MenuWindow() {
 		if (parent !== undefined) {
 			myParent = parent;
 		}
-		var rows = [rowPlaylists, rowAlbums, rowArtists, rowGenres, rowMovies, rowTvShows];
+		var rows = offlineMode ? [rowAlbums, rowArtists, rowGenres] : [rowPlaylists, rowAlbums, rowArtists, rowGenres, rowMovies, rowTvShows];
 		tableView.height = MENU_ITEM_HEIGHT * 6;
 		if (jukebox.isActive()) {
 			rows.push(rowNowPlaying);

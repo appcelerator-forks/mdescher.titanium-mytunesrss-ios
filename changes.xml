@@ -7,6 +7,9 @@
 
         <release version="2.1.0" date="___D___">
             <action dev="mdescher" type="add">
+                Offline mode.
+            </action>
+            <action dev="mdescher" type="add">
                 [MYTUNESRSSIPHONE-31] Session timout is in minutes, not seconds
                 (requires server version 4.3.7 or better).
             </action>

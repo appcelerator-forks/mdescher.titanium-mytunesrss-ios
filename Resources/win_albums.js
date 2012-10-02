@@ -25,7 +25,11 @@ function AlbumsWindow(data) {
 	tableView.addEventListener('click', function(e) {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    loadAndDisplayTracks(self, e.rowData.tracksUri);
+		if (!offlineMode) {
+		    loadAndDisplayTracks(self, e.rowData.tracksUri);
+		} else {
+			loadAndDisplayOfflineTracks(self, e.rowData.albumName, e.rowData.albumArtist);
+		}
 	    win.remove(busyView);
 	});
 	
@@ -62,6 +66,8 @@ function AlbumsWindow(data) {
 	            row.add(albumName);
 	            row.add(artistName);
 	            row.tracksUri = item.tracksUri;
+	            row.albumName = item.name;
+	            row.albumArtist = item.artist;
 	            return row;
 	        },
 	        function(item) {

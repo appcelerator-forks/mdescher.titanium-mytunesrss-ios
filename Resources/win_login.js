@@ -20,6 +20,8 @@ function LoginWindow() {
 	var inputPassword = Titanium.UI.createTextField({hintText:'Password',left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true});
 	var inputSaveCredentials = Titanium.UI.createSwitch({right:10,value:Titanium.App.Properties.getBool('saveCredentials', false)});
 	var buttonLogin = Titanium.UI.createButton({title:'Login',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var labelOnlineMode = Titanium.UI.createLabel({text:'Online mode',left:10,font:{fontSize:20,fontWeight:'bold'}});
+	var labelOfflineMode = Titanium.UI.createLabel({text:'Offline mode',left:10,font:{fontSize:20,fontWeight:'bold'}});
 	var labelDefaultInterface = Titanium.UI.createLabel({text:'Open in browser',left:10,font:{fontSize:20,fontWeight:'bold'}});
 	
 	var tableViewData = [];
@@ -30,8 +32,14 @@ function LoginWindow() {
 	tableViewData[1].add(wrap([inputUsername]));
 	tableViewData[1].add(wrap([inputPassword]));
 	tableViewData[1].add(wrap([Titanium.UI.createLabel({text:'Save credentials',left:10}), inputSaveCredentials]));
+	var buttonOnlineModeRow = wrap([labelOnlineMode]);
+	buttonOnlineModeRow.hasChild = true;
+	var buttonOfflineModeRow = wrap([labelOfflineMode]);
+	buttonOfflineModeRow.hasChild = true;
 	var buttonDefaultInterfaceRow = wrap([labelDefaultInterface]);
 	buttonDefaultInterfaceRow.hasChild = true;
+	tableViewData[2].add(buttonOnlineModeRow);
+	tableViewData[2].add(buttonOfflineModeRow);
 	tableViewData[2].add(buttonDefaultInterfaceRow);
 	
 	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"images/stripe.png",selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,scrollable:false});
@@ -71,9 +79,15 @@ function LoginWindow() {
 	    return serverUrl;
 	}
 	
-	buttonLogin.addEventListener('click', function() {
+	//buttonLogin.addEventListener('click', function() {
+    buttonOnlineModeRow.addEventListener('click', function() {
+		offlineMode = false;
 	    var serverUrl = getServerUrl();
-	    connectedServerId = Titanium.Utils.sha1(serverUrl);
+	    if (Titanium.App.Properties.getString("serverUrl") !== serverUrl) {
+	    	// server has changed
+	    	clearImageCache();
+	    	clearTrackCache();
+	    }
 	    Titanium.App.Properties.setString('serverUrl', serverUrl);
 	    Titanium.App.Properties.setBool('saveCredentials', inputSaveCredentials.value);
 	    if (inputSaveCredentials.value === true) {
@@ -107,22 +121,30 @@ function LoginWindow() {
 	    }
 	});
 	
-	buttonDefaultInterfaceRow.addEventListener('click', function() {
+	buttonOfflineModeRow.addEventListener('click', function() {
+		offlineMode = true;
 	    var serverUrl = getServerUrl();
+		new MenuWindow().open(self);
+		win.close();
+	});
+
+	buttonDefaultInterfaceRow.addEventListener('click', function() {
+		var serverUrl = getServerUrl();
 	    Titanium.App.Properties.setString('serverUrl', serverUrl);
 	    Titanium.Platform.openURL(serverUrl + '/mytunesrss/?interface=default');
+	   
 	});
 	
-	addTopToolbar(win, 'MyTunesRSS', undefined, buttonLogin);
+	addTopToolbar(win, 'MyTunesRSS', undefined, undefined);
 	win.add(tableView);
 	
-	win.add(Titanium.UI.iOS.createAdView({adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,bottom:0,height:50}));
+	//win.add(Titanium.UI.iOS.createAdView({adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,bottom:0,height:50}));
 	
 	if (Titanium.App.version.indexOf('SNAPSHOT') > 0) {
-		win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:90,height:10,font:{fontSize:10}}));
-		win.add(Titanium.UI.createLabel({text: Titanium.Filesystem.getFile('white_noise.wav').modificationTimestamp(), textAlign:'center',bottom:80,height:10,font:{fontSize:10}}));
+		win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:30,height:10,font:{fontSize:10}}));
+		win.add(Titanium.UI.createLabel({text: Titanium.Filesystem.getFile('white_noise.wav').modificationTimestamp(), textAlign:'center',bottom:20,height:10,font:{fontSize:10}}));
 	} else {
-		win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:80,height:10,font:{fontSize:10}}));
+		win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:20,height:10,font:{fontSize:10}}));
 	}
 	win.add(actIndicatorView);
 	

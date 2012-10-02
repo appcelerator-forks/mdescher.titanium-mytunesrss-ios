@@ -62,20 +62,22 @@ function SettingsWindow(transcoders, searchFuzziness) {
 			Titanium.UI.createAlertDialog({message:'Buffer size must be a value from 1024 to 65536.',buttonNames:['Ok']}).show();
 			return;
 		}
-		if (searchAccuracyInput.value < 0 || searchAccuracyInput.value > 100) {
-			Titanium.UI.createAlertDialog({message:'Search accuracy must be a value from 0 to 100.',buttonNames:['Ok']}).show();
-			return;
-		}
 	    if (bufferSizeInput.value != Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)) {    	
 	        Titanium.App.Properties.setInt('audioBufferSize', bufferSizeInput.value);
 	        jukebox.restart();
 	    }
-	    Titanium.App.Properties.setInt('searchAccuracy', searchAccuracyInput.value);
-	    saveTranscoders(transcoderSwitchesWifi, "");
-	    saveTranscoders(transcoderSwitchesMobile, "_mobile");
-	    Titanium.App.Properties.setBool("imageCacheEnabled", enableCacheInput.value);
-	    if (!enableCacheInput.value) {
-	    	clearImageCache();
+	    if (!offlineMode) {
+			if (searchAccuracyInput.value < 0 || searchAccuracyInput.value > 100) {
+				Titanium.UI.createAlertDialog({message:'Search accuracy must be a value from 0 to 100.',buttonNames:['Ok']}).show();
+				return;
+			}
+		    Titanium.App.Properties.setInt('searchAccuracy', searchAccuracyInput.value);
+		    saveTranscoders(transcoderSwitchesWifi, "");
+		    saveTranscoders(transcoderSwitchesMobile, "_mobile");
+		    Titanium.App.Properties.setBool("imageCacheEnabled", enableCacheInput.value);
+		    if (!enableCacheInput.value) {
+		    	clearImageCache();
+		    }
 	    }
 	    win.close();
 	});
@@ -84,50 +86,53 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	
 	tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Audio Player'}));
 	tableViewData[tableViewData.length - 1].add(wrap([Titanium.UI.createLabel({text:'Buffer Size',left:10,right:120,minimumFontSize:12}), bufferSizeInput]));
-	tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Search'}));
-	tableViewData[tableViewData.length - 1].add(wrap([Titanium.UI.createLabel({text:'Search result accuracy',left:10,right:120,minimumFontSize:12}), searchAccuracyInput]));
-	tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Image cache'}));
-	tableViewData[tableViewData.length - 1].add(wrap([Titanium.UI.createLabel({text:'Cache images on device',left:10}), enableCacheInput]));
-	if (enableCacheInput.value) {
-		tableViewData[tableViewData.length - 1].add(wrap([clearCacheButton]));
-	}
-	tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Track cache'}));
-	tableViewData[tableViewData.length - 1].add(wrap([clearTrackCacheButton]));
-	
-	if (transcoders !== undefined  && transcoders.length > 0) {
-		var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
-	    tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Transcoder'}));
-	    for (var i = 0; i < transcoders.length; i++) {
-	        var transcoderName = transcoders[i];
-	        var switchValue = false;
-	        for (var k = 0; k < activeTranscoders.length; k++) {
-	        	if (transcoderName === activeTranscoders[k]) {
-	        		switchValue = true;
-	        		break;
-	        	}
-	        }
-	        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
-	        transcoderSwitchesWifi.push(transcoderSwitch);
-	        tableViewData[tableViewData.length - 1].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
-	    }
-	}
-	
-	if (transcoders !== undefined  && transcoders.length > 0) {
-		var activeTranscoders = Titanium.App.Properties.getList("transcoders_mobile", []);
-	    tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Transcoder (mobile)'}));
-	    for (var i = 0; i < transcoders.length; i++) {
-	        var transcoderName = transcoders[i];
-	        var switchValue = false;
-	        for (var k = 0; k < activeTranscoders.length; k++) {
-	        	if (transcoderName === activeTranscoders[k]) {
-	        		switchValue = true;
-	        		break;
-	        	}
-	        }
-	        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
-	        transcoderSwitchesMobile.push(transcoderSwitch);
-	        tableViewData[tableViewData.length - 1].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
-	    }
+
+	if (!offlineMode) {
+		tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Search'}));
+		tableViewData[tableViewData.length - 1].add(wrap([Titanium.UI.createLabel({text:'Search result accuracy',left:10,right:120,minimumFontSize:12}), searchAccuracyInput]));
+		tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Image cache'}));
+		tableViewData[tableViewData.length - 1].add(wrap([Titanium.UI.createLabel({text:'Cache images on device',left:10}), enableCacheInput]));
+		if (enableCacheInput.value) {
+			tableViewData[tableViewData.length - 1].add(wrap([clearCacheButton]));
+		}
+		tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Track cache'}));
+		tableViewData[tableViewData.length - 1].add(wrap([clearTrackCacheButton]));
+		
+		if (transcoders !== undefined  && transcoders.length > 0) {
+			var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
+		    tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Transcoder'}));
+		    for (var i = 0; i < transcoders.length; i++) {
+		        var transcoderName = transcoders[i];
+		        var switchValue = false;
+		        for (var k = 0; k < activeTranscoders.length; k++) {
+		        	if (transcoderName === activeTranscoders[k]) {
+		        		switchValue = true;
+		        		break;
+		        	}
+		        }
+		        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
+		        transcoderSwitchesWifi.push(transcoderSwitch);
+		        tableViewData[tableViewData.length - 1].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
+		    }
+		}
+		
+		if (transcoders !== undefined  && transcoders.length > 0) {
+			var activeTranscoders = Titanium.App.Properties.getList("transcoders_mobile", []);
+		    tableViewData.push(Titanium.UI.createTableViewSection({headerTitle:'Transcoder (mobile)'}));
+		    for (var i = 0; i < transcoders.length; i++) {
+		        var transcoderName = transcoders[i];
+		        var switchValue = false;
+		        for (var k = 0; k < activeTranscoders.length; k++) {
+		        	if (transcoderName === activeTranscoders[k]) {
+		        		switchValue = true;
+		        		break;
+		        	}
+		        }
+		        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
+		        transcoderSwitchesMobile.push(transcoderSwitch);
+		        tableViewData[tableViewData.length - 1].add(wrap([Titanium.UI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
+		    }
+		}
 	}
 
 	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"images/stripe.png"});

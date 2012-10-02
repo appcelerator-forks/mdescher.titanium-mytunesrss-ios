@@ -72,7 +72,7 @@ function SyncWindow(data) {
 		} else if (Titanium.Platform.osname === "iphone") {
 			hires = Titanium.Platform.displayCaps.density == "high";
 		}
-	    var row = Titanium.UI.createTableViewRow({height:size + (2 * spacer),className:'track_row',index:i,backgroundColor:(getCachedTrackFile(data[i].id) === undefined ? TRACKROW_BG_REMOTE : TRACKROW_BG_LOCAL),selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+	    var row = Titanium.UI.createTableViewRow({height:size + (2 * spacer),className:'track_row',index:i,backgroundColor:(offlineMode || getCachedTrackFile(data[i].id) === undefined ? TRACKROW_BG_REMOTE : TRACKROW_BG_LOCAL),selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
         if (data[i].imageUri !== undefined) {
             if (hires) {
             	row.add(createCachedImageView({cacheObjectId:data[i].imageHash + "_128",hires:true,image:data[i].imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'}));
@@ -88,9 +88,20 @@ function SyncWindow(data) {
 	}
 	tableView.setData(tableData);
     tableView.addEventListener("click", function(e) {
-    	if (getCachedTrackFile(data[e.index].id) !== undefined) {
+    	if (offlineMode || getCachedTrackFile(data[e.index].id) !== undefined) {
     		deleteCachedTrackFile(data[e.index].id);
-    		tableView.data[0].rows[e.index].backgroundColor = TRACKROW_BG_REMOTE;
+    		db = Titanium.Database.open("OfflineTracks");
+			db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
+			db.close();
+    		if (offlineMode) {
+				jukebox.destroy();
+			    jukebox = new Jukebox();
+	    		tableView.deleteRow(e.index);
+	    		// do not splice data since it reference the same as the tracklist which removes it in the following call
+	    		myParent.deleteRow(e.index);
+    		} else {
+	    		tableView.data[0].rows[e.index].backgroundColor = TRACKROW_BG_REMOTE;
+    		}
     	} else {
 			var url = data[e.index].playbackUri;
 			var tcParam = getTcParam();
@@ -100,7 +111,25 @@ function SyncWindow(data) {
     		var busyView = createBusyView();
     		win.add(busyView);
 			getCachedTrackFile(data[e.index].id, url);
+			downloadImage(data[e.index].imageHash,data[e.index].imageUri);
 			tableView.data[0].rows[e.index].backgroundColor = TRACKROW_BG_LOCAL;
+    		db = Titanium.Database.open("OfflineTracks");
+			db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
+			db.execute(
+				"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				data[e.index].id,
+				data[e.index].name,
+				data[e.index].album,
+				data[e.index].artist,
+				data[e.index].genre,
+				data[e.index].albumArtist,
+				data[e.index].imageHash,
+				data[e.index].protected,
+				data[e.index].mediaType,
+				data[e.index].time,
+				data[e.index].trackNumber
+			);
+			db.close();
 			win.remove(busyView);		    				
     	}
     });

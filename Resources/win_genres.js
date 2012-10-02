@@ -25,7 +25,11 @@ function GenresWindow(data) {
 	tableView.addEventListener('click', function(e) {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    loadAndDisplayAlbums(self, e.rowData.albumsUri);
+	    if (!offlineMode) {
+	    	loadAndDisplayAlbums(self, e.rowData.albumsUri);
+	    } else {
+	    	loadAndDisplayOfflineAlbums(self, undefined, e.rowData.genreName);
+	    }
 	    win.remove(busyView);
 	});
 	
@@ -37,6 +41,7 @@ function GenresWindow(data) {
 	            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:48,className:'genre_row',height:TABLE_VIEW_ROW_HEIGHT,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
 	            row.add(Titanium.UI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'},minimumFontSize:12}));
 	            row.albumsUri = item.albumsUri;
+	            row.genreName = item.name;
 	            return row;
 	        },
 	        function(item) {

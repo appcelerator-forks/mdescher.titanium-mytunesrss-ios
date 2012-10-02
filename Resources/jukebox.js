@@ -44,15 +44,15 @@ function Jukebox() {
 	    imageView = Titanium.UI.createView({top:55,left:10,right:10,hires:true,image:track.imageUri,height:size,borderWidth:1,borderRadius:5,borderColor:"#000000",backgroundColor:"#FFFFFF"});
 	    if (track.imageUri !== undefined) {
 	        if (hires) {
-	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:track.imageUri,width:size-20,height:size-20}));
+	    	    imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,hires:true,image:track.imageUri,width:size-20,height:size-20}));
 	        } else {
-		        imageView.add(Titanium.UI.createImageView({top:10,image:track.imageUri,width:size-20,height:size-20}));
+		        imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,image:track.imageUri,width:size-20,height:size-20}));
 	        }
 	    } else {
 	        if (hires) {
-	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:noCoverImage,width:size-20,height:size-20}));
+	    	    imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,hires:true,image:noCoverImage,width:size-20,height:size-20}));
 	        } else {
-		        imageView.add(Titanium.UI.createImageView({top:10,image:noCoverImage,width:size-20,height:size-20}));
+		        imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,image:noCoverImage,width:size-20,height:size-20}));
 	        }
 	    }
 	    infoView = Titanium.UI.createView({height:60,top:size+65,left:10,right:10,borderWidth:1,borderColor:"#000000",borderRadius:5,backgroundColor:"#FFFFFF"});
@@ -226,17 +226,24 @@ function Jukebox() {
 	    	if (localFileServerSocket !== undefined) {
 	    		localFileServerSocket.close();
 	    	}
-			localFileServerSocket = Titanium.Network.Socket.createTCP({host:"127.0.0.1",port:34567,accepted:function(e) {
-				e.inbound.write(Titanium.createBuffer({value:"HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: " + localFile.getSize() + "\r\n\r\n"}));
-				Titanium.Stream.writeStream(localFile.open(Titanium.Filesystem.MODE_READ), e.inbound, 102400, function(e2) {
-					if (e2.bytesProcessed === -1) {
-						e.inbound.close();
-					}
-				});
-			}});
-			localFileServerSocket.listen();
-			localFileServerSocket.accept();
-			audioPlayer.setUrl("http://localhost:" + localFileServerSocket.getPort());
+	    	for (port = 30000; port < 60000; port++) {
+				localFileServerSocket = Titanium.Network.Socket.createTCP({host:"127.0.0.1",port:port,accepted:function(e) {
+					e.inbound.write(Titanium.createBuffer({value:"HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: " + localFile.getSize() + "\r\n\r\n"}));
+					Titanium.Stream.writeStream(localFile.open(Titanium.Filesystem.MODE_READ), e.inbound, 102400, function(e2) {
+						if (e2.bytesProcessed === -1) {
+							e.inbound.close();
+						}
+					});
+				}});
+				try {
+					localFileServerSocket.listen();
+					localFileServerSocket.accept();
+					audioPlayer.setUrl("http://localhost:" + localFileServerSocket.getPort());
+					break; // okay, we are playing
+				} catch (e) {
+					// ignore and try next port
+				}
+	    	}
 	    } else {
 		    if (tcParam !== undefined) {
 		        audioPlayer.setUrl(url + '/' + tcParam);

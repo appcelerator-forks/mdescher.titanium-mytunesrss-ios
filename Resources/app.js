@@ -21,8 +21,13 @@ var view = Titanium.UI.createView();
 Titanium.UI.setBackgroundColor('#000');
 
 var jukebox = new Jukebox();
-var connectedServerId;
 var connectedUsername;
 var connectedPassword;
+var offlineMode;
+
+db = Titanium.Database.open("OfflineTracks");
+db.file.setRemoteBackup(false);
+db.execute("CREATE TABLE IF NOT EXISTS track (id TEXT, name TEXT, album TEXT, artist TEXT, genre TEXT, album_artist TEXT, image_hash TEXT, protected INTEGER, media_type TEXT, time INTEGER, track_number INTEGER)");
+db.close();
 
 new LoginWindow().open();

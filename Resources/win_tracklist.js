@@ -37,7 +37,7 @@ function TracksWindow(data, parent) {
 		} else if (Titanium.Platform.osname === "iphone") {
 			hires = Titanium.Platform.displayCaps.density == "high";
 		}
-	    var row = Titanium.UI.createTableViewRow({hasChild:true,height:size + (2 * spacer),className:'track_row',index:i,backgroundColor:(getCachedTrackFile(data[i].id) === undefined ? TRACKROW_BG_REMOTE : TRACKROW_BG_LOCAL),selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+	    var row = Titanium.UI.createTableViewRow({hasChild:true,height:size + (2 * spacer),className:'track_row',index:i,backgroundColor:(offlineMode || getCachedTrackFile(data[i].id) === undefined ? TRACKROW_BG_REMOTE : TRACKROW_BG_LOCAL),selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
         if (data[i].imageUri !== undefined) {
             if (hires) {
             	row.add(createCachedImageView({cacheObjectId:data[i].imageHash + "_128",hires:true,image:data[i].imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'}));
@@ -83,9 +83,14 @@ function TracksWindow(data, parent) {
 			myParent = parent;
 		}
 		for (var i = 0; i < tableView.data[0].rows.length; i++) {
-			tableView.data[0].rows[i].backgroundColor = (getCachedTrackFile(data[i].id) === undefined ? TRACKROW_BG_REMOTE : TRACKROW_BG_LOCAL)
+			tableView.data[0].rows[i].backgroundColor = (offlineMode || getCachedTrackFile(data[i].id) === undefined ? TRACKROW_BG_REMOTE : TRACKROW_BG_LOCAL)
 		}
 		win.open();
+	}
+	
+	this.deleteRow = function(index) {
+		tableView.deleteRow(index);
+		data.splice(index, 1);
 	}
 	
 }
