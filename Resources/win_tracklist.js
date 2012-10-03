@@ -69,7 +69,7 @@ function TracksWindow(data, parent) {
 	        win.remove(busyView);
 	    });
 
-	    syncImage = (!offlineMode || getCachedTrackFile(data[i].id) === undefined) ? "images/download.png" : "images/trash.png";
+	    syncImage = offlineMode || getCachedTrackFile(data[i].id) !== undefined ? "images/trash.png" : "images/download.png";
 	    syncImageView = Titanium.UI.createImageView({hires:hires,image:syncImage,width:20,height:20,right:5});
 	    syncImageView.addEventListener("click", function(e) {
 	    	if (offlineMode || getCachedTrackFile(data[e.index].id) !== undefined) {
