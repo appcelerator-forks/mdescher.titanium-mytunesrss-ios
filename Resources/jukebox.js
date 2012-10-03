@@ -277,12 +277,12 @@ function Jukebox() {
 	}
 	
 	this.destroy = function() {
-		audioPlayer.removeEventListener("change", autoSkipEventListener);
-		audioPlayer.removeEventListener('progress', progressEventListener);
 		if (audioPlayer.url) {
 			audioPlayer.start();
 			audioPlayer.stop();
 		}
+		audioPlayer.removeEventListener("change", autoSkipEventListener);
+		audioPlayer.removeEventListener('progress', progressEventListener);
 	    keepAliveSound.stop();
 	}
 

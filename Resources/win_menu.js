@@ -17,7 +17,7 @@ function MenuWindow() {
 	    searchBar.showCancel = false;
 	    searchBar.blur();
 	    if (searchBar.value.length === 0) {
-	        Titanium.UI.createAlertDialog({message:'Please enter a search term.',buttonNames:['Ok']}).show();
+	        showError({message:'Please enter a search term.',buttonNames:['Ok']});
 	    } else {
 	        searchAndDisplayTracks(self, searchBar.value);
 	    }
@@ -52,7 +52,7 @@ function MenuWindow() {
 			if (response.status / 100 === 2) {
 				new SettingsWindow(response.result.transcoders, response.result.searchFuzziness).open(self);
 			} else {
-			    Titanium.UI.createAlertDialog({message:'Could not load current settings.',buttonNames:['Ok']}).show();
+			    showError({message:'Could not load current settings.',buttonNames:['Ok']});
 			}
 		}
 		win.remove(busyView);
@@ -129,7 +129,7 @@ function MenuWindow() {
 	    	win.close();
 	        jukebox.open(new TracksWindow(jukebox.getCurrentPlaylist(), jukebox), self);
 	    } else {
-	        Titanium.UI.createAlertDialog({message:"There is no active playlist.",buttonNames:['Ok']}).show();
+	        showError({message:"There is no active playlist.",buttonNames:['Ok']});
 	    }
 	    win.remove(busyView);
 	});

@@ -59,7 +59,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	var buttonSave = Titanium.UI.createButton({title:'Save',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	buttonSave.addEventListener('click', function() {
 	   	if (bufferSizeInput.value < 1024 || bufferSizeInput.value > 65536) {
-			Titanium.UI.createAlertDialog({message:'Buffer size must be a value from 1024 to 65536.',buttonNames:['Ok']}).show();
+			showError({message:'Buffer size must be a value from 1024 to 65536.',buttonNames:['Ok']});
 			return;
 		}
 	    if (bufferSizeInput.value != Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)) {    	
@@ -68,7 +68,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	    }
 	    if (!offlineMode) {
 			if (searchAccuracyInput.value < 0 || searchAccuracyInput.value > 100) {
-				Titanium.UI.createAlertDialog({message:'Search accuracy must be a value from 0 to 100.',buttonNames:['Ok']}).show();
+				showError({message:'Search accuracy must be a value from 0 to 100.',buttonNames:['Ok']});
 				return;
 			}
 		    Titanium.App.Properties.setInt('searchAccuracy', searchAccuracyInput.value);
