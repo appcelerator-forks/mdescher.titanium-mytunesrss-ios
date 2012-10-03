@@ -126,11 +126,11 @@ function isSessionAlive() {
 function loadAndDisplayOfflineAlbums(parent, artist, genre) {
 	db = Titanium.Database.open("OfflineTracks");
 	if (artist !== undefined) {
-		rs = db.execute("SELECT album, album_artist, MAX(image_hash) AS ihash FROM track WHERE album IS NOT NULL AND artist = ? GROUP BY album, album_artist ORDER BY album", artist);
+		rs = db.execute("SELECT album, album_artist, MAX(image_hash) AS ihash FROM track WHERE album IS NOT NULL AND LOWER(artist) = LOWER(?) GROUP BY LOWER(album), LOWER(album_artist) ORDER BY album", artist);
 	} else if (genre !== undefined) {
-		rs = db.execute("SELECT album, album_artist, MAX(image_hash) AS ihash FROM track WHERE album IS NOT NULL AND genre = ? GROUP BY album, album_artist ORDER BY album", genre);
+		rs = db.execute("SELECT album, album_artist, MAX(image_hash) AS ihash FROM track WHERE album IS NOT NULL AND LOWER(genre) = LOWER(?) GROUP BY LOWER(album), LOWER(album_artist) ORDER BY album", genre);
 	} else {
-		rs = db.execute("SELECT album, album_artist, MAX(image_hash) AS ihash FROM track WHERE album IS NOT NULL GROUP BY album, album_artist ORDER BY album");
+		rs = db.execute("SELECT album, album_artist, MAX(image_hash) AS ihash FROM track WHERE album IS NOT NULL GROUP BY LOWER(album), LOWER(album_artist) ORDER BY album");
 	}
 	result = [];
 	while (rs.isValidRow()) {
@@ -166,7 +166,7 @@ function loadAndDisplayAlbums(parent, uri) {
 function loadAndDisplayArtists(parent) {
 	if (offlineMode) {
 		db = Titanium.Database.open("OfflineTracks");
-		rs = db.execute("SELECT artist FROM track WHERE artist IS NOT NULL GROUP BY artist ORDER BY artist");
+		rs = db.execute("SELECT artist FROM track WHERE artist IS NOT NULL GROUP BY LOWER(artist) ORDER BY artist");
 		result = [];
 		while (rs.isValidRow()) {
 			result.push({
@@ -197,7 +197,7 @@ function loadAndDisplayArtists(parent) {
 function loadAndDisplayGenres(parent) {
 	if (offlineMode) {
 		db = Titanium.Database.open("OfflineTracks");
-		rs = db.execute("SELECT genre FROM track WHERE genre IS NOT NULL GROUP BY genre ORDER BY genre");
+		rs = db.execute("SELECT genre FROM track WHERE genre IS NOT NULL GROUP BY LOWER(genre) ORDER BY genre");
 		result = [];
 		while (rs.isValidRow()) {
 			result.push({
@@ -240,7 +240,7 @@ function loadAndDisplayPlaylists(parent) {
 
 function loadAndDisplayOfflineTracks(parent, album, albumArtist) {
 	db = Titanium.Database.open("OfflineTracks");
-	rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name IS NOT NULL AND album = ? AND album_artist = ? ORDER BY track_number", album, albumArtist);
+	rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name IS NOT NULL AND LOWER(album) = LOWER(?) AND LOWER(album_artist) = LOWER(?) ORDER BY track_number", album, albumArtist);
 	result = [];
 	while (rs.isValidRow()) {
 		result.push({
