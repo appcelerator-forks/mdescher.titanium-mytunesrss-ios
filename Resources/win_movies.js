@@ -9,14 +9,14 @@ function MoviesWindow(data) {
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
 	var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
-	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = Titanium.UI.createButton({title:L("movies.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open();
 	    win.close();
 	});
 	
-	addTopToolbar(win, 'TV Shows', buttonBack, undefined);
+	addTopToolbar(win, L("movies.title"), buttonBack, undefined);
 	
 	win.add(tableView);
 	
@@ -62,7 +62,6 @@ function MoviesWindow(data) {
 	                row.add(showImage);
 	            }
 	            var movieName = Titanium.UI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
-	            var showInfo = Titanium.UI.createLabel({text:item.seasonCount + (item.seasonCount === 1 ? " season with " : " seasons with ") + item.episodeCount + (item.episodeCount === 1 ? " episode" : " episodes"),bottom:spacer,left:size + (2 * spacer),height:infoHeight,font:{fontSize:12}});
 	            row.add(movieName);
 	            row.playbackUri = item.httpLiveStreamUri !== undefined ? item.httpLiveStreamUri : item.playbackUri;
 	            return row;

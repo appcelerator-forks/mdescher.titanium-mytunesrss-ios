@@ -9,14 +9,14 @@ function TvShowSeasonsWindow(data) {
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
 	var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
-	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = Titanium.UI.createButton({title:L("tvshow.seasons.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open();
 	    win.close();
 	});
 	
-	addTopToolbar(win, 'TV Show Seasons', buttonBack, undefined);
+	addTopToolbar(win, L("tvshow.seasons.title"), buttonBack, undefined);
 	
 	win.add(tableView);
 	
@@ -58,14 +58,14 @@ function TvShowSeasonsWindow(data) {
 	                row.add(seasonImage);
 	            }
 	            var showName = Titanium.UI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
-	            var showInfo = Titanium.UI.createLabel({text:item.episodeCount + (item.episodeCount === 1 ? " episode" : " episodes"),bottom:spacer,left:size + (2 * spacer),height:infoHeight,font:{fontSize:12}});
+	            var showInfo = Titanium.UI.createLabel({text:String.format(L("tvshow.seasons.info"), item.episodeCount),bottom:spacer,left:size + (2 * spacer),height:infoHeight,font:{fontSize:12}});
 	            row.add(showName);
 	            row.add(showInfo);
 	            row.episodesUri = item.episodesUri;
 	            return row;
 	        },
 	        function(item) {
-	            return "Season " + item.name;
+	            return String.format(L("tvshow.seasons.itemName"), item.name);
 	        });
 
 	/**

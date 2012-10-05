@@ -6,14 +6,14 @@ function TracksWindow(data, parent) {
 	var win = createWindow();
 
 	var tableView = Titanium.UI.createTableView({top:45});
-	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = Titanium.UI.createButton({title:L("tracklist.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open(myParent === jukebox ? self : undefined);
 	    win.close();
 	});
 	
-	addTopToolbar(win, 'Tracks', buttonBack, undefined);
+	addTopToolbar(win, L("tracklist.title"), buttonBack, undefined);
 
 	win.add(tableView);
 	

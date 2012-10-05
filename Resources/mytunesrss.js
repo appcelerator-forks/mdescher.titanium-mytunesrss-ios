@@ -144,7 +144,7 @@ function loadAndDisplayOfflineAlbums(parent, artist, genre) {
 	}
 	db.close();
     if (result.length === 0) {
-    	showError({message:"No albums found.",buttonNames:['Ok']});
+    	showError({message:L("albums.noneFound"),buttonNames:['Ok']});
     } else {
     	new AlbumsWindow(result).open(parent);
     }
@@ -154,7 +154,7 @@ function loadAndDisplayAlbums(parent, uri) {
     var response = restCall("GET", uri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=imageHash&attr.incl=artist");
     if (response.status / 100 === 2) {
         if (response.result.length === 0) {
-        	showError({message:'No albums found.',buttonNames:['Ok']});
+        	showError({message:L("albums.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new AlbumsWindow(response.result).open(parent);
 	    }
@@ -176,7 +176,7 @@ function loadAndDisplayArtists(parent) {
 		}
 		db.close();
         if (result.length === 0) {
-        	showError({message:'No artists found.',buttonNames:['Ok']});
+        	showError({message:L("artists.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new ArtistsWindow(result).open(parent);
 	    }
@@ -184,7 +184,7 @@ function loadAndDisplayArtists(parent) {
 	    var response = restCall("GET", getLibrary().artistsUri + "?attr.incl=name&attr.incl=albumsUri", {});
 	    if (response.status / 100 === 2) {
 	        if (response.result.length === 0) {
-	        	showError({message:'No artists found.',buttonNames:['Ok']});
+	        	showError({message:L("artists.noneFound"),buttonNames:['Ok']});
 	        } else {
 		    	new ArtistsWindow(response.result).open(parent);
 		    }
@@ -207,7 +207,7 @@ function loadAndDisplayGenres(parent) {
 		}
 		db.close();
         if (result.length === 0) {
-        	showError({message:'No genres found.',buttonNames:['Ok']});
+        	showError({message:L("genres.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new GenresWindow(result).open(parent);
 	    }
@@ -215,7 +215,7 @@ function loadAndDisplayGenres(parent) {
 	    var response = restCall("GET", getLibrary().genresUri + "?attr.incl=name&attr.incl=albumsUri", {});
 	    if (response.status / 100 === 2) {
 	        if (response.result.length === 0) {
-	        	showError({message:'No genres found.',buttonNames:['Ok']});
+	        	showError({message:L("genres.noneFound"),buttonNames:['Ok']});
 	        } else {
 		    	new GenresWindow(response.result).open(parent);
 		    }
@@ -229,7 +229,7 @@ function loadAndDisplayPlaylists(parent) {
     var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri", {});
     if (response.status / 100 === 2) {
         if (response.result.length === 0) {
-        	showError({message:'No playlists found.',buttonNames:['Ok']});
+        	showError({message:L("playlists.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new PlaylistsWindow(response.result).open(parent);
 	    }
@@ -256,7 +256,7 @@ function loadAndDisplayOfflineTracks(parent, album, albumArtist) {
 	}
 	db.close();
     if (result.length === 0) {
-    	showError({message:'No tracks found.',buttonNames:['Ok']});
+    	showError({message:L("tracks.offline.noneFound"),buttonNames:['Ok']});
     } else {
     	new TracksWindow(result).open(parent);
     }
@@ -267,7 +267,7 @@ function loadAndDisplayTracks(parent, tracksUri) {
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {
-        	showError({message:'No unprotected audio or video tracks found.',buttonNames:['Ok']});
+        	showError({message:L("tracks.online.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new TracksWindow(data).open(parent);
 	    }
@@ -281,7 +281,7 @@ function loadAndDisplayMovies(parent) {
     if (response.status / 100 === 2) {
     	var data = removeUnsupportedTracks(response.result);
         if (data.length === 0) {
-        	showError({message:'No unprotected movies found.',buttonNames:['Ok']});
+        	showError({message:L("movies.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new MoviesWindow(data).open(parent);
 	    }
@@ -293,10 +293,11 @@ function loadAndDisplayMovies(parent) {
 function loadAndDisplayTvShows(parent) {
     var response = restCall("GET", getLibrary().tvShowsUri, {});
     if (response.status / 100 === 2) {
-        if (response.result.length === 0) {
-        	showError({message:'No TV Shows found.',buttonNames:['Ok']});
+    	var data = removeUnsupportedTracks(response.result);
+        if (data.length === 0) {
+        	showError({message:L("tvshows.noneFound"),buttonNames:['Ok']});
         } else {
-	    	new TvShowsWindow(response.result).open(parent);
+	    	new TvShowsWindow(data).open(parent);
 	    }
     } else {
     	showError({message:response.result,buttonNames:['Ok']});
@@ -307,7 +308,7 @@ function loadAndDisplayTvShowSeasons(parent, seasonsUri) {
     var response = restCall("GET", seasonsUri, {});
     if (response.status / 100 === 2) {
         if (response.result.length === 0) {
-        	showError({message:'No seasons found.',buttonNames:['Ok']});
+        	showError({message:L("tvshows.seasons.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new TvShowSeasonsWindow(response.result).open(parent);
 	    }
@@ -336,7 +337,7 @@ function searchAndDisplayTracks(parent, searchTerm) {
 		}
 		db.close();
 	    if (result.length === 0) {
-	    	showError({message:'No natching tracks found.',buttonNames:['Ok']});
+	    	showError({message:L("tracks.search.offline.noneFound"),buttonNames:['Ok']});
 	    } else {
 	    	new TracksWindow(result).open(parent);
 	    }
@@ -345,7 +346,7 @@ function searchAndDisplayTracks(parent, searchTerm) {
 	    if (response.status / 100 === 2) {
 	    	var data = removeUnsupportedTracks(response.result);
 	        if (data.length === 0) {
-	        	showError({message:'No matching unprotected audio or video tracks found.',buttonNames:['Ok']});
+	        	showError({message:L("tracks.search.online.noneFound"),buttonNames:['Ok']});
 	        } else {
 		    	new TracksWindow(data).open(parent);
 		    }
@@ -418,12 +419,10 @@ function getImageCacheFile(cacheObjectId) {
 	var baseDir = getServerBasedCacheDir();
 	var dir = Titanium.Filesystem.getFile(baseDir, "cache");
 	if (!dir.exists()) {
-		//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
 		dir.createDirectory();
 	}
 	dir = Titanium.Filesystem.getFile(baseDir, "cache", "images");
 	if (!dir.exists()) {
-		//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
 		dir.createDirectory();
 	}
 	return Titanium.Filesystem.getFile(baseDir, "cache/images/" + cacheObjectId);	
@@ -434,7 +433,6 @@ function createCachedImageView(options) {
 		var file = getImageCacheFile(options.cacheObjectId);
 		delete(options.cacheObjectId);
 		if (file.exists()) {
-			//Titanium.API.info("Found cached image \"" + file.getNativePath() + "\".");
 			options.image = file.getNativePath();
 			return Titanium.UI.createImageView(options);
 		} else if (options.headless) {
@@ -442,7 +440,6 @@ function createCachedImageView(options) {
 		} else {
 			var imageView = Titanium.UI.createImageView(options);
 			imageView.addEventListener("load", function(e) {
-				//Titanium.API.info("Caching image \"" + file.getNativePath() + "\".");
 			    file.write(e.source.toImage());
 			});
 			return imageView;
@@ -464,12 +461,10 @@ function getFileForTrackCache(id) {
 	var baseDir = getServerBasedCacheDir();
 	var dir = Titanium.Filesystem.getFile(baseDir, "cache");
 	if (!dir.exists()) {
-		//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
 		dir.createDirectory();
 	}
 	dir = Titanium.Filesystem.getFile(baseDir, "cache", "tracks");
 	if (!dir.exists()) {
-		//Titanium.API.info("Creating cache directory \"" + dir.getNativePath() + "\".");
 		dir.createDirectory();
 	}
 	return Titanium.Filesystem.getFile(baseDir, "cache/tracks/" + id);
@@ -502,17 +497,11 @@ function pingServer() {
 	restCall("GET", Titanium.App.Properties.getString("resolvedServerUrl") + "/rest/session?attr.incl=dummy");
 }
 
-MESSAGE_MAPPING = {
-	"NO_VALID_USER_SESSION" : "There is no valid server session, please login again.",
-	"EXISTING_USER_SESSION" : "You have already been logged in.",
-	"INVALID_LOGIN" : "Your credentials are invalid."
-}
-
 function showError(options) {
 	if (!options.message || options.message === "") {
-		options.message = "An unknown error has occurred, please try again.";
-	} else if (MESSAGE_MAPPING[options.message] !== undefined) {
-		options.message = MESSAGE_MAPPING[options.message];
+		options.message = L("servererror.unknown");
+	} else {
+		options.message = L("servererror." + options.message, options.message);
 	}
 	Titanium.UI.createAlertDialog(options).show();
 }

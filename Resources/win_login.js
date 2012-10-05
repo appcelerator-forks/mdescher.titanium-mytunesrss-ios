@@ -15,14 +15,14 @@ function LoginWindow() {
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
-	var inputServerUrl = Titanium.UI.createTextField({hintText:'Server URL',left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,minimumFontSize:12});
-	var inputUsername = Titanium.UI.createTextField({hintText:'Username',left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('username'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false});
-	var inputPassword = Titanium.UI.createTextField({hintText:'Password',left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true});
+	var inputServerUrl = Titanium.UI.createTextField({hintText:L("login.serverUrl"),left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,minimumFontSize:12});
+	var inputUsername = Titanium.UI.createTextField({hintText:L("login.username"),left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('username'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false});
+	var inputPassword = Titanium.UI.createTextField({hintText:L("login.password"),left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true});
 	var inputSaveCredentials = Titanium.UI.createSwitch({right:10,value:Titanium.App.Properties.getBool('saveCredentials', false)});
-	var buttonLogin = Titanium.UI.createButton({title:'Login',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-	var labelOnlineMode = Titanium.UI.createLabel({text:'Online mode',left:10,font:{fontSize:20,fontWeight:'bold'}});
-	var labelOfflineMode = Titanium.UI.createLabel({text:'Offline mode',left:10,font:{fontSize:20,fontWeight:'bold'}});
-	var labelDefaultInterface = Titanium.UI.createLabel({text:'Open in browser',left:10,font:{fontSize:20,fontWeight:'bold'}});
+	var buttonLogin = Titanium.UI.createButton({title:L("login.login"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var labelOnlineMode = Titanium.UI.createLabel({text:L("login.onlineMode"),left:10,font:{fontSize:20,fontWeight:'bold'}});
+	var labelOfflineMode = Titanium.UI.createLabel({text:L("login.offlineMode"),left:10,font:{fontSize:20,fontWeight:'bold'}});
+	var labelDefaultInterface = Titanium.UI.createLabel({text:L("login.openInBrowser"),left:10,font:{fontSize:20,fontWeight:'bold'}});
 	
 	var tableViewData = [];
 	tableViewData.push(Titanium.UI.createTableViewSection());
@@ -31,7 +31,7 @@ function LoginWindow() {
 	tableViewData[0].add(wrap([inputServerUrl]));
 	tableViewData[1].add(wrap([inputUsername]));
 	tableViewData[1].add(wrap([inputPassword]));
-	tableViewData[1].add(wrap([Titanium.UI.createLabel({text:'Save credentials',left:10}), inputSaveCredentials]));
+	tableViewData[1].add(wrap([Titanium.UI.createLabel({text:L("login.saveCredentials"),left:10}), inputSaveCredentials]));
 	var buttonOnlineModeRow = wrap([labelOnlineMode]);
 	buttonOnlineModeRow.hasChild = true;
 	var buttonOfflineModeRow = wrap([labelOfflineMode]);
@@ -50,9 +50,9 @@ function LoginWindow() {
 		Titanium.Network.createHTTPClient().clearCookies(Titanium.App.Properties.getString('resolvedServerUrl'));
 		var serverVersion = getServerVersion();
 		if (serverVersion === undefined) {
-		    showError({message:'The server did not respond. Either the URL is wrong, the server is down or it is a version below ' + MININUM_SERVER_VERSION.text + '.',buttonNames:['Ok']});
+		    showError({message:String.format(L("login.noValidResponse"), MININUM_SERVER_VERSION.text),buttonNames:['Ok']});
 		} else if (compareVersions(serverVersion, MININUM_SERVER_VERSION) < 0) {
-		    showError({message:'The server version is ' + serverVersion.text + ' but this app needs ' + MININUM_SERVER_VERSION.text + ' or better.',buttonNames:['Ok']});
+		    showError({message:String.format(L("login.wrongServerVersion"), serverVersion.text, MININUM_SERVER_VERSION.text),buttonNames:['Ok']});
 		} else {
 			var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value});
 			if (response.status / 100 === 2) {
@@ -79,7 +79,6 @@ function LoginWindow() {
 	    return serverUrl;
 	}
 	
-	//buttonLogin.addEventListener('click', function() {
     buttonOnlineModeRow.addEventListener('click', function() {
 		offlineMode = false;
 	    var serverUrl = getServerUrl();
@@ -104,14 +103,14 @@ function LoginWindow() {
 	        httpClient.onload = function() {
 	            var resolvedServerUrl = this.location.match(/https?:\/\/[^\/]+/)[0];
 	            if (resolvedServerUrl.toLowerCase().search(/https?:\/\/mytunesrss.com/) === 0) {
-	                showError({message:'The mytunesrss.com username seems to be wrong. Please check the server URL.',buttonNames:['Ok']});
+	                showError({message:L("login.mytunesrsscom.failed"),buttonNames:['Ok']});
 	            } else {
 	                Titanium.App.Properties.setString('resolvedServerUrl', resolvedServerUrl);
 	                doLogin();
 	            }
 	        };
 	        httpClient.onerror = function() {
-	            showError({message:'The mytunesrss.com username seems to be wrong. Please check the server URL.',buttonNames:['Ok']});
+	            showError({message:L("login.mytunesrsscom.failed"),buttonNames:['Ok']});
 	        };
 	        httpClient.open('GET', Titanium.App.Properties.getString('serverUrl'));
 	        httpClient.send(null);
@@ -137,8 +136,6 @@ function LoginWindow() {
 	
 	addTopToolbar(win, 'MyTunesRSS', undefined, undefined);
 	win.add(tableView);
-	
-	//win.add(Titanium.UI.iOS.createAdView({adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,bottom:0,height:50}));
 	
 	if (Titanium.App.version.indexOf('SNAPSHOT') > 0) {
 		win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:30,height:10,font:{fontSize:10}}));

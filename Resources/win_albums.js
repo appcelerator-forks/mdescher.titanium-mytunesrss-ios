@@ -9,14 +9,14 @@ function AlbumsWindow(data) {
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
 	var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
-	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = Titanium.UI.createButton({title:L("albums.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open();
 	    win.close();
 	});
 	
-	addTopToolbar(win, 'Albums', buttonBack, undefined);
+	addTopToolbar(win, L("albums.title"), buttonBack, undefined);
 	
 	win.add(tableView);
 	

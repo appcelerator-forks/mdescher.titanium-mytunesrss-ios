@@ -10,14 +10,14 @@ function MenuWindow() {
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
-	var searchBar = Titanium.UI.createSearchBar({hintText:'Search',left:0,right:0,top:45,height:45,autocorrect:false,autocapitalization:false,autocomplete:false});
+	var searchBar = Titanium.UI.createSearchBar({hintText:L("menu.search.hint"),left:0,right:0,top:45,height:45,autocorrect:false,autocapitalization:false,autocomplete:false});
 	searchBar.addEventListener('return', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
 	    searchBar.showCancel = false;
 	    searchBar.blur();
 	    if (searchBar.value.length === 0) {
-	        showError({message:'Please enter a search term.',buttonNames:['Ok']});
+	        showError({message:L("menu.missingSearchTerm"),buttonNames:['Ok']});
 	    } else {
 	        searchAndDisplayTracks(self, searchBar.value);
 	    }
@@ -31,7 +31,7 @@ function MenuWindow() {
 	    searchBar.blur();        
 	});
 	
-	var buttonLogout = Titanium.UI.createButton({title:offlineMode ? "Back" : "Logout",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonLogout = Titanium.UI.createButton({title:offlineMode ? L("menu.back") : L("menu.logout"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	buttonLogout.addEventListener('click', function() {
 		jukebox.destroy();
 	    jukebox = new Jukebox();
@@ -41,7 +41,7 @@ function MenuWindow() {
 	    win.close();
 	});
 
-	var buttonSettings = Titanium.UI.createButton({title:"Settings",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonSettings = Titanium.UI.createButton({title:L("menu.settings"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	buttonSettings.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -52,7 +52,7 @@ function MenuWindow() {
 			if (response.status / 100 === 2) {
 				new SettingsWindow(response.result.transcoders, response.result.searchFuzziness).open(self);
 			} else {
-			    showError({message:'Could not load current settings.',buttonNames:['Ok']});
+			    showError({message:L("menu.settings.loadFailed"),buttonNames:['Ok']});
 			}
 		}
 		win.remove(busyView);
@@ -69,7 +69,7 @@ function MenuWindow() {
 	
 	var tableView = Titanium.UI.createTableView({top:90,bottom:50,backgroundImage:"images/stripe.png",scrollable:false});
 	
-	var rowPlaylists = createMenuItem({title:"Playlists"});
+	var rowPlaylists = createMenuItem({title:L("menu.playlists")});
 	rowPlaylists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -77,7 +77,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowAlbums = createMenuItem({title:"Albums"});
+	var rowAlbums = createMenuItem({title:L("menu.albums")});
 	rowAlbums.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -89,7 +89,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowArtists = createMenuItem({title:"Artists"});
+	var rowArtists = createMenuItem({title:L("menu.artists")});
 	rowArtists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -97,7 +97,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowGenres = createMenuItem({title:"Genres"});
+	var rowGenres = createMenuItem({title:L("menu.genres")});
 	rowGenres.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -105,7 +105,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowMovies = createMenuItem({title:"Movies"});
+	var rowMovies = createMenuItem({title:L("menu.movies")});
 	rowMovies.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -113,7 +113,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowTvShows = createMenuItem({title:"TV Shows"});
+	var rowTvShows = createMenuItem({title:L("menu.tvshows")});
 	rowTvShows.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -121,7 +121,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowNowPlaying = createMenuItem({title:"Currently playing"});
+	var rowNowPlaying = createMenuItem({title:L("menu.currentlyPlaying")});
 	rowNowPlaying.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -129,7 +129,7 @@ function MenuWindow() {
 	    	win.close();
 	        jukebox.open(new TracksWindow(jukebox.getCurrentPlaylist(), jukebox), self);
 	    } else {
-	        showError({message:"There is no active playlist.",buttonNames:['Ok']});
+	        showError({message:L("menu.currentlyPlaying.none"),buttonNames:['Ok']});
 	    }
 	    win.remove(busyView);
 	});

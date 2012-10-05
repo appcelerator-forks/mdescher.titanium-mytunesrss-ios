@@ -111,8 +111,8 @@ function Jukebox() {
 	    }
 	};
 	
-	var buttonBack = Titanium.UI.createButton({title:'Back',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-	var buttonPlaylist = Titanium.UI.createButton({title:'Playlist',style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = Titanium.UI.createButton({title:L("jukebox.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonPlaylist = Titanium.UI.createButton({title:L("jukebox.playlist"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	var controlRewind = Titanium.UI.createImageView({image:'images/back.png',width:45,height:45});
 	controlRewind.addEventListener('click', function() {
@@ -168,7 +168,7 @@ function Jukebox() {
 	addTouchListener(controlStop, 'stop');
 	addTouchListener(controlShuffle, 'shuffle');
 	
-	var topbar = addTopToolbar(win, 'Jukebox', buttonBack, undefined);
+	var topbar = addTopToolbar(win, L("jukebox.title"), buttonBack, undefined);
 	
 	var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
 	win.add(Titanium.UI.iOS.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace, controlShuffle, flexSpace]}));
