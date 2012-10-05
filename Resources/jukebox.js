@@ -4,7 +4,7 @@ function Jukebox() {
 	var myParent;
 	var myPlaylist;
 	
-	var win = createWindow();
+	var win = GUI.createWindow();
 
 	var myTrack;
 	var imageView;
@@ -56,16 +56,16 @@ function Jukebox() {
 	        }
 	    }
 	    infoView = Titanium.UI.createView({height:60,top:size+65,left:10,right:10,borderWidth:1,borderColor:"#000000",borderRadius:5,backgroundColor:"#FFFFFF"});
-	    infoView.add(Titanium.UI.createLabel({top:7,left:0,right:0,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name),textAlign:"center"}));
-	    infoView.add(Titanium.UI.createLabel({bottom:7,left:0,right:0,height:24,font:{fontSize:12},text:getDisplayName(track.artist),textAlign:"center"}));
+	    infoView.add(GUI.createLabel({top:7,left:0,right:0,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name),textAlign:"center"}));
+	    infoView.add(GUI.createLabel({bottom:7,left:0,right:0,height:24,font:{fontSize:12},text:getDisplayName(track.artist),textAlign:"center"}));
 	    win.add(imageView);
 	    win.add(infoView);
 	    progressBar = Titanium.UI.createProgressBar({min:0,max:track.time,value:0,bottom:60,left:60,right:60,height:10});
 	    win.add(progressBar);
 	    progressBar.show();
-	    timePlayed = Titanium.UI.createLabel({bottom:60,left:10,height:10,width:40,font:{fontSize:12},text:'',textAlign:'right',color:'#000000'});
+	    timePlayed = GUI.createLabel({bottom:60,left:10,height:10,width:40,font:{fontSize:12},text:'',textAlign:'right',color:'#000000'});
 	    win.add(timePlayed);
-	    timeRemaining = Titanium.UI.createLabel({bottom:60,right:10,width:40,height:10,font:{fontSize:12},text:'',color:'#000000'});
+	    timeRemaining = GUI.createLabel({bottom:60,right:10,width:40,height:10,font:{fontSize:12},text:'',color:'#000000'});
 	    win.add(timeRemaining);
 	}
 	
@@ -315,8 +315,7 @@ function Jukebox() {
 	    if (audioPlayer.playing && audioPlayer.progress > 2000) {
 	        audioPlayer.removeEventListener("change", autoSkipEventListener);
 	        audioPlayer.stop();
-	        audioPlayer.addEventListener("change", autoSkipEventListener);
-	        audioPlayer.start();
+	        playTrack();
 	    } else if (currentPlaylistIndex > 0) {
 	        audioPlayer.removeEventListener("change", autoSkipEventListener);
 	        audioPlayer.stop();

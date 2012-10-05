@@ -3,9 +3,9 @@ function TracksWindow(data, parent) {
 	var self = this;
 	var myParent = parent;
 
-	var win = createWindow();
+	var win = GUI.createWindow();
 
-	var tableView = Titanium.UI.createTableView({top:45});
+	var tableView = GUI.createTableView({top:45});
 	var buttonBack = Titanium.UI.createButton({title:L("tracklist.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -32,7 +32,7 @@ function TracksWindow(data, parent) {
 		} else if (Titanium.Platform.osname === "iphone") {
 			hires = Titanium.Platform.displayCaps.density == "high";
 		}
-	    var row = Titanium.UI.createTableViewRow({height:size + (2 * spacer),className:'track_row',index:i,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+	    var row = GUI.createTableViewRow({height:size + (2 * spacer),className:'track_row',index:i,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
 	    var infoView = Titanium.UI.createView({right:30});
 	    row.add(infoView);
         if (data[i].imageUri !== undefined) {
@@ -42,8 +42,8 @@ function TracksWindow(data, parent) {
             	infoView.add(createCachedImageView({cacheObjectId:data[i].imageHash + "_64",image:data[i].imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'}));
             }
         }
-        var trackName = Titanium.UI.createLabel({text:getDisplayName(data[i].name),top:spacer,left:size + (2 * spacer),height:trackHeight,right:2 * spacer,font:{fontSize:14,fontWeight:'bold'},minimumFontSize:10,touchEnabled:false});
-        var artistName = Titanium.UI.createLabel({text:getDisplayName(data[i].artist),bottom:spacer,left:size + (2 * spacer),height:artistHeight,font:{fontSize:10},touchEnabled:false});
+        var trackName = GUI.createLabel({text:getDisplayName(data[i].name),top:spacer,left:size + (2 * spacer),height:trackHeight,right:2 * spacer,font:{fontSize:14,fontWeight:'bold'},minimumFontSize:10,touchEnabled:false});
+        var artistName = GUI.createLabel({text:getDisplayName(data[i].artist),bottom:spacer,left:size + (2 * spacer),height:artistHeight,font:{fontSize:10},touchEnabled:false});
 	    infoView.add(trackName);
 	    infoView.add(artistName);
 	    infoView.addEventListener("click", function(e) {

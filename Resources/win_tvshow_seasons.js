@@ -3,12 +3,12 @@ function TvShowSeasonsWindow(data) {
 	var self = this;
 	var myParent;
 
-	var win = createWindow();
+	var win = GUI.createWindow();
 
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
-	var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
+	var tableView = GUI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
 	var buttonBack = Titanium.UI.createButton({title:L("tvshow.seasons.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -47,7 +47,7 @@ function TvShowSeasonsWindow(data) {
 				} else if (Titanium.Platform.osname === "iphone") {
 					hires = Titanium.Platform.displayCaps.density == "high";
 				}
-	            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:size + (2 * spacer),className:item.imageUri ? 'show_row_img' : 'show_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+	            var row = GUI.createTableViewRow({hasChild:true,height:size + (2 * spacer),className:item.imageUri ? 'show_row_img' : 'show_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
 	            if (item.imageUri !== undefined) {
 	                var seasonImage;
 	                if (hires) {
@@ -57,8 +57,8 @@ function TvShowSeasonsWindow(data) {
 	                }
 	                row.add(seasonImage);
 	            }
-	            var showName = Titanium.UI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
-	            var showInfo = Titanium.UI.createLabel({text:String.format(L("tvshow.seasons.info"), item.episodeCount),bottom:spacer,left:size + (2 * spacer),height:infoHeight,font:{fontSize:12}});
+	            var showName = GUI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
+	            var showInfo = GUI.createLabel({text:String.format(L("tvshow.seasons.info"), item.episodeCount),bottom:spacer,left:size + (2 * spacer),height:infoHeight,font:{fontSize:12}});
 	            row.add(showName);
 	            row.add(showInfo);
 	            row.episodesUri = item.episodesUri;

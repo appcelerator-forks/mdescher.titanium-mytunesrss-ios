@@ -94,7 +94,7 @@ function setTableDataAndIndex(tableView, items, createTableViewRowCallback, getS
 }
 
 function addTopToolbar(window, titleText, leftButton, rightButton) {
-    var title = Titanium.UI.createLabel({text:titleText,top:0,height:45,textAlign:'center',color:'#FFFFFF',font:{fontSize:20,fontWeight:'bold'}});
+    var title = GUI.createLabel({text:titleText,top:0,height:45,textAlign:'center',color:'#FFFFFF',font:{fontSize:20,fontWeight:'bold'}});
     var buttons = [];
     if (leftButton !== undefined) {
 	    buttons.push(leftButton);
@@ -293,11 +293,10 @@ function loadAndDisplayMovies(parent) {
 function loadAndDisplayTvShows(parent) {
     var response = restCall("GET", getLibrary().tvShowsUri, {});
     if (response.status / 100 === 2) {
-    	var data = removeUnsupportedTracks(response.result);
-        if (data.length === 0) {
+        if (response.result.length === 0) {
         	showError({message:L("tvshows.noneFound"),buttonNames:['Ok']});
         } else {
-	    	new TvShowsWindow(data).open(parent);
+	    	new TvShowsWindow(response.result).open(parent);
 	    }
     } else {
     	showError({message:response.result,buttonNames:['Ok']});
@@ -486,11 +485,6 @@ function getCachedTrackFile(id, uri) {
 
 function deleteCachedTrackFile(id) {
 	getFileForTrackCache(id).deleteFile();
-}
-
-function createWindow() {
-	var win = Titanium.UI.createWindow({backgroundImage:"images/stripe.png",backgroundRepeat:true});
-	return win;
 }
 
 function pingServer() {

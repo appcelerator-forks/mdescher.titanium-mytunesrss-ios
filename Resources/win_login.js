@@ -3,26 +3,26 @@ function LoginWindow() {
 	var self = this;
 	
 	function wrap(components) {
-	    var row = Titanium.UI.createTableViewRow({className:'loginRow',height:TABLE_VIEW_ROW_HEIGHT});
+	    var row = GUI.createTableViewRow({className:'loginRow',height:TABLE_VIEW_ROW_HEIGHT});
 	    for (var i = 0; i < components.length; i++) {
 	        row.add(components[i]);
 	    }
 	    return row;
 	}
 	
-	var win = createWindow();
+	var win = GUI.createWindow();
 	
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
-	var inputServerUrl = Titanium.UI.createTextField({hintText:L("login.serverUrl"),left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,minimumFontSize:12});
-	var inputUsername = Titanium.UI.createTextField({hintText:L("login.username"),left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('username'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false});
-	var inputPassword = Titanium.UI.createTextField({hintText:L("login.password"),left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true});
+	var inputServerUrl = GUI.createTextField({hintText:L("login.serverUrl"),left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,minimumFontSize:12});
+	var inputUsername = GUI.createTextField({hintText:L("login.username"),left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('username'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false});
+	var inputPassword = GUI.createTextField({hintText:L("login.password"),left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true});
 	var inputSaveCredentials = Titanium.UI.createSwitch({right:10,value:Titanium.App.Properties.getBool('saveCredentials', false)});
 	var buttonLogin = Titanium.UI.createButton({title:L("login.login"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-	var labelOnlineMode = Titanium.UI.createLabel({text:L("login.onlineMode"),left:10,font:{fontSize:20,fontWeight:'bold'}});
-	var labelOfflineMode = Titanium.UI.createLabel({text:L("login.offlineMode"),left:10,font:{fontSize:20,fontWeight:'bold'}});
-	var labelDefaultInterface = Titanium.UI.createLabel({text:L("login.openInBrowser"),left:10,font:{fontSize:20,fontWeight:'bold'}});
+	var labelOnlineMode = GUI.createLabel({text:L("login.onlineMode"),left:10,font:{fontSize:20,fontWeight:'bold'}});
+	var labelOfflineMode = GUI.createLabel({text:L("login.offlineMode"),left:10,font:{fontSize:20,fontWeight:'bold'}});
+	var labelDefaultInterface = GUI.createLabel({text:L("login.openInBrowser"),left:10,font:{fontSize:20,fontWeight:'bold'}});
 	
 	var tableViewData = [];
 	tableViewData.push(Titanium.UI.createTableViewSection());
@@ -31,7 +31,7 @@ function LoginWindow() {
 	tableViewData[0].add(wrap([inputServerUrl]));
 	tableViewData[1].add(wrap([inputUsername]));
 	tableViewData[1].add(wrap([inputPassword]));
-	tableViewData[1].add(wrap([Titanium.UI.createLabel({text:L("login.saveCredentials"),left:10}), inputSaveCredentials]));
+	tableViewData[1].add(wrap([GUI.createLabel({text:L("login.saveCredentials"),left:10}), inputSaveCredentials]));
 	var buttonOnlineModeRow = wrap([labelOnlineMode]);
 	buttonOnlineModeRow.hasChild = true;
 	var buttonOfflineModeRow = wrap([labelOfflineMode]);
@@ -42,7 +42,7 @@ function LoginWindow() {
 	tableViewData[2].add(buttonOfflineModeRow);
 	tableViewData[2].add(buttonDefaultInterfaceRow);
 	
-	var tableView = Titanium.UI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"images/stripe.png",selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,scrollable:false});
+	var tableView = GUI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"images/stripe.png",selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,scrollable:false});
 	
 	function doLogin() {
 		var busyView = createBusyView();
@@ -138,10 +138,10 @@ function LoginWindow() {
 	win.add(tableView);
 	
 	if (Titanium.App.version.indexOf('SNAPSHOT') > 0) {
-		win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:30,height:10,font:{fontSize:10}}));
-		win.add(Titanium.UI.createLabel({text: Titanium.Filesystem.getFile('white_noise.wav').modificationTimestamp(), textAlign:'center',bottom:20,height:10,font:{fontSize:10}}));
+		win.add(GUI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:30,height:10,font:{fontSize:10}}));
+		win.add(GUI.createLabel({text: Titanium.Filesystem.getFile('white_noise.wav').modificationTimestamp(), textAlign:'center',bottom:20,height:10,font:{fontSize:10}}));
 	} else {
-		win.add(Titanium.UI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:20,height:10,font:{fontSize:10}}));
+		win.add(GUI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:20,height:10,font:{fontSize:10}}));
 	}
 	win.add(actIndicatorView);
 	

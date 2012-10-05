@@ -5,7 +5,7 @@ function MenuWindow() {
 	var self = this;
 	var myParent;
 	
-	var win = createWindow();
+	var win = GUI.createWindow();
 	
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
@@ -63,11 +63,11 @@ function MenuWindow() {
 		item.className = "menu_item";
 		item.hasChild = true;
 		item.selectionStyle = Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE;
-		var row = Titanium.UI.createTableViewRow(item);
+		var row = GUI.createTableViewRow(item);
 		return row;
 	}
 	
-	var tableView = Titanium.UI.createTableView({top:90,bottom:50,backgroundImage:"images/stripe.png",scrollable:false});
+	var tableView = GUI.createTableView({top:90,bottom:50,backgroundImage:"images/stripe.png",scrollable:false});
 	
 	var rowPlaylists = createMenuItem({title:L("menu.playlists")});
 	rowPlaylists.addEventListener('click', function() {

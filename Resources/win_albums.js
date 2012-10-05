@@ -3,12 +3,12 @@ function AlbumsWindow(data) {
 	var self = this;
 	var myParent;
 
-	var win = createWindow();
+	var win = GUI.createWindow();
 
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
-	var tableView = Titanium.UI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
+	var tableView = GUI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
 	var buttonBack = Titanium.UI.createButton({title:L("albums.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -51,7 +51,7 @@ function AlbumsWindow(data) {
 				} else if (Titanium.Platform.osname === "iphone") {
 					hires = Titanium.Platform.displayCaps.density == "high";
 				}
-	            var row = Titanium.UI.createTableViewRow({title:displayName,color:'transparent',hasChild:true,height:size + (2 * spacer),className:item.imageUri ? 'album_row_img' : 'album_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+	            var row = GUI.createTableViewRow({hasChild:true,height:size + (2 * spacer),className:item.imageUri ? 'album_row_img' : 'album_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
 	            if (item.imageUri !== undefined) {
 	                var albumImage;
 	                if (hires) {
@@ -61,8 +61,8 @@ function AlbumsWindow(data) {
 	                }
 	                row.add(albumImage);
 	            }
-	            var albumName = Titanium.UI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:albumHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
-	            var artistName = Titanium.UI.createLabel({text:getDisplayName(item.artist),bottom:spacer,left:size + (2 * spacer),height:artistHeight,font:{fontSize:12}});
+	            var albumName = GUI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:albumHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
+	            var artistName = GUI.createLabel({text:getDisplayName(item.artist),bottom:spacer,left:size + (2 * spacer),height:artistHeight,font:{fontSize:12}});
 	            row.add(albumName);
 	            row.add(artistName);
 	            row.tracksUri = item.tracksUri;
