@@ -67,7 +67,7 @@ function MenuWindow() {
 		return row;
 	}
 	
-	var tableView = GUI.createTableView({top:90,bottom:50,backgroundImage:"images/stripe.png",scrollable:false});
+	var tableView = GUI.createTableView({top:90,bottom:50,scrollable:false});
 	
 	var rowPlaylists = createMenuItem({title:L("menu.playlists")});
 	rowPlaylists.addEventListener('click', function() {

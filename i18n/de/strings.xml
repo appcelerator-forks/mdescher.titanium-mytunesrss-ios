@@ -30,7 +30,7 @@
 	<string name="menu.search.hint">Suche</string>
 	<string name="menu.back">Zurück</string>
 	<string name="menu.logout">Ausloggen</string>
-	<string name="menu.settings">Einstellungen</string>
+	<string name="menu.settings">Optionen</string>
 	<string name="menu.settings.loadFailed">Aktuelle Einstellungen konnten nicht geladen werden.</string>
 	<string name="menu.playlists">Playlists</string>
 	<string name="menu.albums">Alben</string>
@@ -62,4 +62,21 @@
 	<string name="jukebox.back">Zurück</string>
 	<string name="jukebox.playlist">Playlist</string>
 	<string name="jukebox.title">Jukebox</string>
+	<string name="settings.audioPlayer">Jukebox</string>
+	<string name="settings.search">Suche</string>
+	<string name="settings.bufferSize">Puffergröße</string>
+	<string name="settings.searchAccuracy">Genauigkeit der Ergebnisse</string>
+	<string name="settings.cache">Cache</string>
+	<string name="settings.imageCache">Bilder auf dem Gerät cachen</string>
+	<string name="settings.transcoders">Transcoder</string>
+	<string name="settings.mobileTranscoders">Transcoder (Mobilnetz)</string>
+	<string name="settings.title">Optionen</string>
+	<string name="settings.accuracyHint">Genauigkeit in Prozent</string>
+	<string name="settings.imageCache.clear">Bilder-Cache löschen</string>
+	<string name="settings.trackCache.clear">Track-Cache löschen</string>
+	<string name="settings.cancel">Abbrechen</string>
+	<string name="settings.save">Speichern</string>
+	<string name="settings.invalidBufferSize">Die Puffergröße muss ein Wert zwischen 1024 und 65536 sein.</string>
+	<string name="settings.invalidSearchAccuracy">Die Ergebnisgenauigkeit muss ein Wert zwischen 0 und 100 sein.</string>
+	<string name="settings.bufferSizeHint">Größe in Bytes</string>
 </resources>

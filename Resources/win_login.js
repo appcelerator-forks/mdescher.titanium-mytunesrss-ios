@@ -2,17 +2,6 @@ function LoginWindow() {
 	
 	var self = this;
 	
-	function wrap(components, vScale) {
-		if (vScale == undefined) {
-			vScale = 1;
-		}
-	    var row = GUI.createInvisibleTableViewRow({className:'loginRow',height:TABLE_VIEW_ROW_HEIGHT * vScale});
-	    for (var i = 0; i < components.length; i++) {
-	        row.add(components[i]);
-	    }
-	    return row;
-	}
-	
 	var win = GUI.createWindow();
 	
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
@@ -28,18 +17,17 @@ function LoginWindow() {
 	var buttonDefaultDevice = GUI.createButton({title:L("login.openInBrowser"),right:10,font:{fontSize:20,fontWeight:'bold'}});
 	
 	var tableViewData = [];
-	tableViewData.push(wrap([], 0.75));
-	tableViewData.push(wrap([GUI.createLabel({text:L("login.serverUrl"),left:10,shadowColor:"#808080"})], 0.5));
-	tableViewData.push(wrap([inputServerUrl]));
-	tableViewData.push(wrap([], 0.75));
-	tableViewData.push(wrap([GUI.createLabel({text:L("login.credentials"),left:10,shadowColor:"#808080"})], 0.5));
-	tableViewData.push(wrap([inputUsername]));
-	tableViewData.push(wrap([inputPassword]));
-	tableViewData.push(wrap([GUI.createLabel({text:L("login.saveCredentials"),left:10}), inputSaveCredentials]));
-	tableViewData.push(wrap([], 0.75));
-	tableViewData.push(wrap([buttonOnlineMode, buttonOfflineMode, buttonDefaultDevice]));
+	tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createHeader({text:L("login.serverUrl"),left:10})], 0.5));
+	tableViewData.push(GUI.createPopulatedTableViewRow([inputServerUrl]));
+	tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
+	tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createHeader({text:L("login.credentials"),left:10})], 0.5));
+	tableViewData.push(GUI.createPopulatedTableViewRow([inputUsername]));
+	tableViewData.push(GUI.createPopulatedTableViewRow([inputPassword]));
+	tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("login.saveCredentials"),left:10}), inputSaveCredentials]));
+	tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
+	tableViewData.push(GUI.createPopulatedTableViewRow([buttonOnlineMode, buttonOfflineMode, buttonDefaultDevice]));
 	
-	var tableView = GUI.createInvisibleTableView({data:tableViewData,top:45,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,scrollable:false});
+	var tableView = GUI.createInvisibleTableView({data:tableViewData,top:80,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,scrollable:false});
 	
 	function doLogin() {
 		var busyView = createBusyView();

@@ -33,13 +33,21 @@ exports.createLabel = function(options) {
 	return Titanium.UI.createLabel(options);
 }
 
+exports.createHeader = function(options) {
+	options.color = "#CCCCCC";
+	options.shadowColor = "#808080";
+	options.font = {fontSize:18, fontWeight:"bold"};
+	return Titanium.UI.createLabel(options);
+}
+
 exports.createButton = function(options) {
 	options.color = "#000000";
 	options.backgroundImage = "images/button.png";
 	options.backgroundTopCap = 17;
 	options.backgroundLeftCap = 17;
 	options.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
-	options.height = 45;
+	options.height = 35;
+	options.font = {fontSize:16};
 	return Titanium.UI.createButton(options);
 }
 
@@ -50,7 +58,7 @@ exports.createSmallButton = function(options) {
 	options.backgroundLeftCap = 10;
 	options.font = {fontSize:12};
 	options.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
-	options.height = 25;
+	options.height = 30;
 	return Titanium.UI.createButton(options);
 }
 
@@ -77,4 +85,15 @@ exports.createTopToolbar = function(titleText, leftButton, rightButton) {
 		view.add(rightButton);
 	}
 	return view;
+}
+
+exports.createPopulatedTableViewRow = function(components, vScale) {
+	if (vScale == undefined) {
+		vScale = 1;
+	}
+    var row = GUI.createInvisibleTableViewRow({height:40 * vScale});
+    for (var i = 0; i < components.length; i++) {
+        row.add(components[i]);
+    }
+    return row;
 }
