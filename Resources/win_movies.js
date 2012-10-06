@@ -16,7 +16,7 @@ function MoviesWindow(data) {
 	    win.close();
 	});
 	
-	addTopToolbar(win, L("movies.title"), buttonBack, undefined);
+	win.add(GUI.createTopToolbar(L("movies.title"), buttonBack, undefined));
 	
 	win.add(tableView);
 	

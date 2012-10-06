@@ -16,7 +16,7 @@ function AlbumsWindow(data) {
 	    win.close();
 	});
 	
-	addTopToolbar(win, L("albums.title"), buttonBack, undefined);
+	win.add(GUI.createTopToolbar(L("albums.title"), buttonBack, undefined));
 	
 	win.add(tableView);
 	

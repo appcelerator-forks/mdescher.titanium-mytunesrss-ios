@@ -16,7 +16,7 @@ function ArtistsWindow(data) {
 	    win.close();
 	});
 	
-	addTopToolbar(win, L("artists.title"), buttonBack, undefined);
+	win.add(GUI.createTopToolbar(L("artists.title"), buttonBack, undefined));
 	
 	win.add(tableView);
 	

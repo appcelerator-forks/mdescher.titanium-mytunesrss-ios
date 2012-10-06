@@ -137,7 +137,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 
 	var tableView = GUI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"images/stripe.png"});
 	
-	addTopToolbar(win, 'Settings', buttonCancel, buttonSave);
+	win.add(GUI.createTopToolbar('Settings', buttonCancel, buttonSave));
 	win.add(tableView);
 	win.add(actIndicatorView);
 

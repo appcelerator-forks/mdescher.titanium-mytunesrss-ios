@@ -12,7 +12,8 @@ Titanium.include("videoplayer.js");
 Titanium.include("win_tvshows.js");
 Titanium.include("win_tvshow_seasons.js");
 Titanium.include("win_movies.js");
-Titanium.include("GUI.js");
+
+var GUI = require("lib/GUI");
 
 Titanium.Media.audioSessionMode = Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK;
 

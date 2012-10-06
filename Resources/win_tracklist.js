@@ -13,7 +13,7 @@ function TracksWindow(data, parent) {
 	    win.close();
 	});
 	
-	addTopToolbar(win, L("tracklist.title"), buttonBack, undefined);
+	win.add(GUI.createTopToolbar(L("tracklist.title"), buttonBack, undefined));
 
 	win.add(tableView);
 	

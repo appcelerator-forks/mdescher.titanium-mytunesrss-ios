@@ -93,22 +93,6 @@ function setTableDataAndIndex(tableView, items, createTableViewRowCallback, getS
 	}
 }
 
-function addTopToolbar(window, titleText, leftButton, rightButton) {
-    var title = GUI.createLabel({text:titleText,top:0,height:45,textAlign:'center',color:'#FFFFFF',font:{fontSize:20,fontWeight:'bold'}});
-    var buttons = [];
-    if (leftButton !== undefined) {
-	    buttons.push(leftButton);
-    }
-    buttons.push(Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE}));
-    if (rightButton !== undefined) {
-		buttons.push(rightButton);    	
-    }
-	var toolbar = Titanium.UI.iOS.createToolbar({top:0,height:45,items:buttons});
-	toolbar.add(title);
-	window.add(toolbar);
-	return toolbar;
-}
-
 function removeUnsupportedTracks(items) {
     for (var i = items.length - 1; i >= 0; i--) {
         if ((items[i].mediaType != 'Audio' && items[i].mediaType != 'Video') || items[i].protected === true) {

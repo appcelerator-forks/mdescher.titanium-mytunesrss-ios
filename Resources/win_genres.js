@@ -16,7 +16,7 @@ function GenresWindow(data) {
 	    win.close();
 	});
 	
-	addTopToolbar(win, L("genres.title"), buttonBack, undefined);
+	win.add(GUI.createTopToolbar(L("genres.title"), buttonBack, undefined));
 	
 	win.add(tableView);
 	

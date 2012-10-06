@@ -16,7 +16,7 @@ function TvShowsWindow(data) {
 	    win.close();
 	});
 	
-	addTopToolbar(win, L("tvshows.title"), buttonBack, undefined);
+	win.add(GUI.createTopToolbar(L("tvshows.title"), buttonBack, undefined));
 	
 	win.add(tableView);
 	

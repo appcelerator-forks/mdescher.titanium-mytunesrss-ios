@@ -31,7 +31,7 @@ function MenuWindow() {
 	    searchBar.blur();        
 	});
 	
-	var buttonLogout = Titanium.UI.createButton({title:offlineMode ? L("menu.back") : L("menu.logout"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonLogout = GUI.createSmallButton({title:offlineMode ? L("menu.back") : L("menu.logout")});
 	buttonLogout.addEventListener('click', function() {
 		jukebox.destroy();
 	    jukebox = new Jukebox();
@@ -41,7 +41,7 @@ function MenuWindow() {
 	    win.close();
 	});
 
-	var buttonSettings = Titanium.UI.createButton({title:L("menu.settings"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonSettings = GUI.createSmallButton({title:L("menu.settings")});
 	buttonSettings.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -134,7 +134,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 			
-	addTopToolbar(win, "MyTunesRSS", buttonLogout, buttonSettings);
+	win.add(GUI.createTopToolbar("MyTunesRSS", buttonLogout, buttonSettings));
 	win.add(searchBar);
 	win.add(tableView);
 	win.add(Titanium.UI.iOS.createAdView({adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,bottom:0,height:50}));

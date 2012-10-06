@@ -168,7 +168,8 @@ function Jukebox() {
 	addTouchListener(controlStop, 'stop');
 	addTouchListener(controlShuffle, 'shuffle');
 	
-	var topbar = addTopToolbar(win, L("jukebox.title"), buttonBack, undefined);
+	var topbar = GUI.createTopToolbar(L("jukebox.title"), buttonBack, undefined);
+	win.add(topbar);
 	
 	var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
 	win.add(Titanium.UI.iOS.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace, controlShuffle, flexSpace]}));

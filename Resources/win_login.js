@@ -2,8 +2,11 @@ function LoginWindow() {
 	
 	var self = this;
 	
-	function wrap(components) {
-	    var row = GUI.createTableViewRow({className:'loginRow',height:TABLE_VIEW_ROW_HEIGHT});
+	function wrap(components, vScale) {
+		if (vScale == undefined) {
+			vScale = 1;
+		}
+	    var row = GUI.createInvisibleTableViewRow({className:'loginRow',height:TABLE_VIEW_ROW_HEIGHT * vScale});
 	    for (var i = 0; i < components.length; i++) {
 	        row.add(components[i]);
 	    }
@@ -20,29 +23,23 @@ function LoginWindow() {
 	var inputPassword = GUI.createTextField({hintText:L("login.password"),left:10,right:10,top:5,bottom:5,value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true});
 	var inputSaveCredentials = Titanium.UI.createSwitch({right:10,value:Titanium.App.Properties.getBool('saveCredentials', false)});
 	var buttonLogin = Titanium.UI.createButton({title:L("login.login"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-	var labelOnlineMode = GUI.createLabel({text:L("login.onlineMode"),left:10,font:{fontSize:20,fontWeight:'bold'}});
-	var labelOfflineMode = GUI.createLabel({text:L("login.offlineMode"),left:10,font:{fontSize:20,fontWeight:'bold'}});
-	var labelDefaultInterface = GUI.createLabel({text:L("login.openInBrowser"),left:10,font:{fontSize:20,fontWeight:'bold'}});
+	var buttonOnlineMode = GUI.createButton({title:L("login.onlineMode"),left:10,font:{fontSize:20,fontWeight:'bold'}});
+	var buttonOfflineMode = GUI.createButton({title:L("login.offlineMode"),font:{fontSize:20,fontWeight:'bold'}});
+	var buttonDefaultDevice = GUI.createButton({title:L("login.openInBrowser"),right:10,font:{fontSize:20,fontWeight:'bold'}});
 	
 	var tableViewData = [];
-	tableViewData.push(Titanium.UI.createTableViewSection());
-	tableViewData.push(Titanium.UI.createTableViewSection());
-	tableViewData.push(Titanium.UI.createTableViewSection());
-	tableViewData[0].add(wrap([inputServerUrl]));
-	tableViewData[1].add(wrap([inputUsername]));
-	tableViewData[1].add(wrap([inputPassword]));
-	tableViewData[1].add(wrap([GUI.createLabel({text:L("login.saveCredentials"),left:10}), inputSaveCredentials]));
-	var buttonOnlineModeRow = wrap([labelOnlineMode]);
-	buttonOnlineModeRow.hasChild = true;
-	var buttonOfflineModeRow = wrap([labelOfflineMode]);
-	buttonOfflineModeRow.hasChild = true;
-	var buttonDefaultInterfaceRow = wrap([labelDefaultInterface]);
-	buttonDefaultInterfaceRow.hasChild = true;
-	tableViewData[2].add(buttonOnlineModeRow);
-	tableViewData[2].add(buttonOfflineModeRow);
-	tableViewData[2].add(buttonDefaultInterfaceRow);
+	tableViewData.push(wrap([], 0.75));
+	tableViewData.push(wrap([GUI.createLabel({text:L("login.serverUrl"),left:10,shadowColor:"#808080"})], 0.5));
+	tableViewData.push(wrap([inputServerUrl]));
+	tableViewData.push(wrap([], 0.75));
+	tableViewData.push(wrap([GUI.createLabel({text:L("login.credentials"),left:10,shadowColor:"#808080"})], 0.5));
+	tableViewData.push(wrap([inputUsername]));
+	tableViewData.push(wrap([inputPassword]));
+	tableViewData.push(wrap([GUI.createLabel({text:L("login.saveCredentials"),left:10}), inputSaveCredentials]));
+	tableViewData.push(wrap([], 0.75));
+	tableViewData.push(wrap([buttonOnlineMode, buttonOfflineMode, buttonDefaultDevice]));
 	
-	var tableView = GUI.createTableView({data:tableViewData,style:Titanium.UI.iPhone.TableViewStyle.GROUPED,top:45,backgroundImage:"images/stripe.png",selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,scrollable:false});
+	var tableView = GUI.createInvisibleTableView({data:tableViewData,top:45,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,scrollable:false});
 	
 	function doLogin() {
 		var busyView = createBusyView();
@@ -79,7 +76,7 @@ function LoginWindow() {
 	    return serverUrl;
 	}
 	
-    buttonOnlineModeRow.addEventListener('click', function() {
+    buttonOnlineMode.addEventListener('click', function() {
 		offlineMode = false;
 	    var serverUrl = getServerUrl();
 	    if (Titanium.App.Properties.getString("serverUrl") !== serverUrl) {
@@ -120,21 +117,21 @@ function LoginWindow() {
 	    }
 	});
 	
-	buttonOfflineModeRow.addEventListener('click', function() {
+	buttonOfflineMode.addEventListener('click', function() {
 		offlineMode = true;
 	    var serverUrl = getServerUrl();
 		new MenuWindow().open(self);
 		win.close();
 	});
 
-	buttonDefaultInterfaceRow.addEventListener('click', function() {
+	buttonDefaultDevice.addEventListener('click', function() {
 		var serverUrl = getServerUrl();
 	    Titanium.App.Properties.setString('serverUrl', serverUrl);
 	    Titanium.Platform.openURL(serverUrl + '/mytunesrss/?interface=default');
 	   
 	});
 	
-	addTopToolbar(win, 'MyTunesRSS', undefined, undefined);
+	win.add(GUI.createTopToolbar('MyTunesRSS', undefined, undefined));
 	win.add(tableView);
 	
 	if (Titanium.App.version.indexOf('SNAPSHOT') > 0) {

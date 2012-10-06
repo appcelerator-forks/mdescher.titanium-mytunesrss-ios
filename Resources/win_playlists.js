@@ -16,7 +16,7 @@ function PlaylistsWindow(data) {
 	    win.close();
 	});
 	
-	addTopToolbar(win, L("playlists.title"), buttonBack, undefined);
+	win.add(GUI.createTopToolbar(L("playlists.title"), buttonBack, undefined));
 	
 	win.add(tableView);
 	
