@@ -6,7 +6,7 @@ function TracksWindow(data, parent) {
 	var win = GUI.createWindow();
 
 	var tableView = GUI.createTableView({top:45});
-	var buttonBack = Titanium.UI.createButton({title:L("tracklist.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = GUI.createSmallButton({title:L("tracklist.back")});
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open(myParent === jukebox ? self : undefined);

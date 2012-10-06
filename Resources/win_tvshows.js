@@ -9,7 +9,7 @@ function TvShowsWindow(data) {
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
 	var tableView = GUI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
-	var buttonBack = Titanium.UI.createButton({title:L("tvshows.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = GUI.createSmallButton({title:L("tvshows.back")});
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open();

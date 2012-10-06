@@ -56,8 +56,8 @@ function Jukebox() {
 	        }
 	    }
 	    infoView = Titanium.UI.createView({height:60,top:size+65,left:10,right:10,borderWidth:1,borderColor:"#000000",borderRadius:5,backgroundColor:"#FFFFFF"});
-	    infoView.add(GUI.createLabel({top:7,left:0,right:0,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name),textAlign:"center"}));
-	    infoView.add(GUI.createLabel({bottom:7,left:0,right:0,height:24,font:{fontSize:12},text:getDisplayName(track.artist),textAlign:"center"}));
+	    infoView.add(GUI.createLabel({top:7,left:0,right:0,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name),textAlign:"center",color:"#000000"}));
+	    infoView.add(GUI.createLabel({bottom:7,left:0,right:0,height:24,font:{fontSize:12},text:getDisplayName(track.artist),textAlign:"center",color:"#000000"}));
 	    win.add(imageView);
 	    win.add(infoView);
 	    progressBar = Titanium.UI.createProgressBar({min:0,max:track.time,value:0,bottom:60,left:60,right:60,height:10});
@@ -111,8 +111,8 @@ function Jukebox() {
 	    }
 	};
 	
-	var buttonBack = Titanium.UI.createButton({title:L("jukebox.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-	var buttonPlaylist = Titanium.UI.createButton({title:L("jukebox.playlist"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = GUI.createSmallButton({title:L("jukebox.back")});
+	var buttonPlaylist = GUI.createSmallButton({title:L("jukebox.playlist")});
 	
 	var controlRewind = Titanium.UI.createImageView({image:'images/back.png',width:45,height:45});
 	controlRewind.addEventListener('click', function() {
@@ -168,12 +168,10 @@ function Jukebox() {
 	addTouchListener(controlStop, 'stop');
 	addTouchListener(controlShuffle, 'shuffle');
 	
-	var topbar = GUI.createTopToolbar(L("jukebox.title"), buttonBack, undefined);
-	win.add(topbar);
+	var topbar = undefined;
 	
 	var flexSpace = Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE});
-	win.add(Titanium.UI.iOS.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace, controlShuffle, flexSpace]}));
-	
+	win.add(Titanium.UI.iOS.createToolbar({bottom:0,height:45,items:[flexSpace, controlRewind, flexSpace, controlPlay, flexSpace, controlPause, flexSpace, controlStop, flexSpace, controlFastForward, flexSpace, controlShuffle, flexSpace]}));	
 	
 	/**
 	 * Open the jukebox window. 
@@ -183,11 +181,15 @@ function Jukebox() {
 			myParent = parent;
 		}
 		myPlaylist = playlist;
-		if (myPlaylist === undefined) {
-			topbar.items = [buttonBack, Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE})];
-		} else {
-			topbar.items = [buttonBack, Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE}), buttonPlaylist];
+		if (topbar !== undefined) {
+			win.remove(topbar);
 		}
+		if (myPlaylist === undefined) {
+			topbar = GUI.createTopToolbar(L("jukebox.title"), buttonBack, undefined);
+		} else {
+			topbar = GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist);
+		}
+		win.add(topbar);
 		win.open();
 	}
 	
