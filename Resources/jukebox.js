@@ -4,7 +4,7 @@ function Jukebox() {
 	var myParent;
 	var myPlaylist;
 	
-	var win = GUI.createWindow();
+	var win = GUI.createWindow({});
 
 	var myTrack;
 	var imageView;
@@ -111,8 +111,8 @@ function Jukebox() {
 	    }
 	};
 	
-	var buttonBack = GUI.createSmallButton({title:L("jukebox.back")});
-	var buttonPlaylist = GUI.createSmallButton({title:L("jukebox.playlist")});
+	var buttonBack = GUI.createButton({title:L("jukebox.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonPlaylist = GUI.createButton({title:L("jukebox.playlist"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	var controlRewind = Titanium.UI.createImageView({image:'images/back.png',width:45,height:45});
 	controlRewind.addEventListener('click', function() {

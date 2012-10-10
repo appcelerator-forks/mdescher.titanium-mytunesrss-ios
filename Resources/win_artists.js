@@ -3,13 +3,13 @@ function ArtistsWindow(data) {
 	var self = this;
 	var myParent;
 
-	var win = GUI.createWindow();
+	var win = GUI.createWindow({});
 	
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
-	var tableView = GUI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}), filterAttribute:'title',top:45});
-	var buttonBack = GUI.createSmallButton({title:L("artists.back")});
+	var tableView = GUI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}), filterAttribute:'title',top:45});
+	var buttonBack = GUI.createButton({title:L("artists.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open();

@@ -3,10 +3,10 @@ function TracksWindow(data, parent) {
 	var self = this;
 	var myParent = parent;
 
-	var win = GUI.createWindow();
+	var win = GUI.createWindow({});
 
 	var tableView = GUI.createTableView({top:45});
-	var buttonBack = GUI.createSmallButton({title:L("tracklist.back")});
+	var buttonBack = GUI.createButton({title:L("tracklist.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open(myParent === jukebox ? self : undefined);
@@ -17,7 +17,7 @@ function TracksWindow(data, parent) {
 
 	win.add(tableView);
 	
-	var tableData = [];
+	var tableData = new RowArray();
 	for (var i = 0; i < data.length; i++) {
 		var trackHeight = 20;
 		var artistHeight = 15;
@@ -70,7 +70,17 @@ function TracksWindow(data, parent) {
 	    });
 
 	    syncImage = offlineMode || getCachedTrackFile(data[i].id) !== undefined ? "images/trash.png" : "images/download.png";
-	    syncImageView = Titanium.UI.createImageView({hires:hires,image:syncImage,width:20,height:20,right:5});
+	    var syncImageGlowView = Titanium.UI.createView({width:50,height:50,right:-10,opacity:0,backgroundGradient:{type:"radial",startPoint:{x:25,y:25},endPoint:{x:25,y:25},colors:["#FFFFFF",DARK_GRAY],startRadius:"0",endRadius:"25",backfillStart:false}});
+	    var syncImageView = Titanium.UI.createImageView({hires:hires,image:syncImage,width:20,height:20,right:5,glow:syncImageGlowView});
+	    syncImageView.addEventListener("touchstart", function(e) {
+	    	e.source.glow.setOpacity(0.75);
+	    });
+  	    syncImageView.addEventListener("touchend", function(e) {
+	    	e.source.glow.setOpacity(0);
+	    });
+  	    syncImageView.addEventListener("touchcancel", function(e) {
+	    	e.source.glow.setOpacity(0);
+	    });
 	    syncImageView.addEventListener("click", function(e) {
 	    	if (offlineMode || getCachedTrackFile(data[e.index].id) !== undefined) {
 	    		deleteCachedTrackFile(data[e.index].id);
@@ -117,9 +127,10 @@ function TracksWindow(data, parent) {
 	    	}
 	    });
 	    row.add(syncImageView);
+	    row.add(syncImageGlowView);
 	    tableData.push(row);
 	}
-	tableView.setData(tableData);
+	tableView.setData(tableData.getRows());
 	
 	/**
 	 * Open the tracks window. 

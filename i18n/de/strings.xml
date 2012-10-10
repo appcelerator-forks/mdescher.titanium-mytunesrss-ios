@@ -15,6 +15,7 @@
 	<string name="servererror.EXISTING_USER_SESSION">Sie sind bereits eingeloggt.</string>
 	<string name="servererror.INVALID_LOGIN">Ihre Benutzerinformationen sind ungültig.</string>
 	<string name="servererror.UNKNOWN">Ein unbekannter Fehler ist aufgetreten, bitte versuchen Sie es erneut.</string>
+	<string name="login.connect">Verbinden</string>
 	<string name="login.credentials">Benutzerdaten</string>
 	<string name="login.username">Benutzername</string>
 	<string name="login.password">Kennwort</string>

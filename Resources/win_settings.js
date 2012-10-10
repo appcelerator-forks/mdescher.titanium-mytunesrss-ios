@@ -17,7 +17,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	    }
 	}
 	
-	var win = GUI.createWindow();
+	var win = GUI.createWindow({});
 	
 	var transcoderSwitchesWifi = [];
 	var transcoderSwitchesMobile = [];
@@ -42,13 +42,13 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
-	var buttonCancel = GUI.createSmallButton({title:L("settings.cancel")});
+	var buttonCancel = GUI.createButton({title:L("settings.cancel"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	buttonCancel.addEventListener('click', function() {
 		myParent.open();
 	    win.close();
 	});
 	
-	var buttonSave = GUI.createSmallButton({title:L("settings.save")});
+	var buttonSave = GUI.createButton({title:L("settings.save"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	buttonSave.addEventListener('click', function() {
 	   	if (bufferSizeInput.value < 1024 || bufferSizeInput.value > 65536) {
 			showError({message:L("settings.invalidBufferSize"),buttonNames:['Ok']});
@@ -130,7 +130,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		}
 	}
 
-	var tableView = GUI.createInvisibleTableView({data:tableViewData,top:80});
+	var tableView = GUI.createTableView({data:tableViewData,top:80,separatorStyle:Titanium.UI.iPhone.TableViewSeparatorStyle.NONE,borderColor:"transparent"});
 	
 	win.add(GUI.createTopToolbar(L("settings.title"), buttonCancel, buttonSave));
 	win.add(tableView);
