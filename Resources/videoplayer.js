@@ -3,7 +3,7 @@ function VideoPlayerWindow(videoUrl) {
 	var self = this;
 	var myParent;
 
-	var win = GUI.createWindow();
+	var win = GUI.createWindow({});
 
 	win.orientationModes = [
 	    Titanium.UI.LANDSCAPE_RIGHT,
