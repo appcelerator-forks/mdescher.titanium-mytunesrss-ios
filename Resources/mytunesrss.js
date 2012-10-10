@@ -73,9 +73,13 @@ function setTableDataAndIndex(tableView, items, createTableViewRowCallback, getS
 			index = 26;
 		}
 		if (!section[index]) {
-			section[index] = Titanium.UI.createTableViewSection({headerTitle:sectionTitle[index]});
+			var headerView = Titanium.UI.createView({height:25,width:Titanium.UI.FILL,backgroundGradient:{type:"linear", colors:["#808080","#CCCCCC"],startPoint:{x:0,y:0},endPoint:{x:0,y:24},backFillStart:false}});
+			headerView.add(Titanium.UI.createLabel({left:10,text:sectionTitle[index],font:{fontSize:12,fontWeight:"bold"},color:"#000000"}));
+			section[index] = Titanium.UI.createTableViewSection({headerView:headerView});
 		}
-		section[index].add(createTableViewRowCallback(items[i], i));
+		var row = createTableViewRowCallback(items[i], i);
+		row.backgroundColor = i % 2 == 0 ? LIGHT_GRAY : DARK_GRAY;
+		section[index].add(row);
 	}
 	var indexData = [];
 	var tableData = [];

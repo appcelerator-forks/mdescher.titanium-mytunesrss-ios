@@ -1,5 +1,8 @@
 Titanium.include('mytunesrss.js');
 Titanium.include('win_login.js');
+Titanium.include('win_login_online.js');
+Titanium.include('win_login_offline.js');
+Titanium.include('win_login_safari.js');
 Titanium.include('win_menu.js');
 Titanium.include('win_albums.js');
 Titanium.include("win_artists.js");
@@ -13,13 +16,36 @@ Titanium.include("win_tvshows.js");
 Titanium.include("win_tvshow_seasons.js");
 Titanium.include("win_movies.js");
 
+var DARK_GRAY = "#1B1B1B";
+var LIGHT_GRAY = "#2B2B2B";
+
+function Counter(start) {
+	var current = start;
+	
+	this.inc = function(x) {
+		current += x;
+		return current;
+	}
+}
+
+function RowArray() {
+	var rows = [];
+	
+	this.push = function(row) {
+		row.backgroundColor = rows.length % 2 == 0 ? DARK_GRAY : DARK_GRAY;
+		rows.push(row);
+	}
+	
+	this.getRows = function() {
+		return rows;
+	}
+}
+
 var GUI = require("lib/GUI");
 
 Titanium.Media.audioSessionMode = Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK;
 
-var view = Titanium.UI.createView();
-
-Titanium.UI.setBackgroundColor('#000');
+var view = Titanium.UI.createView({backgroundColor:DARK_GRAY});
 
 var jukebox = new Jukebox();
 var connectedUsername;

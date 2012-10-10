@@ -1,30 +1,17 @@
-exports.createWindow = function() {
-	var win = Titanium.UI.createWindow({backgroundImage:"none",backgroundColor:"#000000"});
-	return win;
+exports.createWindow = function(options) {
+	options.barColor = "#000000";
+	options.backgroundColor = DARK_GRAY;
+	return Titanium.UI.createWindow(options);
 }
 
 exports.createTableView = function(options) {
-	options.backgroundColor = "#000000";
-	options.backgroundImage = "none";
-	options.separatorColor = "#808080";
-	return Titanium.UI.createTableView(options);
-}
-
-exports.createInvisibleTableView = function(options) {
-	options.backgroundColor = "transparent";
-	options.borderColor = "transparent";
-	options.backgroundImage = "none";
-	options.separatorStyle = Titanium.UI.iPhone.TableViewSeparatorStyle.NONE;
+	options.separatorColor = "#000000";
+	options.backgroundColor = DARK_GRAY;
 	return Titanium.UI.createTableView(options);
 }
 
 exports.createTextField = function(options) {
-	options.color = "#000000";
-	options.backgroundImage = "images/textfield.png";
-	options.backgroundTopCap = 17;
-	options.backgroundLeftCap = 17;
-	options.paddingLeft = 17;
-	options.paddingRight = 17;
+	options.borderStyle = Titanium.UI.INPUT_BORDERSTYLE_ROUNDED;
 	return Titanium.UI.createTextField(options);
 }
 
@@ -34,31 +21,12 @@ exports.createLabel = function(options) {
 }
 
 exports.createHeader = function(options) {
-	options.color = "#CCCCCC";
-	options.shadowColor = "#808080";
 	options.font = {fontSize:18, fontWeight:"bold"};
-	return Titanium.UI.createLabel(options);
+	options.shadowColor = "#AAAAAA";
+	return GUI.createLabel(options);
 }
 
 exports.createButton = function(options) {
-	options.color = "#000000";
-	options.backgroundImage = "images/button.png";
-	options.backgroundTopCap = 17;
-	options.backgroundLeftCap = 17;
-	options.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
-	options.height = 35;
-	options.font = {fontSize:16};
-	return Titanium.UI.createButton(options);
-}
-
-exports.createSmallButton = function(options) {
-	options.color = "#000000";
-	options.backgroundImage = "images/button_small.png";
-	options.backgroundTopCap = 10;
-	options.backgroundLeftCap = 10;
-	options.font = {fontSize:12};
-	options.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
-	options.height = 30;
 	return Titanium.UI.createButton(options);
 }
 
@@ -67,33 +35,38 @@ exports.createTableViewRow = function(options) {
 	return Titanium.UI.createTableViewRow(options);
 }
 
-exports.createInvisibleTableViewRow = function(options) {
-	options.backgroundColor = "transparent";
-	options.borderColor = "transparent";
-	return Titanium.UI.createTableViewRow(options);
-}
-
 exports.createTopToolbar = function(titleText, leftButton, rightButton) {
-	var view = Titanium.UI.createView({width:Titanium.UI.FILL,top:0,height:45,backgroundImage:"images/toolbar.png",backgroundTopCap:22,backgroundLeftCap:5});
-	view.add(Titanium.UI.createLabel({text:titleText,textAlign:"center",color:"#FFFFFF",shadowColor:"#000000",font:{fontSize:20,fontWeight:"bold"}}));
+	var items = [];
 	if (leftButton !== undefined) {
-		leftButton.left = 5;
-		view.add(leftButton);
+		items.push(leftButton);
 	}
+	items.push(Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE}));
 	if (rightButton !== undefined) {
-		rightButton.right = 5;
-		view.add(rightButton);
+		items.push(rightButton);
 	}
-	return view;
+	var toolbar = Titanium.UI.iOS.createToolbar({width:Titanium.UI.FILL,top:0,height:45,items:items,barColor:"#000000"});
+	toolbar.add(Titanium.UI.createLabel({text:titleText,textAlign:"center",font:{fontSize:18,fontWeight:"bold"},color:"#CCCCCC"}));
+	return toolbar;
 }
 
 exports.createPopulatedTableViewRow = function(components, vScale) {
 	if (vScale == undefined) {
 		vScale = 1;
 	}
-    var row = GUI.createInvisibleTableViewRow({height:40 * vScale});
+    var row = Titanium.UI.createTableViewRow({height:40 * vScale});
     for (var i = 0; i < components.length; i++) {
         row.add(components[i]);
     }
     return row;
+}
+
+exports.createActivityIndicator = function() {
+	var view = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000000',opacity:0.8,visible:false});
+	view.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
+	return view;
+}
+
+exports.add = function(view, component) {
+	view.add(component);
+	return component;
 }
