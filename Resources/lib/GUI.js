@@ -20,12 +20,6 @@ exports.createLabel = function(options) {
 	return Titanium.UI.createLabel(options);
 }
 
-exports.createHeader = function(options) {
-	options.font = {fontSize:18, fontWeight:"bold"};
-	options.shadowColor = "#AAAAAA";
-	return GUI.createLabel(options);
-}
-
 exports.createButton = function(options) {
 	return Titanium.UI.createButton(options);
 }
@@ -69,4 +63,33 @@ exports.createActivityIndicator = function() {
 exports.add = function(view, component) {
 	view.add(component);
 	return component;
+}
+
+exports.createGlow = function(center) {
+	var options = {
+		width:50,
+		height:50,
+		opacity:0,
+		backgroundGradient:{
+			type:"radial",
+			startPoint:{
+				x:25,
+				y:25
+			},
+			endPoint:{
+				x:25,
+				y:25
+			},
+			colors:["#FFFFFF",DARK_GRAY],
+			startRadius:"0",
+			endRadius:"25",
+			backfillStart:false
+		}
+	};
+	if (center.left != undefined) {
+		options.left = center.left - 25;
+	} else if (center.right != undefined) {
+		options.right =center.right - 25;
+	}
+	return Titanium.UI.createView(options);
 }

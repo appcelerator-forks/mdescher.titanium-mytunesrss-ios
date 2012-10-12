@@ -49,13 +49,13 @@ function TracksWindow(data, parent) {
 	    infoView.addEventListener("click", function(e) {
 	    	var busyView = createBusyView();
 			win.add(busyView);
-	        if (data[e.index].mediaType === 'Video') {
+	        if (data[e.index].mediaType === "Video") {
 	            jukebox.destroy();
 	            jukebox = new Jukebox();
 	            var url = data[e.index].httpLiveStreamUri !== undefined ? data[e.index].httpLiveStreamUri : data[e.index].playbackUri;
 	            var tcParam = getTcParam();
 	            if (tcParam !== undefined) {
-	                url += '/' + tcParam;
+	                url += "/" + tcParam;
 	            }
 	            new VideoPlayerWindow(url).open(self);
 	        } else {
@@ -70,7 +70,7 @@ function TracksWindow(data, parent) {
 	    });
 
 	    syncImage = offlineMode || getCachedTrackFile(data[i].id) !== undefined ? "images/trash.png" : "images/download.png";
-	    var syncImageGlowView = Titanium.UI.createView({width:50,height:50,right:-10,opacity:0,backgroundGradient:{type:"radial",startPoint:{x:25,y:25},endPoint:{x:25,y:25},colors:["#FFFFFF",DARK_GRAY],startRadius:"0",endRadius:"25",backfillStart:false}});
+	    var syncImageGlowView = GUI.createGlow({right:15});
 	    var syncImageView = Titanium.UI.createImageView({hires:hires,image:syncImage,width:20,height:20,right:5,glow:syncImageGlowView});
 	    syncImageView.addEventListener("touchstart", function(e) {
 	    	e.source.glow.setOpacity(0.75);

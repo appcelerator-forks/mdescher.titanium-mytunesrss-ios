@@ -2,15 +2,15 @@ function OnlineLoginWindow(parent) {
 	
 	var win = GUI.createWindow({navBarHidden:true});
 	win.add(GUI.createTopToolbar("MyTunesRSS", undefined, GUI.createButton({style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT})));
-	var pos = new Counter(135);
-	win.add(GUI.createHeader({text:L("login.serverUrl"),left:10,top:pos.inc(0)}));
-	var inputServerUrl = GUI.add(win, GUI.createTextField({left:10,right:10,top:pos.inc(25),hintText:L("login.serverUrl"),width:Titanium.UI.FILL,value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,minimumFontSize:12}));
-	win.add(GUI.createHeader({text:L("login.credentials"),left:10,top:pos.inc(45)}));
-	var inputUsername = GUI.add(win, GUI.createTextField({left:10,right:10,top:pos.inc(25),hintText:L("login.username"),value:Titanium.App.Properties.getString('username'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false}));
-	var inputPassword = GUI.add(win, GUI.createTextField({left:10,right:10,top:pos.inc(35),hintText:L("login.password"),value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true}));
-	win.add(GUI.createLabel({text:L("login.saveCredentials"),left:10,top:pos.inc(35)}));
-	var inputSaveCredentials = GUI.add(win, Titanium.UI.createSwitch({right:10,top:pos.inc(0),value:Titanium.App.Properties.getBool('saveCredentials', false)}));
-	var buttonLogin = GUI.add(win, Titanium.UI.createButton({left:10,right:10,top:pos.inc(45),title:L("login.connect"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED}));
+	var pos = new Counter(140);
+	win.add(GUI.createLabel({text:L("login.serverUrl"),left:10,top:pos.inc(0),font:{fontSize:13,fontWeight:"bold"}}));
+	var inputServerUrl = GUI.add(win, GUI.createTextField({left:10,right:10,top:pos.inc(20),hintText:L("login.serverUrl"),width:Titanium.UI.FILL,value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,minimumFontSize:12,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS}));
+	win.add(GUI.createLabel({text:L("login.credentials"),left:10,top:pos.inc(45),font:{fontSize:13,fontWeight:"bold"}}));
+	var inputUsername = GUI.add(win, GUI.createTextField({left:10,right:10,top:pos.inc(20),hintText:L("login.username"),value:Titanium.App.Properties.getString('username'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS}));
+	var inputPassword = GUI.add(win, GUI.createTextField({left:10,right:10,top:pos.inc(40),hintText:L("login.password"),value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS}));
+	var inputSaveCredentials = GUI.add(win, Titanium.UI.createSwitch({right:10,top:pos.inc(40),value:Titanium.App.Properties.getBool('saveCredentials', false)}));
+	win.add(GUI.createLabel({text:L("login.saveCredentials"),left:10,top:pos.inc(7),font:{fontSize:13,fontWeight:"bold"}}));
+	var buttonLogin = GUI.add(win, Titanium.UI.createButton({left:10,right:10,top:pos.inc(38),title:L("login.connect"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button.png",backgroundLeftCap:12,backgroundTopCap:40,height:42,color:"#CCCCCC"}));
 	var actIndicatorView = GUI.add(win, GUI.createActivityIndicator());
 
 	function doLogin() {

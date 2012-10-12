@@ -76,15 +76,15 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	
 	var tableViewData = [];
 	
-	tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createHeader({text:L("settings.audioPlayer"),left:10})], 0.5));
+	tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.audioPlayer"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
 	tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.bufferSize"),left:10,right:120,minimumFontSize:12}), bufferSizeInput]));
 
 	if (!offlineMode) {
 		tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
-		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createHeader({text:L("settings.search"),left:10})], 0.5));
+		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.search"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
 		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.searchAccuracy"),left:10,right:120,minimumFontSize:12}), searchAccuracyInput]));
 		tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
-		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createHeader({text:L("settings.cache"),left:10})], 0.5));
+		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.cache"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
 		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.imageCache"),left:10}), enableCacheInput]));
 		if (enableCacheInput.value) {
 			tableViewData.push(GUI.createPopulatedTableViewRow([clearImageCacheButton]));
@@ -94,7 +94,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		if (transcoders !== undefined  && transcoders.length > 0) {
 			var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
 			tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
-		    tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createHeader({text:L("settings.transcoders"),left:10})], 0.5));
+		    tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.transcoders"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
 		    for (var i = 0; i < transcoders.length; i++) {
 		        var transcoderName = transcoders[i];
 		        var switchValue = false;
@@ -113,7 +113,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		if (transcoders !== undefined  && transcoders.length > 0) {
 			var activeTranscoders = Titanium.App.Properties.getList("transcoders_mobile", []);
 			tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
-		    tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createHeader({text:L("settings.mobileTranscoders"),left:10})], 0.5));
+		    tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.mobileTranscoders"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
 		    for (var i = 0; i < transcoders.length; i++) {
 		        var transcoderName = transcoders[i];
 		        var switchValue = false;

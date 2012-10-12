@@ -5,7 +5,7 @@ function SafariLoginWindow() {
 	var win = GUI.createWindow({navBarHidden:true});
 	win.add(GUI.createTopToolbar("MyTunesRSS", undefined, GUI.createButton({style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT})));
 	var pos = new Counter(275);
-	win.add(GUI.createHeader({text:L("login.serverUrl"),left:10,top:pos.inc(0)}));
+	win.add(GUI.createLabel({text:L("login.serverUrl"),left:10,top:pos.inc(0),font:{fontSize:14},shadowColor:"#AAAAAA"}));
 	var inputServerUrl = GUI.add(win, GUI.createTextField({left:10,right:10,top:pos.inc(25),hintText:L("login.serverUrl"),width:Titanium.UI.FILL,value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,minimumFontSize:12}));
 	var buttonLogin = GUI.add(win, Titanium.UI.createButton({left:10,right:10,top:pos.inc(45),title:L("login.connect"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED}));
 

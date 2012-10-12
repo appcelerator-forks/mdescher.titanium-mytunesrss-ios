@@ -16,8 +16,8 @@ Titanium.include("win_tvshows.js");
 Titanium.include("win_tvshow_seasons.js");
 Titanium.include("win_movies.js");
 
-var DARK_GRAY = "#1B1B1B";
-var LIGHT_GRAY = "#2B2B2B";
+var DARK_GRAY = "#2A2A2A";
+var LIGHT_GRAY = "#3A3A3A";
 
 function Counter(start) {
 	var current = start;
