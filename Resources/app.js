@@ -32,12 +32,16 @@ function RowArray() {
 	var rows = [];
 	
 	this.push = function(row) {
-		row.backgroundColor = rows.length % 2 == 0 ? DARK_GRAY : DARK_GRAY;
+		row.backgroundColor = rows.length % 2 == 0 ? DARK_GRAY : LIGHT_GRAY;
 		rows.push(row);
 	}
 	
 	this.getRows = function() {
 		return rows;
+	}
+	
+	this.getLength = function() {
+		return rows.length;
 	}
 }
 

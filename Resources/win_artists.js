@@ -39,7 +39,7 @@ function ArtistsWindow(data) {
 	        function(item, index) {
 	            var displayName = getDisplayName(item.name);
 	            var row = GUI.createTableViewRow({hasChild:true,height:48,className:'artist_row',height:TABLE_VIEW_ROW_HEIGHT,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
-	            row.add(GUI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'},minimumFontSize:12}));
+	            row.add(GUI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'}}));
 	            row.albumsUri = item.albumsUri;
 	            row.artistName = item.name;
 	            return row;

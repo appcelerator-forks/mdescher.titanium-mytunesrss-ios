@@ -22,11 +22,11 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	var transcoderSwitchesWifi = [];
 	var transcoderSwitchesMobile = [];
 	
-	var bufferSizeInput = GUI.createTextField({hintText:L("settings.bufferSizeHint"),left:200,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
+	var bufferSizeInput = GUI.createTextField({hintText:L("settings.bufferSizeHint"),left:200,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 	
 	var staticSearchFuzziness = (searchFuzziness >= 0 && searchFuzziness <= 100);
 	var searchAccuracy = staticSearchFuzziness ? 100 - searchFuzziness : Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY);
-	var searchAccuracyInput = GUI.createTextField({editable:!staticSearchFuzziness,hintText:L("settings.accuracyHint"),left:200,right:10,value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD,minimumFontSize:12});
+	var searchAccuracyInput = GUI.createTextField({editable:!staticSearchFuzziness,hintText:L("settings.accuracyHint"),left:200,right:10,value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 	
 	var enableCacheInput = Titanium.UI.createSwitch({right:10,value:Titanium.App.Properties.getBool("imageCacheEnabled", true)});
 	var clearImageCacheButton = GUI.createButton({title:L("settings.imageCache.clear"),right:10});
@@ -77,12 +77,12 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	var tableViewData = [];
 	
 	tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.audioPlayer"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
-	tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.bufferSize"),left:10,right:120,minimumFontSize:12}), bufferSizeInput]));
+	tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.bufferSize"),left:10,right:120}), bufferSizeInput]));
 
 	if (!offlineMode) {
 		tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
 		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.search"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
-		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.searchAccuracy"),left:10,right:120,minimumFontSize:12}), searchAccuracyInput]));
+		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.searchAccuracy"),left:10,right:120}), searchAccuracyInput]));
 		tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
 		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.cache"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
 		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.imageCache"),left:10}), enableCacheInput]));
@@ -106,7 +106,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		        }
 		        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
 		        transcoderSwitchesWifi.push(transcoderSwitch);
-		        tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
+		        tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:transcoderName,left:10,right:120}), transcoderSwitch]));
 		    }
 		}
 		
@@ -125,7 +125,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		        }
 		        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
 		        transcoderSwitchesMobile.push(transcoderSwitch);
-		        tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:transcoderName,left:10,right:120,minimumFontSize:12}), transcoderSwitch]));
+		        tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:transcoderName,left:10,right:120}), transcoderSwitch]));
 		    }
 		}
 	}

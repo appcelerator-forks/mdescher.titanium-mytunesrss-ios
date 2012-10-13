@@ -34,7 +34,7 @@
 	<string name="menu.logout">Ausloggen</string>
 	<string name="menu.settings">Optionen</string>
 	<string name="menu.settings.loadFailed">Aktuelle Einstellungen konnten nicht geladen werden.</string>
-	<string name="menu.playlists">Playlists</string>
+	<string name="menu.playlists">Listen</string>
 	<string name="menu.albums">Alben</string>
 	<string name="menu.artists">Künstler</string>
 	<string name="menu.genres">Genre</string>
@@ -51,7 +51,7 @@
 	<string name="movies.back">Zurück</string>
 	<string name="movies.title">Filme</string>
 	<string name="playlists.back">Zurück</string>
-	<string name="playlists.title">Playlistn</string>
+	<string name="playlists.title">Listen</string>
 	<string name="tracklist.back">Zurück</string>
 	<string name="tracklist.title">Titel</string>
 	<string name="tvshows.back">Zurück</string>

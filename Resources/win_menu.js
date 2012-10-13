@@ -45,7 +45,7 @@ function MenuWindow() {
 	    win.close();
 	});
 
-	var buttonSettings = GUI.createButton({title:L("menu.settings"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonSettings = GUI.createButton({image:"images/config.png",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	buttonSettings.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -63,17 +63,20 @@ function MenuWindow() {
 	});
 	
 	function createMenuItem(item) {
+		item.rightImage = "images/children.png";
 		item.height = MENU_ITEM_HEIGHT;
 		item.className = "menu_item";
-		item.hasChild = true;
 		item.selectionStyle = Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE;
+		var label = item.title;
+		item.title = undefined;
 		var row = GUI.createTableViewRow(item);
+		row.add(GUI.createLabel({text:label,left:60,font:{fontSize:18,fontWeight:"bold"}}))
 		return row;
 	}
 	
 	var tableView = GUI.createTableView({top:90,scrollable:false});
 	
-	var rowPlaylists = createMenuItem({title:L("menu.playlists")});
+	var rowPlaylists = createMenuItem({title:L("menu.playlists"),leftImage:"images/playlists.png"});
 	rowPlaylists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -81,7 +84,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowAlbums = createMenuItem({title:L("menu.albums")});
+	var rowAlbums = createMenuItem({title:L("menu.albums"),leftImage:"images/albums.png"});
 	rowAlbums.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -93,7 +96,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowArtists = createMenuItem({title:L("menu.artists")});
+	var rowArtists = createMenuItem({title:L("menu.artists"),leftImage:"images/artists.png"});
 	rowArtists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -101,7 +104,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowGenres = createMenuItem({title:L("menu.genres")});
+	var rowGenres = createMenuItem({title:L("menu.genres"),leftImage:"images/genres.png"});
 	rowGenres.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -109,7 +112,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowMovies = createMenuItem({title:L("menu.movies")});
+	var rowMovies = createMenuItem({title:L("menu.movies"),leftImage:"images/movies.png"});
 	rowMovies.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -117,7 +120,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowTvShows = createMenuItem({title:L("menu.tvshows")});
+	var rowTvShows = createMenuItem({title:L("menu.tvshows"),leftImage:"images/tvshows.png"});
 	rowTvShows.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -125,7 +128,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowNowPlaying = createMenuItem({title:L("menu.currentlyPlaying")});
+	var rowNowPlaying = createMenuItem({title:L("menu.currentlyPlaying"),leftImage:"images/currently.png"});
 	rowNowPlaying.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -157,11 +160,10 @@ function MenuWindow() {
 			rows.push(rowMovies);
 			rows.push(rowTvShows);	
 		}
-		tableView.height = MENU_ITEM_HEIGHT * 6;
 		if (jukebox.isActive()) {
 			rows.push(rowNowPlaying);
-			tableView.height = MENU_ITEM_HEIGHT * 7;
 		}
+		tableView.height = MENU_ITEM_HEIGHT * rows.getLength();
 		tableView.setData(rows.getRows());
 		win.open();
 	}

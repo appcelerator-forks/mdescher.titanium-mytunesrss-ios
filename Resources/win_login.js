@@ -1,12 +1,12 @@
 function LoginWindow() {	
 	
-	var tabOnline = Titanium.UI.createTab({icon:"images/cloud.png",title:L("login.onlineMode"),window:new OnlineLoginWindow(this).getWindow()});
-	var tabOffline = Titanium.UI.createTab({icon:"images/device.png",title:L("login.offlineMode"),window:new OfflineLoginWindow(this).getWindow()});
+	var tabGroup = Titanium.UI.createTabGroup();
+	var tabOnline = Titanium.UI.createTab({icon:"images/cloud.png",title:L("login.onlineMode"),window:new OnlineLoginWindow(tabGroup).getWindow()});
+	var tabOffline = Titanium.UI.createTab({icon:"images/device.png",title:L("login.offlineMode"),window:new OfflineLoginWindow(tabGroup).getWindow()});
 	var tabSafari = Titanium.UI.createTab({icon:"images/safari.png",title:L("login.openInBrowser"),window:new SafariLoginWindow().getWindow()});
-	var bottomBar = Titanium.UI.createTabGroup();
-	bottomBar.addTab(tabOnline);
-	bottomBar.addTab(tabOffline);
-	bottomBar.addTab(tabSafari);
+	tabGroup.addTab(tabOnline);
+	tabGroup.addTab(tabOffline);
+	tabGroup.addTab(tabSafari);
 	
 	/*if (Titanium.App.version.indexOf('SNAPSHOT') > 0) {
 		win.add(GUI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:30,height:10,font:{fontSize:10}}));
@@ -16,7 +16,8 @@ function LoginWindow() {
 	}*/
 	
 	this.open = function() {
-		bottomBar.open();
+		tabGroup.setActiveTab(offlineMode ? 1 : 0);
+		tabGroup.open();
 	}
 	
 }

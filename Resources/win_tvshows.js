@@ -57,7 +57,7 @@ function TvShowsWindow(data) {
 	                }
 	                row.add(showImage);
 	            }
-	            var showName = GUI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
+	            var showName = GUI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'}});
 	            var showInfo = GUI.createLabel({text:String.format(L("tvshows.info"), item.seasonCount, item.episodeCount),bottom:spacer,left:size + (2 * spacer),height:infoHeight,font:{fontSize:12}});
 	            row.add(showName);
 	            row.add(showInfo);

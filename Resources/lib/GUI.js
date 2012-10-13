@@ -12,15 +12,23 @@ exports.createTableView = function(options) {
 
 exports.createTextField = function(options) {
 	options.borderStyle = Titanium.UI.INPUT_BORDERSTYLE_ROUNDED;
+	options.font = {fontSize:14};
+	if (options.minimumFontSiue === undefined) {
+		options.minimumFontSize = 12;
+	}
 	return Titanium.UI.createTextField(options);
 }
 
 exports.createLabel = function(options) {
 	options.color = "#CCCCCC";
+	if (options.minimumFontSiue === undefined) {
+		options.minimumFontSize = 12;
+	}
 	return Titanium.UI.createLabel(options);
 }
 
 exports.createButton = function(options) {
+	options.color = "#CCCCCC";
 	return Titanium.UI.createButton(options);
 }
 

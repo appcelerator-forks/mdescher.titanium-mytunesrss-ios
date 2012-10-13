@@ -61,7 +61,7 @@ function AlbumsWindow(data) {
 	                }
 	                row.add(albumImage);
 	            }
-	            var albumName = GUI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:albumHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'},minimumFontSize:12});
+	            var albumName = GUI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:albumHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'}});
 	            var artistName = GUI.createLabel({text:getDisplayName(item.artist),bottom:spacer,left:size + (2 * spacer),height:artistHeight,font:{fontSize:12}});
 	            row.add(albumName);
 	            row.add(artistName);
