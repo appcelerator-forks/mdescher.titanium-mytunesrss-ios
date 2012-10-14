@@ -42,8 +42,8 @@ function TracksWindow(data, parent) {
             	infoView.add(createCachedImageView({cacheObjectId:data[i].imageHash + "_64",image:data[i].imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'}));
             }
         }
-        var trackName = GUI.createLabel({text:getDisplayName(data[i].name),top:spacer,left:size + (2 * spacer),height:trackHeight,right:2 * spacer,font:{fontSize:14,fontWeight:'bold'},minimumFontSize:10,touchEnabled:false});
-        var artistName = GUI.createLabel({text:getDisplayName(data[i].artist),bottom:spacer,left:size + (2 * spacer),height:artistHeight,font:{fontSize:10},touchEnabled:false});
+        var trackName = GUI.createLabel({text:getDisplayName(data[i].name),top:spacer,left:size + (3 * spacer),height:trackHeight,right:2 * spacer,font:{fontSize:14,fontWeight:'bold'},minimumFontSize:10,touchEnabled:false});
+        var artistName = GUI.createLabel({text:getDisplayName(data[i].artist),bottom:spacer,left:size + (3 * spacer),height:artistHeight,font:{fontSize:10},touchEnabled:false});
 	    infoView.add(trackName);
 	    infoView.add(artistName);
 	    infoView.addEventListener("click", function(e) {

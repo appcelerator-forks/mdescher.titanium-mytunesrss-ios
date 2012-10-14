@@ -12,6 +12,7 @@ function OnlineLoginWindow(parent) {
 	win.add(GUI.createLabel({text:L("login.saveCredentials"),left:10,top:pos.inc(7),font:{fontSize:13,fontWeight:"bold"}}));
 	var buttonLogin = GUI.add(win, Titanium.UI.createButton({left:10,right:10,top:pos.inc(38),title:L("login.connect"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button.png",backgroundLeftCap:12,backgroundTopCap:40,height:42,color:"#CCCCCC"}));
 	var actIndicatorView = GUI.add(win, GUI.createActivityIndicator());
+	win.add(Titanium.UI.createImageView({image:"images/logo_small.png",top:55}));
 
 	function doLogin() {
 		var busyView = createBusyView();

@@ -92,9 +92,9 @@ function setTableDataAndIndex(tableView, items, createTableViewRowCallback, getS
 		}
 	}
 	tableView.setData(tableData);
-	if (indexData.length > 5) {
+	/*if (indexData.length > 5) {
 		tableView.setIndex(indexData);
-	}
+	}*/
 }
 
 function removeUnsupportedTracks(items) {

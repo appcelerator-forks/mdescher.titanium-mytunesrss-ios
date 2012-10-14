@@ -47,7 +47,7 @@ function TvShowSeasonsWindow(data) {
 				} else if (Titanium.Platform.osname === "iphone") {
 					hires = Titanium.Platform.displayCaps.density == "high";
 				}
-	            var row = GUI.createTableViewRow({hasChild:true,height:size + (2 * spacer),className:item.imageUri ? 'show_row_img' : 'show_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+	            var row = GUI.createTableViewRow({rightImage:"images/children.png",height:size + (2 * spacer),className:item.imageUri ? 'show_row_img' : 'show_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
 	            if (item.imageUri !== undefined) {
 	                var seasonImage;
 	                if (hires) {
@@ -57,8 +57,8 @@ function TvShowSeasonsWindow(data) {
 	                }
 	                row.add(seasonImage);
 	            }
-	            var showName = GUI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'}});
-	            var showInfo = GUI.createLabel({text:String.format(L("tvshow.seasons.info"), item.episodeCount),bottom:spacer,left:size + (2 * spacer),height:infoHeight,font:{fontSize:12}});
+	            var showName = GUI.createLabel({text:displayName,top:spacer,left:size + (3 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'}});
+	            var showInfo = GUI.createLabel({text:String.format(L("tvshow.seasons.info"), item.episodeCount),bottom:spacer,left:size + (3 * spacer),height:infoHeight,font:{fontSize:12}});
 	            row.add(showName);
 	            row.add(showInfo);
 	            row.episodesUri = item.episodesUri;

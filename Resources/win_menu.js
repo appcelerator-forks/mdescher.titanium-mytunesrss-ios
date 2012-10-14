@@ -62,21 +62,16 @@ function MenuWindow() {
 		win.remove(busyView);
 	});
 	
-	function createMenuItem(item) {
-		item.rightImage = "images/children.png";
-		item.height = MENU_ITEM_HEIGHT;
-		item.className = "menu_item";
-		item.selectionStyle = Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE;
-		var label = item.title;
-		item.title = undefined;
-		var row = GUI.createTableViewRow(item);
+	function createMenuItem(label, leftImage) {
+		var row = GUI.createTableViewRow({rightImage:"images/children.png",height:MENU_ITEM_HEIGHT,className:"menu_item",selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
 		row.add(GUI.createLabel({text:label,left:60,font:{fontSize:18,fontWeight:"bold"}}))
+		row.add(Titanium.UI.createImageView({image:leftImage,left:7}))
 		return row;
 	}
 	
 	var tableView = GUI.createTableView({top:90,scrollable:false});
 	
-	var rowPlaylists = createMenuItem({title:L("menu.playlists"),leftImage:"images/playlists.png"});
+	var rowPlaylists = createMenuItem(L("menu.playlists"), "images/playlists.png");
 	rowPlaylists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -84,7 +79,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowAlbums = createMenuItem({title:L("menu.albums"),leftImage:"images/albums.png"});
+	var rowAlbums = createMenuItem(L("menu.albums"), "images/albums.png");
 	rowAlbums.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -96,7 +91,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowArtists = createMenuItem({title:L("menu.artists"),leftImage:"images/artists.png"});
+	var rowArtists = createMenuItem(L("menu.artists"), "images/artists.png");
 	rowArtists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -104,7 +99,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowGenres = createMenuItem({title:L("menu.genres"),leftImage:"images/genres.png"});
+	var rowGenres = createMenuItem(L("menu.genres"), "images/genres.png");
 	rowGenres.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -112,7 +107,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowMovies = createMenuItem({title:L("menu.movies"),leftImage:"images/movies.png"});
+	var rowMovies = createMenuItem(L("menu.movies"), "images/movies.png");
 	rowMovies.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -120,7 +115,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowTvShows = createMenuItem({title:L("menu.tvshows"),leftImage:"images/tvshows.png"});
+	var rowTvShows = createMenuItem(L("menu.tvshows"), "images/tvshows.png");
 	rowTvShows.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -128,7 +123,7 @@ function MenuWindow() {
 	    win.remove(busyView);
 	});
 
-	var rowNowPlaying = createMenuItem({title:L("menu.currentlyPlaying"),leftImage:"images/currently.png"});
+	var rowNowPlaying = createMenuItem(L("menu.currentlyPlaying"), "images/currently.png");
 	rowNowPlaying.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);

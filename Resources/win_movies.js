@@ -51,7 +51,7 @@ function MoviesWindow(data) {
 				} else if (Titanium.Platform.osname === "iphone") {
 					hires = Titanium.Platform.displayCaps.density == "high";
 				}
-	            var row = GUI.createTableViewRow({hasChild:true,height:size + (2 * spacer),className:item.imageUri ? 'show_row_img' : 'show_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+	            var row = GUI.createTableViewRow({rightImage:"images/children.png",height:size + (2 * spacer),className:item.imageUri ? 'show_row_img' : 'show_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
 	            if (item.imageUri !== undefined) {
 	                var showImage;
 	                if (hires) {
@@ -61,7 +61,7 @@ function MoviesWindow(data) {
 	                }
 	                row.add(showImage);
 	            }
-	            var movieName = GUI.createLabel({text:displayName,top:spacer,left:size + (2 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'}});
+	            var movieName = GUI.createLabel({text:displayName,top:spacer,left:size + (3 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'}});
 	            row.add(movieName);
 	            row.playbackUri = item.httpLiveStreamUri !== undefined ? item.httpLiveStreamUri : item.playbackUri;
 	            return row;
