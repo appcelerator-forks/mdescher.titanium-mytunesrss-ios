@@ -69,9 +69,9 @@ function TracksWindow(data, parent) {
 	        win.remove(busyView);
 	    });
 
-	    syncImage = offlineMode || getCachedTrackFile(data[i].id) !== undefined ? "images/trash.png" : "images/download.png";
-	    var syncImageGlowView = GUI.createGlow({right:15});
-	    var syncImageView = Titanium.UI.createImageView({hires:hires,image:syncImage,width:20,height:20,right:5,glow:syncImageGlowView});
+	    syncImage = offlineMode || getCachedTrackFile(data[i].id) !== undefined ? "images/delete.png" : "images/download.png";
+	    var syncImageGlowView = GUI.createGlow({right:20});
+	    var syncImageView = Titanium.UI.createImageView({hires:hires,image:syncImage,width:20,height:20,right:10,glow:syncImageGlowView});
 	    syncImageView.addEventListener("touchstart", function(e) {
 	    	e.source.glow.setOpacity(0.75);
 	    });
@@ -122,7 +122,7 @@ function TracksWindow(data, parent) {
 					data[e.index].trackNumber
 				);
 				db.close();
-				tableView.data[0].rows[e.index].getChildren()[1].image = "images/trash.png";
+				tableView.data[0].rows[e.index].getChildren()[1].image = "images/delete.png";
 				win.remove(busyView);		    				
 	    	}
 	    });
