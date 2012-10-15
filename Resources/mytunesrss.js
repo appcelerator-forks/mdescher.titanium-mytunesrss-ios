@@ -78,7 +78,6 @@ function setTableDataAndIndex(tableView, items, createTableViewRowCallback, getS
 			section[index] = Titanium.UI.createTableViewSection({headerView:headerView});
 		}
 		var row = createTableViewRowCallback(items[i], i);
-		row.backgroundColor = i % 2 == 0 ? LIGHT_GRAY : DARK_GRAY;
 		section[index].add(row);
 	}
 	var indexData = [];

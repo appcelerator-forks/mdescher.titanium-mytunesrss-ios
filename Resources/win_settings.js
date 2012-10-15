@@ -22,23 +22,8 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	var transcoderSwitchesWifi = [];
 	var transcoderSwitchesMobile = [];
 	
-	var bufferSizeInput = GUI.createTextField({hintText:L("settings.bufferSizeHint"),left:200,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 	
-	var staticSearchFuzziness = (searchFuzziness >= 0 && searchFuzziness <= 100);
-	var searchAccuracy = staticSearchFuzziness ? 100 - searchFuzziness : Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY);
-	var searchAccuracyInput = GUI.createTextField({editable:!staticSearchFuzziness,hintText:L("settings.accuracyHint"),left:200,right:10,value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
-	
-	var enableCacheInput = Titanium.UI.createSwitch({right:10,value:Titanium.App.Properties.getBool("imageCacheEnabled", true)});
-	var clearImageCacheButton = GUI.createButton({title:L("settings.imageCache.clear"),right:10});
-	clearImageCacheButton.addEventListener("click", function() {
-		clearImageCache();
-	});
 
-	var clearTrackCacheButton = GUI.createButton({title:L("settings.trackCache.clear"),right:10});
-	clearTrackCacheButton.addEventListener("click", function() {
-		clearTrackCache();
-	});
-	
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
@@ -74,27 +59,49 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	    win.close();
 	});
 	
-	var tableViewData = [];
+	var pos = new Counter(0);
+	var view = Titanium.UI.createView({height:Titanium.UI.SIZE});
 	
-	tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.audioPlayer"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
-	tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.bufferSize"),left:10,right:120}), bufferSizeInput]));
+	view.add(GUI.createLabel({top:pos.inc(0),text:L("settings.audioPlayer"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"}));
+
+	view.add(GUI.createLabel({top:pos.inc(20),text:L("settings.bufferSize"),left:10,right:120}));
+	var bufferSizeInput = GUI.createTextField({top:pos.inc(0),hintText:L("settings.bufferSizeHint"),left:200,right:10,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
+	view.add(bufferSizeInput);
 
 	if (!offlineMode) {
-		tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
-		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.search"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
-		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.searchAccuracy"),left:10,right:120}), searchAccuracyInput]));
-		tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
-		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.cache"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
-		tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.imageCache"),left:10}), enableCacheInput]));
+
+		view.add(GUI.createLabel({top:pos.inc(45),text:L("settings.search"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"}));
+
+		view.add(GUI.createLabel({top:pos.inc(20),text:L("settings.searchAccuracy"),left:10,right:120}));
+		var staticSearchFuzziness = (searchFuzziness >= 0 && searchFuzziness <= 100);
+		var searchAccuracy = staticSearchFuzziness ? 100 - searchFuzziness : Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY);
+		var searchAccuracyInput = GUI.createTextField({top:pos.inc(0),editable:!staticSearchFuzziness,hintText:L("settings.accuracyHint"),left:200,right:10,value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
+		view.add(searchAccuracyInput);
+
+		view.add(GUI.createLabel({top:pos.inc(45),text:L("settings.cache"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"}));
+
+		view.add(GUI.createLabel({top:pos.inc(20),text:L("settings.imageCache"),left:10}));
+		var enableCacheInput = Titanium.UI.createSwitch({top:pos.inc(0),right:10,value:Titanium.App.Properties.getBool("imageCacheEnabled", true)});
+		view.add(enableCacheInput);
+
 		if (enableCacheInput.value) {
-			tableViewData.push(GUI.createPopulatedTableViewRow([clearImageCacheButton]));
+			var clearImageCacheButton = GUI.createButton({top:pos.inc(25),title:L("settings.imageCache.clear"),right:10});
+			clearImageCacheButton.addEventListener("click", function() {
+				clearImageCache();
+			});
+			view.add(clearImageCacheButton);
 		}
-		tableViewData.push(GUI.createPopulatedTableViewRow([clearTrackCacheButton]));
+
+		var clearTrackCacheButton = GUI.createButton({top:pos.inc(25),title:L("settings.trackCache.clear"),right:10});
+		clearTrackCacheButton.addEventListener("click", function() {
+			clearTrackCache();
+		});
+		view.add(clearTrackCacheButton);
 		
 		if (transcoders !== undefined  && transcoders.length > 0) {
 			var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
-			tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
-		    tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.transcoders"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
+		    view.add(GUI.createLabel({top:pos.inc(40),text:L("settings.transcoders"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"}));
+		    pos.inc(-5); // only 20 pixel for 1st transcoder
 		    for (var i = 0; i < transcoders.length; i++) {
 		        var transcoderName = transcoders[i];
 		        var switchValue = false;
@@ -104,16 +111,17 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		        		break;
 		        	}
 		        }
-		        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
+		        view.add(GUI.createLabel({top:pos.inc(25),text:transcoderName,left:10,right:120}));
+		        var transcoderSwitch = Titanium.UI.createSwitch({top:pos.inc(0),right:10,value:switchValue});
 		        transcoderSwitchesWifi.push(transcoderSwitch);
-		        tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:transcoderName,left:10,right:120}), transcoderSwitch]));
+		        view.add(transcoderSwitch);
 		    }
 		}
 		
 		if (transcoders !== undefined  && transcoders.length > 0) {
 			var activeTranscoders = Titanium.App.Properties.getList("transcoders_mobile", []);
-			tableViewData.push(GUI.createPopulatedTableViewRow([], 0.75));
-		    tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:L("settings.mobileTranscoders"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"})], 0.5));
+		    view.add(GUI.createLabel({top:pos.inc(40),text:L("settings.mobileTranscoders"),left:10,font:{fontSize:14},shadowColor:"#AAAAAA"}));
+		    pos.inc(-5); // only 20 pixel for 1st transcoder
 		    for (var i = 0; i < transcoders.length; i++) {
 		        var transcoderName = transcoders[i];
 		        var switchValue = false;
@@ -123,17 +131,18 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		        		break;
 		        	}
 		        }
-		        var transcoderSwitch = Titanium.UI.createSwitch({right:10,value:switchValue});
+		        view.add(GUI.createLabel({top:pos.inc(25),text:transcoderName,left:10,right:120}));
+		        var transcoderSwitch = Titanium.UI.createSwitch({top:pos.inc(0),right:10,value:switchValue});
 		        transcoderSwitchesMobile.push(transcoderSwitch);
-		        tableViewData.push(GUI.createPopulatedTableViewRow([GUI.createLabel({text:transcoderName,left:10,right:120}), transcoderSwitch]));
+		        view.add(transcoderSwitch);
 		    }
 		}
 	}
 
-	var tableView = GUI.createTableView({data:tableViewData,top:80,separatorStyle:Titanium.UI.iPhone.TableViewSeparatorStyle.NONE,borderColor:"transparent"});
-	
 	win.add(GUI.createTopToolbar(L("settings.title"), buttonCancel, buttonSave));
-	win.add(tableView);
+	var scrollView = Titanium.UI.createScrollView({top:45,verticalBounce:false,horizontalBounce:false});
+	scrollView.add(view);
+	win.add(scrollView);
 	win.add(actIndicatorView);
 
 	/**

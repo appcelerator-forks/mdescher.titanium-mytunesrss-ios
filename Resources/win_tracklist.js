@@ -17,7 +17,7 @@ function TracksWindow(data, parent) {
 
 	win.add(tableView);
 	
-	var tableData = new RowArray();
+	var tableData = [];
 	for (var i = 0; i < data.length; i++) {
 		var trackHeight = 20;
 		var artistHeight = 15;
@@ -32,7 +32,7 @@ function TracksWindow(data, parent) {
 		} else if (Titanium.Platform.osname === "iphone") {
 			hires = Titanium.Platform.displayCaps.density == "high";
 		}
-	    var row = GUI.createTableViewRow({height:size + (2 * spacer),className:'track_row',index:i,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+	    var row = GUI.createTableViewRow({height:size + (2 * spacer),className:'track_row',index:i,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,moveable:false,editable:offlineMode});
 	    var infoView = Titanium.UI.createView({right:30});
 	    row.add(infoView);
         if (data[i].imageUri !== undefined) {
@@ -69,68 +69,74 @@ function TracksWindow(data, parent) {
 	        win.remove(busyView);
 	    });
 
-	    syncImage = offlineMode || getCachedTrackFile(data[i].id) !== undefined ? "images/delete.png" : "images/download.png";
-	    var syncImageGlowView = GUI.createGlow({right:20});
-	    var syncImageView = Titanium.UI.createImageView({hires:hires,image:syncImage,width:20,height:20,right:10,glow:syncImageGlowView});
-	    syncImageView.addEventListener("touchstart", function(e) {
-	    	e.source.glow.setOpacity(0.75);
-	    });
-  	    syncImageView.addEventListener("touchend", function(e) {
-	    	e.source.glow.setOpacity(0);
-	    });
-  	    syncImageView.addEventListener("touchcancel", function(e) {
-	    	e.source.glow.setOpacity(0);
-	    });
-	    syncImageView.addEventListener("click", function(e) {
-	    	if (offlineMode || getCachedTrackFile(data[e.index].id) !== undefined) {
-	    		deleteCachedTrackFile(data[e.index].id);
-	    		db = Titanium.Database.open("OfflineTracks");
-				db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
-				db.close();
-	    		if (offlineMode) {
-					jukebox.destroy();
-				    jukebox = new Jukebox();
-		    		tableView.deleteRow(e.index);
-		    		data.splice(e.index, 1);
-	    		} else {
-		    		tableView.data[0].rows[e.index].getChildren()[1].image = "images/download.png";
-	    		}
-	    	} else {
-				var url = data[e.index].playbackUri;
-				var tcParam = getTcParam();
-	    		if (tcParam !== undefined) {
-	        		url += '/' + tcParam;
-	    		}
-	    		var busyView = createBusyView();
-	    		win.add(busyView);
-				getCachedTrackFile(data[e.index].id, url);
-				downloadImage(data[e.index].imageHash,data[e.index].imageUri);
-	    		db = Titanium.Database.open("OfflineTracks");
-				db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
-				db.execute(
-					"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-					data[e.index].id,
-					data[e.index].name,
-					data[e.index].album,
-					data[e.index].artist,
-					data[e.index].genre,
-					data[e.index].albumArtist,
-					data[e.index].imageHash,
-					data[e.index].protected,
-					data[e.index].mediaType,
-					data[e.index].time,
-					data[e.index].trackNumber
-				);
-				db.close();
-				tableView.data[0].rows[e.index].getChildren()[1].image = "images/delete.png";
-				win.remove(busyView);		    				
-	    	}
-	    });
-	    row.add(syncImageView);
-	    row.add(syncImageGlowView);
+		if (!offlineMode) {
+		    var syncImageGlowView = GUI.createGlow({right:20,touchEnabled:false});
+		    var syncImageViewImage = getCachedTrackFile(data[i].id) === undefined ? "images/download.png" : "images/delete.png"; 
+		    var syncImageView = Titanium.UI.createImageView({hires:hires,width:20,image:syncImageViewImage,right:10,touchEnabled:false});
+		    var touchView = Titanium.UI.createView({right:0,height:Titanium.UI.FILL,width:40,backgroundColor:"transparent",glow:syncImageGlowView});
+		    row.add(touchView);
+		    touchView.addEventListener("touchstart", function(e) {
+		    	e.source.glow.setOpacity(0.75);
+		    });
+	  	    touchView.addEventListener("touchend", function(e) {
+		    	e.source.glow.setOpacity(0);
+		    });
+	  	    touchView.addEventListener("touchcancel", function(e) {
+		    	e.source.glow.setOpacity(0);
+		    });
+		    touchView.addEventListener("click", function(e) {
+		    	if (getCachedTrackFile(data[e.index].id) !== undefined) {
+		    		deleteCachedTrackFile(data[e.index].id);
+		    		db = Titanium.Database.open("OfflineTracks");
+					db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
+					db.close();
+	    			tableView.data[0].rows[e.index].getChildren()[2].setImage("images/download.png");
+		    	} else {
+					var url = data[e.index].playbackUri;
+					var tcParam = getTcParam();
+		    		if (tcParam !== undefined) {
+		        		url += '/' + tcParam;
+		    		}
+		    		var busyView = createBusyView();
+		    		win.add(busyView);
+					getCachedTrackFile(data[e.index].id, url);
+					downloadImage(data[e.index].imageHash,data[e.index].imageUri);
+		    		db = Titanium.Database.open("OfflineTracks");
+					db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
+					db.execute(
+						"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+						data[e.index].id,
+						data[e.index].name,
+						data[e.index].album,
+						data[e.index].artist,
+						data[e.index].genre,
+						data[e.index].albumArtist,
+						data[e.index].imageHash,
+						data[e.index].protected,
+						data[e.index].mediaType,
+						data[e.index].time,
+						data[e.index].trackNumber
+					);
+					db.close();
+					tableView.data[0].rows[e.index].getChildren()[2].setImage("images/delete.png");
+					win.remove(busyView);		    				
+		    	}
+		    });
+		    row.add(syncImageView);
+		    row.add(syncImageGlowView);
+		}
 	    tableData.push(row);
 	}
-	tableView.setData(tableData.getRows());
+	tableView.addEventListener("delete", function(e) {
+		jukebox.destroy();
+	    jukebox = new Jukebox();
+		deleteCachedTrackFile(data[e.index].id);
+		db = Titanium.Database.open("OfflineTracks");
+		db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
+		db.close();
+		data.splice(e.index, 1);
+	});
+	tableView.setData(tableData);
 	
 	/**
 	 * Open the tracks window. 
