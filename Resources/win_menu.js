@@ -139,7 +139,7 @@ function MenuWindow() {
 	win.add(GUI.createTopToolbar("MyTunesRSS", buttonLogout, buttonSettings));
 	win.add(searchBar);
 	win.add(tableView);
-	win.add(Titanium.UI.iOS.createAdView({adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,bottom:0,height:50}));
+	win.add(Titanium.UI.iOS.createAdView({adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,bottom:0,height:50,backgroundColor:DARK_GRAY}));
 	
 	this.open = function() {
 		var rows = new RowArray();
