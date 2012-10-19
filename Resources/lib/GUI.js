@@ -1,9 +1,3 @@
-exports.createWindow = function(options) {
-	options.barColor = "#000000";
-	options.backgroundColor = DARK_GRAY;
-	return Titanium.UI.createWindow(options);
-}
-
 exports.createTableView = function(options) {
 	options.separatorColor = "#000000";
 	options.backgroundColor = DARK_GRAY;

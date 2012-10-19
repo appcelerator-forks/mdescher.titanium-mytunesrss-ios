@@ -19,15 +19,6 @@ Titanium.include("win_movies.js");
 var DARK_GRAY = "#2A2A2A";
 var LIGHT_GRAY = "#3A3A3A";
 
-function Counter(start) {
-	var current = start;
-	
-	this.inc = function(x) {
-		current += x;
-		return current;
-	}
-}
-
 function RowArray() {
 	var rows = [];
 	

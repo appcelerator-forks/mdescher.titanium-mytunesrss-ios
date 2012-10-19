@@ -3,7 +3,7 @@ function TracksWindow(data, parent) {
 	var self = this;
 	var myParent = parent;
 
-	var win = GUI.createWindow({});
+	var win = Titanium.UI.createWindow({id:"window"});
 
 	var tableView = GUI.createTableView({top:45});
 	var buttonBack = GUI.createButton({title:L("tracklist.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});

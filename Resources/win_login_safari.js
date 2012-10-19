@@ -2,13 +2,12 @@ function SafariLoginWindow() {
 	
 	var self = this;
 	
-	var win = GUI.createWindow({navBarHidden:true});
-	win.add(GUI.createTopToolbar("MyTunesRSS", undefined, GUI.createButton({style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT})));
-	var pos = new Counter(285);
-	win.add(GUI.createLabel({text:L("login.serverUrl"),left:10,top:pos.inc(0),font:{fontSize:13,fontWeight:"bold"}}));
-	var inputServerUrl = GUI.add(win, GUI.createTextField({left:10,right:10,top:pos.inc(20),hintText:L("login.serverUrl"),width:Titanium.UI.FILL,value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS}));
-	var buttonLogin = GUI.add(win, Titanium.UI.createButton({left:10,right:10,top:pos.inc(45),title:L("login.open"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button.png",backgroundLeftCap:12,backgroundTopCap:40,height:42,color:"#CCCCCC"}));
-	win.add(Titanium.UI.createImageView({image:"images/logo_big.png",top:90}));
+	var win = Titanium.UI.createWindow({id:"window",navBarHidden:true});
+	win.add(GUI.createTopToolbar("MyTunesRSS", undefined, Titanium.UI.createButton({id:"infoButton",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT})));
+	win.add(Titanium.UI.createLabel({id:"serverAddressLabelSafari",text:L("login.serverUrl")}));
+	var inputServerUrl = GUI.add(win, Titanium.UI.createTextField({id:"serverAddressInputSafari",borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,hintText:L("login.serverUrl"),value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS}));
+	var buttonLogin = GUI.add(win, Titanium.UI.createButton({id:"loginButton",title:L("login.open"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED}));
+	win.add(Titanium.UI.createImageView({id:"watermarkOfflineSafari"}));
 	
 	function getServerUrl() {
 	    var serverUrl = inputServerUrl.value;

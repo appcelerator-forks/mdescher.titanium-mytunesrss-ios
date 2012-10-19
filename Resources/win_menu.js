@@ -1,10 +1,8 @@
-var MENU_ITEM_HEIGHT = 44;
-
 function MenuWindow() {
 	
 	var self = this;
 
-	var win = GUI.createWindow({});
+	var win = Titanium.UI.createWindow({id:"window"});
 	
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
@@ -63,9 +61,9 @@ function MenuWindow() {
 	});
 	
 	function createMenuItem(label, leftImage) {
-		var row = GUI.createTableViewRow({rightImage:"images/children.png",height:MENU_ITEM_HEIGHT,className:"menu_item",selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
-		row.add(GUI.createLabel({text:label,left:60,font:{fontSize:18,fontWeight:"bold"}}))
-		row.add(Titanium.UI.createImageView({image:leftImage,left:7}))
+		var row = Titanium.UI.createTableViewRow({id:"menuRow",selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+		row.add(Titanium.UI.createLabel({id:"menuLabel",text:label}))
+		row.add(Titanium.UI.createImageView({image:leftImage,id:"menuLeftImage"}))
 		return row;
 	}
 	
@@ -158,7 +156,7 @@ function MenuWindow() {
 		if (jukebox.isActive()) {
 			rows.push(rowNowPlaying);
 		}
-		tableView.height = MENU_ITEM_HEIGHT * rows.getLength();
+		tableView.height = rows.getRows()[0].height * rows.getLength();
 		tableView.setData(rows.getRows());
 		win.open();
 	}

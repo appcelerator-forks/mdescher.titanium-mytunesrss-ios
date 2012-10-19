@@ -1,11 +1,10 @@
 function OfflineLoginWindow(parent) {	
 	
 
-	var win = GUI.createWindow({navBarHidden:true});
-	win.add(GUI.createTopToolbar("MyTunesRSS", undefined, GUI.createButton({style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT})));
-	var pos = new Counter(350);
-	var buttonLogin = GUI.add(win, Titanium.UI.createButton({left:10,right:10,top:pos.inc(0),width:Titanium.UI.FILL,title:L("login.open"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button.png",backgroundLeftCap:12,backgroundTopCap:40,height:42,color:"#CCCCCC"}));
-	win.add(Titanium.UI.createImageView({image:"images/logo_big.png",top:90}));
+	var win = Titanium.UI.createWindow({id:"window",navBarHidden:true});
+	win.add(GUI.createTopToolbar("MyTunesRSS", undefined, Titanium.UI.createButton({id:"infoButton",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT})));
+	var buttonLogin = GUI.add(win, Titanium.UI.createButton({id:"loginButton",title:L("login.open"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED}));
+	win.add(Titanium.UI.createImageView({id:"watermarkOfflineSafari"}));
 
 	buttonLogin.addEventListener('click', function() {
 		offlineMode = true;
