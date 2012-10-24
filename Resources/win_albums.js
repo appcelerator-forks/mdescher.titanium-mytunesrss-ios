@@ -37,34 +37,12 @@ function AlbumsWindow(data) {
 	        tableView,
 	        data,
 	        function(item, index) {
-	            var displayName = getDisplayName(item.name);
-				var size = 40;
-				var albumHeight = 24;
-				var artistHeight = 18;
-				var spacer = 4;
-				var hires = false;
-				if (Titanium.Platform.osname === "ipad") {
-					size = 60;
-					albumHeight = 36;
-					artistHeight = 26;
-					spacer = 6;
-				} else if (Titanium.Platform.osname === "iphone") {
-					hires = Titanium.Platform.displayCaps.density == "high";
-				}
-	            var row = GUI.createTableViewRow({rightImage:"images/children.png",height:size + (2 * spacer),className:item.imageUri ? "album_row_img" : "album_row",selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+	            var row = GUI.createMediaItemRow(item.imageUri !== undefined);
 	            if (item.imageUri !== undefined) {
-	                var albumImage;
-	                if (hires) {
-	                	albumImage = createCachedImageView({cacheObjectId:item.imageHash + "_128",hires:true,image:item.imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
-	                } else {
-	                	albumImage = createCachedImageView({cacheObjectId:item.imageHash + "_64",image:item.imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
-	                }
-	                row.add(albumImage);
+	                row.add(GUI.createMediaItemImage(item.imageHash, item.imageUri));
 	            }
-	            var albumName = GUI.createLabel({text:displayName,top:spacer,left:size + (3 * spacer),height:albumHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'}});
-	            var artistName = GUI.createLabel({text:getDisplayName(item.artist),bottom:spacer,left:size + (3 * spacer),height:artistHeight,font:{fontSize:12}});
-	            row.add(albumName);
-	            row.add(artistName);
+	            row.add(GUI.createMediaItemLabel(getDisplayName(item.name)));
+	            row.add(GUI.createMediaItemSubLabel(getDisplayName(item.artist)));
 	            row.tracksUri = item.tracksUri;
 	            row.albumName = item.name;
 	            row.albumArtist = item.artist;

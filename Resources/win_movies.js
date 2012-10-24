@@ -37,32 +37,11 @@ function MoviesWindow(data) {
 	        tableView,
 	        data,
 	        function(item, index) {
-	            var displayName = getDisplayName(item.name);
-				var size = 40;
-				var nameHeight = 24;
-				var infoHeight = 18;
-				var spacer = 4;
-				var hires = false;
-				if (Titanium.Platform.osname === "ipad") {
-					size = 60;
-					nameHeight = 36;
-					infoHeight = 26;
-					spacer = 6;
-				} else if (Titanium.Platform.osname === "iphone") {
-					hires = Titanium.Platform.displayCaps.density == "high";
-				}
-	            var row = GUI.createTableViewRow({rightImage:"images/children.png",height:size + (2 * spacer),className:item.imageUri ? 'show_row_img' : 'show_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+	            var row = GUI.createMediaItemRow(item.imageUri !== undefined);
 	            if (item.imageUri !== undefined) {
-	                var showImage;
-	                if (hires) {
-	                	showImage = createCachedImageView({cacheObjectId:item.imageHash + "_128",hires:true,image:item.imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
-	                } else {
-	                	showImage = createCachedImageView({cacheObjectId:item.imageHash + "_64",image:item.imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'});
-	                }
-	                row.add(showImage);
+	                row.add(GUI.createMediaItemImage(item.imageHash, item.imageUri));
 	            }
-	            var movieName = GUI.createLabel({text:displayName,top:spacer,left:size + (3 * spacer),height:nameHeight,right:2 * spacer,font:{fontSize:16,fontWeight:'bold'}});
-	            row.add(movieName);
+	            row.add(GUI.createMediaItemLabel(getDisplayName(item.name)));
 	            row.playbackUri = item.httpLiveStreamUri !== undefined ? item.httpLiveStreamUri : item.playbackUri;
 	            return row;
 	        },

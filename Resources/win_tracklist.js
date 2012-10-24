@@ -19,33 +19,9 @@ function TracksWindow(data, parent) {
 	
 	var tableData = [];
 	for (var i = 0; i < data.length; i++) {
-		var trackHeight = 20;
-		var artistHeight = 15;
-		var spacer = 4;
-		var size = 40;
-		var hires = false;
-		if (Titanium.Platform.osname === "ipad") {
-			size = 30;
-			trackHeight = 18;
-			artistHeight = 13;
-			spacer = 6;
-		} else if (Titanium.Platform.osname === "iphone") {
-			hires = Titanium.Platform.displayCaps.density == "high";
-		}
-	    var row = GUI.createTableViewRow({height:size + (2 * spacer),className:'track_row',index:i,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,moveable:false,editable:offlineMode});
-	    var infoView = Titanium.UI.createView({right:30});
-	    row.add(infoView);
-        if (data[i].imageUri !== undefined) {
-            if (hires) {
-            	infoView.add(createCachedImageView({cacheObjectId:data[i].imageHash + "_128",hires:true,image:data[i].imageUri + "/size=128",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'}));
-            } else {
-            	infoView.add(createCachedImageView({cacheObjectId:data[i].imageHash + "_64",image:data[i].imageUri + "/size=64",top:spacer,left:spacer,width:size,height:size,defaultImage:'appicon.png'}));
-            }
-        }
-        var trackName = GUI.createLabel({text:getDisplayName(data[i].name),top:spacer,left:size + (3 * spacer),height:trackHeight,right:2 * spacer,font:{fontSize:14,fontWeight:'bold'},minimumFontSize:10,touchEnabled:false});
-        var artistName = GUI.createLabel({text:getDisplayName(data[i].artist),bottom:spacer,left:size + (3 * spacer),height:artistHeight,font:{fontSize:10},touchEnabled:false});
-	    infoView.add(trackName);
-	    infoView.add(artistName);
+	    var row = GUI.createMediaTrackItemRow(data[i].imageUri !== undefined);
+	    var infoView = GUI.createMediaTrackItemInfoView(data[i].imageHash, data[i].imageUri, getDisplayName(data[i].name), getDisplayName(data[i].artist));
+    	row.add(infoView);
 	    infoView.addEventListener("click", function(e) {
 	    	var busyView = createBusyView();
 			win.add(busyView);
@@ -72,7 +48,7 @@ function TracksWindow(data, parent) {
 		if (!offlineMode) {
 		    var syncImageGlowView = GUI.createGlow({right:20,touchEnabled:false});
 		    var syncImageViewImage = getCachedTrackFile(data[i].id) === undefined ? "images/download.png" : "images/delete.png"; 
-		    var syncImageView = Titanium.UI.createImageView({hires:hires,width:20,image:syncImageViewImage,right:10,touchEnabled:false});
+		    var syncImageView = Titanium.UI.createImageView({width:20,image:syncImageViewImage,right:10,touchEnabled:false});
 		    var touchView = Titanium.UI.createView({right:0,height:Titanium.UI.FILL,width:40,backgroundColor:"transparent",glow:syncImageGlowView});
 		    row.add(touchView);
 		    touchView.addEventListener("touchstart", function(e) {

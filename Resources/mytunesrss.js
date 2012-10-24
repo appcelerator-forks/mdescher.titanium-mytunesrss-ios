@@ -207,7 +207,7 @@ function loadAndDisplayGenres(parent) {
 		    	new GenresWindow(response.result).open(parent);
 		    }
 	    } else {
-		    showServer({message:response.result,buttonNames:['Ok']}).show();
+		    showError({message:response.result,buttonNames:['Ok']}).show();
 	    }
 	}
 }

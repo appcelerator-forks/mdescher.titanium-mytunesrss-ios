@@ -15,7 +15,7 @@ exports.createTextField = function(options) {
 
 exports.createLabel = function(options) {
 	options.color = "#CCCCCC";
-	if (options.minimumFontSiue === undefined) {
+	if (options.minimumFontSize === undefined) {
 		options.minimumFontSize = 12;
 	}
 	return Titanium.UI.createLabel(options);
@@ -94,4 +94,87 @@ exports.createGlow = function(center) {
 		options.right =center.right - 25;
 	}
 	return Titanium.UI.createView(options);
+}
+
+exports.createMediaItemRow = function(image) {
+	return Titanium.UI.createTableViewRow({
+		className : "media_row" + (image ? "_image" : ""),	
+		rightImage : "images/children.png",
+		height : Titanium.Platform.osname === "ipad" ? 72 : 48,
+		color : "#CCCCCC",
+		selectionStyle : Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE
+	});
+}
+
+exports.createMediaTrackItemRow = function(image) {
+	return Titanium.UI.createTableViewRow({
+		className : "media_row" + (image ? "_image" : ""),	
+		height : Titanium.Platform.osname === "ipad" ? 72 : 48,
+		color : "#CCCCCC",
+		selectionStyle : Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,
+		moveable : false,
+		editable : offlineMode
+	});
+}
+
+exports.createMediaTrackItemInfoView = function(imageHash, imageUri, label, sublabel) {
+	var trackHeight = Titanium.Platform.osname === "ipad" ? 18 : 20;
+	var artistHeight = Titanium.Platform.osname === "ipad" ? 13 : 15;
+	var spacer = Titanium.Platform.osname === "ipad" ? 6 : 4;
+	var size = Titanium.Platform.osname === "ipad" ? 30 : 40;
+    var infoView = Titanium.UI.createView({right:30});
+    if (imageUri !== undefined) {
+		var hires = Titanium.Platform.displayCaps.density == "high";
+		var imagesize = hires ? 128 : 64;
+    	infoView.add(createCachedImageView({cacheObjectId:imageHash + "_" + imagesize,hires:true,image:imageUri + "/size=" + imagesize,top:spacer,left:spacer,width:size,height:size,defaultImage:"appicon.png"}));
+    }
+    var trackName = GUI.createLabel({text:label,top:spacer,left:size + (3 * spacer),height:trackHeight,right:2 * spacer,font:{fontSize:14,fontWeight:"bold"},minimumFontSize:10,touchEnabled:false});
+    var artistName = GUI.createLabel({text:sublabel,bottom:spacer,left:size + (3 * spacer),height:artistHeight,right:2 * spacer,font:{fontSize:10},touchEnabled:false});
+    infoView.add(trackName);
+    infoView.add(artistName);
+    return infoView;	
+}
+
+exports.createMediaItemImage = function(hash, uri) {
+	return createCachedImageView({
+		cacheObjectId : hash + "_" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64),
+		hires : Titanium.Platform.displayCaps.density === "high",
+		image : uri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 12 : 64),
+		top : Titanium.Platform.osname === "ipad" ? 6 : 4,
+		left : Titanium.Platform.osname === "ipad" ? 6 : 4,
+		width : Titanium.Platform.osname === "ipad" ? 60 : 40,
+		height : Titanium.Platform.osname === "ipad" ? 60 : 40,
+		defaultImage : "appicon.png"
+	});
+}
+
+exports.createMediaItemLabel = function(label) {
+	return Titanium.UI.createLabel({
+		text : label,
+		top : Titanium.Platform.osname === "ipad" ? 6 : 4,
+		left : Titanium.Platform.osname === "ipad" ? 78 : 52,
+		height : Titanium.Platform.osname === "ipad" ? 36 : 24,
+		right : Titanium.Platform.osname === "ipad" ? 12 : 8,
+		font : {
+			fontSize : 16,
+			fontWeight : "bold"
+		},
+		color : "#CCCCCC",
+		minimumFontSize : 12
+	});
+}
+
+exports.createMediaItemSubLabel = function(label) {
+	return Titanium.UI.createLabel({
+		text : label,
+		bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
+		left : Titanium.Platform.osname === "ipad" ? 78 : 52,
+		height : Titanium.Platform.osname === "ipad" ? 26 : 18,
+		font : {
+			fontSize : 12,
+			fontWeight : "bold"
+		},
+		color : "#CCCCCC",
+		minimumFontSize : 12
+	});
 }
