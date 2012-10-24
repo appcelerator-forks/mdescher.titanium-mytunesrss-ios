@@ -63,9 +63,11 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	
 	var sections = [];
 
+	var textFieldWidth = Titanium.Platform.osname === "ipad" ? 160 : 80;
+
 	// audio player settings
 	var section = Titanium.UI.createTableViewSection({headerTitle:L("settings.audioPlayer"),});	
-	var bufferSizeInput = GUI.createTextField({hintText:L("settings.bufferSizeHint"),right:10,width:80,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
+	var bufferSizeInput = GUI.createTextField({hintText:L("settings.bufferSizeHint"),right:10,width:textFieldWidth,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 	section.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.bufferSize"),left:10}), bufferSizeInput]));
 	sections.push(section);
 
@@ -75,7 +77,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		section = Titanium.UI.createTableViewSection({headerTitle:L("settings.search")});
 		var staticSearchFuzziness = (searchFuzziness >= 0 && searchFuzziness <= 100);
 		var searchAccuracy = staticSearchFuzziness ? 100 - searchFuzziness : Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY);
-		var searchAccuracyInput = GUI.createTextField({editable:!staticSearchFuzziness,right:10,width:80,hintText:L("settings.accuracyHint"),value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
+		var searchAccuracyInput = GUI.createTextField({editable:!staticSearchFuzziness,right:10,width:textFieldWidth,hintText:L("settings.accuracyHint"),value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 		section.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.searchAccuracy"),left:10}), searchAccuracyInput]));
 		sections.push(section);
 

@@ -109,7 +109,7 @@ exports.createMediaItemRow = function(image) {
 exports.createMediaTrackItemRow = function(image) {
 	return Titanium.UI.createTableViewRow({
 		className : "media_row" + (image ? "_image" : ""),	
-		height : Titanium.Platform.osname === "ipad" ? 72 : 48,
+		height : Titanium.Platform.osname === "ipad" ? 42 : 48,
 		color : "#CCCCCC",
 		selectionStyle : Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,
 		moveable : false,
@@ -139,7 +139,7 @@ exports.createMediaItemImage = function(hash, uri) {
 	return createCachedImageView({
 		cacheObjectId : hash + "_" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64),
 		hires : Titanium.Platform.displayCaps.density === "high",
-		image : uri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 12 : 64),
+		image : uri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64),
 		top : Titanium.Platform.osname === "ipad" ? 6 : 4,
 		left : Titanium.Platform.osname === "ipad" ? 6 : 4,
 		width : Titanium.Platform.osname === "ipad" ? 60 : 40,
