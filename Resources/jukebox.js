@@ -4,7 +4,7 @@ function Jukebox() {
 	var myParent;
 	var myPlaylist;
 	
-	var win = Titanium.UI.createWindow({id:"window"});
+	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
 	var myTrack;
 	var imageView;

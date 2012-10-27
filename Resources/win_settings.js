@@ -21,7 +21,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		return Titanium.UI.createTableViewRow({children:views});
 	}
 	
-	var win = Titanium.UI.createWindow({id:"window"});
+	var win = Titanium.UI.createWindow(STYLE.get("window"));
 	
 	var transcoderSwitchesWifi = [];
 	var transcoderSwitchesMobile = [];

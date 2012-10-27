@@ -178,3 +178,27 @@ exports.createMediaItemSubLabel = function(label) {
 		minimumFontSize : 12
 	});
 }
+
+exports.Style = function() {
+	
+	var styles = JSON.parse(Titanium.Filesystem.getFile("styles/iphone.json").read());
+	if (Titanium.Platform.osname === "ipad") {
+		var ipadStyles = JSON.parse(Titanium.Filesystem.getFile("styles/ipad.json").read());
+		for (var attrname in ipadStyles) {
+			styles[attrname] = ipadStyles[attrname];
+		}
+	}
+	
+	this.get = function(id, options) {
+		var style = {};
+		if (styles[id] !== undefined) {
+			style = JSON.parse(JSON.stringify(styles[id]));
+		}
+		for (var attrname in options) {
+			style[attrname] = options[attrname];
+		}
+		return style;
+	}
+	
+}
+

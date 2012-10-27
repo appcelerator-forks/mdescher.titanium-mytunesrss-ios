@@ -1,17 +1,17 @@
 function OnlineLoginWindow(parent) {	
 	
-	var win = Titanium.UI.createWindow({id:"window",navBarHidden:true});
-	win.add(GUI.createTopToolbar("MyTunesRSS", undefined, Titanium.UI.createButton({id:"infoButton",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT})));
-	win.add(Titanium.UI.createLabel({id:"serverAddressLabelOnline",text:L("login.serverUrl")}));
-	var inputServerUrl = GUI.add(win, Titanium.UI.createTextField({id:"serverAddressInputOnline",borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,hintText:L("login.serverUrl"),value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS}));
-	win.add(Titanium.UI.createLabel({id:"credentialsLabel",text:L("login.credentials")}));
-	var inputUsername = GUI.add(win, Titanium.UI.createTextField({id:"usernameInput",borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,hintText:L("login.username"),value:Titanium.App.Properties.getString('username'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS}));
-	var inputPassword = GUI.add(win, Titanium.UI.createTextField({id:"passwordInput",borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,hintText:L("login.password"),value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS}));
-	var inputSaveCredentials = GUI.add(win, Titanium.UI.createSwitch({id:"saveCredentialsSwitch",value:Titanium.App.Properties.getBool('saveCredentials', false)}));
-	win.add(Titanium.UI.createLabel({id:"saveCredentialsLabel",text:L("login.saveCredentials")}));
-	var buttonLogin = GUI.add(win, Titanium.UI.createButton({id:"loginButton",title:L("login.connect"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED}));
+	var win = Titanium.UI.createWindow(STYLE.get("window",{navBarHidden:true}));
+	win.add(GUI.createTopToolbar("MyTunesRSS", undefined, Titanium.UI.createButton(STYLE.get("infoButton",{style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT}))));
+	win.add(Titanium.UI.createLabel(STYLE.get("serverAddressLabelOnline",{text:L("login.serverUrl")})));
+	var inputServerUrl = GUI.add(win, Titanium.UI.createTextField(STYLE.get("serverAddressInputOnline",{borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,hintText:L("login.serverUrl"),value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS})));
+	win.add(Titanium.UI.createLabel(STYLE.get("credentialsLabel",{text:L("login.credentials")})));
+	var inputUsername = GUI.add(win, Titanium.UI.createTextField(STYLE.get("usernameInput",{borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,hintText:L("login.username"),value:Titanium.App.Properties.getString('username'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS})));
+	var inputPassword = GUI.add(win, Titanium.UI.createTextField(STYLE.get("passwordInput",{borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,hintText:L("login.password"),value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS})));
+	var inputSaveCredentials = GUI.add(win, Titanium.UI.createSwitch(STYLE.get("saveCredentialsSwitch",{value:Titanium.App.Properties.getBool('saveCredentials', false)})));
+	win.add(Titanium.UI.createLabel(STYLE.get("saveCredentialsLabel",{text:L("login.saveCredentials")})));
+	var buttonLogin = GUI.add(win, Titanium.UI.createButton(STYLE.get("loginButton",{title:L("login.connect"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED})));
 	var actIndicatorView = GUI.add(win, GUI.createActivityIndicator());
-	win.add(Titanium.UI.createImageView({id:"watermarkOnline"}));
+	win.add(Titanium.UI.createImageView(STYLE.get("watermarkOnline")));
 
 	function doLogin() {
 		var busyView = createBusyView();

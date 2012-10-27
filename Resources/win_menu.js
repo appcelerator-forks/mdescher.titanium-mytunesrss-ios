@@ -2,9 +2,9 @@ function MenuWindow() {
 	
 	var self = this;
 
-	var win = Titanium.UI.createWindow({id:"window"});
+	var win = Titanium.UI.createWindow(STYLE.get("window"));
 	
-	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
+	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:"#000000",opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
 	var searchBar = Titanium.UI.createSearchBar({hintText:L("menu.search.hint"),width:Titanium.UI.FILL,top:45,height:45,autocorrect:false,autocapitalization:false,autocomplete:false,barColor:"#000000"});
@@ -61,9 +61,9 @@ function MenuWindow() {
 	});
 	
 	function createMenuItem(label, leftImage) {
-		var row = Titanium.UI.createTableViewRow({id:"menuRow",selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
-		row.add(Titanium.UI.createLabel({id:"menuLabel",text:label}))
-		row.add(Titanium.UI.createImageView({image:leftImage,id:"menuLeftImage"}))
+		var row = Titanium.UI.createTableViewRow(STYLE.get("menuRow",{selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE}));
+		row.add(Titanium.UI.createLabel(STYLE.get("menuLabel",{text:label})));
+		row.add(Titanium.UI.createImageView(STYLE.get("menuLeftImage",{image:leftImage})));
 		return row;
 	}
 	

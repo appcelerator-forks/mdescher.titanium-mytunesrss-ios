@@ -1,0 +1,18 @@
+{
+
+	"menuRow" : {
+		"rightImage" : "images/children.png",
+		"height" : 88
+	},
+	
+	"menuLabel" : {
+		"left" : 60,
+		"font" : {
+			"fontSize" : 36,
+			"fontWeight" : "bold"
+		},
+		"color" : "#CCCCCC",
+		"minimumFontSize" : 24
+	}
+	
+}
