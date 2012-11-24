@@ -131,6 +131,10 @@
 	
 	"infoButton" : {
 		"color" : "#CCCCCC"		
-	}
-	
+	},
+
+	"window" : {
+		"opacity" : 1,
+		"backgroundColor" : "#2B2B2B"
+	}	
 }
