@@ -74,7 +74,7 @@ function Jukebox() {
 	        progressBar.value = Math.floor(progress / 1000);
 	    }
 	    timePlayed.text = getDisplayTime(progress / 1000);
-	    timeRemaining.text = getDisplayTime(myTrack.time - Math.floor(progress / 1000));
+	    timeRemaining.text = myTrack.time > Math.floor(progress / 1000) ? getDisplayTime(myTrack.time - Math.floor(progress / 1000)) : "0:00";
 	}
 
 	function wrapInSection(rows) {
@@ -233,7 +233,7 @@ function Jukebox() {
 				localFileServerSocket = Titanium.Network.Socket.createTCP({host:"127.0.0.1",port:port,accepted:function(e) {
 					e.inbound.write(Titanium.createBuffer({value:"HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: " + localFile.getSize() + "\r\n\r\n"}));
 					Titanium.Stream.writeStream(localFile.open(Titanium.Filesystem.MODE_READ), e.inbound, 102400, function(e2) {
-						if (e2.bytesProcessed === -1) {
+						if (e2.bytesProcessed === undefined || e2.bytesProcessed === -1) {
 							e.inbound.close();
 						}
 					});

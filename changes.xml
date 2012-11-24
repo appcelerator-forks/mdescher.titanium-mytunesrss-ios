@@ -6,6 +6,9 @@
     <body>
 
         <release version="2.1.0" date="___D___">
+            <action dev="mdescher" type="fix">
+                Do not display negative remaining time (in case total track time is not available or incorrect).
+            </action>
             <action dev="mdescher" type="add">
                 Offline mode.
             </action>
