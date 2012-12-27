@@ -143,6 +143,7 @@ function Jukebox() {
 	
 	var topbar = undefined;
 	
+	win.add(Titanium.UI.createView({left:0,right:0,bottom:0,height:38,backgroundGradient:{type:"linear",colors:["#1F1F1F","#323232"],startPoint:{x:0,y:37},endPoint:{x:0,y:0},backFillStart:false}}));
 	win.add(controlRewind);
 	win.add(controlFastForward);
 	win.add(controlPlayPause);

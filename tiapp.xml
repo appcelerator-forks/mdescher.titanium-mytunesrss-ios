@@ -14,7 +14,7 @@
     <publisher>Codewave Software Michael Descher</publisher>
     <url>http://www.codewave.de</url>
     <description>MyTunesRSS iOS client</description>
-    <copyright>2012 by Codewave Software Michael Descher</copyright>
+    <copyright>2013 by Codewave Software Michael Descher</copyright>
     <icon>appicon.png</icon>
     <persistent-wifi>false</persistent-wifi>
     <prerendered-icon>false</prerendered-icon>
@@ -30,9 +30,6 @@
         </orientations>
         <orientations device="ipad">
             <orientation>Ti.UI.PORTRAIT</orientation>
-            <orientation>Ti.UI.UPSIDE_PORTRAIT</orientation>
-            <orientation>Ti.UI.LANDSCAPE_LEFT</orientation>
-            <orientation>Ti.UI.LANDSCAPE_RIGHT</orientation>
         </orientations>
         <backgroundModes>
             <mode>audio</mode>
