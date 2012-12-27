@@ -79,10 +79,13 @@ function Jukebox() {
 
 	function addTouchListener(control) {
 	    control.addEventListener('touchstart', function() {
-	        control.image = control.image.replace(".png", "_touched.png");
+	        control.glow.opacity = 0.75;
 	    });
 	    control.addEventListener('touchend', function() {
-	        control.image = control.image.replace("_touched.png", ".png");
+	        control.glow.opacity = 0;
+	    });
+	    control.addEventListener('touchcancel', function() {
+	        control.glow.opacity = 0;
 	    });
 	}
 	
@@ -106,22 +109,22 @@ function Jukebox() {
 	var buttonBack = GUI.createButton({title:L("jukebox.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	var buttonPlaylist = GUI.createButton({title:L("jukebox.playlist"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
-	var controlRewind = Titanium.UI.createImageView({image:'images/back.png',width:38,height:38,bottom:0,left:34});
+	var controlRewind = Titanium.UI.createImageView({image:'images/back.png',width:38,height:38,bottom:0,left:34,glow:GUI.createGlow({left:34+19,bottom:19})});
 	controlRewind.addEventListener('click', function() {
 		rewind();
 	});
 	
-	var controlPlayPause = Titanium.UI.createImageView({image:'images/play.png',width:38,height:38,bottom:0,left:105});
+	var controlPlayPause = Titanium.UI.createImageView({image:'images/play.png',width:38,height:38,bottom:0,left:105,glow:GUI.createGlow({left:105+19,bottom:19})});
 	controlPlayPause.addEventListener('click', function() {
 		playPause();
 	});
 	
-	var controlFastForward = Titanium.UI.createImageView({image:'images/forward.png',width:38,height:38,bottom:0,right:105});
+	var controlFastForward = Titanium.UI.createImageView({image:'images/forward.png',width:38,height:38,bottom:0,right:105,glow:GUI.createGlow({right:105+19,bottom:19})});
 	controlFastForward.addEventListener('click', function() {
 	    fastForward();
 	});
 	
-	var controlShuffle = Titanium.UI.createImageView({image:'images/shuffle.png',width:38,height:38,bottom:0,right:34});
+	var controlShuffle = Titanium.UI.createImageView({image:'images/shuffle.png',width:38,height:38,bottom:0,right:34,glow:GUI.createGlow({right:34+19,bottom:19})});
 	controlShuffle.addEventListener('click', function() {
 	    shuffle();
 	});
@@ -145,9 +148,13 @@ function Jukebox() {
 	
 	win.add(Titanium.UI.createView({left:0,right:0,bottom:0,height:38,backgroundGradient:{type:"linear",colors:["#1F1F1F","#323232"],startPoint:{x:0,y:37},endPoint:{x:0,y:0},backFillStart:false}}));
 	win.add(controlRewind);
+	win.add(controlRewind.glow);
 	win.add(controlFastForward);
+	win.add(controlFastForward.glow);
 	win.add(controlPlayPause);
+	win.add(controlPlayPause.glow);
 	win.add(controlShuffle);
+	win.add(controlShuffle.glow);
 	
 	/**
 	 * Open the jukebox window. 

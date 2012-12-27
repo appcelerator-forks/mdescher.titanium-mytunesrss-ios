@@ -91,7 +91,12 @@ exports.createGlow = function(center) {
 	if (center.left != undefined) {
 		options.left = center.left - 25;
 	} else if (center.right != undefined) {
-		options.right =center.right - 25;
+		options.right = center.right - 25;
+	}
+	if (center.top != undefined) {
+		options.top = center.top - 25;
+	} else if (center.bottom != undefined) {
+		options.bottom = center.bottom - 25;
 	}
 	return Titanium.UI.createView(options);
 }
