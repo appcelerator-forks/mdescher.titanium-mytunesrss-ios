@@ -1,7 +1,8 @@
-function TracksWindow(data, parent) {
+function TracksWindow(data, currentJukeboxPlaylist) {
 
 	var self = this;
-	var myParent = parent;
+	var myParent;
+	var myCurrentJukeboxPlaylist = currentJukeboxPlaylist != undefined ? currentJukeboxPlaylist : false;
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
@@ -9,7 +10,7 @@ function TracksWindow(data, parent) {
 	var buttonBack = GUI.createButton({title:L("tracklist.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
-		myParent.open(myParent === jukebox ? self : undefined);
+		myParent.open(undefined);
 	    win.close();
 	});
 	
@@ -36,11 +37,10 @@ function TracksWindow(data, parent) {
 	            new VideoPlayerWindow(url).open(self);
 	        } else {
 	            jukebox.setPlaylist(data, e.index);
-	            if (myParent === jukebox) {
-			        jukebox.open(self);
-	            } else {
-			        jukebox.open(undefined, self);
-	            }
+			    jukebox.open(myCurrentJukeboxPlaylist === true ? undefined : self);
+			    if (myCurrentJukeboxPlaylist === true) {
+			    	win.close();
+			    }
 	        }
 	        win.remove(busyView);
 	    });

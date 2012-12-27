@@ -2,7 +2,6 @@ function Jukebox() {
 	
 	var self = this;
 	var myParent;
-	var myPlaylist;
 	
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
@@ -13,9 +12,11 @@ function Jukebox() {
 	var timePlayed;
 	var timeRemaining;
 	var size = 220;
+	var vOffset = 0;
 	var hires = false;
 	var noCoverImage;
 	if (Titanium.Platform.osname === "ipad") {
+		vOffset = 100;
 		size = 440;
 		noCoverImage = "images/nocover_ipad.png";
 	} else if (Titanium.Platform.osname === "iphone") {
@@ -41,7 +42,7 @@ function Jukebox() {
 	    	win.remove(timePlayed);
 	    	win.remove(timeRemaining);
 	    }
-	    imageView = Titanium.UI.createView({top:55,left:10,right:10,hires:true,image:track.imageUri,height:size});
+	    imageView = Titanium.UI.createView({top:vOffset+55,left:10,right:10,hires:true,image:track.imageUri,height:size});
 	    if (track.imageUri !== undefined) {
 	        if (hires) {
 	    	    imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,hires:true,image:track.imageUri,width:size-20,height:size-20}));
@@ -55,7 +56,7 @@ function Jukebox() {
 		        imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,image:noCoverImage,width:size-20,height:size-20}));
 	        }
 	    }
-	    infoView = Titanium.UI.createView({height:60,top:size+65,left:10,right:10});
+	    infoView = Titanium.UI.createView({height:60,top:vOffset+size+65,left:10,right:10});
 	    infoView.add(GUI.createLabel({top:7,left:0,right:0,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name),textAlign:"center",color:"#CCCCCC"}));
 	    infoView.add(GUI.createLabel({bottom:7,left:0,right:0,height:24,font:{fontSize:12},text:getDisplayName(track.artist),textAlign:"center",color:"#CCCCCC"}));
 	    win.add(imageView);
@@ -109,22 +110,22 @@ function Jukebox() {
 	var buttonBack = GUI.createButton({title:L("jukebox.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	var buttonPlaylist = GUI.createButton({title:L("jukebox.playlist"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
-	var controlRewind = Titanium.UI.createImageView({image:'images/back.png',width:38,height:38,bottom:0,left:34,glow:GUI.createGlow({left:34+19,bottom:19})});
+	var controlRewind = Titanium.UI.createImageView(STYLE.get("jukeboxRewind",{glow:GUI.createGlow(STYLE.get("jukeboxRewindGlow"))}));
 	controlRewind.addEventListener('click', function() {
 		rewind();
 	});
 	
-	var controlPlayPause = Titanium.UI.createImageView({image:'images/play.png',width:38,height:38,bottom:0,left:105,glow:GUI.createGlow({left:105+19,bottom:19})});
+	var controlPlayPause = Titanium.UI.createImageView(STYLE.get("jukeboxPlayPause",{glow:GUI.createGlow(STYLE.get("jukeboxPlayPauseGlow"))}));
 	controlPlayPause.addEventListener('click', function() {
 		playPause();
 	});
 	
-	var controlFastForward = Titanium.UI.createImageView({image:'images/forward.png',width:38,height:38,bottom:0,right:105,glow:GUI.createGlow({right:105+19,bottom:19})});
+	var controlFastForward = Titanium.UI.createImageView(STYLE.get("jukeboxForward",{glow:GUI.createGlow(STYLE.get("jukeboxForwardGlow"))}));
 	controlFastForward.addEventListener('click', function() {
 	    fastForward();
 	});
 	
-	var controlShuffle = Titanium.UI.createImageView({image:'images/shuffle.png',width:38,height:38,bottom:0,right:34,glow:GUI.createGlow({right:34+19,bottom:19})});
+	var controlShuffle = Titanium.UI.createImageView(STYLE.get("jukeboxShuffle",{glow:GUI.createGlow(STYLE.get("jukeboxShuffleGlow"))}));
 	controlShuffle.addEventListener('click', function() {
 	    shuffle();
 	});
@@ -135,7 +136,7 @@ function Jukebox() {
 	});
 	
 	buttonPlaylist.addEventListener('click', function() {
-		myPlaylist.open();
+		new TracksWindow(jukebox.getCurrentPlaylist(), true).open(self);
 	    win.close();
 	});
 
@@ -159,19 +160,14 @@ function Jukebox() {
 	/**
 	 * Open the jukebox window. 
 	 */
-	this.open = function(playlist, parent) {
+	this.open = function(parent) {
 		if (parent !== undefined) {
 			myParent = parent;
 		}
-		myPlaylist = playlist;
 		if (topbar !== undefined) {
 			win.remove(topbar);
 		}
-		if (myPlaylist === undefined) {
-			topbar = GUI.createTopToolbar(L("jukebox.title"), buttonBack, undefined);
-		} else {
-			topbar = GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist);
-		}
+		topbar = GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist);
 		win.add(topbar);
 		win.open();
 	}
@@ -230,9 +226,12 @@ function Jukebox() {
 	    }
 	}
 	
-	function playTrack() {
+	function setTrack() {
 	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].id, currentPlaylist[currentPlaylistIndex].playbackUri);
 	    setTrackInformation(currentPlaylist[currentPlaylistIndex]);
+	}
+
+	function playTrack() {
 	    if (!audioPlayer.playing) {
 	        audioPlayer.start();
 		    keepAliveSound.play();
@@ -248,6 +247,7 @@ function Jukebox() {
 	    audioPlayer.addEventListener('change', function(e) {
 			if (e.state === audioPlayer.STATE_STOPPED && fastForwardOnStopped === true) {
 		        fastForward();
+		        playTrack();
 		   	}
 			if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
 	            showJukeboxActivityView();
@@ -288,41 +288,53 @@ function Jukebox() {
 	            }
 	        }
 	    }
+	    setTrack();
 	    playTrack();
 	};
 	
 	function rewind() {
 		fastForwardOnStopped = false;
-	    if (audioPlayer.playing && audioPlayer.progress > 2000) {
+		var playing = audioPlayer.playing;
+	    if (audioPlayer.progress > 2000) {
 	        audioPlayer.stop();
-	        playTrack();
+	        setTrack();
+	        if (playing === true) {
+	        	playTrack();
+	        }
 	    } else if (currentPlaylistIndex > 0) {
 	        audioPlayer.stop();
 	        currentPlaylistIndex--;
-	        playTrack();
+	        setTrack();
+	        if (playing === true) {
+	        	playTrack();
+	        }
 	    }
 	};
 	
 	function fastForward() {
 		fastForwardOnStopped = false;
+		var playing = audioPlayer.playing;
 	    if (currentPlaylistIndex + 1 < currentPlaylist.length) {
 	        audioPlayer.stop();
 	        currentPlaylistIndex++;
-	        playTrack();
+	        setTrack();
+	        if (playing === true) {
+	        	playTrack();
+	        }
 	    } else if (!audioPlayer.playing) {
 	    	keepAliveSound.pause();
 	    }
 	};
 	
 	function playPause() {
-	    if (audioPlayer.stopped || audioPlayer.paused) {
-		    audioPlayer.start();
-		    keepAliveSound.play();
-		    controlPlayPause.setImage("images/pause.png");
-	    } else {
+	    if (audioPlayer.playing) {
 	        audioPlayer.pause();
 	        keepAliveSound.pause();
 			controlPlayPause.setImage("images/play.png");
+	    } else {
+		    audioPlayer.start();
+		    keepAliveSound.play();
+		    controlPlayPause.setImage("images/pause.png");
 	    }
 	};
 	
@@ -338,11 +350,9 @@ function Jukebox() {
 	      currentPlaylist[rand] = tmp;
 	    }
 	    currentPlaylistIndex = 0;
+	    setTrack();
 	    if (playing) {
 	        playTrack();
-	    } else {
-	        setPlayerUrl(currentPlaylist[currentPlaylistIndex].id, currentPlaylist[currentPlaylistIndex].playbackUri);
-	        setTrackInformation(currentPlaylist[currentPlaylistIndex]);
 	    }
 	};
 	

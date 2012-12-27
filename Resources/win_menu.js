@@ -127,7 +127,7 @@ function MenuWindow() {
 		win.add(busyView);
 	    if (jukebox.isActive()) {
 	    	win.close();
-	        jukebox.open(new TracksWindow(jukebox.getCurrentPlaylist(), jukebox), self);
+	        jukebox.open(self);
 	    } else {
 	        showError({message:L("menu.currentlyPlaying.none"),buttonNames:['Ok']});
 	    }

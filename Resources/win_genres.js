@@ -8,7 +8,7 @@ function GenresWindow(data) {
 	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
-	var tableView = GUI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}), filterAttribute:'title',top:45});
+	var tableView = GUI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}), filterAttribute:"filter",top:45});
 	var buttonBack = GUI.createButton({title:L("genres.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -38,7 +38,7 @@ function GenresWindow(data) {
 	        data,
 	        function(item) {
 	            var displayName = getDisplayName(item.name);
-	            var row = GUI.createTableViewRow({rightImage:"images/children.png",height:48,className:'genre_row',height:TABLE_VIEW_ROW_HEIGHT,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE});
+	            var row = GUI.createTableViewRow({rightImage:"images/children.png",height:48,className:'genre_row',height:TABLE_VIEW_ROW_HEIGHT,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,filter:displayName});
 	            row.add(GUI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'}}));
 	            row.albumsUri = item.albumsUri;
 	            row.genreName = item.name;

@@ -101,13 +101,14 @@ exports.createGlow = function(center) {
 	return Titanium.UI.createView(options);
 }
 
-exports.createMediaItemRow = function(image) {
+exports.createMediaItemRow = function(image, title) {
 	return Titanium.UI.createTableViewRow({
 		className : "media_row" + (image ? "_image" : ""),	
 		rightImage : "images/children.png",
 		height : Titanium.Platform.osname === "ipad" ? 72 : 48,
 		color : "#CCCCCC",
-		selectionStyle : Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE
+		selectionStyle : Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,
+		filter : title
 	});
 }
 
@@ -199,8 +200,10 @@ exports.Style = function() {
 		if (styles[id] !== undefined) {
 			style = JSON.parse(JSON.stringify(styles[id]));
 		}
-		for (var attrname in options) {
-			style[attrname] = options[attrname];
+		if (options != undefined) {
+			for (var attrname in options) {
+				style[attrname] = options[attrname];
+			}
 		}
 		return style;
 	}
