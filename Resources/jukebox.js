@@ -136,7 +136,10 @@ function Jukebox() {
 	});
 	
 	buttonPlaylist.addEventListener('click', function() {
+		var busyView = createBusyView();
+		win.add(busyView);
 		new TracksWindow(jukebox.getCurrentPlaylist(), true).open(self);
+		win.remove(busyView);
 	    win.close();
 	});
 
