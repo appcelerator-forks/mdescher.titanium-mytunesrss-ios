@@ -1,7 +1,12 @@
 function OnlineLoginWindow(parent) {	
 	
+	var infoButton = Titanium.UI.createButton(STYLE.get("infoButton",{style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT}));
+	infoButton.addEventListener("click", function() {
+		new AppInfoWindow().open();
+	});
+
 	var win = Titanium.UI.createWindow(STYLE.get("window",{navBarHidden:true}));
-	win.add(GUI.createTopToolbar("MyTunesRSS", undefined, Titanium.UI.createButton(STYLE.get("infoButton",{style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT}))));
+	win.add(GUI.createTopToolbar("MyTunesRSS", undefined, infoButton));
 	win.add(Titanium.UI.createLabel(STYLE.get("serverAddressLabelOnline",{text:L("login.serverUrl")})));
 	var inputServerUrl = GUI.add(win, Titanium.UI.createTextField(STYLE.get("serverAddressInputOnline",{borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,hintText:L("login.serverUrl"),value:Titanium.App.Properties.getString('serverUrl'),returnKeyType:Titanium.UI.RETURNKEY_DONE,keyboardType:Titanium.UI.KEYBOARD_URL,autocorrect:false,autocapitalization:false,autocomplete:false,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS})));
 	win.add(Titanium.UI.createLabel(STYLE.get("credentialsLabel",{text:L("login.credentials")})));

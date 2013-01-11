@@ -18,6 +18,7 @@ function VideoPlayerWindow(videoUrl) {
 		    videoPlayer.release();
 	        myParent.open();
 		    win.close();
+		    Ti.UI.orientation = Ti.UI.PORTRAIT;
 		}
 	});
 	
@@ -27,6 +28,7 @@ function VideoPlayerWindow(videoUrl) {
 	        videoPlayer.release();
 	        myParent.open();
 	        win.close();
+	        Ti.UI.orientation = Ti.UI.PORTRAIT;
 	    }
 	});
 	

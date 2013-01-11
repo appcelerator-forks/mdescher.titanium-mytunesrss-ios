@@ -81,4 +81,5 @@
 	<string name="settings.invalidBufferSize">Die Puffergröße muss ein Wert zwischen 1024 und 65536 sein.</string>
 	<string name="settings.invalidSearchAccuracy">Die Ergebnisgenauigkeit muss ein Wert zwischen 0 und 100 sein.</string>
 	<string name="settings.bufferSizeHint">Größe in Bytes</string>
+	<string name="appinfo">MyTunesRSS iOS App\n\nProgrammierung:\nMichael Descher\nhttp://www.codewave.de\n\nDesign:\nSebastian Reich\nhttp://www.graphiq.de\n\n\n\n</string>
 </resources>

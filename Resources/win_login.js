@@ -7,14 +7,7 @@ function LoginWindow() {
 	tabGroup.addTab(tabOnline);
 	tabGroup.addTab(tabOffline);
 	tabGroup.addTab(tabSafari);
-	
-	/*if (Titanium.App.version.indexOf('SNAPSHOT') > 0) {
-		win.add(GUI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:30,height:10,font:{fontSize:10}}));
-		win.add(GUI.createLabel({text: Titanium.Filesystem.getFile('white_noise.wav').modificationTimestamp(), textAlign:'center',bottom:20,height:10,font:{fontSize:10}}));
-	} else {
-		win.add(GUI.createLabel({text:'v' + Titanium.App.version,textAlign:'center',bottom:20,height:10,font:{fontSize:10}}));
-	}*/
-	
+		
 	this.open = function() {
 		tabGroup.setActiveTab(offlineMode ? 1 : 0);
 		tabGroup.open();
