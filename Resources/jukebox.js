@@ -181,7 +181,7 @@ function Jukebox() {
 	var currentPlaylist;
 	var currentPlaylistIndex;
 	var audioPlayer;
-	var keepAliveSound = Titanium.Media.createSound({url:"white_noise.wav",volume:0,looping:true,preload:true});
+	var keepAliveSound = Titanium.Media.createSound({url:"white_noise.wav",volume:1,looping:true,preload:true});
 	
 	this.getCurrentPlaylist = function() {
 		return currentPlaylist;
@@ -325,14 +325,14 @@ function Jukebox() {
 	        	playTrack();
 	        }
 	    } else if (!audioPlayer.playing) {
-	    	keepAliveSound.pause();
+	    	keepAliveSound.stop();
 	    }
 	};
 	
 	function playPause() {
 	    if (audioPlayer.playing) {
 	        audioPlayer.pause();
-	        keepAliveSound.pause();
+	        keepAliveSound.stop();
 			controlPlayPause.setImage("images/play.png");
 	    } else {
 		    audioPlayer.start();
