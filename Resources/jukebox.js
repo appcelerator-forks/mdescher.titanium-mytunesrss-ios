@@ -181,7 +181,7 @@ function Jukebox() {
 	var currentPlaylist;
 	var currentPlaylistIndex;
 	var audioPlayer;
-	var keepAliveSound = Titanium.Media.createSound({url:"white_noise.wav",volume:1,looping:true,preload:true});
+	var keepAliveSound = Titanium.Media.createSound({url:"white_noise.wav",volume:0,looping:true,preload:true});
 	
 	this.getCurrentPlaylist = function() {
 		return currentPlaylist;
