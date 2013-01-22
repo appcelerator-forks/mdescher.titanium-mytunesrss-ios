@@ -235,6 +235,38 @@
 		"font" : {
 			"fontSize" : 15
 		}
-	}
+	},
 	
+	"settingsHeaderView" : {
+		"height" : 30,
+		"backgroundGradient" : {
+			"type" : "linear",
+			"colors" : [
+				"#7E7E7E","#1F1F1F"
+			],
+			"startPoint" : {
+				"x" : 0,
+				"y" : 29
+			},
+			"endPoint" : {
+				"x" : 0,
+				"y" : 0
+			},
+			"backFillStart" : false
+		},
+		"opacity" : 0.7
+	},
+	
+	"settingsHeaderLabel" : {
+		"left" : 12,
+		"color" : "#FFFFFF",
+		"font" : {
+			"fontSize" : 18,
+			"fontWeight" : "bold"
+		},
+		"shadowColor" : "#000000",
+		"shadowOffset" : {
+			"y" : 1
+		}
+	}
 }

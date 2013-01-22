@@ -61,12 +61,18 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	    win.close();
 	});
 	
+	function createHeaderView(title) {
+		view = Titanium.UI.createView(STYLE.get("settingsHeaderView"));
+		view.add(Titanium.UI.createLabel(STYLE.get("settingsHeaderLabel", {text:title})));
+		return view;
+	}
+	
 	var sections = [];
 
 	var textFieldWidth = Titanium.Platform.osname === "ipad" ? 160 : 80;
 
 	// audio player settings
-	var section = Titanium.UI.createTableViewSection({headerTitle:L("settings.audioPlayer"),});	
+	var section = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.audioPlayer"))});	
 	var bufferSizeInput = GUI.createTextField({hintText:L("settings.bufferSizeHint"),right:10,width:textFieldWidth,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 	section.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.bufferSize"),left:10}), bufferSizeInput]));
 	sections.push(section);
@@ -74,7 +80,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	if (!offlineMode) {
 
 		// search settings
-		section = Titanium.UI.createTableViewSection({headerTitle:L("settings.search")});
+		section = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.search"))});
 		var staticSearchFuzziness = (searchFuzziness >= 0 && searchFuzziness <= 100);
 		var searchAccuracy = staticSearchFuzziness ? 100 - searchFuzziness : Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY);
 		var searchAccuracyInput = GUI.createTextField({editable:!staticSearchFuzziness,right:10,width:textFieldWidth,hintText:L("settings.accuracyHint"),value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
@@ -82,7 +88,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		sections.push(section);
 
 		// cache settings
-		section = Titanium.UI.createTableViewSection({headerTitle:L("settings.cache")});
+		section = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.cache"))});
 		var enableCacheInput = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("imageCacheEnabled", true),right:10});
 		section.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.imageCache"),left:10}), enableCacheInput]));
 
@@ -103,7 +109,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		
 		if (transcoders !== undefined  && transcoders.length > 0) {
 			var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
-		    section = Titanium.UI.createTableViewSection({headerTitle:L("settings.transcoders")});
+		    section = Titanium.UI.createTableViewSection({headerview:createHeaderView(L("settings.transcoders"))});
 		    for (var i = 0; i < transcoders.length; i++) {
 		        var transcoderName = transcoders[i];
 		        var switchValue = false;
@@ -122,7 +128,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		
 		if (transcoders !== undefined  && transcoders.length > 0) {
 			var activeTranscoders = Titanium.App.Properties.getList("transcoders_mobile", []);
-		    section = Titanium.UI.createTableViewSection({headerTitle:L("settings.mobileTranscoders")});
+		    section = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.mobileTranscoders"))});
 		    for (var i = 0; i < transcoders.length; i++) {
 		        var transcoderName = transcoders[i];
 		        var switchValue = false;

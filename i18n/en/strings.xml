@@ -81,5 +81,4 @@
 	<string name="settings.invalidBufferSize">The buffer size must be a value from 1024 to 65536.</string>
 	<string name="settings.invalidSearchAccuracy">The result accuracy must be a value from 0 to 100.</string>
 	<string name="settings.bufferSizeHint">Size in bytes</string>
-	<string name="appinfo">MyTunesRSS iOS App\n\nProgramming:\nMichael Descher\nhttp://www.codewave.de\n\nDesign:\nSebastian Reich\nhttp://www.graphiq.de\n\n\n\n</string>
 </resources>
