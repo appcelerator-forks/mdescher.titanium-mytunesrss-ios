@@ -35,8 +35,7 @@ function MenuWindow() {
 		buttonLogout = GUI.createButton({title:L("menu.logout"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	} 
 	buttonLogout.addEventListener('click', function() {
-		jukebox.destroy();
-	    jukebox = new Jukebox();
+		jukebox.reset();
 		connectedUsername = undefined;
 		connectedPassword = undefined;
 		new LoginWindow().open();

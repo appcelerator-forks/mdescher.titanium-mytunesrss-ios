@@ -27,8 +27,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	    	var busyView = createBusyView();
 			win.add(busyView);
 	        if (data[e.index].mediaType === "Video") {
-	            jukebox.destroy();
-	            jukebox = new Jukebox();
+	            jukebox.reset();
 	            var url = data[e.index].httpLiveStreamUri !== undefined ? data[e.index].httpLiveStreamUri : data[e.index].playbackUri;
 	            var tcParam = getTcParam();
 	            if (tcParam !== undefined) {
@@ -104,8 +103,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	    tableData.push(row);
 	}
 	tableView.addEventListener("delete", function(e) {
-		jukebox.destroy();
-	    jukebox = new Jukebox();
+		jukebox.reset();
 		deleteCachedTrackFile(data[e.index].id);
 		db = Titanium.Database.open("OfflineTracks");
 		db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);

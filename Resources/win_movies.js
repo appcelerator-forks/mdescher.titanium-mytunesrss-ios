@@ -23,8 +23,7 @@ function MoviesWindow(data) {
 	win.add(actIndicatorView);
 	
 	tableView.addEventListener('click', function(e) {
-        jukebox.destroy();
-        jukebox = new Jukebox();
+        jukebox.reset();
         var url = e.rowData.playbackUri;
         var tcParam = getTcParam();
         if (tcParam !== undefined) {

@@ -191,6 +191,21 @@ function Jukebox() {
 		setProgress(e.progress);
 	}
 	
+	var changeEventListener = function(e) {
+		if (e.state === audioPlayer.STATE_STOPPED && fastForwardOnStopped === true) {
+	        fastForward();
+	        playTrack();
+	   	}
+		if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
+            showJukeboxActivityView();
+        } else {
+            hideJukeboxActivityView();
+        }
+        if (e.state === audioPlayer.STATE_PLAYING) {
+        	fastForwardOnStopped = true;
+        }
+	}
+	
 	var localFileServerSocket;
 	
 	function setPlayerUrl(id, url) {
@@ -263,13 +278,11 @@ function Jukebox() {
 	    });
 	}
 	
-	this.destroy = function() {
+	this.reset = function() {
 		fastForwardOnStopped = false;
-		if (audioPlayer.url) {
-			audioPlayer.start();
+		if (audioPlayer.playing) {
 			audioPlayer.stop();
 		}
-		audioPlayer.removeEventListener('progress', progressEventListener);
 	    keepAliveSound.stop();
 	}
 
