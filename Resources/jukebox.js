@@ -375,7 +375,7 @@ function Jukebox() {
 	this.restart = function() {
 		fastForwardOnStopped = false;
 	    audioPlayer.stop();
-	    createPlayer();
+	    audioPlayer.setUrl(null);
 	};
 	
 	createPlayer();
