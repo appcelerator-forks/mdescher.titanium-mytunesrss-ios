@@ -14,6 +14,7 @@
 	<string name="servererror.NO_VALID_USER_SESSION">Es gibt keine gültige Serversession, bitte loggen Sie sich erneut ein.</string>
 	<string name="servererror.EXISTING_USER_SESSION">Sie sind bereits eingeloggt.</string>
 	<string name="servererror.INVALID_LOGIN">Ihre Benutzerinformationen sind ungültig.</string>
+	<string name="servererror.NO_NETWORK">Sie sind mit keinem Netzwerk verbunden.</string>
 	<string name="servererror.UNKNOWN">Ein unbekannter Fehler ist aufgetreten, bitte versuchen Sie es erneut.</string>
 	<string name="login.connect">Verbinden</string>
 	<string name="login.open">Öffnen</string>

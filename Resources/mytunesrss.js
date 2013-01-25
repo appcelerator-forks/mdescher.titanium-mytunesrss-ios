@@ -26,6 +26,9 @@ function createBusyView() {
 }
 
 function restCall(method, uri, params) {
+	if (Titanium.Network.getNetworkType() === Titanium.Network.NETWORK_NONE) {
+		return {status:500,result:"NO_NETWORK"};
+	}
 	var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
 	// send request
 	httpClient.open(method,  uri, false);
@@ -480,7 +483,7 @@ function pingServer() {
 
 function showError(options) {
 	if (!options.message || options.message === "") {
-		options.message = L("servererror.unknown");
+		options.message = L("servererror.UNKNOWN");
 	} else {
 		options.message = L("servererror." + options.message, options.message);
 	}

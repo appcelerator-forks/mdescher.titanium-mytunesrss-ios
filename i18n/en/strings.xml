@@ -14,6 +14,7 @@
 	<string name="servererror.NO_VALID_USER_SESSION">There is no valid server session, please login again.</string>
 	<string name="servererror.EXISTING_USER_SESSION">You have already been logged in.</string>
 	<string name="servererror.INVALID_LOGIN">Your credentials are invalid.</string>
+	<string name="servererror.NO_NETWORK">You are not connected to a network.</string>
 	<string name="servererror.UNKNOWN">An unknown error has occurred, please try again.</string>
 	<string name="login.connect">Connect</string>
 	<string name="login.open">Open</string>
