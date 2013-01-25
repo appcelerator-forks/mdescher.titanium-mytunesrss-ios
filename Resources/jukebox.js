@@ -200,33 +200,19 @@ function Jukebox() {
 		        keepAliveSound.stop();
 				controlPlayPause.setImage("images/play.png");
 			}
-	   }
-		if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
+	   	} else if (e.state == audioPlayer.STATE_PAUSED) {
+	   		controlPlayPause.setImage("images/play.png");
+	   	} else if (e.state === audioPlayer.STATE_PLAYING) {
+        	fastForwardOnStopped = true;
+        	controlPlayPause.setImage("images/pause.png");
+        }
+	    if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
             showJukeboxActivityView();
         } else {
             hideJukeboxActivityView();
-        }
-        if (e.state === audioPlayer.STATE_PLAYING) {
-        	fastForwardOnStopped = true;
         }
     }
 
-	
-	var changeEventListener = function(e) {
-		if (e.state === audioPlayer.STATE_STOPPED && fastForwardOnStopped === true) {
-	        fastForward();
-	        playTrack();
-	   	}
-		if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
-            showJukeboxActivityView();
-        } else {
-            hideJukeboxActivityView();
-        }
-        if (e.state === audioPlayer.STATE_PLAYING) {
-        	fastForwardOnStopped = true;
-        }
-	}
-	
 	var localFileServerSocket;
 	
 	function setPlayerUrl(id, url) {
@@ -280,7 +266,7 @@ function Jukebox() {
 	        audioPlayer.start();
 	    }
 	    keepAliveSound.play();
-		controlPlayPause.setImage("images/pause.png");
+		//controlPlayPause.setImage("images/pause.png");
 	}
 	
 	var fastForwardOnStopped = true;
@@ -333,13 +319,11 @@ function Jukebox() {
 		fastForwardOnStopped = false;
 		var playing = isPlayingOrBuffering();
 	    if (audioPlayer.progress > 2000) {
-	        audioPlayer.stop();
 	        setTrack();
 	        if (playing === true) {
 	        	playTrack();
 	        }
 	    } else if (currentPlaylistIndex > 0) {
-	        audioPlayer.stop();
 	        currentPlaylistIndex--;
 	        setTrack();
 	        if (playing === true) {
@@ -352,7 +336,6 @@ function Jukebox() {
 		fastForwardOnStopped = false;
 		var playing = isPlayingOrBuffering();
 	    if (currentPlaylistIndex + 1 < currentPlaylist.length) {
-	        audioPlayer.stop();
 	        currentPlaylistIndex++;
 	        setTrack();
 	        if (playing === true) {
@@ -367,11 +350,11 @@ function Jukebox() {
 	    if (isPlayingOrBuffering()) {
 	        audioPlayer.pause();
 	        keepAliveSound.stop();
-			controlPlayPause.setImage("images/play.png");
+			//controlPlayPause.setImage("images/play.png");
 	    } else {
 		    audioPlayer.start();
 		    keepAliveSound.play();
-		    controlPlayPause.setImage("images/pause.png");
+		    //controlPlayPause.setImage("images/pause.png");
 	    }
 	};
 	
