@@ -31,8 +31,8 @@
 	<string name="login.mytunesrsscom.failed">The mytunesrss.com username seems to be wrong. Please check the server URL.</string>
 	<string name="menu.missingSearchTerm">Please enter a search term.</string>
 	<string name="menu.search.hint">Search</string>
-	<string name="menu.back">Back</string>
-	<string name="menu.logout">Logout</string>
+	<string name="menu.back">Close</string>
+	<string name="menu.logout">Disconnect</string>
 	<string name="menu.settings">Options</string>
 	<string name="menu.settings.loadFailed">Could not load current settings.</string>
 	<string name="menu.playlists">Playlists</string>

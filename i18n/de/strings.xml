@@ -31,8 +31,8 @@
 	<string name="login.mytunesrsscom.failed">Der mytunesrss.com Benutzername scheint ungültig zu sein. Bitte prüfen Sie die Server URL.</string>
 	<string name="menu.missingSearchTerm">Bitte geben Sie einen Suchbegriff ein.</string>
 	<string name="menu.search.hint">Suche</string>
-	<string name="menu.back">Zurück</string>
-	<string name="menu.logout">Ausloggen</string>
+	<string name="menu.back">Schließen</string>
+	<string name="menu.logout">Trennen</string>
 	<string name="menu.settings">Optionen</string>
 	<string name="menu.settings.loadFailed">Aktuelle Einstellungen konnten nicht geladen werden.</string>
 	<string name="menu.playlists">Listen</string>
