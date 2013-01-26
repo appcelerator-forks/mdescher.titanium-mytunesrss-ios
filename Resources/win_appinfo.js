@@ -18,7 +18,7 @@ function AppInfoWindow() {
 	win.add(GUI.createLabel(STYLE.get("appInfoVersion", {textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER,text:"Version " + Titanium.App.version})));
 	var modTs = Titanium.Filesystem.getFile('white_noise.wav').modificationTimestamp();
 	if (Titanium.App.version.indexOf('SNAPSHOT') > 0) {
-		win.add(GUI.createLabel(STYLE.get("appInfoTimestamp", {textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER,text:modTs})));
+		win.add(GUI.createLabel(STYLE.get("appInfoTimestamp", {textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER,text:modTs + " - Ti " + Titanium.version})));
 	}
 	win.add(GUI.createLabel(STYLE.get("appInfoCopyright", {textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER,text:"\u00A9 " + new Date(modTs).getFullYear() + " Codewave Software"})));
 	win.add(GUI.createLabel(STYLE.get("appInfoDesign1", {textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER,text:"Design: Sebastian Reich"})));
