@@ -447,6 +447,10 @@ function downloadImage(cacheObjectId, uri) {
 }
 
 function getFileForTrackCache(id) {
+	return Titanium.Filesystem.getFile(getTrackCacheBaseDir().getNativePath(), id);
+}
+
+function getTrackCacheBaseDir() {
 	var baseDir = getServerBasedCacheDir();
 	var dir = Titanium.Filesystem.getFile(baseDir, "cache");
 	if (!dir.exists()) {
@@ -456,7 +460,7 @@ function getFileForTrackCache(id) {
 	if (!dir.exists()) {
 		dir.createDirectory();
 	}
-	return Titanium.Filesystem.getFile(baseDir, "cache/tracks/" + id);
+	return dir;
 }
 
 function getCachedTrackFile(id, uri) {

@@ -38,7 +38,6 @@ function MenuWindow() {
 		jukebox.reset();
 		connectedUsername = undefined;
 		connectedPassword = undefined;
-		new LoginWindow().open();
 	    win.close();
 	});
 

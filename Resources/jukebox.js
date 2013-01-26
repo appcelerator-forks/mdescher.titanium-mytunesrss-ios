@@ -90,7 +90,7 @@ function Jukebox() {
 	    });
 	}
 	
-	var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:44,right:0,backgroundColor:'#000000',opacity:0.8,visible:false});
+	var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:0,right:0,backgroundColor:'#000000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
 	function showJukeboxActivityView() {
@@ -200,9 +200,11 @@ function Jukebox() {
 		        keepAliveSound.stop();
 				controlPlayPause.setImage("images/play.png");
 			}
-	   	} else if (e.state == audioPlayer.STATE_PAUSED) {
+	   	}
+		if (e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED || e.state == audioPlayer.STATE_STOPPING) {
 	   		controlPlayPause.setImage("images/play.png");
-	   	} else if (e.state === audioPlayer.STATE_PLAYING) {
+	   	} else if (e.state === audioPlayer.STATE_PLAYING || e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE || e.state === audioPlayer.STATE_STARTING) {
+	   		keepAliveSound.play();
         	fastForwardOnStopped = true;
         	controlPlayPause.setImage("images/pause.png");
         }
@@ -221,27 +223,7 @@ function Jukebox() {
 		audioPlayer.stop();
 	    var localFile = getCachedTrackFile(id);
 	    if (localFile !== undefined) {
-	    	if (localFileServerSocket !== undefined) {
-	    		localFileServerSocket.close();
-	    	}
-	    	for (port = 30000; port < 60000; port++) {
-				localFileServerSocket = Titanium.Network.Socket.createTCP({host:"127.0.0.1",port:port,accepted:function(e) {
-					e.inbound.write(Titanium.createBuffer({value:"HTTP/1.1 200 OK\r\nContent-Type: application/octet-stream\r\nContent-Length: " + localFile.getSize() + "\r\n\r\n"}));
-					Titanium.Stream.writeStream(localFile.open(Titanium.Filesystem.MODE_READ), e.inbound, 102400, function(e2) {
-						if (e2.bytesProcessed === undefined || e2.bytesProcessed === -1) {
-							e.inbound.close();
-						}
-					});
-				}});
-				try {
-					localFileServerSocket.listen();
-					localFileServerSocket.accept();
-					audioPlayer.setUrl("http://localhost:" + localFileServerSocket.getPort());
-					break; // okay, we are playing
-				} catch (e) {
-					// ignore and try next port
-				}
-	    	}
+			audioPlayer.setUrl("http://localhost:" + HTTP_SERVER_PORT + "/" + id);
 	    } else {
 		    if (tcParam !== undefined) {
 		        audioPlayer.setUrl(url + '/' + tcParam);
@@ -258,14 +240,14 @@ function Jukebox() {
 
 	function isPlayingOrBuffering() {
 		var state = audioPlayer.getState();
-		return state === audioPlayer.STATE_PLAYING || state === audioPlayer.STATE_BUFFERING || state === audioPlayer.STATE_WAITING_FOR_DATA || state === audioPlayer.STATE_WAITING_FOR_QUEUE;
+		return state === audioPlayer.STATE_PLAYING || state === audioPlayer.STATE_BUFFERING || state === audioPlayer.STATE_WAITING_FOR_DATA || state === audioPlayer.STATE_WAITING_FOR_QUEUE || state === audioPlayer.STATE_STARTING;
 	}
 
 	function playTrack() {
 	    if (!isPlayingOrBuffering()) {
 	        audioPlayer.start();
 	    }
-	    keepAliveSound.play();
+	    //keepAliveSound.play();
 		//controlPlayPause.setImage("images/pause.png");
 	}
 	
@@ -341,19 +323,19 @@ function Jukebox() {
 	        if (playing === true) {
 	        	playTrack();
 	        }
-	    } else if (!isPlayingOrBuffering()) {
-	    	keepAliveSound.stop();
+	    /*} else if (!isPlayingOrBuffering()) {
+	    	keepAliveSound.stop();*/
 	    }
 	};
 	
 	function playPause() {
 	    if (isPlayingOrBuffering()) {
 	        audioPlayer.pause();
-	        keepAliveSound.stop();
+	        //keepAliveSound.stop();
 			//controlPlayPause.setImage("images/play.png");
 	    } else {
 		    audioPlayer.start();
-		    keepAliveSound.play();
+		    //keepAliveSound.play();
 		    //controlPlayPause.setImage("images/pause.png");
 	    }
 	};

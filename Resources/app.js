@@ -39,6 +39,23 @@ function RowArray() {
 
 var GUI = require("lib/GUI");
 
+var WEBSERVER = require("com.0x82.webserver");
+var HTTP_SERVER;
+var HTTP_SERVER_PORT = -1;
+for (i = 1025; i < 65536; i++) {
+	try {
+		HTTP_SERVER = WEBSERVER.startServer({port:i,bonjour:false,requestCallback:function(e) {
+			return {
+				file : getFileForTrackCache(e.path.substr(1))
+			}
+		}});
+		HTTP_SERVER_PORT = i;
+		break; // done
+	} catch (ex) {
+		// ignore and try next port
+	}	
+}
+
 var STYLE = new GUI.Style();
 
 Titanium.Media.audioSessionMode = Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK;

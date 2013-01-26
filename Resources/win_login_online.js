@@ -34,7 +34,6 @@ function OnlineLoginWindow(parent) {
 				connectedUsername = inputUsername.value;
 				connectedPassword = inputPassword.value;
 				new MenuWindow().open();
-				parent.close();
 			} else {
 				showError({message:response.result,buttonNames:['Ok']});
 			}

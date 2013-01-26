@@ -13,7 +13,6 @@ function OfflineLoginWindow(parent) {
 	buttonLogin.addEventListener('click', function() {
 		offlineMode = true;
 		new MenuWindow().open();
-		parent.close();
 	});
 
 	this.getWindow = function() {
