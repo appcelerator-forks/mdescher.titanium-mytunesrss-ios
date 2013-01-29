@@ -124,8 +124,8 @@ function MenuWindow() {
 		var busyView = createBusyView();
 		win.add(busyView);
 	    if (jukebox.isActive()) {
-	    	win.close();
 	        jukebox.open(self);
+	    	win.close();
 	    } else {
 	        showError({message:L("menu.currentlyPlaying.none"),buttonNames:['Ok']});
 	    }
@@ -135,7 +135,7 @@ function MenuWindow() {
 	win.add(GUI.createTopToolbar("MyTunesRSS", buttonLogout, buttonSettings));
 	win.add(searchBar);
 	win.add(tableView);
-	win.add(Titanium.UI.iOS.createAdView({adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,bottom:0,height:50,backgroundColor:DARK_GRAY}));
+	win.add(Titanium.UI.iOS.createAdView(STYLE.get("iad", {adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,backgroundColor:DARK_GRAY})));
 	
 	this.open = function() {
 		var rows = new RowArray();

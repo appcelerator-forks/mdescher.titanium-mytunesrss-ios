@@ -268,5 +268,38 @@
 		"shadowOffset" : {
 			"y" : 1
 		}
+	},
+	
+	"busyViewMessage1" : {
+		"top" : 80,
+		"font" : {
+			"fontSize" : 15
+		}
+	},
+
+	"busyViewMessage2" : {
+		"top" : 110,
+		"font" : {
+			"fontSize" : 17
+		}
+	},
+
+	"busyViewLogo" : {
+		"image" : "images/logo_big.png",
+		"top" : 170
+	},
+	
+	"busyViewProgress" : {
+		"top" : 350,
+		"width" : 250,
+		"min" : 0,
+		"max" : 100,
+		"value" : 0
+	},
+	
+	"iad" : {
+		"height" : 50,
+		"bottom" : 0
 	}
+
 }

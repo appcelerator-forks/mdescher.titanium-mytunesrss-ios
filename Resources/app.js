@@ -16,6 +16,7 @@ Titanium.include("win_tvshows.js");
 Titanium.include("win_tvshow_seasons.js");
 Titanium.include("win_movies.js");
 Titanium.include("win_appinfo.js");
+Titanium.include("win_busy.js");
 
 var DARK_GRAY = "#2A2A2A";
 var LIGHT_GRAY = "#3A3A3A";
@@ -40,6 +41,7 @@ function RowArray() {
 var GUI = require("lib/GUI");
 
 var WEBSERVER = require("com.0x82.webserver");
+WEBSERVER.disconnectsInBackground = false;
 var HTTP_SERVER;
 var HTTP_SERVER_PORT = -1;
 for (i = 1025; i < 65536; i++) {

@@ -39,6 +39,6 @@
     </iphone>
     <android xmlns:android="http://schemas.android.com/apk/res/android"/>
     <modules>
-        <module platform="iphone" version="0.6">com.0x82.webserver</module>
+        <module platform="iphone" version="0.7">com.0x82.webserver</module>
     </modules>
 </ti:app>

@@ -55,6 +55,7 @@
 	<string name="playlists.title">Playlists</string>
 	<string name="tracklist.back">Back</string>
 	<string name="tracklist.title">Tracks</string>
+	<string name="tracklist.busy.downloading">Downloading</string>
 	<string name="tvshows.back">Back</string>
 	<string name="tvshows.title">TV Shows</string>
 	<string name="tvshows.info">%d season(s) with %d episode(s)</string>

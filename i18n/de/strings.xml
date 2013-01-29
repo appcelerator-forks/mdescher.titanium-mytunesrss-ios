@@ -55,6 +55,7 @@
 	<string name="playlists.title">Listen</string>
 	<string name="tracklist.back">Zurück</string>
 	<string name="tracklist.title">Titel</string>
+	<string name="tracklist.busy.downloading">Herunterladen</string>
 	<string name="tvshows.back">Zurück</string>
 	<string name="tvshows.title">TV Serien</string>
 	<string name="tvshows.info">%d Staffel(n) mit %d Episode(n)</string>

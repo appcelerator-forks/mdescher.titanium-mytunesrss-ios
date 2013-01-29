@@ -72,29 +72,30 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		    		if (tcParam !== undefined) {
 		        		url += '/' + tcParam;
 		    		}
-		    		var busyView = createBusyView();
-		    		win.add(busyView);
-					getCachedTrackFile(data[e.index].id, url);
+		    		var busyWindow = new BusyWindow(L("tracklist.busy.downloading"), data[e.index].name);
+		    		busyWindow.open();
+					getCachedTrackFile(data[e.index].id, url, busyWindow.setProgress, function() {
+			    		db = Titanium.Database.open("OfflineTracks");
+						db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
+						db.execute(
+							"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+							data[e.index].id,
+							data[e.index].name,
+							data[e.index].album,
+							data[e.index].artist,
+							data[e.index].genre,
+							data[e.index].albumArtist,
+							data[e.index].imageHash,
+							data[e.index].protected,
+							data[e.index].mediaType,
+							data[e.index].time,
+							data[e.index].trackNumber
+						);
+						db.close();
+						tableView.data[0].rows[e.index].getChildren()[2].setImage("images/delete.png");
+						busyWindow.close();		    				
+					});
 					downloadImage(data[e.index].imageHash,data[e.index].imageUri);
-		    		db = Titanium.Database.open("OfflineTracks");
-					db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
-					db.execute(
-						"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-						data[e.index].id,
-						data[e.index].name,
-						data[e.index].album,
-						data[e.index].artist,
-						data[e.index].genre,
-						data[e.index].albumArtist,
-						data[e.index].imageHash,
-						data[e.index].protected,
-						data[e.index].mediaType,
-						data[e.index].time,
-						data[e.index].trackNumber
-					);
-					db.close();
-					tableView.data[0].rows[e.index].getChildren()[2].setImage("images/delete.png");
-					win.remove(busyView);		    				
 		    	}
 		    });
 		    row.add(syncImageView);

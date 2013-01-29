@@ -65,6 +65,11 @@
 	"jukeboxShuffleGlow" : {
 		"bottom":19,
 		"right":277
+	},
+
+	"iad" : {
+		"height" : 66,
+		"bottom" : 0
 	}
 
 }

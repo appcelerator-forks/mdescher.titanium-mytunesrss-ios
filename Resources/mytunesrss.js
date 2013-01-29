@@ -463,7 +463,7 @@ function getTrackCacheBaseDir() {
 	return dir;
 }
 
-function getCachedTrackFile(id, uri) {
+function getCachedTrackFile(id, uri, progressCallback, doneCallback) {
 	var file = getFileForTrackCache(id);
 	if (file.exists()) {
 		return file;
@@ -471,7 +471,15 @@ function getCachedTrackFile(id, uri) {
 		return undefined;
 	}
 	var httpClient = Titanium.Network.createHTTPClient();
-	httpClient.open("GET", uri, false);
+	if (progressCallback != undefined) {
+		httpClient.ondatastream = function(e) {
+			progressCallback(e.progress * 100);
+		}
+	}
+	if (doneCallback != undefined) {
+		httpClient.onload = doneCallback;
+	}
+	httpClient.open("GET", uri, progressCallback != undefined || doneCallback != undefined);
 	httpClient.setFile(file);
 	httpClient.send();
 	return file;
