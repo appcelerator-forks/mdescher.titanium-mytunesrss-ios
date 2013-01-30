@@ -53,6 +53,7 @@
 	<string name="movies.title">Filme</string>
 	<string name="playlists.back">Zurück</string>
 	<string name="playlists.title">Listen</string>
+	<string name="playlists.busy.syncing">Synchronisieren</string>
 	<string name="tracklist.back">Zurück</string>
 	<string name="tracklist.title">Titel</string>
 	<string name="tracklist.busy.downloading">Herunterladen</string>
@@ -83,4 +84,5 @@
 	<string name="settings.invalidBufferSize">Die Puffergröße muss ein Wert zwischen 1024 und 65536 sein.</string>
 	<string name="settings.invalidSearchAccuracy">Die Ergebnisgenauigkeit muss ein Wert zwischen 0 und 100 sein.</string>
 	<string name="settings.bufferSizeHint">Größe in Bytes</string>
+	<string name="busy.cancel">Abbrechen</string>
 </resources>

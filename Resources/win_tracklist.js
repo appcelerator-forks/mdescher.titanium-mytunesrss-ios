@@ -74,7 +74,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		    		}
 		    		var busyWindow = new BusyWindow(L("tracklist.busy.downloading"), data[e.index].name);
 		    		busyWindow.open();
-					getCachedTrackFile(data[e.index].id, url, busyWindow.setProgress, function() {
+					cacheTrack(data[e.index].id, url, function(e) {busyWindow.setProgress(e);return true}, function() {
 			    		db = Titanium.Database.open("OfflineTracks");
 						db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
 						db.execute(

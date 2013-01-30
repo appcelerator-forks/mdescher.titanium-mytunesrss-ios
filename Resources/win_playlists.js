@@ -22,21 +22,56 @@ function PlaylistsWindow(data) {
 	
 	win.add(actIndicatorView);
 	
-	tableView.addEventListener('click', function(e) {
-		var busyView = createBusyView();
-		win.add(busyView);
-	    loadAndDisplayTracks(self, e.rowData.tracksUri);
-	    win.remove(busyView);
-	});
-	
 	setTableDataAndIndex(
 	        tableView,
 	        data,
 	        function(item) {
 	            var displayName = getDisplayName(item.name);
-	            var row = GUI.createTableViewRow({rightImage:"images/children.png",height:TABLE_VIEW_ROW_HEIGHT,className:'playlist_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,filter:displayName});
-	            row.add(GUI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'}}));
-	            row.tracksUri = item.tracksUri;
+	            var row = GUI.createTableViewRow({height:TABLE_VIEW_ROW_HEIGHT,className:'playlist_row',selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,filter:displayName});
+	            var infoView = Titanium.UI.createView({right:30});
+	            infoView.add(GUI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'}}));
+	            infoView.addEventListener('click', function(e) {
+					var busyView = createBusyView();
+					win.add(busyView);
+				    loadAndDisplayTracks(self, item.tracksUri);
+				    win.remove(busyView);
+		    	});
+		        row.add(infoView);
+	            if (!offlineMode) {
+				    var syncImageGlowView = GUI.createGlow({right:20});
+				    var syncImageView = Titanium.UI.createImageView({width:20,image:"images/sync.png",right:10,touchEnabled:false});
+				    var touchView = Titanium.UI.createView({right:0,height:Titanium.UI.FILL,width:40,backgroundColor:"transparent",glow:syncImageGlowView});
+				    row.add(touchView);
+				    touchView.addEventListener("touchstart", function(e) {
+				    	e.source.glow.setOpacity(0.75);
+				    });
+			  	    touchView.addEventListener("touchend", function(e) {
+				    	e.source.glow.setOpacity(0);
+				    });
+			  	    touchView.addEventListener("touchcancel", function(e) {
+				    	e.source.glow.setOpacity(0);
+				    });
+				    touchView.addEventListener("click", function(e) {
+						var busyView = createBusyView();
+						win.add(busyView);
+						var tracks = loadTracks(item.tracksUri);
+					    win.remove(busyView);
+					    if (tracks != undefined && tracks.length > 0) {
+							CANCEL_SYNC_AUDIO_TRACKS = false;
+				    		var busyWindow = new BusyWindow(L("playlists.busy.syncing"), displayName, function() {
+				    			CANCEL_SYNC_AUDIO_TRACKS = true;
+				    		});
+				    		busyWindow.open();
+				    		clearTrackCache();
+				    		clearImageCache();
+				    		syncTrackAndAdvance(tracks, 0, busyWindow.setProgress, function() {
+				    			busyWindow.close();
+				    		});
+					    }
+				    });
+				    row.add(syncImageView);
+				    row.add(syncImageGlowView);	            	
+	            }
 	            return row;
 	        },
 	        function(item) {

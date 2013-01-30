@@ -266,6 +266,55 @@ function loadAndDisplayTracks(parent, tracksUri) {
     }
 }
 
+var CANCEL_SYNC_AUDIO_TRACKS = false;
+
+function syncTrackAndAdvance(data, index, progressCallback, doneCallback) {
+	cacheTrack(data[index].id, data[index].playbackUri, function() {return !CANCEL_SYNC_AUDIO_TRACKS}, function() {
+		db = Titanium.Database.open("OfflineTracks");
+		db.execute("DELETE FROM track WHERE id = ?", data[index].id);
+		db.execute(
+			"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+			data[index].id,
+			data[index].name,
+			data[index].album,
+			data[index].artist,
+			data[index].genre,
+			data[index].albumArtist,
+			data[index].imageHash,
+			data[index].protected,
+			data[index].mediaType,
+			data[index].time,
+			data[index].trackNumber
+		);
+		db.close();
+		index++;
+		progressCallback(index * 100 / data.length);
+		if (CANCEL_SYNC_AUDIO_TRACKS || index == data.length) {
+			doneCallback();
+		} else {
+			syncTrackAndAdvance(data, index, progressCallback, doneCallback);
+		}
+	});
+	downloadImage(data[index].imageHash, data[index].imageUri);
+	downloadImage(data[index].imageHash + "_64", data[index].imageUri + "/size=64");
+	downloadImage(data[index].imageHash + "_128", data[index].imageUri + "/size=128");
+}
+
+function loadTracks(tracksUri) {
+    var response = restCall("GET", tracksUri + "?" + TRACK_ATTRIBUTES, {});
+    if (response.status / 100 === 2) {
+    	var data = removeUnsupportedTracks(response.result);
+        if (data.length === 0) {
+        	showError({message:L("tracks.online.noneFound"),buttonNames:['Ok']});
+        } else {
+			return data;
+	    }
+    } else {
+    	showError({message:response.result,buttonNames:['Ok']});
+    }
+    return undefined;
+}
+
 function loadAndDisplayMovies(parent) {
     var response = restCall("GET", getLibrary().moviesUri + "?attr.incl=name&attr.incl=httpLiveStreamUri&attr.incl=playbackUri&attr.incl=mediaType&attr.incl=imageUri&attr.incl=imageHash&attr.incl=protected", {});
     if (response.status / 100 === 2) {
@@ -463,26 +512,41 @@ function getTrackCacheBaseDir() {
 	return dir;
 }
 
-function getCachedTrackFile(id, uri, progressCallback, doneCallback) {
+function getCachedTrackFile(id) {
 	var file = getFileForTrackCache(id);
 	if (file.exists()) {
 		return file;
-	} else if (uri === undefined) {
+	} else {
 		return undefined;
 	}
-	var httpClient = Titanium.Network.createHTTPClient();
-	if (progressCallback != undefined) {
-		httpClient.ondatastream = function(e) {
-			progressCallback(e.progress * 100);
+}
+
+function cacheTrack(id, uri, progressCallback, doneCallback) {
+	var file = getFileForTrackCache(id);
+	if (file.exists()) {
+		if (doneCallback != undefined) {
+			doneCallback();
 		}
+	} else {
+		var httpClient = Titanium.Network.createHTTPClient();
+		if (progressCallback != undefined) {
+			httpClient.ondatastream = function(e) {
+				if (!progressCallback(e.progress * 100)) {
+					httpClient.abort();
+					if (doneCallback != undefined) {
+						doneCallback();
+					}
+				}
+			}
+		}
+		if (doneCallback != undefined) {
+			httpClient.onload = doneCallback;
+			httpClient.onerror = doneCallback;
+		}
+		httpClient.open("GET", uri, progressCallback != undefined || doneCallback != undefined);
+		httpClient.setFile(file);
+		httpClient.send();
 	}
-	if (doneCallback != undefined) {
-		httpClient.onload = doneCallback;
-	}
-	httpClient.open("GET", uri, progressCallback != undefined || doneCallback != undefined);
-	httpClient.setFile(file);
-	httpClient.send();
-	return file;
 }
 
 function deleteCachedTrackFile(id) {

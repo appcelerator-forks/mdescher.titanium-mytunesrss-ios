@@ -1,10 +1,17 @@
-function BusyWindow(label1, label2) {	
+function BusyWindow(label1, label2, cancelCallback) {	
 	
 	var win = Titanium.UI.createWindow(STYLE.get("window",{navBarHidden:true}));
 	var progressBar = Titanium.UI.createProgressBar(STYLE.get("busyViewProgress"), {style:Titanium.UI.iPhone.ProgressBarStyle.PLAIN});
 	progressBar.show();
 	
-	win.add(GUI.createTopToolbar("MyTunesRSS", undefined, undefined));
+	var cancelButton = undefined;
+	if (cancelCallback != undefined) {
+		cancelButton = GUI.createButton({title:L("busy.cancel"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+		cancelButton.addEventListener("click", function() {
+			cancelCallback();
+		})
+	}
+	win.add(GUI.createTopToolbar("MyTunesRSS", cancelButton, undefined));
 	
 	win.add(GUI.createLabel(STYLE.get("busyViewMessage1", {textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER,text:label1})));
 	win.add(GUI.createLabel(STYLE.get("busyViewMessage2", {textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER,text:label2})));
