@@ -62,6 +62,8 @@ var STYLE = new GUI.Style();
 
 Titanium.Media.audioSessionMode = Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK;
 
+var KEEP_ALIVE_SOUND = Titanium.Media.createSound({url:"white_noise.wav",volume:0,looping:true,preload:true});
+
 var view = Titanium.UI.createView({backgroundColor:DARK_GRAY});
 
 var jukebox = new Jukebox();

@@ -181,7 +181,6 @@ function Jukebox() {
 	var currentPlaylist;
 	var currentPlaylistIndex;
 	var audioPlayer;
-	var keepAliveSound = Titanium.Media.createSound({url:"white_noise.wav",volume:0,looping:true,preload:true});
 	
 	this.getCurrentPlaylist = function() {
 		return currentPlaylist;
@@ -197,14 +196,14 @@ function Jukebox() {
 		        fastForward();
 		        playTrack();
 			} else {
-		        keepAliveSound.stop();
+		        KEEP_ALIVE_SOUND.stop();
 				controlPlayPause.setImage("images/play.png");
 			}
 	   	}
 		if (e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED || e.state == audioPlayer.STATE_STOPPING) {
 	   		controlPlayPause.setImage("images/play.png");
 	   	} else if (e.state === audioPlayer.STATE_PLAYING || e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE || e.state === audioPlayer.STATE_STARTING) {
-	   		keepAliveSound.play();
+	   		KEEP_ALIVE_SOUND.play();
         	fastForwardOnStopped = true;
         	controlPlayPause.setImage("images/pause.png");
         }
@@ -247,8 +246,6 @@ function Jukebox() {
 	    if (!isPlayingOrBuffering()) {
 	        audioPlayer.start();
 	    }
-	    //keepAliveSound.play();
-		//controlPlayPause.setImage("images/pause.png");
 	}
 	
 	var fastForwardOnStopped = true;
@@ -271,7 +268,7 @@ function Jukebox() {
 				audioPlayer.stop();
 			}
 		    audioPlayer.setUrl("");
-		    keepAliveSound.stop();
+		    KEEP_ALIVE_SOUND.stop();
 		}
 	}
 
@@ -323,20 +320,14 @@ function Jukebox() {
 	        if (playing === true) {
 	        	playTrack();
 	        }
-	    /*} else if (!isPlayingOrBuffering()) {
-	    	keepAliveSound.stop();*/
 	    }
 	};
 	
 	function playPause() {
 	    if (isPlayingOrBuffering()) {
 	        audioPlayer.pause();
-	        //keepAliveSound.stop();
-			//controlPlayPause.setImage("images/play.png");
 	    } else {
 		    audioPlayer.start();
-		    //keepAliveSound.play();
-		    //controlPlayPause.setImage("images/pause.png");
 	    }
 	};
 	
@@ -364,7 +355,7 @@ function Jukebox() {
 			if (isPlayingOrBuffering() || audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
 				audioPlayer.stop();
 			}
-		    keepAliveSound.stop();
+		    KEEP_ALIVE_SOUND.stop();
 		    createPlayer();
 		}
 	};

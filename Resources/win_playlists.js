@@ -62,9 +62,10 @@ function PlaylistsWindow(data) {
 				    			CANCEL_SYNC_AUDIO_TRACKS = true;
 				    		});
 				    		busyWindow.open();
-				    		clearTrackCache();
-				    		clearImageCache();
+				    		Titanium.App.setIdleTimerDisabled(true);
+				    		removeObsoleteTracks(tracks);
 				    		syncTrackAndAdvance(tracks, 0, busyWindow.setProgress, function() {
+				    			Titanium.App.setIdleTimerDisabled(false);
 				    			busyWindow.close();
 				    		});
 					    }

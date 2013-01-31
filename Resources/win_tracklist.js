@@ -74,25 +74,29 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		    		}
 		    		var busyWindow = new BusyWindow(L("tracklist.busy.downloading"), data[e.index].name);
 		    		busyWindow.open();
-					cacheTrack(data[e.index].id, url, function(e) {busyWindow.setProgress(e);return true}, function() {
-			    		db = Titanium.Database.open("OfflineTracks");
-						db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
-						db.execute(
-							"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-							data[e.index].id,
-							data[e.index].name,
-							data[e.index].album,
-							data[e.index].artist,
-							data[e.index].genre,
-							data[e.index].albumArtist,
-							data[e.index].imageHash,
-							data[e.index].protected,
-							data[e.index].mediaType,
-							data[e.index].time,
-							data[e.index].trackNumber
-						);
-						db.close();
-						tableView.data[0].rows[e.index].getChildren()[2].setImage("images/delete.png");
+		    		Titanium.App.setIdleTimerDisabled(true);
+					cacheTrack(data[e.index].id, url, function(e) {busyWindow.setProgress(e);return true}, function(e) {
+						if (e.aborted == undefined) {
+				    		db = Titanium.Database.open("OfflineTracks");
+							db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
+							db.execute(
+								"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+								data[e.index].id,
+								data[e.index].name,
+								data[e.index].album,
+								data[e.index].artist,
+								data[e.index].genre,
+								data[e.index].albumArtist,
+								data[e.index].imageHash,
+								data[e.index].protected,
+								data[e.index].mediaType,
+								data[e.index].time,
+								data[e.index].trackNumber
+							);
+							db.close();
+							tableView.data[0].rows[e.index].getChildren()[2].setImage("images/delete.png");
+						}
+						Titanium.App.setIdleTimerDisabled(false);
 						busyWindow.close();		    				
 					});
 					downloadImage(data[e.index].imageHash,data[e.index].imageUri);
