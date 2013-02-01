@@ -26,7 +26,7 @@ function createBusyView() {
 }
 
 function restCall(method, uri, params) {
-	if (Titanium.Network.getNetworkType() === Titanium.Network.NETWORK_NONE) {
+	if (!Titanium.Network.online) {
 		return {status:500,result:"NO_NETWORK"};
 	}
 	var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
