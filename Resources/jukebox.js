@@ -260,19 +260,8 @@ function Jukebox() {
 	    audioPlayer.addEventListener("change", changeEventListener);
 	}
 	
-	this.reset = function() {
-		if (audioPlayer != undefined) {
-			fastForwardOnStopped = false;
-			if (isPlayingOrBuffering() || audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
-				audioPlayer.stop();
-			}
-		    audioPlayer.setUrl("");
-		    KEEP_ALIVE_SOUND.stop();
-		}
-	}
-
 	this.isActive = function() {
-		return currentPlaylist && audioPlayer;
+		return currentPlaylist != undefined && audioPlayer != undefined;
 	}
 
 	this.setPlaylist = function(playlist, index) {
@@ -348,6 +337,18 @@ function Jukebox() {
 	    }
 	};
 	
+	this.reset = function() {
+		if (audioPlayer != undefined) {
+			fastForwardOnStopped = false;
+			if (isPlayingOrBuffering() || audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
+				audioPlayer.stop();
+			}
+		    audioPlayer.setUrl("");
+            currentPlaylist = undefined;
+		    KEEP_ALIVE_SOUND.stop();
+		}
+	}
+
 	this.restart = function() {
 		if (audioPlayer != undefined) {
 			fastForwardOnStopped = false;
