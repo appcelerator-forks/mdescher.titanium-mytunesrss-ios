@@ -360,10 +360,15 @@ function Jukebox() {
 		    createPlayer();
 		}
 	};
+	
+	this.stopPlayback = function() {
+		fastForwardOnStopped = false;
+	    audioPlayer.stop();
+	}
 
     this.onAppPaused = function() {
         if (currentPlaylist != undefined && audioPlayer != undefined && audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
-            audioPlayer.stop();
+        	jukebox.stopPlayback();
         }
     }
 
