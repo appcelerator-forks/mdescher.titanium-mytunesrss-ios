@@ -287,48 +287,6 @@ function loadAndDisplayTracks(parent, tracksUri) {
     }
 }
 
-var CANCEL_SYNC_AUDIO_TRACKS = false;
-
-function syncTrackAndAdvance(data, index, progressCallback, doneCallback) {
-	cacheTrack(data[index].id, data[index].playbackUri, function() {return !CANCEL_SYNC_AUDIO_TRACKS}, function(e) {
-		if (e == undefined || e.error == undefined) {
-			if (!getImageCacheFile(data[index].imageHash).exists()) {
-				downloadImage(data[index].imageHash, data[index].imageUri);
-			}
-			if (!getImageCacheFile(data[index].imageHash + "_64").exists()) {
-				downloadImage(data[index].imageHash + "_64", data[index].imageUri + "/size=64");
-			}
-			if (!getImageCacheFile(data[index].imageHash + "_128").exists()) {
-				downloadImage(data[index].imageHash + "_128", data[index].imageUri + "/size=128");
-			}
-			db = Titanium.Database.open("OfflineTracks");
-			db.execute("DELETE FROM track WHERE id = ?", data[index].id);
-			db.execute(
-				"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-				data[index].id,
-				data[index].name,
-				data[index].album,
-				data[index].artist,
-				data[index].genre,
-				data[index].albumArtist,
-				data[index].imageHash,
-				data[index].protected,
-				data[index].mediaType,
-				data[index].time,
-				data[index].trackNumber
-			);
-			db.close();
-		}
-		index++;
-		progressCallback(index * 100 / data.length);
-		if (CANCEL_SYNC_AUDIO_TRACKS || index >= data.length) {
-			doneCallback();
-		} else {
-			syncTrackAndAdvance(data, index, progressCallback, doneCallback);
-		}
-	});
-}
-
 function loadTracks(tracksUri) {
     var response = restCall("GET", tracksUri + "?" + TRACK_ATTRIBUTES, {});
     if (response.status / 100 === 2) {

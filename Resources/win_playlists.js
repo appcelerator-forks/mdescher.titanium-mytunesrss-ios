@@ -64,10 +64,18 @@ function PlaylistsWindow(data) {
 				    		});
 				    		busyWindow.open();
 				    		Titanium.App.setIdleTimerDisabled(true);
-				    		syncTrackAndAdvance(tracks, 0, busyWindow.setProgress, function() {
+				    		var syncProgress = function(e) {
+				    			busyWindow.setProgress(e.progress);
+				    		}
+				    		var syncDone = function() {
 				    			Titanium.App.setIdleTimerDisabled(false);
 				    			busyWindow.close();
-				    		});
+				    			Titanium.App.removeEventListener("mytunesrss_sync_progress", syncProgress);
+				    			Titanium.App.removeEventListener("mytunesrss_sync_done", syncDone);
+				    		}
+				    		Titanium.App.addEventListener("mytunesrss_sync_progress", syncProgress);
+				    		Titanium.App.addEventListener("mytunesrss_sync_done", syncDone);
+				    		Titanium.App.fireEvent("mytunesrss_sync", {data:tracks,index:0});
 					    }
 				    });
 				    row.add(syncImageView);

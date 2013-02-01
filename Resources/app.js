@@ -69,6 +69,47 @@ var view = Titanium.UI.createView({backgroundColor:DARK_GRAY});
 var jukebox = new Jukebox();
 Titanium.App.addEventListener("pause", jukebox.onAppPaused);
 
+var CANCEL_SYNC_AUDIO_TRACKS = false;
+Titanium.App.addEventListener("mytunesrss_sync", function(event) {
+	cacheTrack(event.data[event.index].id, event.data[event.index].playbackUri, function() {return !CANCEL_SYNC_AUDIO_TRACKS}, function(e) {
+		if (e == undefined || e.error == undefined) {
+			if (!getImageCacheFile(event.data[event.index].imageHash).exists()) {
+				downloadImage(event.data[event.index].imageHash, event.data[event.index].imageUri);
+			}
+			if (!getImageCacheFile(event.data[event.index].imageHash + "_64").exists()) {
+				downloadImage(event.data[event.index].imageHash + "_64", event.data[event.index].imageUri + "/size=64");
+			}
+			if (!getImageCacheFile(event.data[event.index].imageHash + "_128").exists()) {
+				downloadImage(event.data[event.index].imageHash + "_128", event.data[event.index].imageUri + "/size=128");
+			}
+			db = Titanium.Database.open("OfflineTracks");
+			db.execute("DELETE FROM track WHERE id = ?", event.data[event.index].id);
+			db.execute(
+				"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				event.data[event.index].id,
+				event.data[event.index].name,
+				event.data[event.index].album,
+				event.data[event.index].artist,
+				event.data[event.index].genre,
+				event.data[event.index].albumArtist,
+				event.data[event.index].imageHash,
+				event.data[event.index].protected,
+				event.data[event.index].mediaType,
+				event.data[event.index].time,
+				event.data[event.index].trackNumber
+			);
+			db.close();
+		}
+		event.index++;
+		Titanium.App.fireEvent("mytunesrss_sync_progress", {progress:event.index * 100 / event.data.length});
+		if (CANCEL_SYNC_AUDIO_TRACKS || event.index >= event.data.length) {
+			Titanium.App.fireEvent("mytunesrss_sync_done");
+		} else {
+			Titanium.App.fireEvent("mytunesrss_sync", event);
+		}
+	});
+});
+
 var connectedUsername;
 var connectedPassword;
 var offlineMode;
