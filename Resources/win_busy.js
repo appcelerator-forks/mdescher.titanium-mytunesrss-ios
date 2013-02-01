@@ -3,11 +3,15 @@ function BusyWindow(label1, label2, cancelCallback) {
 	var win = Titanium.UI.createWindow(STYLE.get("window",{navBarHidden:true}));
 	var progressBar = Titanium.UI.createProgressBar(STYLE.get("busyViewProgress"), {style:Titanium.UI.iPhone.ProgressBarStyle.PLAIN});
 	progressBar.show();
-	
+	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
+	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
+	win.add(actIndicatorView);
+		
 	var cancelButton = undefined;
 	if (cancelCallback != undefined) {
 		cancelButton = GUI.createButton({title:L("busy.cancel"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 		cancelButton.addEventListener("click", function() {
+			actIndicatorView.show();
 			cancelCallback();
 		})
 	}
