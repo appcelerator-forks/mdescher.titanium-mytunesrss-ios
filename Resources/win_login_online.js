@@ -55,11 +55,11 @@ function OnlineLoginWindow(parent) {
     buttonLogin.addEventListener('click', function() {
 		offlineMode = false;
 	    var serverUrl = getServerUrl();
-	    if (Titanium.App.Properties.getString("serverUrl") !== serverUrl) {
+	    /*if (Titanium.App.Properties.getString("serverUrl") !== serverUrl) {
 	    	// server has changed
 	    	clearImageCache();
 	    	clearTrackCache();
-	    }
+	    }*/
 	    Titanium.App.Properties.setString('serverUrl', serverUrl);
 	    Titanium.App.Properties.setBool('saveCredentials', inputSaveCredentials.value);
 	    if (inputSaveCredentials.value === true) {
