@@ -355,6 +355,7 @@ function Jukebox() {
 			if (isPlayingOrBuffering() || audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
 				audioPlayer.stop();
 			}
+            currentPlaylist = undefined;
 		    KEEP_ALIVE_SOUND.stop();
 		    createPlayer();
 		}
