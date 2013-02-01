@@ -55,6 +55,7 @@ function PlaylistsWindow(data) {
 						var busyView = createBusyView();
 						win.add(busyView);
 						var tracks = loadTracks(item.tracksUri);
+				    	removeObsoleteTracks(tracks);
 					    win.remove(busyView);
 					    if (tracks != undefined && tracks.length > 0) {
 							CANCEL_SYNC_AUDIO_TRACKS = false;
@@ -63,7 +64,6 @@ function PlaylistsWindow(data) {
 				    		});
 				    		busyWindow.open();
 				    		Titanium.App.setIdleTimerDisabled(true);
-				    		removeObsoleteTracks(tracks);
 				    		syncTrackAndAdvance(tracks, 0, busyWindow.setProgress, function() {
 				    			Titanium.App.setIdleTimerDisabled(false);
 				    			busyWindow.close();
