@@ -254,7 +254,6 @@ function Jukebox() {
 		if (audioPlayer != undefined) {
 			audioPlayer.removeEventListener("progress", progressEventListener);
 			audioPlayer.removeEventListener("change", changeEventListener);
-			audioPlayer.release();
 		}
 	    audioPlayer = Titanium.Media.createAudioPlayer({allowBackground:true, bufferSize:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)});
 	    audioPlayer.addEventListener("progress", progressEventListener);
