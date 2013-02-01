@@ -67,6 +67,8 @@ var KEEP_ALIVE_SOUND = Titanium.Media.createSound({url:"white_noise.wav",volume:
 var view = Titanium.UI.createView({backgroundColor:DARK_GRAY});
 
 var jukebox = new Jukebox();
+Titanium.App.addEventListener("pause", jukebox.onAppPaused);
+
 var connectedUsername;
 var connectedPassword;
 var offlineMode;

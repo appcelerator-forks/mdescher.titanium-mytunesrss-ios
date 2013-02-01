@@ -359,6 +359,12 @@ function Jukebox() {
 		    createPlayer();
 		}
 	};
-	
+
+    this.onAppPaused = function() {
+        if (currentPlaylist != undefined && audioPlayer != undefined && audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
+            audioPlayer.stop();
+        }
+    }
+
 	createPlayer();
 }
