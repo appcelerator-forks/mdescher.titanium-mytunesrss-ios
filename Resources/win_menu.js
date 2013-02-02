@@ -135,7 +135,9 @@ function MenuWindow() {
 	win.add(GUI.createTopToolbar("MyTunesRSS", buttonLogout, buttonSettings));
 	win.add(searchBar);
 	win.add(tableView);
-	win.add(Titanium.UI.iOS.createAdView(STYLE.get("iad", {adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,backgroundColor:DARK_GRAY})));
+	if (!offlineMode) {
+		win.add(Titanium.UI.iOS.createAdView(STYLE.get("iad", {adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,backgroundColor:DARK_GRAY})));
+	}
 	
 	this.open = function() {
 		var rows = new RowArray();
