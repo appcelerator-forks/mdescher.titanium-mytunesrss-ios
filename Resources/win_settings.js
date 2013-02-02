@@ -95,7 +95,6 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		if (enableCacheInput.value) {
 			var clearImageCacheButton = GUI.createButton({title:L("settings.imageCache.clear"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
 			clearImageCacheButton.addEventListener("click", function() {
-				Titanium.API.error("click");
 				clearImageCache();
 			});
 		    sectionCache.add(wrapInRow([clearImageCacheButton]));
