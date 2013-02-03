@@ -5,7 +5,7 @@
     </properties>
     <body>
 
-        <release version="2.1" date="2013-02-02">
+        <release version="2.1" date="2013-02-03">
             <action dev="mdescher" type="fix">
                 Do not display negative remaining time (in case total track time is not available or incorrect).
             </action>

@@ -18,7 +18,11 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	}
 	
 	function wrapInRow(views) {
-		return Titanium.UI.createTableViewRow({children:views});
+		var row = Titanium.UI.createTableViewRow(STYLE.get("settingsRow"));
+		for (i = 0; i < views.length; i++) {
+			row.add(views[i]);
+		} 
+		return row;
 	}
 	
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
@@ -95,16 +99,27 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		if (enableCacheInput.value) {
 			var clearImageCacheButton = GUI.createButton({title:L("settings.imageCache.clear"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
 			clearImageCacheButton.addEventListener("click", function() {
-				clearImageCache();
+				actIndicatorView.show();
+				try {
+					clearImageCache();
+				} finally {
+					actIndicatorView.hide();
+				}
 			});
 		    sectionCache.add(wrapInRow([clearImageCacheButton]));
 		}
 
 		var clearTrackCacheButton = GUI.createButton({title:L("settings.trackCache.clear"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
 		clearTrackCacheButton.addEventListener("click", function() {
-			clearTrackCache();
+				actIndicatorView.show();
+				try {
+					clearTrackCache();
+				} finally {
+					actIndicatorView.hide();
+				}
 		});
 		sectionCache.add(wrapInRow([clearTrackCacheButton]));
+		
 		sections.push(sectionCache);
 		
 		if (transcoders != undefined  && transcoders.length > 0) {

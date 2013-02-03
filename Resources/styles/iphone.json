@@ -300,6 +300,10 @@
 	"iad" : {
 		"height" : 50,
 		"bottom" : 0
+	},
+	
+	"settingsRow" : {
+		"height" : 40
 	}
 
 }
