@@ -127,12 +127,13 @@ exports.createMediaTrackItemInfoView = function(imageHash, imageUri, label, subl
 	var trackHeight = Titanium.Platform.osname === "ipad" ? 18 : 20;
 	var artistHeight = Titanium.Platform.osname === "ipad" ? 13 : 15;
 	var spacer = Titanium.Platform.osname === "ipad" ? 6 : 4;
+	var spacerRight = Titanium.Platform.osname === "ipad" ? 693 : 242;
 	var size = Titanium.Platform.osname === "ipad" ? 30 : 40;
     var infoView = Titanium.UI.createView({right:30});
     if (imageUri !== undefined) {
 		var hires = Titanium.Platform.displayCaps.density == "high";
 		var imagesize = hires ? 128 : 64;
-    	infoView.add(createCachedImageView({cacheObjectId:imageHash + "_" + imagesize,hires:true,image:imageUri + "/size=" + imagesize,top:spacer,left:spacer,width:size,height:size,defaultImage:"appicon.png"}));
+    	infoView.add(createCachedImageView({cacheObjectId:imageHash + "_" + imagesize,hires:true,image:imageUri + "/size=" + imagesize,top:spacer,left:spacer,bottom:spacer,right:spacerRight,defaultImage:"appicon.png"}));
     }
     var trackName = GUI.createLabel({text:label,top:spacer,left:size + (3 * spacer),height:trackHeight,right:2 * spacer,font:{fontSize:14,fontWeight:"bold"},minimumFontSize:10,touchEnabled:false});
     var artistName = GUI.createLabel({text:sublabel,bottom:spacer,left:size + (3 * spacer),height:artistHeight,right:2 * spacer,font:{fontSize:10},touchEnabled:false});
@@ -147,9 +148,9 @@ exports.createMediaItemImage = function(hash, uri) {
 		hires : Titanium.Platform.displayCaps.density === "high",
 		image : uri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64),
 		top : Titanium.Platform.osname === "ipad" ? 6 : 4,
+		bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
 		left : Titanium.Platform.osname === "ipad" ? 6 : 4,
-		width : Titanium.Platform.osname === "ipad" ? 60 : 40,
-		height : Titanium.Platform.osname === "ipad" ? 60 : 40,
+		right : Titanium.Platform.osname === "ipad" ? 682 : 257,
 		defaultImage : "appicon.png"
 	});
 }
