@@ -31,8 +31,8 @@ function TvShowSeasonsWindow(data) {
 	        tableView,
 	        data,
 	        function(item, index) {
-	            var row = GUI.createMediaItemRow(item.imageUri !== undefined);
-	            if (item.imageUri !== undefined) {
+	            var row = GUI.createMediaItemRow(item.imageUri != undefined);
+	            if (item.imageUri != undefined) {
 	                row.add(GUI.createMediaItemImage(item.imageHash, item.imageUri));
 	            }
 	            row.add(GUI.createMediaItemLabel("Season " + item.name));
@@ -48,7 +48,7 @@ function TvShowSeasonsWindow(data) {
 	 * Open the tv show seasons window. 
 	 */
 	this.open = function(parent) {
-		if (parent !== undefined) {
+		if (parent != undefined) {
 			myParent = parent;
 		}
 		win.open();

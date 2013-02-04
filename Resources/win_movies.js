@@ -21,7 +21,7 @@ function MoviesWindow(data) {
         jukebox.reset();
         var url = e.rowData.playbackUri;
         var tcParam = getTcParam();
-        if (tcParam !== undefined) {
+        if (tcParam != undefined) {
             url += '/' + tcParam;
         }
         new VideoPlayerWindow(url).open(self);
@@ -31,12 +31,12 @@ function MoviesWindow(data) {
 	        tableView,
 	        data,
 	        function(item, index) {
-	            var row = GUI.createMediaItemRow(item.imageUri !== undefined, getDisplayName(item.name));
-	            if (item.imageUri !== undefined) {
+	            var row = GUI.createMediaItemRow(item.imageUri != undefined, getDisplayName(item.name));
+	            if (item.imageUri != undefined) {
 	                row.add(GUI.createMediaItemImage(item.imageHash, item.imageUri));
 	            }
 	            row.add(GUI.createMediaItemLabel(getDisplayName(item.name)));
-	            row.playbackUri = item.httpLiveStreamUri !== undefined ? item.httpLiveStreamUri : item.playbackUri;
+	            row.playbackUri = item.httpLiveStreamUri != undefined ? item.httpLiveStreamUri : item.playbackUri;
 	            return row;
 	        },
 	        function(item) {
@@ -47,7 +47,7 @@ function MoviesWindow(data) {
 	 * Open the tv shows window. 
 	 */
 	this.open = function(parent) {
-		if (parent !== undefined) {
+		if (parent != undefined) {
 			myParent = parent;
 		}
 		win.open();

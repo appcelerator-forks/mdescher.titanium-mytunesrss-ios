@@ -35,7 +35,7 @@ function Jukebox() {
 	
 	function setTrackInformation(track) {
 		myTrack = track;
-	    if (imageView !== undefined) {
+	    if (imageView != undefined) {
 	        win.remove(imageView);
 	        win.remove(infoView);
 	        win.remove(progressBar);
@@ -43,7 +43,7 @@ function Jukebox() {
 	    	win.remove(timeRemaining);
 	    }
 	    imageView = Titanium.UI.createView({top:vOffset+55,left:10,right:10,hires:true,image:track.imageUri,height:size});
-	    if (track.imageUri !== undefined) {
+	    if (track.imageUri != undefined) {
 	        if (hires) {
 	    	    imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,hires:true,image:track.imageUri,width:size-20,height:size-20}));
 	        } else {
@@ -167,10 +167,10 @@ function Jukebox() {
 	 * Open the jukebox window. 
 	 */
 	this.open = function(parent) {
-		if (parent !== undefined) {
+		if (parent != undefined) {
 			myParent = parent;
 		}
-		if (topbar !== undefined) {
+		if (topbar != undefined) {
 			win.remove(topbar);
 		}
 		topbar = GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist);
@@ -224,10 +224,10 @@ function Jukebox() {
 		var tcParam = getTcParam();
 		audioPlayer.stop();
 	    var localFile = getCachedTrackFile(id);
-	    if (localFile !== undefined) {
+	    if (localFile != undefined) {
 			audioPlayer.setUrl("http://localhost:" + HTTP_SERVER_PORT + "/" + id);
 	    } else {
-		    if (tcParam !== undefined) {
+		    if (tcParam != undefined) {
 		        audioPlayer.setUrl(url + '/' + tcParam);
 		    } else {
 		        audioPlayer.setUrl(url);

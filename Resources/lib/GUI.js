@@ -33,11 +33,11 @@ exports.createTableViewRow = function(options) {
 
 exports.createTopToolbar = function(titleText, leftButton, rightButton) {
 	var items = [];
-	if (leftButton !== undefined) {
+	if (leftButton != undefined) {
 		items.push(leftButton);
 	}
 	items.push(Titanium.UI.createButton({systemButton:Titanium.UI.iPhone.SystemButton.FLEXIBLE_SPACE}));
-	if (rightButton !== undefined) {
+	if (rightButton != undefined) {
 		items.push(rightButton);
 	}
 	var toolbar = Titanium.UI.iOS.createToolbar({width:Titanium.UI.FILL,top:0,height:45,items:items,barColor:"#000000"});
@@ -130,7 +130,7 @@ exports.createMediaTrackItemInfoView = function(imageHash, imageUri, label, subl
 	var spacerRight = Titanium.Platform.osname === "ipad" ? 693 : 242;
 	var size = Titanium.Platform.osname === "ipad" ? 30 : 40;
     var infoView = Titanium.UI.createView({right:30});
-    if (imageUri !== undefined) {
+    if (imageUri != undefined) {
 		var hires = Titanium.Platform.displayCaps.density == "high";
 		var imagesize = hires ? 128 : 64;
     	infoView.add(createCachedImageView({cacheObjectId:imageHash + "_" + imagesize,hires:true,image:imageUri + "/size=" + imagesize,top:spacer,left:spacer,bottom:spacer,right:spacerRight,defaultImage:"appicon.png"}));
@@ -198,7 +198,7 @@ exports.Style = function() {
 	
 	this.get = function(id, options) {
 		var style = {};
-		if (styles[id] !== undefined) {
+		if (styles[id] != undefined) {
 			style = JSON.parse(JSON.stringify(styles[id]));
 		}
 		if (options != undefined) {

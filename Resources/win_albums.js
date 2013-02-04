@@ -35,8 +35,8 @@ function AlbumsWindow(data) {
 	        tableView,
 	        data,
 	        function(item, index) {
-	            var row = GUI.createMediaItemRow(item.imageUri !== undefined, getDisplayName(item.name));
-	            if (item.imageUri !== undefined) {
+	            var row = GUI.createMediaItemRow(item.imageUri != undefined, getDisplayName(item.name));
+	            if (item.imageUri != undefined) {
 	                row.add(GUI.createMediaItemImage(item.imageHash, item.imageUri));
 	            }
 	            row.add(GUI.createMediaItemLabel(getDisplayName(item.name)));
@@ -54,7 +54,7 @@ function AlbumsWindow(data) {
 	 * Open the albums window. 
 	 */
 	this.open = function(parent) {
-		if (parent !== undefined) {
+		if (parent != undefined) {
 			myParent = parent;
 		}
 		win.open();

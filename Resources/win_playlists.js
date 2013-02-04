@@ -89,7 +89,7 @@ function PlaylistsWindow(data) {
 	 * Open the genres window. 
 	 */
 	this.open = function(parent) {
-		if (parent !== undefined) {
+		if (parent != undefined) {
 			myParent = parent;
 		}
 		win.open();

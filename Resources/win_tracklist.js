@@ -20,7 +20,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	
 	var tableData = [];
 	for (var i = 0; i < data.length; i++) {
-	    var row = GUI.createMediaTrackItemRow(data[i].imageUri !== undefined);
+	    var row = GUI.createMediaTrackItemRow(data[i].imageUri != undefined);
 	    var infoView = GUI.createMediaTrackItemInfoView(data[i].imageHash, data[i].imageUri, getDisplayName(data[i].name), getDisplayName(data[i].artist));
     	row.add(infoView);
 	    infoView.addEventListener("click", function(e) {
@@ -29,9 +29,9 @@ function TracksWindow(data, currentJukeboxPlaylist) {
             try {
 	            if (data[e.index].mediaType === "Video") {
 	                jukebox.reset();
-	                var url = data[e.index].httpLiveStreamUri !== undefined ? data[e.index].httpLiveStreamUri : data[e.index].playbackUri;
+	                var url = data[e.index].httpLiveStreamUri != undefined ? data[e.index].httpLiveStreamUri : data[e.index].playbackUri;
 	                var tcParam = getTcParam();
-	                if (tcParam !== undefined) {
+	                if (tcParam != undefined) {
 	                    url += "/" + tcParam;
 	                }
 	                new VideoPlayerWindow(url).open(self);
@@ -63,7 +63,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		    	e.source.glow.setOpacity(0);
 		    });
 		    touchView.addEventListener("click", function(e) {
-		    	if (getCachedTrackFile(data[e.index].id) !== undefined) {
+		    	if (getCachedTrackFile(data[e.index].id) != undefined) {
 		    		deleteCachedTrackFile(data[e.index].id);
 		    		db = Titanium.Database.open("OfflineTracks");
 					db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
@@ -72,7 +72,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		    	} else {
 					var url = data[e.index].playbackUri;
 					var tcParam = getTcParam();
-		    		if (tcParam !== undefined) {
+		    		if (tcParam != undefined) {
 		        		url += '/' + tcParam;
 		    		}
 		    		var busyWindow = new BusyWindow(L("tracklist.busy.downloading"), data[e.index].name);
@@ -124,7 +124,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	 * Open the tracks window. 
 	 */
 	this.open = function(parent) {
-		if (parent !== undefined) {
+		if (parent != undefined) {
 			myParent = parent;
 		}
 		win.open();

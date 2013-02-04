@@ -50,7 +50,7 @@ function ArtistsWindow(data) {
 	 * Open the artists window. 
 	 */
 	this.open = function(parent) {
-		if (parent !== undefined) {
+		if (parent != undefined) {
 			myParent = parent;
 		}
 		win.open();

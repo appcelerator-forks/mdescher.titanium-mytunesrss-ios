@@ -167,7 +167,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	 * Open the settings window. 
 	 */
 	this.open = function(parent) {
-		if (parent !== undefined) {
+		if (parent != undefined) {
 			myParent = parent;
 		}
 		win.open();
