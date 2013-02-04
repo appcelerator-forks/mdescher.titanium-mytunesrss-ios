@@ -19,7 +19,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	
 	function wrapInRow(views) {
 		var row = Titanium.UI.createTableViewRow(STYLE.get("settingsRow"));
-		for (i = 0; i < views.length; i++) {
+		for (var i = 0; i < views.length; i++) {
 			row.add(views[i]);
 		} 
 		return row;
