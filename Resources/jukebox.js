@@ -90,7 +90,7 @@ function Jukebox() {
 	    });
 	}
 	
-	var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:0,right:0,backgroundColor:'#000000',opacity:0.8,visible:false});
+	var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:38,right:0,backgroundColor:'#000000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
 	function showJukeboxActivityView() {
@@ -138,9 +138,12 @@ function Jukebox() {
 	buttonPlaylist.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-		new TracksWindow(jukebox.getCurrentPlaylist(), true).open(self);
-		win.remove(busyView);
-	    win.close();
+        try {
+		    new TracksWindow(jukebox.getCurrentPlaylist(), true).open(self);
+	        win.close();
+        } finally {
+		    win.remove(busyView);
+        }
 	});
 
 	addTouchListener(controlRewind);

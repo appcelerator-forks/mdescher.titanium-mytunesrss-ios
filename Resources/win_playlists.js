@@ -5,9 +5,6 @@ function PlaylistsWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
-	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
-	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
-	
 	var tableView = GUI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}), filterAttribute:"filter",top:45});
 	var buttonBack = GUI.createButton({title:L("playlists.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
@@ -20,8 +17,6 @@ function PlaylistsWindow(data) {
 	
 	win.add(tableView);
 	
-	win.add(actIndicatorView);
-	
 	setTableDataAndIndex(
 	        tableView,
 	        data,
@@ -33,8 +28,11 @@ function PlaylistsWindow(data) {
 	            infoView.addEventListener('click', function(e) {
 					var busyView = createBusyView();
 					win.add(busyView);
-				    loadAndDisplayTracks(self, item.tracksUri);
-				    win.remove(busyView);
+                    try {
+				        loadAndDisplayTracks(self, item.tracksUri);
+                    } finally {
+				        win.remove(busyView);
+                    }
 		    	});
 		        row.add(infoView);
 	            if (!offlineMode) {

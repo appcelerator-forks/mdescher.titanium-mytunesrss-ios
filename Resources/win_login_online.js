@@ -15,30 +15,32 @@ function OnlineLoginWindow(parent) {
 	var inputSaveCredentials = GUI.add(win, Titanium.UI.createSwitch(STYLE.get("saveCredentialsSwitch",{value:Titanium.App.Properties.getBool('saveCredentials', false)})));
 	win.add(Titanium.UI.createLabel(STYLE.get("saveCredentialsLabel",{text:L("login.saveCredentials")})));
 	var buttonLogin = GUI.add(win, Titanium.UI.createButton(STYLE.get("loginButton",{title:L("login.connect"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED})));
-	var actIndicatorView = GUI.add(win, GUI.createActivityIndicator());
 	win.add(Titanium.UI.createImageView(STYLE.get("watermarkOnline")));
 
 	function doLogin() {
 		var busyView = createBusyView();
 		win.add(busyView);
-		Titanium.Network.createHTTPClient().clearCookies(Titanium.App.Properties.getString('resolvedServerUrl'));
-		var serverVersion = getServerVersion();
-		if (serverVersion === undefined) {
-		    showError({message:String.format(L("login.noValidResponse"), MININUM_SERVER_VERSION.text),buttonNames:['Ok']});
-		} else if (compareVersions(serverVersion, MININUM_SERVER_VERSION) < 0) {
-		    showError({message:String.format(L("login.wrongServerVersion"), serverVersion.text, MININUM_SERVER_VERSION.text),buttonNames:['Ok']});
-		} else {
-			var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value});
-			if (response.status / 100 === 2) {
-				Titanium.App.Properties.setString("libraryBase", JSON.stringify(restCall("GET", response.result.libraryUri, {}).result));
-				connectedUsername = inputUsername.value;
-				connectedPassword = inputPassword.value;
-				new MenuWindow().open();
-			} else {
-				showError({message:response.result,buttonNames:['Ok']});
-			}
-		}
-		win.remove(busyView);
+        try {
+		    Titanium.Network.createHTTPClient().clearCookies(Titanium.App.Properties.getString('resolvedServerUrl'));
+		    var serverVersion = getServerVersion();
+		    if (serverVersion === undefined) {
+		        showError({message:String.format(L("login.noValidResponse"), MININUM_SERVER_VERSION.text),buttonNames:['Ok']});
+		    } else if (compareVersions(serverVersion, MININUM_SERVER_VERSION) < 0) {
+		        showError({message:String.format(L("login.wrongServerVersion"), serverVersion.text, MININUM_SERVER_VERSION.text),buttonNames:['Ok']});
+		    } else {
+			    var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value});
+			    if (response.status / 100 === 2) {
+				    Titanium.App.Properties.setString("libraryBase", JSON.stringify(restCall("GET", response.result.libraryUri, {}).result));
+				    connectedUsername = inputUsername.value;
+				    connectedPassword = inputPassword.value;
+				    new MenuWindow().open();
+			    } else {
+				    showError({message:response.result,buttonNames:['Ok']});
+			    }
+		    }
+        } finally {
+    		win.remove(busyView);
+        }
 	}
 	
 	function getServerUrl() {

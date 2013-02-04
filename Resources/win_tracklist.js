@@ -26,22 +26,25 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	    infoView.addEventListener("click", function(e) {
 	    	var busyView = createBusyView();
 			win.add(busyView);
-	        if (data[e.index].mediaType === "Video") {
-	            jukebox.reset();
-	            var url = data[e.index].httpLiveStreamUri !== undefined ? data[e.index].httpLiveStreamUri : data[e.index].playbackUri;
-	            var tcParam = getTcParam();
-	            if (tcParam !== undefined) {
-	                url += "/" + tcParam;
+            try {
+	            if (data[e.index].mediaType === "Video") {
+	                jukebox.reset();
+	                var url = data[e.index].httpLiveStreamUri !== undefined ? data[e.index].httpLiveStreamUri : data[e.index].playbackUri;
+	                var tcParam = getTcParam();
+	                if (tcParam !== undefined) {
+	                    url += "/" + tcParam;
+	                }
+	                new VideoPlayerWindow(url).open(self);
+	            } else {
+	                jukebox.setPlaylist(data, e.index);
+			        jukebox.open(myCurrentJukeboxPlaylist === true ? undefined : self);
+			        if (myCurrentJukeboxPlaylist === true) {
+			        	win.close();
+			        }
 	            }
-	            new VideoPlayerWindow(url).open(self);
-	        } else {
-	            jukebox.setPlaylist(data, e.index);
-			    jukebox.open(myCurrentJukeboxPlaylist === true ? undefined : self);
-			    if (myCurrentJukeboxPlaylist === true) {
-			    	win.close();
-			    }
-	        }
-	        win.remove(busyView);
+            } finally {
+	            win.remove(busyView);
+            }
 	    });
 
 		if (!offlineMode && data[i].mediaType === "Audio") {

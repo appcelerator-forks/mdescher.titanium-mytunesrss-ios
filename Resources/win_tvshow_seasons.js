@@ -5,9 +5,6 @@ function TvShowSeasonsWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
-	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
-	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
-	
 	var tableView = GUI.createTableView({top:45});
 	var buttonBack = GUI.createButton({title:L("tvshow.seasons.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
@@ -20,13 +17,14 @@ function TvShowSeasonsWindow(data) {
 	
 	win.add(tableView);
 	
-	win.add(actIndicatorView);
-	
 	tableView.addEventListener('click', function(e) {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    loadAndDisplayTracks(self, e.rowData.episodesUri);
-	    win.remove(busyView);
+        try {
+    	    loadAndDisplayTracks(self, e.rowData.episodesUri);
+        } finally {
+	        win.remove(busyView);
+        }
 	});
 	
 	setTableDataAndIndex(
