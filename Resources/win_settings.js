@@ -19,7 +19,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	
 	function wrapInRow(views) {
 		var row = Titanium.UI.createTableViewRow(STYLE.get("settingsRow"));
-		for (i = 0; i < views.length; i++) {
+		for (var i = 0; i < views.length; i++) {
 			row.add(views[i]);
 		} 
 		return row;
@@ -29,9 +29,6 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	
 	var transcoderSwitchesWifi = [];
 	var transcoderSwitchesMobile = [];
-	
-	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000',opacity:0.8,visible:false});
-	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
 	var buttonCancel = GUI.createButton({title:L("settings.cancel"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	buttonCancel.addEventListener('click', function() {
@@ -99,11 +96,12 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		if (enableCacheInput.value) {
 			var clearImageCacheButton = GUI.createButton({title:L("settings.imageCache.clear"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
 			clearImageCacheButton.addEventListener("click", function() {
-				actIndicatorView.show();
-				try {
+				var busyView = createBusyView();
+		        win.add(busyView);
+                try {
 					clearImageCache();
 				} finally {
-					actIndicatorView.hide();
+					win.remove(busyView);
 				}
 			});
 		    sectionCache.add(wrapInRow([clearImageCacheButton]));
@@ -111,11 +109,12 @@ function SettingsWindow(transcoders, searchFuzziness) {
 
 		var clearTrackCacheButton = GUI.createButton({title:L("settings.trackCache.clear"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
 		clearTrackCacheButton.addEventListener("click", function() {
-				actIndicatorView.show();
+				var busyView = createBusyView();
+        		win.add(busyView);
 				try {
 					clearTrackCache();
 				} finally {
-					actIndicatorView.hide();
+					win.remove(busyView);
 				}
 		});
 		sectionCache.add(wrapInRow([clearTrackCacheButton]));
@@ -163,13 +162,12 @@ function SettingsWindow(transcoders, searchFuzziness) {
 
 	win.add(GUI.createTopToolbar(L("settings.title"), buttonCancel, buttonSave));
 	win.add(GUI.createTableView({data:sections,separatorStyle:Titanium.UI.iPhone.TableViewSeparatorStyle.NONE,top:45,allowsSelection:false}));
-	win.add(actIndicatorView);
-
+	
 	/**
 	 * Open the settings window. 
 	 */
 	this.open = function(parent) {
-		if (parent !== undefined) {
+		if (parent != undefined) {
 			myParent = parent;
 		}
 		win.open();

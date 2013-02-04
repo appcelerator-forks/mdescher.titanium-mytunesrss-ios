@@ -37,7 +37,7 @@ function VideoPlayerWindow(videoUrl) {
 	videoPlayer.play();
 
 	this.open = function(parent) {
-		if (parent !== undefined) {
+		if (parent != undefined) {
 			myParent = parent;
 		}
 		win.open();

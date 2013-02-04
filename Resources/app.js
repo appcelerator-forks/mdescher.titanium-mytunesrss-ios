@@ -71,8 +71,10 @@ Titanium.App.addEventListener("pause", jukebox.onAppPaused);
 
 var CANCEL_SYNC_AUDIO_TRACKS = false;
 Titanium.App.addEventListener("mytunesrss_sync", function(event) {
-	cacheTrack(event.data[event.index].id, event.data[event.index].playbackUri, function() {return !CANCEL_SYNC_AUDIO_TRACKS}, function(e) {
-		if (e == undefined || e.error == undefined) {
+    var tcParam = getTcParam();
+    var uri = event.data[event.index].playbackUri + (tcParam != undefined ? "/" + tcParam : "");
+	cacheTrack(event.data[event.index].id, uri, function() {return !CANCEL_SYNC_AUDIO_TRACKS}, function(e) {
+		if (e == undefined || (e.error == undefined && e.aborted !== true)) {
 			if (!getImageCacheFile(event.data[event.index].imageHash).exists()) {
 				downloadImage(event.data[event.index].imageHash, event.data[event.index].imageUri);
 			}

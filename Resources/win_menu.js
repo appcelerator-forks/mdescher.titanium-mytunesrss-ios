@@ -4,21 +4,21 @@ function MenuWindow() {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 	
-	var actIndicatorView = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:"#000000",opacity:0.8,visible:false});
-	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
-	
 	var searchBar = Titanium.UI.createSearchBar({hintText:L("menu.search.hint"),width:Titanium.UI.FILL,top:45,height:45,autocorrect:false,autocapitalization:false,autocomplete:false,barColor:"#000000"});
 	searchBar.addEventListener('return', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    searchBar.showCancel = false;
-	    searchBar.blur();
-	    if (searchBar.value.length === 0) {
-	        showError({message:L("menu.missingSearchTerm"),buttonNames:['Ok']});
-	    } else {
-	        searchAndDisplayTracks(self, searchBar.value);
-	    }
-	    win.remove(busyView);
+        try  {
+	        searchBar.showCancel = false;
+	        searchBar.blur();
+	        if (searchBar.value.length === 0) {
+	            showError({message:L("menu.missingSearchTerm"),buttonNames:['Ok']});
+	        } else {
+	            searchAndDisplayTracks(self, searchBar.value);
+	        }
+        } finally {
+    	    win.remove(busyView);
+        }
 	});
 	searchBar.addEventListener('focus', function() {
 	    searchBar.showCancel = true;
@@ -45,17 +45,20 @@ function MenuWindow() {
 	buttonSettings.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-		if (offlineMode) {
-			new SettingsWindow().open(self);
-		} else {
-			var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=transcoders&attr.incl=searchFuzziness", {});
-			if (response.status / 100 === 2) {
-				new SettingsWindow(response.result.transcoders, response.result.searchFuzziness).open(self);
-			} else {
-			    showError({message:L("menu.settings.loadFailed"),buttonNames:['Ok']});
-			}
-		}
-		win.remove(busyView);
+        try {
+		    if (offlineMode) {
+			    new SettingsWindow().open(self);
+		    } else {
+			    var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=transcoders&attr.incl=searchFuzziness", {});
+			    if (response.status / 100 === 2) {
+				    new SettingsWindow(response.result.transcoders, response.result.searchFuzziness).open(self);
+			    } else {
+			        showError({message:L("menu.settings.loadFailed"),buttonNames:['Ok']});
+			    }
+		    }
+        } finally {
+		    win.remove(busyView);
+        }
 	});
 	
 	function createMenuItem(label, leftImage) {
@@ -71,65 +74,86 @@ function MenuWindow() {
 	rowPlaylists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    loadAndDisplayPlaylists(self);
-	    win.remove(busyView);
+        try {
+    	    loadAndDisplayPlaylists(self);
+        } finally {
+    	    win.remove(busyView);
+        }
 	});
 
 	var rowAlbums = createMenuItem(L("menu.albums"), "images/albums.png");
 	rowAlbums.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    if (!offlineMode) {
-	    	loadAndDisplayAlbums(self, getLibrary().albumsUri);
-	    } else {
-	    	loadAndDisplayOfflineAlbums(self, undefined, undefined);
-	    }
-	    win.remove(busyView);
+        try {
+	        if (!offlineMode) {
+	        	loadAndDisplayAlbums(self, getLibrary().albumsUri);
+	        } else {
+	        	loadAndDisplayOfflineAlbums(self, undefined, undefined);
+	        }
+        } finally {
+	        win.remove(busyView);
+        }
 	});
 
 	var rowArtists = createMenuItem(L("menu.artists"), "images/artists.png");
 	rowArtists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    loadAndDisplayArtists(self);
-	    win.remove(busyView);
+        try {
+	        loadAndDisplayArtists(self);
+        } finally {
+	        win.remove(busyView);
+        }
 	});
 
 	var rowGenres = createMenuItem(L("menu.genres"), "images/genres.png");
 	rowGenres.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    loadAndDisplayGenres(self);
-	    win.remove(busyView);
+        try {
+	        loadAndDisplayGenres(self);
+        } finally {
+	        win.remove(busyView);
+        }
 	});
 
 	var rowMovies = createMenuItem(L("menu.movies"), "images/movies.png");
 	rowMovies.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    loadAndDisplayMovies(self);
-	    win.remove(busyView);
+        try {
+	        loadAndDisplayMovies(self);
+        } finally {
+	        win.remove(busyView);
+        }
 	});
 
 	var rowTvShows = createMenuItem(L("menu.tvshows"), "images/tvshows.png");
 	rowTvShows.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    loadAndDisplayTvShows(self);
-	    win.remove(busyView);
+        try {
+	        loadAndDisplayTvShows(self);
+        } finally {
+	        win.remove(busyView);
+        }
 	});
 
 	var rowNowPlaying = createMenuItem(L("menu.currentlyPlaying"), "images/currently.png");
 	rowNowPlaying.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-	    if (jukebox.isActive()) {
-	        jukebox.open(self);
-	    	win.close();
-	    } else {
-	        showError({message:L("menu.currentlyPlaying.none"),buttonNames:['Ok']});
-	    }
-	    win.remove(busyView);
+        try {
+	        if (jukebox.isActive()) {
+	            jukebox.open(self);
+	        	win.close();
+	        } else {
+	            showError({message:L("menu.currentlyPlaying.none"),buttonNames:['Ok']});
+	        }
+        } finally {
+	        win.remove(busyView);
+        }
 	});
 			
 	win.add(GUI.createTopToolbar("MyTunesRSS", buttonLogout, buttonSettings));

@@ -35,7 +35,7 @@ function Jukebox() {
 	
 	function setTrackInformation(track) {
 		myTrack = track;
-	    if (imageView !== undefined) {
+	    if (imageView != undefined) {
 	        win.remove(imageView);
 	        win.remove(infoView);
 	        win.remove(progressBar);
@@ -43,7 +43,7 @@ function Jukebox() {
 	    	win.remove(timeRemaining);
 	    }
 	    imageView = Titanium.UI.createView({top:vOffset+55,left:10,right:10,hires:true,image:track.imageUri,height:size});
-	    if (track.imageUri !== undefined) {
+	    if (track.imageUri != undefined) {
 	        if (hires) {
 	    	    imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,hires:true,image:track.imageUri,width:size-20,height:size-20}));
 	        } else {
@@ -90,7 +90,7 @@ function Jukebox() {
 	    });
 	}
 	
-	var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:0,right:0,backgroundColor:'#000000',opacity:0.8,visible:false});
+	var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:38,right:0,backgroundColor:'#000000',opacity:0.8,visible:false});
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
 	function showJukeboxActivityView() {
@@ -138,9 +138,12 @@ function Jukebox() {
 	buttonPlaylist.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
-		new TracksWindow(jukebox.getCurrentPlaylist(), true).open(self);
-		win.remove(busyView);
-	    win.close();
+        try {
+		    new TracksWindow(jukebox.getCurrentPlaylist(), true).open(self);
+	        win.close();
+        } finally {
+		    win.remove(busyView);
+        }
 	});
 
 	addTouchListener(controlRewind);
@@ -164,10 +167,10 @@ function Jukebox() {
 	 * Open the jukebox window. 
 	 */
 	this.open = function(parent) {
-		if (parent !== undefined) {
+		if (parent != undefined) {
 			myParent = parent;
 		}
-		if (topbar !== undefined) {
+		if (topbar != undefined) {
 			win.remove(topbar);
 		}
 		topbar = GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist);
@@ -221,10 +224,10 @@ function Jukebox() {
 		var tcParam = getTcParam();
 		audioPlayer.stop();
 	    var localFile = getCachedTrackFile(id);
-	    if (localFile !== undefined) {
+	    if (localFile != undefined) {
 			audioPlayer.setUrl("http://localhost:" + HTTP_SERVER_PORT + "/" + id);
 	    } else {
-		    if (tcParam !== undefined) {
+		    if (tcParam != undefined) {
 		        audioPlayer.setUrl(url + '/' + tcParam);
 		    } else {
 		        audioPlayer.setUrl(url);

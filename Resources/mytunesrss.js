@@ -36,7 +36,7 @@ function restCall(method, uri, params) {
 	if (httpClient.status / 100 == 2) {
 		// 2xx response
 		return {status:httpClient.status,result:JSON.parse(httpClient.getResponseText())};
-	} else if (httpClient.status === 401 && httpClient.getResponseText() === "NO_VALID_USER_SESSION" && connectedUsername !== undefined) {
+	} else if (httpClient.status === 401 && httpClient.getResponseText() === "NO_VALID_USER_SESSION" && connectedUsername != undefined) {
 		// probably session expired => login again
 		httpClient.open("POST",  Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session", false);
 		httpClient.send({username:connectedUsername,password:connectedPassword});
@@ -115,9 +115,9 @@ function isSessionAlive() {
 
 function loadAndDisplayOfflineAlbums(parent, artist, genre) {
 	db = Titanium.Database.open("OfflineTracks");
-	if (artist !== undefined) {
+	if (artist != undefined) {
 		rs = db.execute("SELECT album, album_artist, MAX(image_hash) AS ihash FROM track WHERE album IS NOT NULL AND LOWER(artist) = LOWER(?) GROUP BY LOWER(album), LOWER(album_artist) ORDER BY album", artist);
-	} else if (genre !== undefined) {
+	} else if (genre != undefined) {
 		rs = db.execute("SELECT album, album_artist, MAX(image_hash) AS ihash FROM track WHERE album IS NOT NULL AND LOWER(genre) = LOWER(?) GROUP BY LOWER(album), LOWER(album_artist) ORDER BY album", genre);
 	} else {
 		rs = db.execute("SELECT album, album_artist, MAX(image_hash) AS ihash FROM track WHERE album IS NOT NULL GROUP BY LOWER(album), LOWER(album_artist) ORDER BY album");
@@ -383,7 +383,7 @@ function searchAndDisplayTracks(parent, searchTerm) {
 
 function getServerVersion() {
 	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest?attr.incl=version", {});
-	if (response.status / 100 === 2 && response.result.version !== undefined && response.result.version.text !== undefined) {
+	if (response.status / 100 === 2 && response.result.version != undefined && response.result.version.text != undefined) {
 		return response.result.version;
 	} else {
 	    return undefined;
@@ -391,10 +391,10 @@ function getServerVersion() {
 }
 
 function compareVersions(left, right) {
-	if (left.major !== right.major) {
+	if (left.major != right.major) {
 		return left.major - right.major;
 	}
-	if (left.minor !== right.minor) {
+	if (left.minor != right.minor) {
 		return left.minor - right.minor;
 	}
 	return left.bugfix - right.bugfix;
