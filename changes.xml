@@ -5,6 +5,13 @@
     </properties>
     <body>
 
+        <release version="2.2.0" date="2013-xx-xx">
+            <action dev="mdescher" type="fix">
+                Set "UIRequiresPersistentWiFi" to TRUE.
+                Set "UIStatusBarStyle" to "UIStatusBarStyleBlackOpaque".
+            </action>
+        </release>
+
         <release version="2.1.0" date="2013-02-04">
             <action dev="mdescher" type="update">
                 [MYTUNESRSSIPHONE-43] Transcoding parameter not used when syncing playlist
