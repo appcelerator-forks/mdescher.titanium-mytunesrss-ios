@@ -5,7 +5,7 @@
     </properties>
     <body>
 
-        <release version="2.2.0" date="2013-xx-xx">
+        <release version="2.1.1" date="2013-02-12">
             <action dev="mdescher" type="fix">
                 Set "UIRequiresPersistentWiFi" to TRUE.
                 Set "UIStatusBarStyle" to "UIStatusBarStyleBlackOpaque".
