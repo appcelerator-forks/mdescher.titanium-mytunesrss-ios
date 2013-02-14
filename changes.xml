@@ -5,6 +5,12 @@
     </properties>
     <body>
 
+        <release version="2.2 date="2013-xx-xx">
+            <action dev="mdescher" type="add">
+                Added random playback mode in offline mode.
+            </action>
+        </release>
+
         <release version="2.1.1" date="2013-02-12">
             <action dev="mdescher" type="fix">
                 Set "UIRequiresPersistentWiFi" to TRUE.
