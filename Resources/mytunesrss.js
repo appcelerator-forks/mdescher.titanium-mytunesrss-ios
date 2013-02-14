@@ -113,6 +113,18 @@ function isSessionAlive() {
 	return response.status / 100 === 2;
 }
 
+function getRandomOfflineTrack() {
+	var db = Titanium.Database.open("OfflineTracks");
+	try {
+		var rs = db.execute("SELECT count(id) AS track_count FROM TRACK");
+		var offset = Math.floor(Math.random() * rs.fieldByName("track_count"));
+		rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track LIMIT 1 OFFSET ?", offset);
+		return mapTrack(rs);
+	} finally {
+		db.close();
+	}
+}
+
 function loadAndDisplayOfflineAlbums(parent, artist, genre) {
 	db = Titanium.Database.open("OfflineTracks");
 	if (artist != undefined) {
@@ -233,15 +245,7 @@ function loadAndDisplayOfflineTracks(parent, album, albumArtist) {
 	rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name IS NOT NULL AND LOWER(album) = LOWER(?) AND LOWER(album_artist) = LOWER(?) ORDER BY track_number", album, albumArtist);
 	result = [];
 	while (rs.isValidRow()) {
-		result.push({
-			id : rs.fieldByName("id"),
-			name : rs.fieldByName("name"),
-			artist : rs.fieldByName("artist"),
-			imageUri : "",
-			imageHash : rs.fieldByName("image_hash"),
-			mediaType : rs.fieldByName("media_type"),
-			time : rs.fieldByName("time")
-		});
+		result.push(mapTrack(rs));
 		rs.next();
 	}
 	db.close();
@@ -250,6 +254,18 @@ function loadAndDisplayOfflineTracks(parent, album, albumArtist) {
     } else {
     	new TracksWindow(result).open(parent);
     }
+}
+
+function mapTrack(rs) {
+	return {
+		id : rs.fieldByName("id"),
+		name : rs.fieldByName("name"),
+		artist : rs.fieldByName("artist"),
+		imageUri : "",
+		imageHash : rs.fieldByName("image_hash"),
+		mediaType : rs.fieldByName("media_type"),
+		time : rs.fieldByName("time")
+	};	
 }
 
 function removeObsoleteTracks(tracks) {

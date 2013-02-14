@@ -140,6 +140,19 @@ function MenuWindow() {
         }
 	});
 
+	var rowRandomMode = createMenuItem(L("menu.random"), "images/random.png");
+	rowRandomMode.addEventListener('click', function() {
+		var busyView = createBusyView();
+		win.add(busyView);
+        try {
+	        jukebox.setPlaylist([getRandomOfflineTrack()], 0, true);
+	        jukebox.open(self);
+	        win.close();
+        } finally {
+	        win.remove(busyView);
+        }
+	});
+
 	var rowNowPlaying = createMenuItem(L("menu.currentlyPlaying"), "images/currently.png");
 	rowNowPlaying.addEventListener('click', function() {
 		var busyView = createBusyView();
@@ -169,6 +182,9 @@ function MenuWindow() {
 			rows.push(rowAlbums);
 			rows.push(rowArtists);
 			rows.push(rowGenres);
+			if (!jukebox.isActive() || !jukebox.isRandomOfflineMode()) {
+				rows.push(rowRandomMode);
+			}
 		} else {
 			rows.push(rowPlaylists);
 			rows.push(rowAlbums);

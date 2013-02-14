@@ -5,6 +5,7 @@ function Jukebox() {
 	
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
+	var myRandomOfflineMode;
 	var myTrack;
 	var imageView;
 	var infoView;
@@ -136,22 +137,24 @@ function Jukebox() {
 	});
 	
 	buttonPlaylist.addEventListener('click', function() {
-		var busyView = createBusyView();
-		win.add(busyView);
-        try {
-		    new TracksWindow(jukebox.getCurrentPlaylist(), true).open(self);
-	        win.close();
-        } finally {
-		    win.remove(busyView);
-        }
+		if (myRandomOfflineMode != true) {
+			var busyView = createBusyView();
+			win.add(busyView);
+	        try {
+			    new TracksWindow(jukebox.getCurrentPlaylist(), true).open(self);
+		        win.close();
+	        } finally {
+			    win.remove(busyView);
+	        }
+		} else {
+			showError({message:L("jukebox.noPlaylistInRandomMode"),buttonNames:['Ok']});
+		}
 	});
 
 	addTouchListener(controlRewind);
 	addTouchListener(controlFastForward);
 	addTouchListener(controlPlayPause);
 	addTouchListener(controlShuffle);
-	
-	var topbar = undefined;
 	
 	win.add(Titanium.UI.createView({left:0,right:0,bottom:0,height:38,backgroundGradient:{type:"linear",colors:["#1F1F1F","#323232"],startPoint:{x:0,y:37},endPoint:{x:0,y:0},backFillStart:false}}));
 	win.add(controlRewind);
@@ -162,6 +165,8 @@ function Jukebox() {
 	win.add(controlPlayPause.glow);
 	win.add(controlShuffle);
 	win.add(controlShuffle.glow);
+
+	win.add(GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist));
 	
 	/**
 	 * Open the jukebox window. 
@@ -170,11 +175,6 @@ function Jukebox() {
 		if (parent != undefined) {
 			myParent = parent;
 		}
-		if (topbar != undefined) {
-			win.remove(topbar);
-		}
-		topbar = GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist);
-		win.add(topbar);
 		win.open();
 	}
 	
@@ -267,7 +267,7 @@ function Jukebox() {
 		return currentPlaylist != undefined && audioPlayer != undefined;
 	}
 
-	this.setPlaylist = function(playlist, index) {
+	this.setPlaylist = function(playlist, index, randomOfflineMode) {
 		fastForwardOnStopped = false;
 	    audioPlayer.stop();
 	    currentPlaylist = playlist;
@@ -282,13 +282,18 @@ function Jukebox() {
 	        }
 	    }
 	    setTrack();
+	    if (randomOfflineMode === true) {
+	    	myRandomOfflineMode = true;
+	    } else {
+	    	myRandomOfflineMode = false;
+	    }
 	    playTrack();
 	};
 	
 	function rewind() {
 		fastForwardOnStopped = false;
 		var playing = isPlayingOrBuffering();
-	    if (audioPlayer.progress > 2000) {
+	    if (audioPlayer.progress > 2000 || myRandomOfflineMode === true) {
 	        setTrack();
 	        if (playing === true) {
 	        	playTrack();
@@ -311,6 +316,13 @@ function Jukebox() {
 	        if (playing === true) {
 	        	playTrack();
 	        }
+	    } else if (myRandomOfflineMode === true) {
+	    	currentPlaylist = [getRandomOfflineTrack()];
+	    	currentPlaylistIndex = 0;
+	        setTrack();
+	        if (playing === true) {
+	        	playTrack();
+	        }
 	    }
 	};
 	
@@ -323,21 +335,25 @@ function Jukebox() {
 	};
 	
 	function shuffle() {
-	    fastForwardOnStopped = false;
-	    var playing = isPlayingOrBuffering();
-	    audioPlayer.stop();
-	    var tmp, rand;
-	    for (var i = 0; i < currentPlaylist.length; i++){
-	      rand = Math.floor(Math.random() * currentPlaylist.length);
-	      tmp = currentPlaylist[i];
-	      currentPlaylist[i] = currentPlaylist[rand];
-	      currentPlaylist[rand] = tmp;
-	    }
-	    currentPlaylistIndex = 0;
-	    setTrack();
-	    if (playing) {
-	        playTrack();
-	    }
+		if (myRandomOfflineMode === true) {
+			fastForward();
+		} else {
+		    fastForwardOnStopped = false;
+		    var playing = isPlayingOrBuffering();
+		    audioPlayer.stop();
+		    var tmp, rand;
+		    for (var i = 0; i < currentPlaylist.length; i++){
+		      rand = Math.floor(Math.random() * currentPlaylist.length);
+		      tmp = currentPlaylist[i];
+		      currentPlaylist[i] = currentPlaylist[rand];
+		      currentPlaylist[rand] = tmp;
+		    }
+		    currentPlaylistIndex = 0;
+		    setTrack();
+		    if (playing) {
+		        playTrack();
+		    }
+		}
 	};
 	
 	this.reset = function() {
@@ -373,6 +389,10 @@ function Jukebox() {
         if (currentPlaylist != undefined && audioPlayer != undefined && audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
         	jukebox.stopPlayback();
         }
+    }
+    
+    this.isRandomOfflineMode = function() {
+    	return myRandomOfflineMode;
     }
 
 	createPlayer();

@@ -41,6 +41,7 @@
 	<string name="menu.genres">Genre</string>
 	<string name="menu.movies">Filme</string>
 	<string name="menu.tvshows">TV Serien</string>
+	<string name="menu.random">Zufällige Wiedergabe</string>
 	<string name="menu.currentlyPlaying">Aktueller Titel</string>
 	<string name="menu.currentlyPlaying.none">Es gibt keine aktive Playlist.</string>
 	<string name="albums.back">Zurück</string>
@@ -67,6 +68,7 @@
 	<string name="jukebox.back">Zurück</string>
 	<string name="jukebox.playlist">Playlist</string>
 	<string name="jukebox.title">Jukebox</string>
+	<string name="jukebox.noPlaylistInRandomMode">Während der zufälligen Wiedergabe kann keine Playliste angezeigt werden.</string>
 	<string name="settings.audioPlayer">Jukebox</string>
 	<string name="settings.search">Suche</string>
 	<string name="settings.bufferSize">Puffergröße</string>

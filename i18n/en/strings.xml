@@ -41,6 +41,7 @@
 	<string name="menu.genres">Genres</string>
 	<string name="menu.movies">Movies</string>
 	<string name="menu.tvshows">TV Shows</string>
+	<string name="menu.random">Random playback</string>
 	<string name="menu.currentlyPlaying">Currently playing</string>
 	<string name="menu.currentlyPlaying.none">There is no active playlist.</string>
 	<string name="albums.back">Back</string>
@@ -67,6 +68,7 @@
 	<string name="jukebox.back">Back</string>
 	<string name="jukebox.playlist">Playlist</string>
 	<string name="jukebox.title">Jukebox</string>
+	<string name="jukebox.noPlaylistInRandomMode">You cannot display a playlist in random playback mode.</string>
 	<string name="settings.audioPlayer">Jukebox</string>
 	<string name="settings.search">Search</string>
 	<string name="settings.bufferSize">Buffer size</string>
