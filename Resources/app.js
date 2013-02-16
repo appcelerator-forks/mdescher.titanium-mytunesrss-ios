@@ -42,21 +42,33 @@ var GUI = require("lib/GUI");
 
 var WEBSERVER = require("com.0x82.webserver");
 WEBSERVER.disconnectsInBackground = false;
+
 var HTTP_SERVER;
 var HTTP_SERVER_PORT = -1;
-for (i = 1025; i < 65536; i++) {
-	try {
-		HTTP_SERVER = WEBSERVER.startServer({port:i,bonjour:false,requestCallback:function(e) {
-			return {
-				file : getFileForTrackCache(e.path.substr(1))
-			}
-		}});
-		HTTP_SERVER_PORT = i;
-		break; // done
-	} catch (ex) {
-		// ignore and try next port
-	}	
+
+function startHttpServer() {
+	Titanium.API.debug("Starting HTTP server.");
+	for (i = 1025; i < 65536; i++) {
+		try {
+			HTTP_SERVER = WEBSERVER.startServer({port:i,bonjour:false,requestCallback:function(e) {
+				Titanium.API.debug("HTTP server request with path \"" + e.path + "\".");
+				if (e.path.length < 2) {
+					return "OK";
+				}
+				return {
+					file : getFileForTrackCache(e.path.substr(1))
+				}
+			}});
+			Titanium.API.debug("HTTP server listening on port " + i + ".");
+			HTTP_SERVER_PORT = i;
+			break; // done
+		} catch (ex) {
+			// ignore and try next port
+		}	
+	}
 }
+
+startHttpServer();
 
 var STYLE = new GUI.Style();
 
@@ -67,7 +79,27 @@ var KEEP_ALIVE_SOUND = Titanium.Media.createSound({url:"white_noise.wav",volume:
 var view = Titanium.UI.createView({backgroundColor:DARK_GRAY});
 
 var jukebox = new Jukebox();
-Titanium.App.addEventListener("pause", jukebox.onAppPaused);
+Titanium.App.addEventListener("pause", function() {
+	Titanium.API.debug("Application event \"pause\".");
+	jukebox.onAppPaused();
+});
+Titanium.App.addEventListener("resumed", function() {
+	Titanium.API.debug("Application event \"resumed\".");
+	var httpClient = Titanium.Network.createHTTPClient({
+		onload : function() {
+			Titanium.API.debug("Response from HTTP server: \"" + this.responseText + "\".");
+			if (this.responseText !== "OK") {
+				startHttpServer();
+			}
+		},
+		onerror : function() {
+			Titanium.API.debug("HTTP server error.");
+			startHttpServer();
+		}
+	});
+	httpClient.open("GET", "http://127.0.0.1:" + HTTP_SERVER_PORT)
+	httpClient.send();
+});
 
 var CANCEL_SYNC_AUDIO_TRACKS = false;
 Titanium.App.addEventListener("mytunesrss_sync", function(event) {

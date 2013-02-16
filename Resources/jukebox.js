@@ -387,6 +387,7 @@ function Jukebox() {
 
     this.onAppPaused = function() {
         if (currentPlaylist != undefined && audioPlayer != undefined && audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
+        	Titanium.API.debug("Application paued with audio player active in paused mode: stopping playback.");
         	jukebox.stopPlayback();
         }
     }
