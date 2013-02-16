@@ -6,6 +6,9 @@
     <body>
 
         <release version="2.2 date="2013-xx-xx">
+            <action dev="mdescher" type="fix">
+                Restart HTTP server on application resume event when not responsive anymore.
+            </action>
             <action dev="mdescher" type="add">
                 Added random playback mode in offline mode.
             </action>
