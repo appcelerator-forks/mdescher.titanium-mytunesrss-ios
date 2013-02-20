@@ -5,7 +5,7 @@ function TvShowSeasonsWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
-	var tableView = GUI.createTableView({top:45});
+	var tableView = GUI.createTableView(getAdSpacingStyleIfOnline({top:45}));
 	var buttonBack = GUI.createButton({title:L("tvshow.seasons.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -14,8 +14,8 @@ function TvShowSeasonsWindow(data) {
 	});
 	
 	win.add(GUI.createTopToolbar(L("tvshow.seasons.title"), buttonBack, undefined));
-	
 	win.add(tableView);
+	addIAddIfOnline(win);
 	
 	tableView.addEventListener('click', function(e) {
 		var busyView = createBusyView();

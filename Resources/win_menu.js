@@ -68,7 +68,7 @@ function MenuWindow() {
 		return row;
 	}
 	
-	var tableView = GUI.createTableView({top:90,scrollable:false});
+	var tableView = GUI.createTableView(getAdSpacingStyleIfOnline({top:90,scrollable:false}));
 	
 	var rowPlaylists = createMenuItem(L("menu.playlists"), "images/playlists.png");
 	rowPlaylists.addEventListener('click', function() {
@@ -172,9 +172,7 @@ function MenuWindow() {
 	win.add(GUI.createTopToolbar("MyTunesRSS", buttonLogout, buttonSettings));
 	win.add(searchBar);
 	win.add(tableView);
-	if (!offlineMode) {
-		win.add(Titanium.UI.iOS.createAdView(STYLE.get("iad", {adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,backgroundColor:DARK_GRAY})));
-	}
+	addIAddIfOnline(win);
 	
 	this.open = function() {
 		var rows = new RowArray();

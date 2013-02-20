@@ -5,7 +5,7 @@ function AlbumsWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
-	var tableView = GUI.createTableView({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45});
+	var tableView = GUI.createTableView(getAdSpacingStyleIfOnline({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45}));
 	var buttonBack = GUI.createButton({title:L("albums.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -14,8 +14,8 @@ function AlbumsWindow(data) {
 	});
 	
 	win.add(GUI.createTopToolbar(L("albums.title"), buttonBack, undefined));
-	
 	win.add(tableView);
+	addIAddIfOnline(win);
 	
 	tableView.addEventListener('click', function(e) {
 		var busyView = createBusyView();

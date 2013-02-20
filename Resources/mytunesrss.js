@@ -568,3 +568,17 @@ function showError(options) {
 	}
 	Titanium.UI.createAlertDialog(options).show();
 }
+
+function getAdSpacingStyleIfOnline(options) {
+	if (offlineMode === true) {
+		return options;
+	} else {
+		return STYLE.get("iadSpacing", options);
+	}
+}
+
+function addIAddIfOnline(win) {
+	if (!offlineMode) {
+		win.add(Titanium.UI.iOS.createAdView(STYLE.get("iad", {adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,backgroundColor:DARK_GRAY})));
+	}
+}

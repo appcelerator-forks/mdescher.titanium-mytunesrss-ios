@@ -62,12 +62,12 @@ function Jukebox() {
 	    infoView.add(GUI.createLabel({bottom:7,left:0,right:0,height:24,font:{fontSize:12},text:getDisplayName(track.artist),textAlign:"center",color:"#CCCCCC"}));
 	    win.add(imageView);
 	    win.add(infoView);
-	    progressBar = Titanium.UI.createProgressBar({min:0,max:track.time,value:0,bottom:60,left:60,right:60,height:10});
+	    progressBar = Titanium.UI.createProgressBar(STYLE.get("jukeboxProgressBar", {min:0,max:track.time,value:0}));
 	    win.add(progressBar);
 	    progressBar.show();
-	    timePlayed = GUI.createLabel({bottom:60,left:10,height:10,width:40,font:{fontSize:12},text:'',textAlign:'right',color:'#CCCCCC000000'});
+	    timePlayed = GUI.createLabel(STYLE.get("jukeboxProgressPlayed", {text:""}));
 	    win.add(timePlayed);
-	    timeRemaining = GUI.createLabel({bottom:60,right:10,width:40,height:10,font:{fontSize:12},text:'',color:'#CCCCCC'});
+	    timeRemaining = GUI.createLabel(STYLE.get("jukeboxProgressRemaining", {text:""}));
 	    win.add(timeRemaining);
 	}
 	

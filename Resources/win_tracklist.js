@@ -6,7 +6,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
-	var tableView = GUI.createTableView({top:45});
+	var tableView = GUI.createTableView(getAdSpacingStyleIfOnline({top:45}));
 	var buttonBack = GUI.createButton({title:L("tracklist.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -15,8 +15,8 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	});
 	
 	win.add(GUI.createTopToolbar(L("tracklist.title"), buttonBack, undefined));
-
 	win.add(tableView);
+	addIAddIfOnline(win);
 	
 	var tableData = [];
 	for (var i = 0; i < data.length; i++) {

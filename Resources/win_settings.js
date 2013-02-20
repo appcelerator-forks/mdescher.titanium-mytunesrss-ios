@@ -161,7 +161,8 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	}
 
 	win.add(GUI.createTopToolbar(L("settings.title"), buttonCancel, buttonSave));
-	win.add(GUI.createTableView({data:sections,separatorStyle:Titanium.UI.iPhone.TableViewSeparatorStyle.NONE,top:45,allowsSelection:false}));
+	win.add(GUI.createTableView(getAdSpacingStyleIfOnline({data:sections,separatorStyle:Titanium.UI.iPhone.TableViewSeparatorStyle.NONE,top:45,allowsSelection:false})));
+	addIAddIfOnline(win);
 	
 	/**
 	 * Open the settings window. 
