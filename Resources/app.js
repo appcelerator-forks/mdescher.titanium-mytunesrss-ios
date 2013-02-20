@@ -20,6 +20,10 @@ Titanium.include("win_busy.js");
 
 var DARK_GRAY = "#2A2A2A";
 var LIGHT_GRAY = "#3A3A3A";
+// db versions
+// 1 = initial
+// 2 = added disc_number column
+var DB_VERSION = 2;
 
 function RowArray() {
 	var rows = [];
@@ -119,7 +123,7 @@ Titanium.App.addEventListener("mytunesrss_sync", function(event) {
 			db = Titanium.Database.open("OfflineTracks");
 			db.execute("DELETE FROM track WHERE id = ?", event.data[event.index].id);
 			db.execute(
-				"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+				"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, disc_number, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 				event.data[event.index].id,
 				event.data[event.index].name,
 				event.data[event.index].album,
@@ -130,6 +134,7 @@ Titanium.App.addEventListener("mytunesrss_sync", function(event) {
 				event.data[event.index].protected,
 				event.data[event.index].mediaType,
 				event.data[event.index].time,
+				event.data[event.index].discNumber,
 				event.data[event.index].trackNumber
 			);
 			db.close();
@@ -150,7 +155,20 @@ var offlineMode;
 
 db = Titanium.Database.open("OfflineTracks");
 db.file.setRemoteBackup(false);
-db.execute("CREATE TABLE IF NOT EXISTS track (id TEXT, name TEXT, album TEXT, artist TEXT, genre TEXT, album_artist TEXT, image_hash TEXT, protected INTEGER, media_type TEXT, time INTEGER, track_number INTEGER)");
+var dbVersion = Titanium.App.Properties.getInt("offlineTracksDbVersion", 1);
+Titanium.API.debug("Found offline tracks database version " + dbVersion + ".");
+if (dbVersion < DB_VERSION) {
+	try {
+		Titanium.API.debug("Trying to drop offline tracks table since we need version " + DB_VERSION + ".");
+		db.execute("DROP TABLE track");
+		showError({message:L("offlineDatabaseDropped"),buttonNames:['Ok']});
+	} catch (e) {
+		Titanium.API.warn("Could not drop offline tracks table. It probably did not exist.");
+	}
+}
+Titanium.API.debug("Trying to create offline tracks table version " + DB_VERSION + " if it does not exist.");
+db.execute("CREATE TABLE IF NOT EXISTS track (id TEXT, name TEXT, album TEXT, artist TEXT, genre TEXT, album_artist TEXT, image_hash TEXT, protected INTEGER, media_type TEXT, time INTEGER, disc_number INTEGER, track_number INTEGER)");
 db.close();
+Titanium.App.Properties.setInt("offlineTracksDbVersion", DB_VERSION)
 
 new LoginWindow().open();

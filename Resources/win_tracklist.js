@@ -83,7 +83,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 				    		db = Titanium.Database.open("OfflineTracks");
 							db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
 							db.execute(
-								"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+								"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, disc_number, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
 								data[e.index].id,
 								data[e.index].name,
 								data[e.index].album,
@@ -94,6 +94,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 								data[e.index].protected,
 								data[e.index].mediaType,
 								data[e.index].time,
+								data[e.index].discNumber,
 								data[e.index].trackNumber
 							);
 							db.close();

@@ -87,4 +87,5 @@
 	<string name="settings.invalidSearchAccuracy">The result accuracy must be a value from 0 to 100.</string>
 	<string name="settings.bufferSizeHint">Size in bytes</string>
 	<string name="busy.cancel">Cancel</string>
+	<string name="offlineDatabaseDropped">The tracks downloaded to the device had to be removed since the new app version is not compatible with the old one.</string>
 </resources>

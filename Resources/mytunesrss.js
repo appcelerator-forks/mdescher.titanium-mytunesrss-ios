@@ -9,7 +9,7 @@ var MININUM_SERVER_VERSION = {
 };
 var TRACKROW_BG_LOCAL = "#CCFFCC";
 var TRACKROW_BG_REMOTE = "white";
-var TRACK_ATTRIBUTES = "attr.incl=id&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected&attr.incl=album&attr.incl=albumArtist&attr.incl=genre&attr.incl=trackNumber";
+var TRACK_ATTRIBUTES = "attr.incl=id&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected&attr.incl=album&attr.incl=albumArtist&attr.incl=genre&attr.incl=discNumber&attr.incl=trackNumber";
 
 function getServerBasedCacheDir() {
 	var dir = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationCacheDirectory);
@@ -242,7 +242,7 @@ function loadAndDisplayPlaylists(parent) {
 
 function loadAndDisplayOfflineTracks(parent, album, albumArtist) {
 	db = Titanium.Database.open("OfflineTracks");
-	rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name IS NOT NULL AND LOWER(album) = LOWER(?) AND LOWER(album_artist) = LOWER(?) ORDER BY track_number", album, albumArtist);
+	rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name IS NOT NULL AND LOWER(album) = LOWER(?) AND LOWER(album_artist) = LOWER(?) ORDER BY disc_number, track_number", album, albumArtist);
 	result = [];
 	while (rs.isValidRow()) {
 		result.push(mapTrack(rs));
@@ -362,7 +362,7 @@ function searchAndDisplayTracks(parent, searchTerm) {
 	if (offlineMode) {
 		db = Titanium.Database.open("OfflineTracks");
 		like = "%" + searchTerm + "%";
-		rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name LIKE ? OR album LIKE ? OR album_artist LIKE ? OR artist LIKE ? OR genre LIKE ? ORDER BY album, album_artist, track_number", like, like, like, like, like);
+		rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name LIKE ? OR album LIKE ? OR album_artist LIKE ? OR artist LIKE ? OR genre LIKE ? ORDER BY album, album_artist, disc_number, track_number", like, like, like, like, like);
 		result = [];
 		while (rs.isValidRow()) {
 			result.push({
@@ -570,15 +570,15 @@ function showError(options) {
 }
 
 function getAdSpacingStyleIfOnline(options) {
-	if (offlineMode === true) {
-		return options;
-	} else {
+	if (Titanium.Network.online) {
 		return STYLE.get("iadSpacing", options);
+	} else {
+		return options;
 	}
 }
 
 function addIAddIfOnline(win) {
-	if (!offlineMode) {
+	if (Titanium.Network.online) {
 		win.add(Titanium.UI.iOS.createAdView(STYLE.get("iad", {adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,backgroundColor:DARK_GRAY})));
 	}
 }
