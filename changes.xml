@@ -7,7 +7,10 @@
 
         <release version="2.2 date="2013-xx-xx">
             <action dev="mdescher" type="add">
-                Added iAd to all views except for jukebox and busy.
+                Updated database to version 2 adding the disc_number column for correct track sorting.
+            </action>
+            <action dev="mdescher" type="add">
+                Added iAd to all online and offline mode views except for jukebox and busy.
             </action>
             <action dev="mdescher" type="fix">
                 Restart HTTP server on application resume event when not responsive anymore.
