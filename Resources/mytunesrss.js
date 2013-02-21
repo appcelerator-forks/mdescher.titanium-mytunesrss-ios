@@ -470,23 +470,18 @@ function getImageCacheFile(cacheObjectId) {
 }
 
 function createCachedImageView(options) {
-	if (Titanium.App.Properties.getBool("imageCacheEnabled", true)) {
-		var file = getImageCacheFile(options.cacheObjectId);
-		delete(options.cacheObjectId);
-		if (file.exists()) {
-			options.image = file.getNativePath();
-			return Titanium.UI.createImageView(options);
-		} else if (options.headless) {
-			file.write();
-		} else {
-			var imageView = Titanium.UI.createImageView(options);
-			imageView.addEventListener("load", function(e) {
-			    file.write(e.source.toImage());
-			});
-			return imageView;
-		}
+	var file = getImageCacheFile(options.cacheObjectId);
+	delete(options.cacheObjectId);
+	if (file.exists()) {
+		options.image = file.getNativePath();
+		return Titanium.UI.createImageView(options);
+	} else if (Titanium.App.Properties.getBool("imageCacheEnabled", true)) {
+		var imageView = Titanium.UI.createImageView(options);
+		imageView.addEventListener("load", function(e) {
+		    file.write(e.source.toImage());
+		});
+		return imageView;
 	} else {
-		delete(options.cacheObjectId);
 		return Titanium.UI.createImageView(options);
 	}
 }
