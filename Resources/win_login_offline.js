@@ -13,6 +13,7 @@ function OfflineLoginWindow(parent) {
 	buttonLogin.addEventListener('click', function() {
 		offlineMode = true;
 		new MenuWindow().open();
+		Titanium.Analytics.featureEvent("login.offline");
 	});
 
 	this.getWindow = function() {

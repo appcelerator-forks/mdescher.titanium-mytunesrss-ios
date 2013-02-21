@@ -145,9 +145,14 @@ function MenuWindow() {
 		var busyView = createBusyView();
 		win.add(busyView);
         try {
-	        jukebox.setPlaylist([getRandomOfflineTrack()], 0, true);
-	        jukebox.open(self);
-	        win.close();
+        	var track = getRandomOfflineTrack();
+        	if (track != undefined) {
+		        jukebox.setPlaylist([track], 0, true);
+		        jukebox.open(self);
+		        win.close();
+        	} else {
+        		showError({message:L("tracks.offline.noneFound"),buttonNames:['Ok']});
+        	}
         } finally {
 	        win.remove(busyView);
         }

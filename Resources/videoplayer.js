@@ -41,6 +41,7 @@ function VideoPlayerWindow(videoUrl) {
 			myParent = parent;
 		}
 		win.open();
+		Titanium.Analytics.featureEvent("videoplayer.open");
 	}
 
 }

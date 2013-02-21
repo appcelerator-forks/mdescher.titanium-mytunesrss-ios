@@ -34,6 +34,7 @@ function OnlineLoginWindow(parent) {
 				    connectedUsername = inputUsername.value;
 				    connectedPassword = inputPassword.value;
 				    new MenuWindow().open();
+				    Titanium.Analytics.featureEvent("login.online");
 			    } else {
 				    showError({message:response.result,buttonNames:['Ok']});
 			    }

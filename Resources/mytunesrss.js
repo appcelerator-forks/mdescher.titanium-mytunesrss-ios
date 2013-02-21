@@ -119,7 +119,7 @@ function getRandomOfflineTrack() {
 		var rs = db.execute("SELECT count(id) AS track_count FROM TRACK");
 		var offset = Math.floor(Math.random() * rs.fieldByName("track_count"));
 		rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track LIMIT 1 OFFSET ?", offset);
-		return mapTrack(rs);
+		return rs.isValidRow() ? mapTrack(rs) : undefined;
 	} finally {
 		db.close();
 	}

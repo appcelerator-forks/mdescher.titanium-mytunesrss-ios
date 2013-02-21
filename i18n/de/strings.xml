@@ -41,7 +41,7 @@
 	<string name="menu.genres">Genre</string>
 	<string name="menu.movies">Filme</string>
 	<string name="menu.tvshows">TV Serien</string>
-	<string name="menu.random">Zufällige Wiedergabe</string>
+	<string name="menu.random">Shuffle</string>
 	<string name="menu.currentlyPlaying">Aktueller Titel</string>
 	<string name="menu.currentlyPlaying.none">Es gibt keine aktive Playlist.</string>
 	<string name="albums.back">Zurück</string>

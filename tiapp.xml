@@ -18,7 +18,7 @@
     <icon>appicon.png</icon>
     <fullscreen>false</fullscreen>
     <navbar-hidden>false</navbar-hidden>
-    <analytics>false</analytics>
+    <analytics>true</analytics>
     <guid>5d7f6b5d-f3ff-4590-9c82-ee0e74ee4a65</guid>
     <ios>
         <min-ios-ver>4.3</min-ios-ver>

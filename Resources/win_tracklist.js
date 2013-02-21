@@ -69,6 +69,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 					db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
 					db.close();
 	    			tableView.data[0].rows[e.index].getChildren()[2].setImage("images/download.png");
+	    			Titanium.Analytics.featureEvent("track.offline.delete");
 		    	} else {
 					var url = data[e.index].playbackUri;
 					var tcParam = getTcParam();
@@ -99,6 +100,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 							);
 							db.close();
 							tableView.data[0].rows[e.index].getChildren()[2].setImage("images/delete.png");
+							Titanium.Analytics.featureEvent("track.offline.download");
 						}
 						Titanium.App.setIdleTimerDisabled(false);
 						busyWindow.close();		    				

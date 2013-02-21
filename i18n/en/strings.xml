@@ -41,7 +41,7 @@
 	<string name="menu.genres">Genres</string>
 	<string name="menu.movies">Movies</string>
 	<string name="menu.tvshows">TV Shows</string>
-	<string name="menu.random">Random playback</string>
+	<string name="menu.random">Shuffle</string>
 	<string name="menu.currentlyPlaying">Currently playing</string>
 	<string name="menu.currentlyPlaying.none">There is no active playlist.</string>
 	<string name="albums.back">Back</string>

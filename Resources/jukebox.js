@@ -238,6 +238,7 @@ function Jukebox() {
 	function setTrack() {
 	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].id, currentPlaylist[currentPlaylistIndex].playbackUri);
 	    setTrackInformation(currentPlaylist[currentPlaylistIndex]);
+	    Titanium.Analytics.featureEvent("jukebox.track");
 	}
 
 	function isPlayingOrBuffering() {
