@@ -72,11 +72,15 @@ function Jukebox() {
 	}
 	
 	function setProgress(progress) {
-	    if (progressBar) {
+	    if (progressBar != undefined) {
 	        progressBar.value = Math.floor(progress / 1000);
 	    }
-	    timePlayed.text = getDisplayTime(progress / 1000);
-	    timeRemaining.text = myTrack.time > Math.floor(progress / 1000) ? getDisplayTime(myTrack.time - Math.floor(progress / 1000)) : "0:00";
+	    if (timePlayed != undefined) {
+		    timePlayed.text = getDisplayTime(progress / 1000);
+	    }
+	    if (timeRemaining != undefined) {
+		    timeRemaining.text = myTrack.time > Math.floor(progress / 1000) ? getDisplayTime(myTrack.time - Math.floor(progress / 1000)) : "0:00";
+	    }
 	}
 
 	function addTouchListener(control) {
@@ -222,7 +226,7 @@ function Jukebox() {
 	function setPlayerUrl(id, url) {
 		fastForwardOnStopped = false;
 		var tcParam = getTcParam();
-		audioPlayer.stop();
+		setProgress(0);
 	    var localFile = getCachedTrackFile(id);
 	    if (localFile != undefined) {
 			audioPlayer.setUrl("http://localhost:" + HTTP_SERVER_PORT + "/" + id);
@@ -238,7 +242,7 @@ function Jukebox() {
 	function setTrack() {
 	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].id, currentPlaylist[currentPlaylistIndex].playbackUri);
 	    setTrackInformation(currentPlaylist[currentPlaylistIndex]);
-	    Titanium.Analytics.featureEvent("jukebox.track");
+	    Titanium.Analytics.featureEvent("jukebox.setTrack");
 	}
 
 	function isPlayingOrBuffering() {
@@ -248,6 +252,7 @@ function Jukebox() {
 
 	function playTrack() {
 	    if (!isPlayingOrBuffering()) {
+	    	setTrack();
 	        audioPlayer.start();
 	    }
 	}
@@ -384,6 +389,7 @@ function Jukebox() {
 	this.stopPlayback = function() {
 		fastForwardOnStopped = false;
 	    audioPlayer.stop();
+	    setProgress(0);
 	}
 
     this.onAppPaused = function() {

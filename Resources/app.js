@@ -48,11 +48,11 @@ var WEBSERVER = require("com.0x82.webserver");
 WEBSERVER.disconnectsInBackground = false;
 
 var HTTP_SERVER;
-var HTTP_SERVER_PORT = 1024;
+var HTTP_SERVER_PORT = -1;
 
 function startHttpServer() {
 	Titanium.API.debug("Starting HTTP server.");
-	for (i = HTTP_SERVER_PORT + 1; i < 65536; i++) {
+	for (i = 1025; i < 65536; i++) {
 		try {
 			HTTP_SERVER = WEBSERVER.startServer({port:i,bonjour:false,requestCallback:function(e) {
 				Titanium.API.debug("HTTP server request with path \"" + e.path + "\".");
@@ -65,7 +65,7 @@ function startHttpServer() {
 			}});
 			Titanium.API.debug("HTTP server listening on port " + i + ".");
 			HTTP_SERVER_PORT = i;
-			break; // done
+			return; // done
 		} catch (ex) {
 			// ignore and try next port
 		}	

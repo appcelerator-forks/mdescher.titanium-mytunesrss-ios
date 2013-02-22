@@ -56,7 +56,7 @@ function PlaylistsWindow(data) {
 				    	removeObsoleteTracks(tracks);
 					    win.remove(busyView);
 					    if (tracks != undefined && tracks.length > 0) {
-					    	Titanium.Analytics.featureEvent("playlist.sync");
+					    	Titanium.Analytics.featureEvent("sync.playlist");
 							CANCEL_SYNC_AUDIO_TRACKS = false;
 				    		var busyWindow = new BusyWindow(L("playlists.busy.syncing"), displayName, function() {
 				    			CANCEL_SYNC_AUDIO_TRACKS = true;
