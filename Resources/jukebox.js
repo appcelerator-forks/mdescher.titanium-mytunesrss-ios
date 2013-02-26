@@ -224,6 +224,10 @@ function Jukebox() {
 	
 	function setPlayerUrl(id, url) {
 		fastForwardOnStopped = false;
+		if (isPlayingOrBuffering() || audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
+			Titanium.API.debug("[setPlayerUrl] Stopping audio player.");
+			audioPlayer.stop();
+		}
 		var tcParam = getTcParam();
 		setProgress(0);
 	    var localFile = getCachedTrackFile(id);
