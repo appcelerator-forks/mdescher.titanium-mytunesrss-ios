@@ -200,8 +200,7 @@ function Jukebox() {
 	var changeEventListener = function(e) {
 		if (e.state === audioPlayer.STATE_STOPPED) {
 			if (fastForwardOnStopped === true) {
-		        fastForward();
-		        playTrack();
+		        fastForward(true);
 			} else {
 		        KEEP_ALIVE_SOUND.stop();
 				controlPlayPause.setImage("images/play.png");
@@ -229,11 +228,14 @@ function Jukebox() {
 		setProgress(0);
 	    var localFile = getCachedTrackFile(id);
 	    if (localFile != undefined) {
+	    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + "http://localhost:" + HTTP_SERVER_PORT + "/" + id + "\".");
 			audioPlayer.setUrl("http://localhost:" + HTTP_SERVER_PORT + "/" + id);
 	    } else {
 		    if (tcParam != undefined) {
+		    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + url + '/' + tcParam + "\".");
 		        audioPlayer.setUrl(url + '/' + tcParam);
 		    } else {
+		    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + url + "\".");
 		        audioPlayer.setUrl(url);
 		    }
 	    }
@@ -253,6 +255,7 @@ function Jukebox() {
 	function playTrack() {
 	    if (!isPlayingOrBuffering()) {
 	    	setTrack();
+	    	Titanium.API.debug("[playTrack] Starting audio player.");
 	        audioPlayer.start();
 	    }
 	}
@@ -261,11 +264,16 @@ function Jukebox() {
 	
 	function createPlayer() {
 		if (audioPlayer != undefined) {
+			Titanium.API.debug("[createPlayer] Removing progress listener from audio player.");
 			audioPlayer.removeEventListener("progress", progressEventListener);
+			Titanium.API.debug("[createPlayer] Removing change listener from audio player.");
 			audioPlayer.removeEventListener("change", changeEventListener);
 		}
+		Titanium.API.debug("[createPlayer] Creating audio player.");
 	    audioPlayer = Titanium.Media.createAudioPlayer({allowBackground:true, bufferSize:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)});
+	    Titanium.API.debug("[createPlayer] Adding progress listener to audio player.");
 	    audioPlayer.addEventListener("progress", progressEventListener);
+	    Titanium.API.debug("[createPlayer] Adding change listener to audio player.");
 	    audioPlayer.addEventListener("change", changeEventListener);
 	}
 	
@@ -275,6 +283,7 @@ function Jukebox() {
 
 	this.setPlaylist = function(playlist, index, randomOfflineMode) {
 		fastForwardOnStopped = false;
+		Titanium.API.debug("[this.setPlaylist] Stopping audio player.");
 	    audioPlayer.stop();
 	    currentPlaylist = playlist;
 	    currentPlaylistIndex = index;
@@ -313,20 +322,22 @@ function Jukebox() {
 	    }
 	};
 		
-	function fastForward() {
+	function fastForward(forcePlayAfterFastforward) {
 		fastForwardOnStopped = false;
 		var playing = isPlayingOrBuffering();
 	    if (currentPlaylistIndex + 1 < currentPlaylist.length) {
 	        currentPlaylistIndex++;
 	        setTrack();
-	        if (playing === true) {
+	        if (playing === true || forcePlayAfterFastforward === true) {
+	        	Titanium.API.debug("Playing on fast-forward [playing=" + playing + ", forcePlayAfterFastforward=" + forcePlayAfterFastforward + "].");
 	        	playTrack();
 	        }
 	    } else if (myRandomOfflineMode === true) {
 	    	currentPlaylist = [getRandomOfflineTrack()];
 	    	currentPlaylistIndex = 0;
 	        setTrack();
-	        if (playing === true) {
+	        if (playing === true || forcePlayAfterFastforward === true) {
+	        	Titanium.API.debug("Playing on fast-forward [playing=" + playing + ", forcePlayAfterFastforward=" + forcePlayAfterFastforward + "].");
 	        	playTrack();
 	        }
 	    }
@@ -334,8 +345,10 @@ function Jukebox() {
 	
 	function playPause() {
 	    if (isPlayingOrBuffering()) {
+	    	Titanium.API.debug("[playPause] Pausing audio player.");
 	        audioPlayer.pause();
 	    } else {
+	    	Titanium.API.debug("[playPause] Starting audio player.");
 		    audioPlayer.start();
 	    }
 	};
@@ -346,6 +359,7 @@ function Jukebox() {
 		} else {
 		    fastForwardOnStopped = false;
 		    var playing = isPlayingOrBuffering();
+		    Titanium.API.debug("[shuffle] Stopping audio player.");
 		    audioPlayer.stop();
 		    var tmp, rand;
 		    for (var i = 0; i < currentPlaylist.length; i++){
@@ -366,8 +380,10 @@ function Jukebox() {
 		if (audioPlayer != undefined) {
 			fastForwardOnStopped = false;
 			if (isPlayingOrBuffering() || audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
+				Titanium.API.debug("[this.reset] Stopping audio player.");
 				audioPlayer.stop();
 			}
+			Titanium.API.debug("[this.reset] Setting audio player URL \"\".");
 		    audioPlayer.setUrl("");
             currentPlaylist = undefined;
 		    KEEP_ALIVE_SOUND.stop();
@@ -378,6 +394,7 @@ function Jukebox() {
 		if (audioPlayer != undefined) {
 			fastForwardOnStopped = false;
 			if (isPlayingOrBuffering() || audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
+				Titanium.API.debug("[this.restart] Stopping audio player.");
 				audioPlayer.stop();
 			}
             currentPlaylist = undefined;
@@ -388,13 +405,14 @@ function Jukebox() {
 	
 	this.stopPlayback = function() {
 		fastForwardOnStopped = false;
+		Titanium.API.debug("[this.stopPlayback] Stopping audio player.");
 	    audioPlayer.stop();
 	    setProgress(0);
 	}
 
     this.onAppPaused = function() {
         if (currentPlaylist != undefined && audioPlayer != undefined && audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
-        	Titanium.API.debug("Application paued with audio player active in paused mode: stopping playback.");
+        	Titanium.API.debug("[this.onAppPaused] Application paued with audio player active in paused mode: stopping playback.");
         	jukebox.stopPlayback();
         }
     }
