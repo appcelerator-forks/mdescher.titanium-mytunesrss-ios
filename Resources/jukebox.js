@@ -95,7 +95,7 @@ function Jukebox() {
 	    });
 	}
 	
-	var actIndicatorView = Titanium.UI.createView({top:45,left:0,bottom:38,right:0,backgroundColor:'#000000',opacity:0.8,visible:false});
+	var actIndicatorView = Titanium.UI.createView(STYLE.get("jukeboxActivityIndicator"));
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	
 	function showJukeboxActivityView() {
@@ -200,13 +200,15 @@ function Jukebox() {
 	var changeEventListener = function(e) {
 		if (e.state === audioPlayer.STATE_STOPPED) {
 			if (fastForwardOnStopped === true) {
+				fastForwardOnStopped = false;
+				audioPlayer.stop();
 		        fastForward(true);
 			} else {
 		        KEEP_ALIVE_SOUND.stop();
 				controlPlayPause.setImage("images/play.png");
 			}
 	   	}
-		if (e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED || e.state == audioPlayer.STATE_STOPPING) {
+		if (e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED) {
 	   		controlPlayPause.setImage("images/play.png");
 	   	} else if (e.state === audioPlayer.STATE_PLAYING || e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE || e.state === audioPlayer.STATE_STARTING) {
 	   		KEEP_ALIVE_SOUND.play();
@@ -223,11 +225,9 @@ function Jukebox() {
 	var localFileServerSocket;
 	
 	function setPlayerUrl(id, url) {
+		Titanium.API.debug("[setPlayerUrl] Stopping audio player.");
 		fastForwardOnStopped = false;
-		if (isPlayingOrBuffering() || audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
-			Titanium.API.debug("[setPlayerUrl] Stopping audio player.");
-			audioPlayer.stop();
-		}
+		audioPlayer.stop();
 		var tcParam = getTcParam();
 		setProgress(0);
 	    var localFile = getCachedTrackFile(id);
@@ -257,11 +257,11 @@ function Jukebox() {
 	}
 
 	function playTrack() {
-	    if (!isPlayingOrBuffering()) {
+	    //if (!isPlayingOrBuffering()) {
 	    	setTrack();
 	    	Titanium.API.debug("[playTrack] Starting audio player.");
 	        audioPlayer.start();
-	    }
+	    //}
 	}
 	
 	var fastForwardOnStopped = true;
@@ -286,8 +286,8 @@ function Jukebox() {
 	}
 
 	this.setPlaylist = function(playlist, index, randomOfflineMode) {
-		fastForwardOnStopped = false;
 		Titanium.API.debug("[this.setPlaylist] Stopping audio player.");
+		fastForwardOnStopped = false;
 	    audioPlayer.stop();
 	    currentPlaylist = playlist;
 	    currentPlaylistIndex = index;
@@ -300,7 +300,6 @@ function Jukebox() {
 	            }
 	        }
 	    }
-	    setTrack();
 	    if (randomOfflineMode === true) {
 	    	myRandomOfflineMode = true;
 	    } else {
@@ -313,36 +312,39 @@ function Jukebox() {
 		fastForwardOnStopped = false;
 		var playing = isPlayingOrBuffering();
 	    if (audioPlayer.progress > 2000 || myRandomOfflineMode === true) {
-	        setTrack();
 	        if (playing === true) {
 	        	playTrack();
+	        } else {
+	        	setTrack();
 	        }
 	    } else if (currentPlaylistIndex > 0) {
 	        currentPlaylistIndex--;
-	        setTrack();
 	        if (playing === true) {
 	        	playTrack();
+	        } else {
+	        	setTrack();
 	        }
 	    }
 	};
 		
 	function fastForward(forcePlayAfterFastforward) {
-		fastForwardOnStopped = false;
 		var playing = isPlayingOrBuffering();
 	    if (currentPlaylistIndex + 1 < currentPlaylist.length) {
 	        currentPlaylistIndex++;
-	        setTrack();
 	        if (playing === true || forcePlayAfterFastforward === true) {
 	        	Titanium.API.debug("Playing on fast-forward [playing=" + playing + ", forcePlayAfterFastforward=" + forcePlayAfterFastforward + "].");
 	        	playTrack();
+	        } else {
+	        	setTrack();
 	        }
 	    } else if (myRandomOfflineMode === true) {
 	    	currentPlaylist = [getRandomOfflineTrack()];
 	    	currentPlaylistIndex = 0;
-	        setTrack();
 	        if (playing === true || forcePlayAfterFastforward === true) {
 	        	Titanium.API.debug("Playing on fast-forward [playing=" + playing + ", forcePlayAfterFastforward=" + forcePlayAfterFastforward + "].");
 	        	playTrack();
+	        } else {
+	        	setTrack();
 	        }
 	    }
 	};
@@ -361,9 +363,9 @@ function Jukebox() {
 		if (myRandomOfflineMode === true) {
 			fastForward();
 		} else {
-		    fastForwardOnStopped = false;
 		    var playing = isPlayingOrBuffering();
 		    Titanium.API.debug("[shuffle] Stopping audio player.");
+		    fastForwardOnStopped = false;
 		    audioPlayer.stop();
 		    var tmp, rand;
 		    for (var i = 0; i < currentPlaylist.length; i++){
@@ -373,20 +375,19 @@ function Jukebox() {
 		      currentPlaylist[rand] = tmp;
 		    }
 		    currentPlaylistIndex = 0;
-		    setTrack();
 		    if (playing) {
 		        playTrack();
+		    } else {
+		    	setTrack();
 		    }
 		}
 	};
 	
 	this.reset = function() {
 		if (audioPlayer != undefined) {
+			Titanium.API.debug("[this.reset] Stopping audio player.");
 			fastForwardOnStopped = false;
-			if (isPlayingOrBuffering() || audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
-				Titanium.API.debug("[this.reset] Stopping audio player.");
-				audioPlayer.stop();
-			}
+			audioPlayer.stop();
 			Titanium.API.debug("[this.reset] Setting audio player URL \"\" (state=" + audioPlayer.getState() + ").");
 		    audioPlayer.setUrl("");
             currentPlaylist = undefined;
@@ -396,11 +397,9 @@ function Jukebox() {
 
 	this.restart = function() {
 		if (audioPlayer != undefined) {
+			Titanium.API.debug("[this.restart] Stopping audio player.");
 			fastForwardOnStopped = false;
-			if (isPlayingOrBuffering() || audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
-				Titanium.API.debug("[this.restart] Stopping audio player.");
-				audioPlayer.stop();
-			}
+			audioPlayer.stop();
             currentPlaylist = undefined;
 		    KEEP_ALIVE_SOUND.stop();
 		    createPlayer();
@@ -408,8 +407,8 @@ function Jukebox() {
 	};
 	
 	this.stopPlayback = function() {
-		fastForwardOnStopped = false;
 		Titanium.API.debug("[this.stopPlayback] Stopping audio player.");
+		fastForwardOnStopped = false;
 	    audioPlayer.stop();
 	    setProgress(0);
 	}

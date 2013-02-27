@@ -338,5 +338,15 @@
 			"fontSize" : 12
 		},
 		"color" : "#CCCCCC"
+	},
+	
+	"jukeboxActivityIndicator" : {
+		"top" : 45,
+		"left" : 0,
+		"bottom" : 38,
+		"right" : 0,
+		"backgroundColor" : "#000000",
+		"opacity" : 0.8,
+		"visible" : false
 	}
 }
