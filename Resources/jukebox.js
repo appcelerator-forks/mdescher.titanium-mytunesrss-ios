@@ -232,14 +232,14 @@ function Jukebox() {
 		setProgress(0);
 	    var localFile = getCachedTrackFile(id);
 	    if (localFile != undefined) {
-	    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + "http://localhost:" + HTTP_SERVER_PORT + "/" + id + "\".");
+	    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + "http://localhost:" + HTTP_SERVER_PORT + "/" + id + "\" (state=" + audioPlayer.getState() + ").");
 			audioPlayer.setUrl("http://localhost:" + HTTP_SERVER_PORT + "/" + id);
 	    } else {
 		    if (tcParam != undefined) {
-		    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + url + '/' + tcParam + "\".");
+		    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + url + '/' + tcParam + "\" (state=" + audioPlayer.getState() + ").");
 		        audioPlayer.setUrl(url + '/' + tcParam);
 		    } else {
-		    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + url + "\".");
+		    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + url + "\" (state=" + audioPlayer.getState() + ").");
 		        audioPlayer.setUrl(url);
 		    }
 	    }
@@ -387,7 +387,7 @@ function Jukebox() {
 				Titanium.API.debug("[this.reset] Stopping audio player.");
 				audioPlayer.stop();
 			}
-			Titanium.API.debug("[this.reset] Setting audio player URL \"\".");
+			Titanium.API.debug("[this.reset] Setting audio player URL \"\" (state=" + audioPlayer.getState() + ").");
 		    audioPlayer.setUrl("");
             currentPlaylist = undefined;
 		    KEEP_ALIVE_SOUND.stop();
