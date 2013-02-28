@@ -97,6 +97,10 @@ function Jukebox() {
 	
 	var actIndicatorView = Titanium.UI.createView(STYLE.get("jukeboxActivityIndicator"));
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
+
+	var bugIndicatorView = Titanium.UI.createView(STYLE.get("jukeboxActivityIndicator", {bottom:0}));
+	bugIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
+	bugIndicatorView.add(Titanium.UI.createLabel({top:70,left:20,right:20,text:L("jukeboxBugText"),color:"#FFFFFF",textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER}));
 	
 	function showJukeboxActivityView() {
 	    if (!actIndicatorView.visible) {
@@ -112,6 +116,20 @@ function Jukebox() {
 	    }
 	};
 	
+	function showBugActivityView() {
+	    if (!bugIndicatorView.visible) {
+	        win.add(bugIndicatorView);
+	        bugIndicatorView.show();
+	    }
+	};
+	
+	function hideBugActivityView() {
+	    if (bugIndicatorView.visible) {
+	        bugIndicatorView.hide();
+	        win.remove(bugIndicatorView);
+	    }
+	};
+
 	var buttonBack = GUI.createButton({title:L("jukebox.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	var buttonPlaylist = GUI.createButton({title:L("jukebox.playlist"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
@@ -215,6 +233,13 @@ function Jukebox() {
         	fastForwardOnStopped = true;
         	controlPlayPause.setImage("images/pause.png");
         }
+        if (Titanium.Platform.version === "6.1") {
+			if (e.state === audioPlayer.STATE_STOPPING) {
+				showBugActivityView();       
+	        } else {
+	       		hideBugActivityView();
+	        }
+        }
 	    if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
             showJukeboxActivityView();
         } else {
@@ -253,15 +278,13 @@ function Jukebox() {
 
 	function isPlayingOrBuffering() {
 		var state = audioPlayer.getState();
-		return state === audioPlayer.STATE_PLAYING || state === audioPlayer.STATE_BUFFERING || state === audioPlayer.STATE_WAITING_FOR_DATA || state === audioPlayer.STATE_WAITING_FOR_QUEUE || state === audioPlayer.STATE_STARTING;
+		return state === audioPlayer.STATE_PLAYING || state === audioPlayer.STATE_BUFFERING || state === audioPlayer.STATE_WAITING_FOR_DATA || state === audioPlayer.STATE_WAITING_FOR_QUEUE || state === audioPlayer.STATE_STARTING || state === audioPlayer.STATE_STOPPING;
 	}
 
 	function playTrack() {
-	    //if (!isPlayingOrBuffering()) {
-	    	setTrack();
-	    	Titanium.API.debug("[playTrack] Starting audio player.");
-	        audioPlayer.start();
-	    //}
+    	setTrack();
+    	Titanium.API.debug("[playTrack] Starting audio player.");
+        audioPlayer.start();
 	}
 	
 	var fastForwardOnStopped = true;
@@ -283,6 +306,10 @@ function Jukebox() {
 	
 	this.isActive = function() {
 		return currentPlaylist != undefined && audioPlayer != undefined;
+	}
+	
+	this.isPlaying = function() {
+		return isPlayingOrBuffering();
 	}
 
 	this.setPlaylist = function(playlist, index, randomOfflineMode) {

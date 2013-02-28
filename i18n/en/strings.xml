@@ -88,4 +88,6 @@
 	<string name="settings.bufferSizeHint">Size in bytes</string>
 	<string name="busy.cancel">Cancel</string>
 	<string name="offlineDatabaseDropped">The tracks downloaded to the device had to be removed since the new app version is not compatible with the old one.</string>
+	<string name="jukeboxBugText">Due to a problem with iOS 6.1 the controls are disabled at the end of a track.</string>
+	<string name="logout.ios61bug">Due to a problem with iOS 6.1 you have to stop the audio playback first.</string>
 </resources>
