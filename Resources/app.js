@@ -18,6 +18,8 @@ Titanium.include("win_movies.js");
 Titanium.include("win_appinfo.js");
 Titanium.include("win_busy.js");
 
+Titanium.API.debug("Platform version: \"" + Titanium.Platform.version + "\".");
+
 var DARK_GRAY = "#2A2A2A";
 var LIGHT_GRAY = "#3A3A3A";
 // db versions

@@ -18,6 +18,9 @@ function MoviesWindow(data) {
 	addIAddIfOnline(win);
 	
 	tableView.addEventListener('click', function(e) {
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
         jukebox.reset();
         var url = e.rowData.playbackUri;
         var tcParam = getTcParam();

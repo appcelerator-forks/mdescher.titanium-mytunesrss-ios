@@ -44,7 +44,9 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		}
 	    if (bufferSizeInput.value != Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)) {    	
 	        Titanium.App.Properties.setInt('audioBufferSize', bufferSizeInput.value);
-	        jukebox.restart();
+			if (!jukebox.isIos61BugPhase(true)) {
+				jukebox.restart();
+			}	        
 	    }
 	    if (!offlineMode) {
 			if (searchAccuracyInput.value < 0 || searchAccuracyInput.value > 100) {

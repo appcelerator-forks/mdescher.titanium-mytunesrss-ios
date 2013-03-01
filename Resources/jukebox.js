@@ -98,10 +98,6 @@ function Jukebox() {
 	var actIndicatorView = Titanium.UI.createView(STYLE.get("jukeboxActivityIndicator"));
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 
-	var bugIndicatorView = Titanium.UI.createView(STYLE.get("jukeboxActivityIndicator", {bottom:0}));
-	bugIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
-	bugIndicatorView.add(Titanium.UI.createLabel({top:70,left:20,right:20,text:L("jukeboxBugText"),color:"#FFFFFF",textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER}));
-	
 	function showJukeboxActivityView() {
 	    if (!actIndicatorView.visible) {
 	        win.add(actIndicatorView);
@@ -135,21 +131,33 @@ function Jukebox() {
 	
 	var controlRewind = Titanium.UI.createImageView(STYLE.get("jukeboxRewind",{glow:GUI.createGlow(STYLE.get("jukeboxRewindGlow"))}));
 	controlRewind.addEventListener('click', function() {
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
 		rewind();
 	});
 	
 	var controlPlayPause = Titanium.UI.createImageView(STYLE.get("jukeboxPlayPause",{glow:GUI.createGlow(STYLE.get("jukeboxPlayPauseGlow"))}));
 	controlPlayPause.addEventListener('click', function() {
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
 		playPause();
 	});
 	
 	var controlFastForward = Titanium.UI.createImageView(STYLE.get("jukeboxForward",{glow:GUI.createGlow(STYLE.get("jukeboxForwardGlow"))}));
 	controlFastForward.addEventListener('click', function() {
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
 	    fastForward();
 	});
 	
 	var controlShuffle = Titanium.UI.createImageView(STYLE.get("jukeboxShuffle",{glow:GUI.createGlow(STYLE.get("jukeboxShuffleGlow"))}));
 	controlShuffle.addEventListener('click', function() {
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
 	    shuffle();
 	});
 	
@@ -233,13 +241,6 @@ function Jukebox() {
         	fastForwardOnStopped = true;
         	controlPlayPause.setImage("images/pause.png");
         }
-        if (Titanium.Platform.version === "6.1") {
-			if (e.state === audioPlayer.STATE_STOPPING) {
-				showBugActivityView();       
-	        } else {
-	       		hideBugActivityView();
-	        }
-        }
 	    if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
             showJukeboxActivityView();
         } else {
@@ -279,6 +280,17 @@ function Jukebox() {
 	function isPlayingOrBuffering() {
 		var state = audioPlayer.getState();
 		return state === audioPlayer.STATE_PLAYING || state === audioPlayer.STATE_BUFFERING || state === audioPlayer.STATE_WAITING_FOR_DATA || state === audioPlayer.STATE_WAITING_FOR_QUEUE || state === audioPlayer.STATE_STARTING || state === audioPlayer.STATE_STOPPING;
+	}
+	
+	this.isIos61BugPhase = function(disableAlert) {
+		var version = Titanium.Platform.version.split(".");
+		if (version[0] === "6" && version[1] === "1" && audioPlayer.getState() === audioPlayer.STATE_STOPPING) {
+			if (disableAlert === false || disableAlert === undefined) {
+				showError({message:L("ios61bugphase"),buttonNames:['Ok']});
+			}
+			return true;
+		}
+		return false;
 	}
 
 	function playTrack() {

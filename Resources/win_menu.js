@@ -35,14 +35,13 @@ function MenuWindow() {
 		buttonLogout = GUI.createButton({title:L("menu.logout"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	} 
 	buttonLogout.addEventListener('click', function() {
-		if (Titanium.Platform.version === "6.1" && jukebox.isPlaying()) {
-			showError({message:L("logout.ios61bug"),buttonNames:['Ok']});
-		} else {
-			jukebox.reset();
-			connectedUsername = undefined;
-			connectedPassword = undefined;
-		    win.close();
+		if (jukebox.isIos61BugPhase()) {
+			return;
 		}
+		jukebox.reset();
+		connectedUsername = undefined;
+		connectedPassword = undefined;
+	    win.close();
 	});
 
 	var buttonSettings = GUI.createButton({image:"images/config.png",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
@@ -146,6 +145,9 @@ function MenuWindow() {
 
 	var rowRandomMode = createMenuItem(L("menu.random"), "images/random.png");
 	rowRandomMode.addEventListener('click', function() {
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
 		var busyView = createBusyView();
 		win.add(busyView);
         try {

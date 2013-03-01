@@ -24,6 +24,9 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	    var infoView = GUI.createMediaTrackItemInfoView(data[i].imageHash, data[i].imageUri, getDisplayName(data[i].name), getDisplayName(data[i].artist));
     	row.add(infoView);
 	    infoView.addEventListener("click", function(e) {
+	    	if (jukebox.isIos61BugPhase()) {
+	    		return;
+	    	}
 	    	var busyView = createBusyView();
 			win.add(busyView);
             try {
@@ -114,6 +117,9 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	    tableData.push(row);
 	}
 	tableView.addEventListener("delete", function(e) {
+    	if (jukebox.isIos61BugPhase()) {
+    		return;
+    	}
 		jukebox.reset();
 		deleteCachedTrackFile(data[e.index].id);
 		db = Titanium.Database.open("OfflineTracks");
