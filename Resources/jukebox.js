@@ -100,6 +100,7 @@ function Jukebox() {
 
 	function showJukeboxActivityView() {
 	    if (!actIndicatorView.visible) {
+	        Titanium.API.debug("Showing jukebox activity view.")
 	        win.add(actIndicatorView);
 	        actIndicatorView.show();
 	    }
@@ -107,25 +108,12 @@ function Jukebox() {
 	
 	function hideJukeboxActivityView() {
 	    if (actIndicatorView.visible) {
+	    	Titanium.API.debug("Hiding jukebox activity view.")
 	        actIndicatorView.hide();
 	        win.remove(actIndicatorView);
 	    }
 	};
 	
-	function showBugActivityView() {
-	    if (!bugIndicatorView.visible) {
-	        win.add(bugIndicatorView);
-	        bugIndicatorView.show();
-	    }
-	};
-	
-	function hideBugActivityView() {
-	    if (bugIndicatorView.visible) {
-	        bugIndicatorView.hide();
-	        win.remove(bugIndicatorView);
-	    }
-	};
-
 	var buttonBack = GUI.createButton({title:L("jukebox.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	var buttonPlaylist = GUI.createButton({title:L("jukebox.playlist"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
@@ -223,22 +211,52 @@ function Jukebox() {
 		setProgress(e.progress);
 	}
 	
+	function getStateName(state) {
+		if (state === audioPlayer.STATE_BUFFERING) {
+			return "BUFFERING";
+		} else if (state === audioPlayer.STATE_INITIALIZED) {
+			return "INITIALIZED";
+		} else if (state === audioPlayer.STATE_PAUSED) {
+			return "PAUSED";
+		} else if (state === audioPlayer.STATE_PLAYING) {
+			return "PLAYING";
+		} else if (state === audioPlayer.STATE_STARTING) {
+			return "STARTING";
+		} else if (state === audioPlayer.STATE_STOPPED) {
+			return "STOPPED";
+		} else if (state === audioPlayer.STATE_STOPPING) {
+			return "STOPPING";
+		} else if (state === audioPlayer.STATE_WAITING_FOR_DATA) {
+			return "WAITING_FOR_DATA";
+		} else if (state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
+			return "WAITING_FOR_QUEUE";
+		} else {
+			return "unknown";
+		}
+	}
+	
 	var changeEventListener = function(e) {
+		Titanium.API.debug("Audio player state changed to \"" + getStateName(e.state) + "\".");
 		if (e.state === audioPlayer.STATE_STOPPED) {
 			if (fastForwardOnStopped === true) {
+				Titanium.API.debug("Skipping to next track.")
 				fastForwardOnStopped = false;
 				audioPlayer.stop();
 		        fastForward(true);
 			} else {
+				Titanium.API.debug("Stopping keep-alive-sound.")
 		        KEEP_ALIVE_SOUND.stop();
-				controlPlayPause.setImage("images/play.png");
 			}
 	   	}
-		if (e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED) {
+		if (e.state == audioPlayer.STATE_INITIALIZED || e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED) {
+			Titanium.API.debug("Setting PLAY button image.")
 	   		controlPlayPause.setImage("images/play.png");
-	   	} else if (e.state === audioPlayer.STATE_PLAYING || e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE || e.state === audioPlayer.STATE_STARTING) {
+	   	}
+		if (e.state === audioPlayer.STATE_PLAYING || e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE || e.state === audioPlayer.STATE_STARTING) {
+	   		Titanium.API.debug("Starting keep-alive-sound.")
 	   		KEEP_ALIVE_SOUND.play();
         	fastForwardOnStopped = true;
+	   		Titanium.API.debug("Setting PAUSE button image.")
         	controlPlayPause.setImage("images/pause.png");
         }
 	    if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
