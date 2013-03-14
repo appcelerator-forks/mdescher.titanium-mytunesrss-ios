@@ -470,15 +470,20 @@ function getImageCacheFile(cacheObjectId) {
 }
 
 function createCachedImageView(options) {
-	var file = getImageCacheFile(options.cacheObjectId);
+	var cacheObjectId = options.cacheObjectId;
 	delete(options.cacheObjectId);
+	var file = getImageCacheFile(cacheObjectId);
 	if (file.exists()) {
 		options.image = file.getNativePath();
 		return Titanium.UI.createImageView(options);
 	} else if (Titanium.App.Properties.getBool("imageCacheEnabled", true)) {
+		var image = options.image;
+		options.image = options.defaultImage;
 		var imageView = Titanium.UI.createImageView(options);
-		imageView.addEventListener("load", function(e) {
-		    file.write(e.source.toImage());
+		downloadImage(cacheObjectId, image, function() {
+			if (file.exists()) {
+				imageView.setImage(file.getNativePath());
+			}
 		});
 		return imageView;
 	} else {
@@ -486,9 +491,13 @@ function createCachedImageView(options) {
 	}
 }
 
-function downloadImage(cacheObjectId, uri) {
+function downloadImage(cacheObjectId, uri, callback) {
 	var httpClient = Titanium.Network.createHTTPClient();
-	httpClient.open("GET", uri, false);
+	if (callback != undefined) {
+		httpClient.onload = callback;
+		httpClient.onerror = callback;
+	}
+	httpClient.open("GET", uri, callback != undefined);
 	httpClient.setFile(getImageCacheFile(cacheObjectId));
 	httpClient.send();
 }
