@@ -475,7 +475,7 @@ function createCachedImageView(options) {
         delete(options.cacheObjectId);
 		options.image = file.getNativePath();
 		return Titanium.UI.createImageView(options);
-	} else if (Titanium.App.Properties.getBool("imageCacheEnabled", true)) {
+	} else {
 		options.remoteImage = options.image;
 		options.image = options.defaultImage;
 		var imageView = Titanium.UI.createImageView(options);
@@ -491,9 +491,6 @@ function createCachedImageView(options) {
             }
         });
 		return imageView;
-	} else {
-        delete(options.cacheObjectId);
-		return Titanium.UI.createImageView(options);
 	}
 }
 

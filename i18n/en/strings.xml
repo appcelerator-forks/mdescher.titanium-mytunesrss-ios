@@ -74,7 +74,6 @@
 	<string name="settings.bufferSize">Buffer size</string>
 	<string name="settings.searchAccuracy">Result accuracy</string>
 	<string name="settings.cache">Cache</string>
-	<string name="settings.imageCache">Cache images on device</string>
 	<string name="settings.transcoders">Transcoders</string>
 	<string name="settings.mobileTranscoders">Transcoders (mobile)</string>
 	<string name="settings.title">Options</string>

@@ -56,10 +56,6 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		    Titanium.App.Properties.setInt('searchAccuracy', searchAccuracyInput.value);
 		    saveTranscoders(transcoderSwitchesWifi, "");
 		    saveTranscoders(transcoderSwitchesMobile, "_mobile");
-		    Titanium.App.Properties.setBool("imageCacheEnabled", enableCacheInput.value);
-		    if (!enableCacheInput.value) {
-		    	clearImageCache();
-		    }
 	    }
 	    win.close();
 	});
@@ -92,22 +88,18 @@ function SettingsWindow(transcoders, searchFuzziness) {
 
 		// cache settings
 		var sectionCache = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.cache"))});
-		var enableCacheInput = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("imageCacheEnabled", true),right:10});
-		sectionCache.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.imageCache"),left:10}), enableCacheInput]));
 
-		if (enableCacheInput.value) {
-			var clearImageCacheButton = GUI.createButton({title:L("settings.imageCache.clear"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
-			clearImageCacheButton.addEventListener("click", function() {
-				var busyView = createBusyView();
-		        win.add(busyView);
-                try {
-					clearImageCache();
-				} finally {
-					win.remove(busyView);
-				}
-			});
-		    sectionCache.add(wrapInRow([clearImageCacheButton]));
-		}
+		var clearImageCacheButton = GUI.createButton({title:L("settings.imageCache.clear"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
+		clearImageCacheButton.addEventListener("click", function() {
+			var busyView = createBusyView();
+	        win.add(busyView);
+            try {
+				clearImageCache();
+			} finally {
+				win.remove(busyView);
+			}
+		});
+	    sectionCache.add(wrapInRow([clearImageCacheButton]));
 
 		var clearTrackCacheButton = GUI.createButton({title:L("settings.trackCache.clear"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
 		clearTrackCacheButton.addEventListener("click", function() {
