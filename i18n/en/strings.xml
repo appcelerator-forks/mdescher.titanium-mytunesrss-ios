@@ -69,6 +69,7 @@
 	<string name="jukebox.playlist">Playlist</string>
 	<string name="jukebox.title">Jukebox</string>
 	<string name="jukebox.noPlaylistInRandomMode">You cannot display a playlist in random playback mode.</string>
+	<string name="jukebox.noDataTimeout">Playback stopped because no data could be received.</string>
 	<string name="settings.audioPlayer">Jukebox</string>
 	<string name="settings.search">Search</string>
 	<string name="settings.bufferSize">Buffer size</string>

@@ -69,6 +69,7 @@
 	<string name="jukebox.playlist">Playlist</string>
 	<string name="jukebox.title">Jukebox</string>
 	<string name="jukebox.noPlaylistInRandomMode">Während der zufälligen Wiedergabe kann keine Playliste angezeigt werden.</string>
+	<string name="jukebox.noDataTimeout">Wiedergabe wurde gestoppt, da keine Daten empfangen werden konnten.</string>
 	<string name="settings.audioPlayer">Jukebox</string>
 	<string name="settings.search">Suche</string>
 	<string name="settings.bufferSize">Puffergröße</string>

@@ -103,8 +103,7 @@ exports.createGlow = function(center) {
 
 exports.createMediaItemRow = function(image, title) {
 	return Titanium.UI.createTableViewRow({
-		className : "media_row" + (image ? "_image" : ""),	
-		rightImage : "images/children.png",
+		className : "media_row" + (image ? "_image" : ""),
 		height : Titanium.Platform.osname === "ipad" ? 72 : 48,
 		color : "#CCCCCC",
 		selectionStyle : Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,
@@ -150,7 +149,7 @@ exports.createMediaItemImage = function(hash, uri) {
 		top : Titanium.Platform.osname === "ipad" ? 6 : 4,
 		bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
 		left : Titanium.Platform.osname === "ipad" ? 6 : 4,
-		right : Titanium.Platform.osname === "ipad" ? 682 : 257,
+		right : Titanium.Platform.osname === "ipad" ? 691 : 270,
 		defaultImage : "appicon.png"
 	});
 }

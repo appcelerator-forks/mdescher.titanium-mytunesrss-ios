@@ -46,15 +46,15 @@ function Jukebox() {
 	    imageView = Titanium.UI.createView({top:vOffset+55,left:10,right:10,hires:true,image:track.imageUri,height:size});
 	    if (track.imageUri != undefined) {
 	        if (hires) {
-	    	    imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,hires:true,image:track.imageUri,width:size-20,height:size-20}));
+	    	    imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,hires:true,image:track.imageUri,width:size-20,height:size-20,defaultImage:noCoverImage}));
 	        } else {
-		        imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,image:track.imageUri,width:size-20,height:size-20}));
+		        imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,image:track.imageUri,width:size-20,height:size-20,defaultImage:noCoverImage}));
 	        }
 	    } else {
 	        if (hires) {
-	    	    imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,hires:true,image:noCoverImage,width:size-20,height:size-20}));
+	    	    imageView.add(createImageView({cacheObjectId:track.imageHash,top:10,hires:true,image:noCoverImage,width:size-20,height:size-20}));
 	        } else {
-		        imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,image:noCoverImage,width:size-20,height:size-20}));
+		        imageView.add(createImageView({cacheObjectId:track.imageHash,top:10,image:noCoverImage,width:size-20,height:size-20}));
 	        }
 	    }
 	    infoView = Titanium.UI.createView({height:60,top:vOffset+size+65,left:10,right:10});
@@ -235,6 +235,8 @@ function Jukebox() {
 		}
 	}
 	
+	var waitingForDataTimeout;
+	
 	var changeEventListener = function(e) {
 		Titanium.API.debug("Audio player state changed to \"" + getStateName(e.state) + "\".");
 		if (e.state === audioPlayer.STATE_STOPPED) {
@@ -263,6 +265,18 @@ function Jukebox() {
             showJukeboxActivityView();
         } else {
             hideJukeboxActivityView();
+        }
+        if (e.state === audioPlayer.STATE_WAITING_FOR_DATA) {
+        	waitingForDataTimeout = setTimeout(function() {
+				Titanium.API.debug("Stopping keep-alive-sound and audio player after 10 seconds waiting for data.")
+				fastForwardOnStopped = false;
+				audioPlayer.stop();
+		        KEEP_ALIVE_SOUND.stop();
+		        showError({message:L("jukebox.noDataTimeout"),buttonNames:["Ok"]});
+        	}, 20000);
+        } else if (waitingForDataTimeout != undefined) {
+        	clearTimeout(waitingForDataTimeout);
+        	waitingForDataTimeout = undefined;
         }
     }
 

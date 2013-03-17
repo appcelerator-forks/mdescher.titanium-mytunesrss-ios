@@ -483,7 +483,7 @@ function createCachedImageView(options) {
             if (e.source.remoteImage != undefined) {
 		        downloadImage(e.source.cacheObjectId, e.source.remoteImage, function() {
 			        if (file.exists()) {
-				        e.source.setImage(file.getNativePath());
+				        e.source.setImage(file.read());
 			        }
 		        });
                 delete(e.source.cacheObjectId);

@@ -36,7 +36,7 @@ function GenresWindow(data) {
 	        data,
 	        function(item) {
 	            var displayName = getDisplayName(item.name);
-	            var row = GUI.createTableViewRow({rightImage:"images/children.png",height:48,className:'genre_row',height:TABLE_VIEW_ROW_HEIGHT,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,filter:displayName});
+	            var row = GUI.createTableViewRow({height:48,className:'genre_row',height:TABLE_VIEW_ROW_HEIGHT,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,filter:displayName});
 	            row.add(GUI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'}}));
 	            row.albumsUri = item.albumsUri;
 	            row.genreName = item.name;
