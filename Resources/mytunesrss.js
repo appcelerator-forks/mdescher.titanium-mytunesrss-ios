@@ -116,10 +116,18 @@ function isSessionAlive() {
 function getRandomOfflineTrack() {
 	var db = Titanium.Database.open("OfflineTracks");
 	try {
-		var rs = db.execute("SELECT count(id) AS track_count FROM TRACK");
-		var offset = Math.floor(Math.random() * rs.fieldByName("track_count"));
-		rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track LIMIT 1 OFFSET ?", offset);
-		return rs.isValidRow() ? mapTrack(rs) : undefined;
+		var rs = db.execute("SELECT MIN(play_count) AS min_play_count FROM track");
+		var minPlayCount = rs.fieldByName("min_play_count");
+		rs = db.execute("SELECT COUNT(id) AS track_count FROM track WHERE play_count = ?", minPlayCount);
+		var trackCount = rs.fieldByName("track_count");
+		var offset = Math.floor(Math.random() * trackCount);
+		Titanium.API.debug("Selecting track " + (offset + 1) + " of " + trackCount + " tracks with minimum play count " + minPlayCount + ".");
+		rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE play_count = ? LIMIT 1 OFFSET ?", minPlayCount, offset);
+		var track = rs.isValidRow() ? mapTrack(rs) : undefined;
+		if (track != undefined) {
+			db.execute("UPDATE track SET play_count = ? WHERE id = ?", minPlayCount + 1, track.id);
+		}
+		return track;
 	} finally {
 		db.close();
 	}
@@ -454,6 +462,15 @@ function clearTrackCache() {
 	db = Titanium.Database.open("OfflineTracks");
 	db.execute("DELETE FROM track");
 	db.close();
+}
+
+function resetTrackCachePlayCount() {
+	try {
+		db = Titanium.Database.open("OfflineTracks");
+		db.execute("UPDATE track SET play_count = 0");
+	} finally {
+		db.close();
+	}
 }
 
 function getImageCacheFile(cacheObjectId) {

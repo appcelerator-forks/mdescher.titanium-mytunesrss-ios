@@ -7,6 +7,9 @@
 
         <release version="2.2 date="2013-xx-xx">
             <action dev="mdescher" type="add">
+                Updated database to version 3 adding the play_count column for random playback.
+            </action>
+            <action dev="mdescher" type="add">
                 Updated database to version 2 adding the disc_number column for correct track sorting.
             </action>
             <action dev="mdescher" type="add">

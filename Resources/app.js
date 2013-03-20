@@ -25,7 +25,8 @@ var LIGHT_GRAY = "#3A3A3A";
 // db versions
 // 1 = initial
 // 2 = added disc_number column
-var DB_VERSION = 2;
+// 3 = added play_count column
+var DB_VERSION = 3;
 
 function RowArray() {
 	var rows = [];
@@ -169,7 +170,7 @@ if (dbVersion < DB_VERSION) {
 	}
 }
 Titanium.API.debug("Trying to create offline tracks table version " + DB_VERSION + " if it does not exist.");
-db.execute("CREATE TABLE IF NOT EXISTS track (id TEXT, name TEXT, album TEXT, artist TEXT, genre TEXT, album_artist TEXT, image_hash TEXT, protected INTEGER, media_type TEXT, time INTEGER, disc_number INTEGER, track_number INTEGER)");
+db.execute("CREATE TABLE IF NOT EXISTS track (id TEXT, name TEXT, album TEXT, artist TEXT, genre TEXT, album_artist TEXT, image_hash TEXT, protected INTEGER, media_type TEXT, time INTEGER, disc_number INTEGER, track_number INTEGER, play_count INTEGER DEFAULT 0)");
 db.close();
 Titanium.App.Properties.setInt("offlineTracksDbVersion", DB_VERSION)
 

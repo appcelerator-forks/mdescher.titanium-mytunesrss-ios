@@ -81,6 +81,7 @@
 	<string name="settings.accuracyHint">Accuracy in percent</string>
 	<string name="settings.imageCache.clear">Clear image cache</string>
 	<string name="settings.trackCache.clear">Clear track cache</string>
+	<string name="settings.trackCache.resetPlayCount">Reset play counts</string>
 	<string name="settings.cancel">Cancel</string>
 	<string name="settings.save">Save</string>
 	<string name="settings.invalidBufferSize">The buffer size must be a value from 1024 to 65536.</string>

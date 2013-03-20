@@ -77,7 +77,6 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	sections.push(sectionPlayer);
 
 	if (!offlineMode) {
-
 		// search settings
 		var sectionSearch = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.search"))});
 		var staticSearchFuzziness = (searchFuzziness >= 0 && searchFuzziness <= 100);
@@ -85,10 +84,12 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		var searchAccuracyInput = GUI.createTextField({editable:!staticSearchFuzziness,right:10,width:textFieldWidth,hintText:L("settings.accuracyHint"),value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 		sectionSearch.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.searchAccuracy"),left:10}), searchAccuracyInput]));
 		sections.push(sectionSearch);
+	}
+	
+	// cache settings
+	var sectionCache = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.cache"))});
 
-		// cache settings
-		var sectionCache = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.cache"))});
-
+	if (!offlineMode) {
 		var clearImageCacheButton = GUI.createButton({title:L("settings.imageCache.clear"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
 		clearImageCacheButton.addEventListener("click", function() {
 			var busyView = createBusyView();
@@ -112,9 +113,23 @@ function SettingsWindow(transcoders, searchFuzziness) {
 				}
 		});
 		sectionCache.add(wrapInRow([clearTrackCacheButton]));
+	}
+	
+	var resetTrackCachePlayCountButton = GUI.createButton({title:L("settings.trackCache.resetPlayCount"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
+	resetTrackCachePlayCountButton.addEventListener("click", function() {
+			var busyView = createBusyView();
+    		win.add(busyView);
+			try {
+				resetTrackCachePlayCount();
+			} finally {
+				win.remove(busyView);
+			}
+	});
+	sectionCache.add(wrapInRow([resetTrackCachePlayCountButton]));
 		
-		sections.push(sectionCache);
-		
+	sections.push(sectionCache);
+
+	if (!offlineMode) {		
 		if (transcoders != undefined  && transcoders.length > 0) {
 			var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
 		    var sectionTrans = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.transcoders"))});

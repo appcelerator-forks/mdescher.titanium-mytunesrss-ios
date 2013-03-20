@@ -32,12 +32,20 @@
 	
 	"serverAddressInputOnline" : {
 		"left" : 10,
-		"right" : 10,
+		"right" : 50,
 		"top" : 160,
 		"font" : {
 			"fontSize" : 14
 		},
 		"minimumFontSize" : 12
+	},
+	
+	"serverAddressHistoryButtonOnline" : {
+		"right" : 10,
+		"top" : 160,
+		"width" : 32,
+		"height" : 32,
+		"backgroundImage" : "images/button_32x32.png"
 	},
 	
 	"serverAddressLabelSafari" : {
@@ -53,7 +61,7 @@
 	
 	"serverAddressInputSafari" : {
 		"left" : 10,
-		"right" : 10,
+		"right" : 50,
 		"top" : 305,
 		"font" : {
 			"fontSize" : 14
@@ -61,6 +69,14 @@
 		"minimumFontSize" : 12
 	},
 	
+	"serverAddressHistoryButtonSafari" : {
+		"right" : 10,
+		"top" : 305,
+		"width" : 32,
+		"height" : 32,
+		"backgroundImage" : "images/button_32x32.png"
+	},
+
 	"credentialsLabel" : {
 		"left" : 10,
 		"top" : 205,
