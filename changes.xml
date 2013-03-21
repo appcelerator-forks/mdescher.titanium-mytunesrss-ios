@@ -6,6 +6,9 @@
     <body>
 
         <release version="2.2 date="2013-xx-xx">
+        	<action dev="mdescher" type="add">
+        		[MYTUNESRSSIPHONE-19] Remember multiple server URLs
+        	</action>
             <action dev="mdescher" type="add">
                 Updated database to version 3 adding the play_count column for random playback.
             </action>

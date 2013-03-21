@@ -606,3 +606,22 @@ function addIAddIfOnline(win) {
 		win.add(Titanium.UI.iOS.createAdView(STYLE.get("iad", {adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,backgroundColor:DARK_GRAY})));
 	}
 }
+
+function rememberServerUrl(url) {
+	var urls = getRememberedServerUrls();
+	var index = urls.indexOf(url);
+	if (index != -1) {
+		urls.splice(index, 1);
+	}
+	urls.splice(0, 0, url);
+	Titanium.App.Properties.setList("serverUrls", urls);
+}
+
+function getLastRememberedServerUrl() {
+	var urls = getRememberedServerUrls();
+	return urls.length > 0 ? urls[0] : ""; 
+}
+
+function getRememberedServerUrls() {
+	return Titanium.App.Properties.getList("serverUrls", []);	
+}

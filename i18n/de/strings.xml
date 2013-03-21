@@ -29,6 +29,7 @@
 	<string name="login.noValidResponse">Der Server hat nicht geantwortet. Entweder ist die URL nicht korrekt, oder der Server hat eine Version unter %s.</string>
 	<string name="login.wrongServerVersion">Die Version des Servers ist %s, aber diese App benötigt %s oder höher.</string>
 	<string name="login.mytunesrsscom.failed">Der mytunesrss.com Benutzername scheint ungültig zu sein. Bitte prüfen Sie die Server URL.</string>
+	<string name="login.noHistoryAvailable">Es wurden noch keine Serveradressen gespeichert.</string>
 	<string name="menu.missingSearchTerm">Bitte geben Sie einen Suchbegriff ein.</string>
 	<string name="menu.search.hint">Suche</string>
 	<string name="menu.back">Schließen</string>

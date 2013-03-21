@@ -17,6 +17,7 @@ Titanium.include("win_tvshow_seasons.js");
 Titanium.include("win_movies.js");
 Titanium.include("win_appinfo.js");
 Titanium.include("win_busy.js");
+Titanium.include("win_server_history.js");
 
 Titanium.API.debug("Platform version: \"" + Titanium.Platform.version + "\".");
 

@@ -29,6 +29,7 @@
 	<string name="login.noValidResponse">The server did not respond. Either the URL is wrong, the server is down or it is a version below %s.</string>
 	<string name="login.wrongServerVersion">The server version is %s but this app needs %s or better.</string>
 	<string name="login.mytunesrsscom.failed">The mytunesrss.com username seems to be wrong. Please check the server URL.</string>
+	<string name="login.noHistoryAvailable">No server addresses have been stored yet.</string>
 	<string name="menu.missingSearchTerm">Please enter a search term.</string>
 	<string name="menu.search.hint">Search</string>
 	<string name="menu.back">Close</string>
