@@ -45,7 +45,9 @@
 		"top" : 160,
 		"width" : 32,
 		"height" : 32,
-		"backgroundImage" : "images/button_32x32.png"
+		"backgroundImage" : "images/button_small.png",
+		"backgroundLeftCap" : 9,
+		"backgroundTopCap" : 32
 	},
 	
 	"serverAddressLabelSafari" : {
@@ -74,7 +76,9 @@
 		"top" : 305,
 		"width" : 32,
 		"height" : 32,
-		"backgroundImage" : "images/button_32x32.png"
+		"backgroundImage" : "images/button_small.png",
+		"backgroundLeftCap" : 9,
+		"backgroundTopCap" : 32
 	},
 
 	"credentialsLabel" : {

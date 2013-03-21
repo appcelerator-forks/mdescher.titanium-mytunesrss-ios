@@ -614,6 +614,9 @@ function rememberServerUrl(url) {
 		urls.splice(index, 1);
 	}
 	urls.splice(0, 0, url);
+	if (urls.length > 20) {
+		urls.splice(20, urls.length - 20);
+	}
 	Titanium.App.Properties.setList("serverUrls", urls);
 }
 
