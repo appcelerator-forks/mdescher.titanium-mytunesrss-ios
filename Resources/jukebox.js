@@ -52,9 +52,9 @@ function Jukebox() {
 	        }
 	    } else {
 	        if (hires) {
-	    	    imageView.add(createImageView({cacheObjectId:track.imageHash,top:10,hires:true,image:noCoverImage,width:size-20,height:size-20}));
+	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:noCoverImage,width:size-20,height:size-20}));
 	        } else {
-		        imageView.add(createImageView({cacheObjectId:track.imageHash,top:10,image:noCoverImage,width:size-20,height:size-20}));
+		        imageView.add(Titanium.UI.createImageView({top:10,image:noCoverImage,width:size-20,height:size-20}));
 	        }
 	    }
 	    infoView = Titanium.UI.createView({height:60,top:vOffset+size+65,left:10,right:10});
