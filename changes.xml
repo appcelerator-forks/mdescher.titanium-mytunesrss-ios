@@ -5,7 +5,13 @@
     </properties>
     <body>
 
-        <release version="2.2 date="2013-03-27">
+        <release version="2.3" date="2013-??-??">
+        	<action dev="mdescher" type="add">
+        		[MYTUNESRSSIPHONE-46] Support for media and volume controls
+        	</action>
+        </release>
+
+        <release version="2.2" date="2013-03-27">
         	<action dev="mdescher" type="add">
         		[MYTUNESRSSIPHONE-19] Remember multiple server URLs
         	</action>

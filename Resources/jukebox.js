@@ -186,6 +186,33 @@ function Jukebox() {
 
 	win.add(GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist));
 	
+	var mediaControlsView = MEDIA_CONTROLS.createView({left:0,top:0,width:0,height:0});
+	mediaControlsView.addEventListener("remoteControlPlay", function() {
+		Titanium.API.debug("RemoteControlPlay");
+		play();
+	}); 
+	mediaControlsView.addEventListener("remoteControlPause", function() {
+		Titanium.API.debug("RemoteControlPause");
+		pause();
+	}); 
+	mediaControlsView.addEventListener("remoteControlStop", function() {
+		Titanium.API.debug("RemoteControlStop");
+		jukebox.stopPlayback();
+	}); 
+	mediaControlsView.addEventListener("remoteControlTogglePlayPause", function() {
+		Titanium.API.debug("RemoteControlTogglePlayPause");
+		playPause();
+	}); 
+	mediaControlsView.addEventListener("remoteControlPreviousTrack", function() {
+		Titanium.API.debug("RemoteControlPreviousTrack");
+		rewind();
+	}); 
+	mediaControlsView.addEventListener("remoteControlNextTrack", function() {
+		Titanium.API.debug("RemoteControlNextTrack");
+		fastForward();
+	}); 
+	win.add(mediaControlsView);
+	
 	/**
 	 * Open the jukebox window. 
 	 */
@@ -427,6 +454,20 @@ function Jukebox() {
 	    } else {
 	    	Titanium.API.debug("[playPause] Starting audio player.");
 		    audioPlayer.start();
+	    }
+	};
+
+	function play() {
+	    if (!isPlayingOrBuffering()) {
+	    	Titanium.API.debug("[playPause] Starting audio player.");
+		    audioPlayer.start();
+	    }
+	};
+	
+	function pause() {
+	    if (isPlayingOrBuffering()) {
+	    	Titanium.API.debug("[playPause] Pausing audio player.");
+	        audioPlayer.pause();
 	    }
 	};
 	

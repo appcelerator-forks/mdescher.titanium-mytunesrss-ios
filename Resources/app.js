@@ -48,6 +48,8 @@ function RowArray() {
 
 var GUI = require("lib/GUI");
 
+var MEDIA_CONTROLS = require("de.codewave.ti.mediacontrols");
+
 var WEBSERVER = require("com.0x82.webserver");
 WEBSERVER.disconnectsInBackground = false;
 
