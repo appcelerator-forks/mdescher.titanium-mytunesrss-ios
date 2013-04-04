@@ -28,9 +28,11 @@ function PlaylistsWindow(data) {
 	            infoView.addEventListener('click', function(e) {
 					var busyView = createBusyView();
 					win.add(busyView);
+					Titanium.App.setIdleTimerDisabled(true);
                     try {
 				        loadAndDisplayTracks(self, item.tracksUri);
                     } finally {
+                    	Titanium.App.setIdleTimerDisabled(false);
 				        win.remove(busyView);
                     }
 		    	});
@@ -52,9 +54,14 @@ function PlaylistsWindow(data) {
 				    touchView.addEventListener("click", function(e) {
 						var busyView = createBusyView();
 						win.add(busyView);
-						var tracks = loadTracks(item.tracksUri);
-				    	removeObsoleteTracks(tracks);
-					    win.remove(busyView);
+						Titanium.App.setIdleTimerDisabled(true);
+						try {
+							var tracks = loadTracks(item.tracksUri);
+					    	removeObsoleteTracks(tracks);
+						} finally {
+							Titanium.App.setIdleTimerDisabled(false);
+						    win.remove(busyView);
+						}
 					    if (tracks != undefined && tracks.length > 0) {
 					    	Titanium.Analytics.featureEvent("sync.playlist");
 							CANCEL_SYNC_AUDIO_TRACKS = false;

@@ -20,9 +20,11 @@ function TvShowSeasonsWindow(data) {
 	tableView.addEventListener('click', function(e) {
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
     	    loadAndDisplayTracks(self, e.rowData.episodesUri);
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
 	});

@@ -590,7 +590,10 @@ function showError(options) {
 	} else {
 		options.message = L("servererror." + options.message, options.message);
 	}
+	var idleTimerDisabled = Titanium.App.getIdleTimerDisabled();
+	Titanium.App.setIdleTimerDisabled(false);
 	Titanium.UI.createAlertDialog(options).show();
+	Titanium.App.setIdleTimerDisabled(idleTimerDisabled);
 }
 
 function getAdSpacingStyleIfOnline(options) {

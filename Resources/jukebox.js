@@ -158,10 +158,12 @@ function Jukebox() {
 		if (myRandomOfflineMode != true) {
 			var busyView = createBusyView();
 			win.add(busyView);
+			Titanium.App.setIdleTimerDisabled(true);
 	        try {
 			    new TracksWindow(jukebox.getCurrentPlaylist(), true).open(self);
 		        win.close();
 	        } finally {
+	        	Titanium.App.setIdleTimerDisabled(false);
 			    win.remove(busyView);
 	        }
 		} else {

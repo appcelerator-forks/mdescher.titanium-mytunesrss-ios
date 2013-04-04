@@ -48,6 +48,7 @@ function MenuWindow() {
 	buttonSettings.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
 		    if (offlineMode) {
 			    new SettingsWindow().open(self);
@@ -60,6 +61,7 @@ function MenuWindow() {
 			    }
 		    }
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
 		    win.remove(busyView);
         }
 	});
@@ -77,9 +79,11 @@ function MenuWindow() {
 	rowPlaylists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
     	    loadAndDisplayPlaylists(self);
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
     	    win.remove(busyView);
         }
 	});
@@ -88,6 +92,7 @@ function MenuWindow() {
 	rowAlbums.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        if (!offlineMode) {
 	        	loadAndDisplayAlbums(self, getLibrary().albumsUri);
@@ -95,6 +100,7 @@ function MenuWindow() {
 	        	loadAndDisplayOfflineAlbums(self, undefined, undefined);
 	        }
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
 	});
@@ -103,9 +109,11 @@ function MenuWindow() {
 	rowArtists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        loadAndDisplayArtists(self);
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
 	});
@@ -114,9 +122,11 @@ function MenuWindow() {
 	rowGenres.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        loadAndDisplayGenres(self);
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
 	});
@@ -125,9 +135,11 @@ function MenuWindow() {
 	rowMovies.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        loadAndDisplayMovies(self);
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
 	});
@@ -136,9 +148,11 @@ function MenuWindow() {
 	rowTvShows.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        loadAndDisplayTvShows(self);
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
 	});
@@ -150,6 +164,7 @@ function MenuWindow() {
 		}
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
         	var track = getRandomOfflineTrack();
         	if (track != undefined) {
@@ -160,6 +175,7 @@ function MenuWindow() {
         		showError({message:L("tracks.offline.noneFound"),buttonNames:['Ok']});
         	}
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
 	});
@@ -168,6 +184,7 @@ function MenuWindow() {
 	rowNowPlaying.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        if (jukebox.isActive()) {
 	            jukebox.open(self);
@@ -176,6 +193,7 @@ function MenuWindow() {
 	            showError({message:L("menu.currentlyPlaying.none"),buttonNames:['Ok']});
 	        }
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
 	});

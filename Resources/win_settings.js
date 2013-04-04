@@ -94,9 +94,11 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		clearImageCacheButton.addEventListener("click", function() {
 			var busyView = createBusyView();
 	        win.add(busyView);
+	        Titanium.App.setIdleTimerDisabled(true);
             try {
 				clearImageCache();
 			} finally {
+				Titanium.App.setIdleTimerDisabled(false);
 				win.remove(busyView);
 			}
 		});
@@ -106,9 +108,11 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		clearTrackCacheButton.addEventListener("click", function() {
 				var busyView = createBusyView();
         		win.add(busyView);
+        		Titanium.App.setIdleTimerDisabled(true);
 				try {
 					clearTrackCache();
 				} finally {
+					Titanium.App.setIdleTimerDisabled(false);
 					win.remove(busyView);
 				}
 		});
@@ -119,9 +123,11 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	resetTrackCachePlayCountButton.addEventListener("click", function() {
 			var busyView = createBusyView();
     		win.add(busyView);
+    		Titanium.App.setIdleTimerDisabled(true);
 			try {
 				resetTrackCachePlayCount();
 			} finally {
+				Titanium.App.setIdleTimerDisabled(false);
 				win.remove(busyView);
 			}
 	});

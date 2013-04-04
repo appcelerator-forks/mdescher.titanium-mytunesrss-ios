@@ -20,6 +20,7 @@ function GenresWindow(data) {
 	tableView.addEventListener('click', function(e) {
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        if (!offlineMode) {
 	        	loadAndDisplayAlbums(self, e.rowData.albumsUri);
@@ -27,6 +28,7 @@ function GenresWindow(data) {
 	        	loadAndDisplayOfflineAlbums(self, undefined, e.rowData.genreName);
 	        }
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
     	    win.remove(busyView);
         }
 	});

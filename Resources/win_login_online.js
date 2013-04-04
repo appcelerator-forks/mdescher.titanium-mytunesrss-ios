@@ -32,6 +32,7 @@ function OnlineLoginWindow(parent) {
 	function doLogin() {
 		var busyView = createBusyView();
 		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
         try {
 		    Titanium.Network.createHTTPClient().clearCookies(Titanium.App.Properties.getString('resolvedServerUrl'));
 		    var serverVersion = getServerVersion();
@@ -52,6 +53,7 @@ function OnlineLoginWindow(parent) {
 			    }
 		    }
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
     		win.remove(busyView);
         }
 	}

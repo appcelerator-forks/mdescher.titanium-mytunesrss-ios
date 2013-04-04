@@ -19,6 +19,7 @@ function AlbumsWindow(data) {
 	
 	tableView.addEventListener('click', function(e) {
 		var busyView = createBusyView();
+		Titanium.App.setIdleTimerDisabled(true);
 		win.add(busyView);
         try {
 		    if (!offlineMode) {
@@ -27,6 +28,7 @@ function AlbumsWindow(data) {
 			    loadAndDisplayOfflineTracks(self, e.rowData.albumName, e.rowData.albumArtist);
 		    }
         } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
     	    win.remove(busyView);
         }
 	});

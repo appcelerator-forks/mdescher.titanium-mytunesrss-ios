@@ -29,6 +29,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	    	}
 	    	var busyView = createBusyView();
 			win.add(busyView);
+			Titanium.App.setIdleTimerDisabled(true);
             try {
 	            if (data[e.index].mediaType === "Video") {
 	                jukebox.reset();
@@ -46,6 +47,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 			        }
 	            }
             } finally {
+            	Titanium.App.setIdleTimerDisabled(false);
 	            win.remove(busyView);
             }
 	    });
