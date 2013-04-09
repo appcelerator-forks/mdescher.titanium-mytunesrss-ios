@@ -7,6 +7,9 @@
 
         <release version="2.3" date="2013-??-??">
         	<action dev="mdescher" type="add">
+        		[MYTUNESRSSIPHONE-48] Back to playlist when playback in jukebox finishes
+        	</action>
+        	<action dev="mdescher" type="add">
         		[MYTUNESRSSIPHONE-47] Keep screen alive when activity indicator is active
         	</action>
         	<action dev="mdescher" type="add">

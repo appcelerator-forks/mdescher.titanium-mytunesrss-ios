@@ -288,7 +288,11 @@ function Jukebox() {
 				Titanium.API.debug("Skipping to next track.")
 				fastForwardOnStopped = false;
 				audioPlayer.stop();
-		        fastForward(true);
+		        if (!fastForward(true)) {
+		        	currentPlaylistIndex = 0; // reset to first track...
+		        	myParent.open();
+	   				win.close(); // ... and return to parent view
+		        }
 			} else {
 				Titanium.API.debug("Stopping keep-alive-sound.")
 		        KEEP_ALIVE_SOUND.stop();
@@ -312,7 +316,7 @@ function Jukebox() {
         }
         if (e.state === audioPlayer.STATE_WAITING_FOR_DATA) {
         	waitingForDataTimeout = setTimeout(function() {
-				Titanium.API.debug("Stopping keep-alive-sound and audio player after 10 seconds waiting for data.")
+				Titanium.API.debug("Stopping keep-alive-sound and audio player after 20 seconds waiting for data.")
 				fastForwardOnStopped = false;
 				audioPlayer.stop();
 		        KEEP_ALIVE_SOUND.stop();
@@ -449,8 +453,10 @@ function Jukebox() {
 	        if (playing === true || forcePlayAfterFastforward === true) {
 	        	Titanium.API.debug("Playing on fast-forward [playing=" + playing + ", forcePlayAfterFastforward=" + forcePlayAfterFastforward + "].");
 	        	playTrack();
+	        	return true;
 	        } else {
 	        	setTrack();
+	        	return false;
 	        }
 	    } else if (myRandomOfflineMode === true) {
 	    	currentPlaylist = [getRandomOfflineTrack()];
@@ -458,10 +464,13 @@ function Jukebox() {
 	        if (playing === true || forcePlayAfterFastforward === true) {
 	        	Titanium.API.debug("Playing on fast-forward [playing=" + playing + ", forcePlayAfterFastforward=" + forcePlayAfterFastforward + "].");
 	        	playTrack();
+	        	return true;
 	        } else {
 	        	setTrack();
+	        	return false;
 	        }
-	    }
+	    }	    
+	    return false;
 	};
 	
 	function playPause() {
