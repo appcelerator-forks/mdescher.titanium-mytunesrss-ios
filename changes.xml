@@ -6,6 +6,10 @@
     <body>
 
         <release version="2.3" date="2013-??-??">
+        	<action dev="mdescher" type="update">
+        		Only use play_count 0 and 1 for shuffle mode to prevent new tracks from
+                being played over and over again before old tracks get another chance.
+        	</action>
         	<action dev="mdescher" type="add">
         		[MYTUNESRSSIPHONE-48] Back to playlist when playback in jukebox finishes
         	</action>
@@ -18,9 +22,9 @@
         </release>
 
         <release version="2.2" date="2013-03-27">
-        	<action dev="mdescher" type="add">
-        		[MYTUNESRSSIPHONE-19] Remember multiple server URLs
-        	</action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-19] Remember multiple server URLs
+            </action>
             <action dev="mdescher" type="add">
                 Updated database to version 3 adding the play_count column for random playback.
             </action>
