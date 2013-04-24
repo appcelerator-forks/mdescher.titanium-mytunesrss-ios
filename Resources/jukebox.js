@@ -280,9 +280,20 @@ function Jukebox() {
 	}
 	
 	var waitingForDataTimeout;
+	var delayKeepAliveWhenPaused;
 	
 	var changeEventListener = function(e) {
 		Titanium.API.debug("Audio player state changed to \"" + getStateName(e.state) + "\".");
+		if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
+			Titanium.API.debug("Playing keep-alive-sound.")
+	   		KEEP_ALIVE_SOUND.play();
+		} else if (e.state === audioPlayer.STATE_STOPPED && fastForwardOnStopped === true) {
+			Titanium.API.debug("Playing keep-alive-sound.")
+	   		KEEP_ALIVE_SOUND.play();
+		} else {
+			Titanium.API.debug("Stopping keep-alive-sound.")
+	   		KEEP_ALIVE_SOUND.stop();
+		}
 		if (e.state === audioPlayer.STATE_STOPPED) {
 			if (fastForwardOnStopped === true) {
 				Titanium.API.debug("Skipping to next track.")
@@ -293,9 +304,6 @@ function Jukebox() {
 		        	myParent.open();
 	   				win.close(); // ... and return to parent view
 		        }
-			} else {
-				Titanium.API.debug("Stopping keep-alive-sound.")
-		        KEEP_ALIVE_SOUND.stop();
 			}
 	   	}
 		if (e.state == audioPlayer.STATE_INITIALIZED || e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED) {
@@ -304,7 +312,6 @@ function Jukebox() {
 	   	}
 		if (e.state === audioPlayer.STATE_PLAYING || e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE || e.state === audioPlayer.STATE_STARTING) {
 	   		Titanium.API.debug("Starting keep-alive-sound.")
-	   		KEEP_ALIVE_SOUND.play();
         	fastForwardOnStopped = true;
 	   		Titanium.API.debug("Setting PAUSE button image.")
         	controlPlayPause.setImage("images/pause.png");
@@ -319,12 +326,21 @@ function Jukebox() {
 				Titanium.API.debug("Stopping keep-alive-sound and audio player after 20 seconds waiting for data.")
 				fastForwardOnStopped = false;
 				audioPlayer.stop();
-		        KEEP_ALIVE_SOUND.stop();
 		        showError({message:L("jukebox.noDataTimeout"),buttonNames:["Ok"]});
         	}, 20000);
         } else if (waitingForDataTimeout != undefined) {
         	clearTimeout(waitingForDataTimeout);
         	waitingForDataTimeout = undefined;
+        }
+        if (e.state === audioPlayer.STATE_PAUSED) {
+        	delayKeepAliveWhenPaused = setTimeout(function() {
+				Titanium.API.debug("Stopping keep-alive-sound and audio player after 15 minutes in paused state.")
+				fastForwardOnStopped = false;
+				audioPlayer.stop();
+        	}, 900000);
+        } else if (delayKeepAliveWhenPaused != undefined) {
+        	clearTimeout(delayKeepAliveWhenPaused);
+        	delayKeepAliveWhenPaused = undefined;
         }
     }
 
