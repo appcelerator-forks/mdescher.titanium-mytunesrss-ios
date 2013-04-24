@@ -95,6 +95,7 @@ Titanium.App.addEventListener("pause", function() {
 });
 Titanium.App.addEventListener("resumed", function() {
 	Titanium.API.debug("Application event \"resumed\".");
+	jukebox.onAppResumed();
 	var httpClient = Titanium.Network.createHTTPClient({
 		onload : function() {
 			Titanium.API.debug("Response from HTTP server: \"" + this.responseText + "\".");

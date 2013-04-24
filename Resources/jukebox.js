@@ -5,6 +5,7 @@ function Jukebox() {
 	
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
+	var myBackground;
 	var myRandomOfflineMode;
 	var myTrack;
 	var imageView;
@@ -284,15 +285,18 @@ function Jukebox() {
 	
 	var changeEventListener = function(e) {
 		Titanium.API.debug("Audio player state changed to \"" + getStateName(e.state) + "\".");
-		if ((e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) && !KEEP_ALIVE_SOUND.playing) {
-			Titanium.API.debug("Starting keep-alive-sound.")
-	   		KEEP_ALIVE_SOUND.play();
-		} else if (e.state === audioPlayer.STATE_STOPPED && fastForwardOnStopped === true && !KEEP_ALIVE_SOUND.playing) {
-			Titanium.API.debug("Playing keep-alive-sound.")
-	   		KEEP_ALIVE_SOUND.play();
-		} else if (KEEP_ALIVE_SOUND.playing) {
-			Titanium.API.debug("Stopping keep-alive-sound.")
-	   		KEEP_ALIVE_SOUND.stop();
+		if (myBackground === true) {
+			if (e.state === audioPlayer.STATE_PLAYING || (e.state === audioPlayer.STATE_STOPPED && fastForwardOnStopped != true)) {
+				if (KEEP_ALIVE_SOUND.playing) {
+					Titanium.API.debug("Stopping keep-alive-sound.")
+			   		KEEP_ALIVE_SOUND.stop();
+				}
+			} else if (e.state != audioPlayer.STATE_INITIALIZED) {
+				if (!KEEP_ALIVE_SOUND.playing) {
+					Titanium.API.debug("Starting keep-alive-sound.")
+			   		KEEP_ALIVE_SOUND.play();
+				}
+			}
 		}
 		if (e.state === audioPlayer.STATE_STOPPED) {
 			if (fastForwardOnStopped === true) {
@@ -567,12 +571,17 @@ function Jukebox() {
 	}
 
     this.onAppPaused = function() {
+    	myBackground = true;
         if (currentPlaylist != undefined && audioPlayer != undefined && audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
         	Titanium.API.debug("[this.onAppPaused] Application paued with audio player active in paused mode: stopping playback.");
         	jukebox.stopPlayback();
         }
     }
     
+    this.onAppResumed = function() {
+		myBackground = false;
+    }
+
     this.isRandomOfflineMode = function() {
     	return myRandomOfflineMode;
     }
