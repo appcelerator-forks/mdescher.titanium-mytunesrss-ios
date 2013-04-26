@@ -5,10 +5,10 @@
     </properties>
     <body>
 
-        <release version="2.3" date="2013-??-??">
+        <release version="2.3" date="2013-04-26">
         	<action dev="mdescher" type="update">
         		Only use play_count 0 and 1 for shuffle mode to prevent new tracks from
-                being played over and over again before old tracks get another chance.
+        		being played over and over again before old tracks get another chance.
         	</action>
         	<action dev="mdescher" type="add">
         		[MYTUNESRSSIPHONE-48] Back to playlist when playback in jukebox finishes
