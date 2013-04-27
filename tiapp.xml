@@ -11,7 +11,7 @@
     </deployment-targets>
     <id>de.codewave.mytunesrss</id>
     <name>MyTunesRSS</name>
-    <version>2.4</version>
+    <version>2.3</version>
     <publisher>Codewave Software Michael Descher</publisher>
     <url>http://www.codewave.de</url>
     <description>MyTunesRSS iOS client</description>

@@ -16,7 +16,7 @@ function AppInfoWindow() {
 
 	win.add(GUI.createLabel(STYLE.get("appInfoTitle", {textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER,text:"MyTunesRSS iOS App"})));
 	win.add(GUI.createLabel(STYLE.get("appInfoVersion", {textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER,text:"Version " + Titanium.App.version})));
-	var modTs = Titanium.Filesystem.getFile('white_noise.wav').modificationTimestamp();
+	var modTs = Titanium.Filesystem.getFile("keep_alive.wav").modificationTimestamp();
 	if (Titanium.App.version.indexOf('SNAPSHOT') > 0) {
 		win.add(GUI.createLabel(STYLE.get("appInfoTimestamp", {textAlign:Titanium.UI.TEXT_ALIGNMENT_CENTER,text:modTs + " - Ti " + Titanium.version})));
 	}
