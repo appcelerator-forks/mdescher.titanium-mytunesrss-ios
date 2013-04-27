@@ -84,18 +84,11 @@ var STYLE = new GUI.Style();
 
 Titanium.Media.audioSessionMode = Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK;
 
-var KEEP_ALIVE_SOUND = Titanium.Media.createSound({url:"white_noise.wav",volume:0,looping:true,preload:true});
-
 var view = Titanium.UI.createView({backgroundColor:DARK_GRAY});
 
 var jukebox = new Jukebox();
-Titanium.App.addEventListener("pause", function() {
-	Titanium.API.debug("Application event \"pause\".");
-	jukebox.onAppPaused();
-});
 Titanium.App.addEventListener("resumed", function() {
 	Titanium.API.debug("Application event \"resumed\".");
-	jukebox.onAppResumed();
 	var httpClient = Titanium.Network.createHTTPClient({
 		onload : function() {
 			Titanium.API.debug("Response from HTTP server: \"" + this.responseText + "\".");

@@ -5,7 +5,11 @@
     </properties>
     <body>
 
-        <release version="2.3" date="2013-04-26">
+        <release version="2.3" date="2013-04-27">
+        	<action dev="mdescher" type="update">
+        		Improved background keep-alive. Only play keep-alive sound once every 60 seconds
+        		when app is in background and jukebox is active.
+        	</action>
         	<action dev="mdescher" type="update">
         		Only use play_count 0 and 1 for shuffle mode to prevent new tracks from
         		being played over and over again before old tracks get another chance.
