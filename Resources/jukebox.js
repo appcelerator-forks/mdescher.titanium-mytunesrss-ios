@@ -5,7 +5,6 @@ function Jukebox() {
 	
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
-	var myBackground;
 	var myRandomOfflineMode;
 	var myTrack;
 	var imageView;
@@ -192,6 +191,9 @@ function Jukebox() {
 	var mediaControlsView = MEDIA_CONTROLS.createView({left:0,top:0,width:0,height:0});
 	mediaControlsView.addEventListener("remoteControlPlay", function() {
 		Titanium.API.debug("RemoteControlPlay");
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
 		play();
 	}); 
 	mediaControlsView.addEventListener("remoteControlPause", function() {
@@ -281,35 +283,24 @@ function Jukebox() {
 	}
 	
 	var waitingForDataTimeout;
-	var delayKeepAliveWhenPaused;
-	
+
 	var changeEventListener = function(e) {
 		Titanium.API.debug("Audio player state changed to \"" + getStateName(e.state) + "\".");
-		if (myBackground === true) {
-			if (e.state === audioPlayer.STATE_PLAYING || (e.state === audioPlayer.STATE_STOPPED && fastForwardOnStopped != true)) {
-				if (KEEP_ALIVE_SOUND.playing) {
-					Titanium.API.debug("Stopping keep-alive-sound.")
-			   		KEEP_ALIVE_SOUND.stop();
-				}
-			} else if (e.state != audioPlayer.STATE_INITIALIZED) {
-				if (!KEEP_ALIVE_SOUND.playing) {
-					Titanium.API.debug("Starting keep-alive-sound.")
-			   		KEEP_ALIVE_SOUND.play();
-				}
-			}
-		}
 		if (e.state === audioPlayer.STATE_STOPPED) {
 			if (fastForwardOnStopped === true) {
 				Titanium.API.debug("Skipping to next track.")
 				fastForwardOnStopped = false;
 				audioPlayer.stop();
 		        if (!fastForward(true)) {
+	   				disableKeepAlive();
 		        	currentPlaylistIndex = 0; // reset to first track...
 		        	myParent.open();
 	   				win.close(); // ... and return to parent view
 		        }
+			} else {
+				disableKeepAlive();
 			}
-	   	}
+	   }
 		if (e.state == audioPlayer.STATE_INITIALIZED || e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED) {
 			Titanium.API.debug("Setting PLAY button image.")
 	   		controlPlayPause.setImage("images/play.png");
@@ -318,6 +309,7 @@ function Jukebox() {
         	fastForwardOnStopped = true;
 	   		Titanium.API.debug("Setting PAUSE button image.")
         	controlPlayPause.setImage("images/pause.png");
+        	enableKeepAlive();
         }
 	    if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
             showJukeboxActivityView();
@@ -334,16 +326,6 @@ function Jukebox() {
         } else if (waitingForDataTimeout != undefined) {
         	clearTimeout(waitingForDataTimeout);
         	waitingForDataTimeout = undefined;
-        }
-        if (e.state === audioPlayer.STATE_PAUSED) {
-        	delayKeepAliveWhenPaused = setTimeout(function() {
-				Titanium.API.debug("Stopping audio player after 15 minutes in paused state.")
-				fastForwardOnStopped = false;
-				audioPlayer.stop();
-        	}, 900000);
-        } else if (delayKeepAliveWhenPaused != undefined) {
-        	clearTimeout(delayKeepAliveWhenPaused);
-        	delayKeepAliveWhenPaused = undefined;
         }
     }
 
@@ -548,7 +530,6 @@ function Jukebox() {
 			Titanium.API.debug("[this.reset] Setting audio player URL \"\" (state=" + audioPlayer.getState() + ").");
 		    audioPlayer.setUrl("");
             currentPlaylist = undefined;
-		    KEEP_ALIVE_SOUND.stop();
 		}
 	}
 
@@ -558,7 +539,6 @@ function Jukebox() {
 			fastForwardOnStopped = false;
 			audioPlayer.stop();
             currentPlaylist = undefined;
-		    KEEP_ALIVE_SOUND.stop();
 		    createPlayer();
 		}
 	};
@@ -569,18 +549,6 @@ function Jukebox() {
 	    audioPlayer.stop();
 	    setProgress(0);
 	}
-
-    this.onAppPaused = function() {
-    	myBackground = true;
-        if (currentPlaylist != undefined && audioPlayer != undefined && audioPlayer.getState() === audioPlayer.STATE_PAUSED) {
-        	Titanium.API.debug("[this.onAppPaused] Application paued with audio player active in paused mode: stopping playback.");
-        	jukebox.stopPlayback();
-        }
-    }
-    
-    this.onAppResumed = function() {
-		myBackground = false;
-    }
 
     this.isRandomOfflineMode = function() {
     	return myRandomOfflineMode;
