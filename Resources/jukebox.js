@@ -283,6 +283,7 @@ function Jukebox() {
 	}
 	
 	var waitingForDataTimeout;
+	var pauseTimeout;
 
 	var changeEventListener = function(e) {
 		Titanium.API.debug("Audio player state changed to \"" + getStateName(e.state) + "\".");
@@ -316,7 +317,7 @@ function Jukebox() {
         } else {
             hideJukeboxActivityView();
         }
-        if (e.state === audioPlayer.STATE_WAITING_FOR_DATA) {
+        if (e.state === audioPlayer.STATE_WAITING_FOR_DATA && waitingForDataTimeout === undefined) {
         	waitingForDataTimeout = setTimeout(function() {
 				Titanium.API.debug("Stopping audio player after 20 seconds waiting for data.")
 				fastForwardOnStopped = false;
@@ -326,6 +327,16 @@ function Jukebox() {
         } else if (waitingForDataTimeout != undefined) {
         	clearTimeout(waitingForDataTimeout);
         	waitingForDataTimeout = undefined;
+        }
+        if (e.state === audioPlayer.STATE_PAUSED && pauseTimeout === undefined) {
+        	pauseTimeout = setTimeout(function() {
+				Titanium.API.debug("Stopping audio player after 20 minutes in pause.")
+				fastForwardOnStopped = false;
+				audioPlayer.stop();
+        	}, 1200000);
+        } else if (pauseTimeout != undefined) {
+        	clearTimeout(pauseTimeout);
+        	pauseTimeout = undefined;
         }
     }
 

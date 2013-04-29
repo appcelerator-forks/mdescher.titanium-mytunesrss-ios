@@ -4,6 +4,7 @@ var keepAliveJob = setInterval(function() {
 	keepAliveSound.play();
 }, 60000);
 Titanium.App.currentService.addEventListener("stop", function() {
+	Titanium.App.fireEvent("mytunesrss_keepalivedeath");
 	if (keepAliveJob != undefined) {
 		Titanium.API.debug("Keep-alive service has been stopped, clearing keep-alive job interval timer.");
 		clearInterval(keepAliveJob);
