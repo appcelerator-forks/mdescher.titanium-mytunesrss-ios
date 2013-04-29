@@ -149,6 +149,11 @@ Titanium.App.addEventListener("mytunesrss_sync", function(event) {
 	});
 });
 
+var KEEP_ALIVE_SERVICE;
+Titanium.App.addEventListener("mytunesrss_keepalivedeath", function() {
+	KEEP_ALIVE_SERVICE = undefined;
+})
+
 var connectedUsername;
 var connectedPassword;
 var offlineMode;

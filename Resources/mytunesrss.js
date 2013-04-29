@@ -638,8 +638,6 @@ function getRememberedServerUrls() {
 	return Titanium.App.Properties.getList("serverUrls", []);	
 }
 
-var KEEP_ALIVE_SERVICE;
-
 function enableKeepAlive() {
 	if (KEEP_ALIVE_SERVICE === undefined) {
 		Titanium.API.debug("Registering keep-alive background service.");
