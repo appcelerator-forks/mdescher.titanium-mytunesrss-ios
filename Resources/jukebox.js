@@ -298,8 +298,12 @@ function Jukebox() {
 		        	myParent.open();
 	   				win.close(); // ... and return to parent view
 		        }
-			} else {
-				disableKeepAlive();
+			} else) {
+                if (keepKeepAliveOnStopped === true) {
+                    keepKeepAliveOnStopped = false;
+                } else {
+    				disableKeepAlive();
+                }
 			}
 	   }
 		if (e.state == audioPlayer.STATE_INITIALIZED || e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED) {
@@ -345,6 +349,7 @@ function Jukebox() {
 	function setPlayerUrl(id, url) {
 		Titanium.API.debug("[setPlayerUrl] Stopping audio player.");
 		fastForwardOnStopped = false;
+        keepKeepAliveOnStopped = true;
 		audioPlayer.stop();
 		var tcParam = getTcParam();
 		setProgress(0);
@@ -392,6 +397,7 @@ function Jukebox() {
 	}
 	
 	var fastForwardOnStopped = true;
+    var keepKeepAliveOnStopped = false;
 	
 	function createPlayer() {
 		if (audioPlayer != undefined) {
@@ -419,6 +425,7 @@ function Jukebox() {
 	this.setPlaylist = function(playlist, index, randomOfflineMode) {
 		Titanium.API.debug("[this.setPlaylist] Stopping audio player.");
 		fastForwardOnStopped = false;
+        keepKeepAliveOnStopped = true;
 	    audioPlayer.stop();
 	    currentPlaylist = playlist;
 	    currentPlaylistIndex = index;
@@ -516,6 +523,7 @@ function Jukebox() {
 		    var playing = isPlayingOrBuffering();
 		    Titanium.API.debug("[shuffle] Stopping audio player.");
 		    fastForwardOnStopped = false;
+            keepKeepAliveOnStopped = true;
 		    audioPlayer.stop();
 		    var tmp, rand;
 		    for (var i = 0; i < currentPlaylist.length; i++){

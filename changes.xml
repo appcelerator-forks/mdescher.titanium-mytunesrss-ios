@@ -5,6 +5,13 @@
     </properties>
     <body>
 
+        <release version="2.3.1" date="2013-??-??">
+        	<action dev="mdescher" type="fix">
+        		Do not stop keep-alive background task when audio player stops due to
+                user interaction, e.g. shuffle/next/previous track.
+        	</action>
+        </release>
+
         <release version="2.3" date="2013-04-27">
         	<action dev="mdescher" type="update">
         		Improved background keep-alive. Only play keep-alive sound once every 60 seconds
