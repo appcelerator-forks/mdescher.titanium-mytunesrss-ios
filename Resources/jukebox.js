@@ -298,7 +298,7 @@ function Jukebox() {
 		        	myParent.open();
 	   				win.close(); // ... and return to parent view
 		        }
-			} else) {
+			} else {
                 if (keepKeepAliveOnStopped === true) {
                     keepKeepAliveOnStopped = false;
                 } else {
