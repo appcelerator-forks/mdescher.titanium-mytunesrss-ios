@@ -1,5 +1,9 @@
 function Jukebox() {
-	
+
+	var keepAliveSound = Titanium.Media.createSound({url:"keep_alive.wav",volume:0,looping:true,preload:true});
+
+	var background = false;
+
 	var self = this;
 	var myParent;
 	
@@ -194,7 +198,7 @@ function Jukebox() {
 		if (jukebox.isIos61BugPhase()) {
 			return;
 		}
-		play();
+		checkWebserverSanity(function() {play()});
 	}); 
 	mediaControlsView.addEventListener("remoteControlPause", function() {
 		Titanium.API.debug("RemoteControlPause");
@@ -215,21 +219,21 @@ function Jukebox() {
 		if (jukebox.isIos61BugPhase()) {
 			return;
 		}
-		playPause();
+		checkWebserverSanity(function() {playPause()});
 	}); 
 	mediaControlsView.addEventListener("remoteControlPreviousTrack", function() {
 		Titanium.API.debug("RemoteControlPreviousTrack");
 		if (jukebox.isIos61BugPhase()) {
 			return;
 		}
-		rewind();
+		checkWebserverSanity(function() {rewind()});
 	}); 
 	mediaControlsView.addEventListener("remoteControlNextTrack", function() {
 		Titanium.API.debug("RemoteControlNextTrack");
 		if (jukebox.isIos61BugPhase()) {
 			return;
 		}
-	    fastForward();
+		checkWebserverSanity(function() {fastForward()});
 	}); 
 	win.add(mediaControlsView);
 	
@@ -284,28 +288,53 @@ function Jukebox() {
 	
 	var waitingForDataTimeout;
 	var pauseTimeout;
+	var stopKeepAliveTimeout;
 
 	var changeEventListener = function(e) {
 		Titanium.API.debug("Audio player state changed to \"" + getStateName(e.state) + "\".");
+		if (background) {
+			if (e.state === audioPlayer.STATE_STOPPED) {
+				if (!keepAliveSound.playing) {
+					Titanium.API.debug("Starting keep-alive sound.");
+					keepAliveSound.play();
+				}
+				if (stopKeepAliveTimeout === undefined) {
+					Titanium.API.debug("Creating keep-alive timeout.");
+					stopKeepAliveTimeout = setTimeout(function() {
+						if (keepAliveSound.playing) {
+							Titanium.API.debug("Stopping keep-alive sound.");
+							keepAliveSound.stop();
+						}
+					}, 30000);
+				}
+			} else if (e.state === audioPlayer.STATE_PLAYING) {
+				if (stopKeepAliveTimeout != undefined) {
+					Titanium.API.debug("Clearing keep-alive timeout.");
+					clearTimeout(stopKeepAliveTimeout);
+				}
+				if (keepAliveSound.playing) {
+					Titanium.API.debug("Stopping keep-alive sound.");
+					keepAliveSound.stop();
+				}
+			} else {
+				if (!keepAliveSound.playing) {
+					Titanium.API.debug("Starting keep-alive sound.");
+					keepAliveSound.play();
+				}				
+			}			
+		}
 		if (e.state === audioPlayer.STATE_STOPPED) {
 			if (fastForwardOnStopped === true) {
 				Titanium.API.debug("Skipping to next track.")
 				fastForwardOnStopped = false;
 				audioPlayer.stop();
 		        if (!fastForward(true)) {
-	   				disableKeepAlive();
 		        	currentPlaylistIndex = 0; // reset to first track...
 		        	myParent.open();
 	   				win.close(); // ... and return to parent view
 		        }
-			} else {
-                if (keepKeepAliveOnStopped === true) {
-                    keepKeepAliveOnStopped = false;
-                } else {
-    				disableKeepAlive();
-                }
 			}
-	   }
+		}
 		if (e.state == audioPlayer.STATE_INITIALIZED || e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED) {
 			Titanium.API.debug("Setting PLAY button image.")
 	   		controlPlayPause.setImage("images/play.png");
@@ -314,7 +343,6 @@ function Jukebox() {
         	fastForwardOnStopped = true;
 	   		Titanium.API.debug("Setting PAUSE button image.")
         	controlPlayPause.setImage("images/pause.png");
-        	enableKeepAlive();
         }
 	    if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
             showJukeboxActivityView();
@@ -334,10 +362,10 @@ function Jukebox() {
         }
         if (e.state === audioPlayer.STATE_PAUSED && pauseTimeout === undefined) {
         	pauseTimeout = setTimeout(function() {
-				Titanium.API.debug("Stopping audio player after 20 minutes in pause.")
+				Titanium.API.debug("Stopping audio player after 5 minutes in pause.")
 				fastForwardOnStopped = false;
-				audioPlayer.stop();
-        	}, 1200000);
+				setTrack(true);
+        	}, 300000);
         } else if (pauseTimeout != undefined) {
         	clearTimeout(pauseTimeout);
         	pauseTimeout = undefined;
@@ -349,7 +377,6 @@ function Jukebox() {
 	function setPlayerUrl(id, url) {
 		Titanium.API.debug("[setPlayerUrl] Stopping audio player.");
 		fastForwardOnStopped = false;
-        keepKeepAliveOnStopped = true;
 		audioPlayer.stop();
 		var tcParam = getTcParam();
 		setProgress(0);
@@ -397,7 +424,6 @@ function Jukebox() {
 	}
 	
 	var fastForwardOnStopped = true;
-    var keepKeepAliveOnStopped = false;
 	
 	function createPlayer() {
 		if (audioPlayer != undefined) {
@@ -425,7 +451,6 @@ function Jukebox() {
 	this.setPlaylist = function(playlist, index, randomOfflineMode) {
 		Titanium.API.debug("[this.setPlaylist] Stopping audio player.");
 		fastForwardOnStopped = false;
-        keepKeepAliveOnStopped = true;
 	    audioPlayer.stop();
 	    currentPlaylist = playlist;
 	    currentPlaylistIndex = index;
@@ -523,7 +548,6 @@ function Jukebox() {
 		    var playing = isPlayingOrBuffering();
 		    Titanium.API.debug("[shuffle] Stopping audio player.");
 		    fastForwardOnStopped = false;
-            keepKeepAliveOnStopped = true;
 		    audioPlayer.stop();
 		    var tmp, rand;
 		    for (var i = 0; i < currentPlaylist.length; i++){
@@ -573,5 +597,19 @@ function Jukebox() {
     	return myRandomOfflineMode;
     }
 
+	this.onResumed = function() {
+		background = false;
+	}
+	
+	this.onPause = function() {
+		background = true;
+		if (audioPlayer.state === audioPlayer.STATE_BUFFERING || audioPlayer.state === audioPlayer.STATE_PAUSED || audioPlayer.state === audioPlayer.STATE_STOPPING || audioPlayer.state === audioPlayer.STATE_WAITING_FOR_DATA || audioPlayer.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
+			Titanium.API.debug("Starting keep-alive sound.");
+			keepAliveSound.play();
+		}
+	}
+
 	createPlayer();
 }
+
+

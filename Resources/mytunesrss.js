@@ -637,19 +637,3 @@ function getLastRememberedServerUrl() {
 function getRememberedServerUrls() {
 	return Titanium.App.Properties.getList("serverUrls", []);	
 }
-
-function enableKeepAlive() {
-	if (KEEP_ALIVE_SERVICE === undefined) {
-		Titanium.API.debug("Registering keep-alive background service.");
-		KEEP_ALIVE_SERVICE = Titanium.App.iOS.registerBackgroundService({"url":"keep_alive_service.js"});
-	}
-}
-
-function disableKeepAlive() {
-	if (KEEP_ALIVE_SERVICE != undefined) {
-		Titanium.API.debug("Unregistering keep-alive background service.");
-		KEEP_ALIVE_SERVICE.unregister();
-		KEEP_ALIVE_SERVICE.stop();
-		KEEP_ALIVE_SERVICE = undefined;
-	}
-}

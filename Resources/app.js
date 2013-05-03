@@ -56,7 +56,7 @@ WEBSERVER.disconnectsInBackground = false;
 var HTTP_SERVER;
 var HTTP_SERVER_PORT = -1;
 
-function startHttpServer() {
+function startHttpServer(okCallback) {
 	Titanium.API.debug("Starting HTTP server.");
 	for (i = 1025; i < 65536; i++) {
 		try {
@@ -71,6 +71,9 @@ function startHttpServer() {
 			}});
 			Titanium.API.debug("HTTP server listening on port " + i + ".");
 			HTTP_SERVER_PORT = i;
+			if (okCallback != undefined) {
+				okCallback();
+			}
 			return; // done
 		} catch (ex) {
 			// ignore and try next port
@@ -87,22 +90,34 @@ Titanium.Media.audioSessionMode = Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK;
 var view = Titanium.UI.createView({backgroundColor:DARK_GRAY});
 
 var jukebox = new Jukebox();
-Titanium.App.addEventListener("resumed", function() {
-	Titanium.API.debug("Application event \"resumed\".");
+
+var checkWebserverSanity = function(okCallback) {
 	var httpClient = Titanium.Network.createHTTPClient({
 		onload : function() {
 			Titanium.API.debug("Response from HTTP server: \"" + this.responseText + "\".");
 			if (this.responseText !== "OK") {
-				startHttpServer();
+				startHttpServer(okCallback);
+			} else if (okCallback != undefined) {
+				okCallback();
 			}
 		},
 		onerror : function() {
 			Titanium.API.debug("HTTP server error.");
-			startHttpServer();
+			startHttpServer(okCallback);
 		}
 	});
 	httpClient.open("GET", "http://127.0.0.1:" + HTTP_SERVER_PORT)
 	httpClient.send();
+};
+
+Titanium.App.addEventListener("resumed", function() {
+	Titanium.API.debug("Application event \"resumed\".");
+	checkWebserverSanity();
+	jukebox.onResumed();
+});
+Titanium.App.addEventListener("pause", function() {
+	Titanium.API.debug("Application event \"resumed\".");
+	jukebox.onPause();
 });
 
 var CANCEL_SYNC_AUDIO_TRACKS = false;
@@ -148,11 +163,6 @@ Titanium.App.addEventListener("mytunesrss_sync", function(event) {
 		}
 	});
 });
-
-var KEEP_ALIVE_SERVICE;
-Titanium.App.addEventListener("mytunesrss_keepalivedeath", function() {
-	KEEP_ALIVE_SERVICE = undefined;
-})
 
 var connectedUsername;
 var connectedPassword;
