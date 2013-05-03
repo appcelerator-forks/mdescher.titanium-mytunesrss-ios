@@ -116,7 +116,7 @@ Titanium.App.addEventListener("resumed", function() {
 	jukebox.onResumed();
 });
 Titanium.App.addEventListener("pause", function() {
-	Titanium.API.debug("Application event \"resumed\".");
+	Titanium.API.debug("Application event \"pause\".");
 	jukebox.onPause();
 });
 

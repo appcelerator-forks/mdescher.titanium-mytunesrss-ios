@@ -311,6 +311,7 @@ function Jukebox() {
 				if (stopKeepAliveTimeout != undefined) {
 					Titanium.API.debug("Clearing keep-alive timeout.");
 					clearTimeout(stopKeepAliveTimeout);
+                    stopKeepAliveTimeout = undefined;
 				}
 				if (keepAliveSound.playing) {
 					Titanium.API.debug("Stopping keep-alive sound.");
@@ -599,13 +600,24 @@ function Jukebox() {
 
 	this.onResumed = function() {
 		background = false;
+		if (stopKeepAliveTimeout != undefined) {
+			Titanium.API.debug("Clearing keep-alive timeout.");
+			clearTimeout(stopKeepAliveTimeout);
+            stopKeepAliveTimeout = undefined;
+		}
+		if (keepAliveSound.playing) {
+			Titanium.API.debug("Stopping keep-alive sound.");
+			keepAliveSound.stop();
+		}
 	}
 	
 	this.onPause = function() {
 		background = true;
 		if (audioPlayer.state === audioPlayer.STATE_BUFFERING || audioPlayer.state === audioPlayer.STATE_PAUSED || audioPlayer.state === audioPlayer.STATE_STOPPING || audioPlayer.state === audioPlayer.STATE_WAITING_FOR_DATA || audioPlayer.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
-			Titanium.API.debug("Starting keep-alive sound.");
-			keepAliveSound.play();
+			if (!keepAliveSound.playing) {
+				Titanium.API.debug("Starting keep-alive sound.");
+				keepAliveSound.play();
+			}				
 		}
 	}
 
