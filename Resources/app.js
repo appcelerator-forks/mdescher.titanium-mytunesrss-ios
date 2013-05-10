@@ -86,7 +86,7 @@ function startHttpServer(okCallback) {
 		                if (cachedImage.exists()) {
 				            return {
 					            status : 404,
-                                body : "Image not found.";
+                                body : "Image not found."
 				            }
 		                } else {
                             return 
@@ -95,7 +95,7 @@ function startHttpServer(okCallback) {
                 } else {
 					return {
                         status : 401,
-                        body : "Unrecognized command.";
+                        body : "Unrecognized command."
                     };
                 }
 			}});
