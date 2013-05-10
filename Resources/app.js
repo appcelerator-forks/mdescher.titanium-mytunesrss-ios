@@ -66,30 +66,36 @@ function startHttpServer(okCallback) {
 					return "OK";
 				}
                 var splitChar = e.path.indexOf("/", 1);
-                var command = e.path.substr(1, splitChar);
-                var argument = e.path.substr(splitChar + 1);
+                var command = e.path.substring(1, splitChar);
+                var argument = e.path.substring(splitChar + 1);
+                Titanium.API.debug("Command = '" + command + "', argument = '" + argument + "'.");
                 if (command === "track") {
+                	Titanium.API.debug("Track '" + argument + "' requested.");
 				    return {
 					    file : getFileForTrackCache(argument)
 				    }
                 } else if (command === "image") {
-                    var cacheObjectId = command.split("/", 1)[0];
-                    var remoteImage = command.split("/", 1)[1];
+                    var cacheObjectId = argument.split("/", 2)[0];
+                    var remoteImage = decodeURIComponent(argument.split("/", 2)[1]);
+                    Titanium.API.debug("Cached image '" + cacheObjectId + "' requested.");
                     var cachedImage = getImageCacheFile(cacheObjectId);
                     if (cachedImage.exists()) {
 				        return {
 					        file : cachedImage
 				        }
                     } else {
+                    	Titanium.API.debug("Cached image not found, loading remote image from '" + remoteImage + "'.");
 		                downloadImage(cacheObjectId, remoteImage);
                         cachedImage = getImageCacheFile(cacheObjectId);
 		                if (cachedImage.exists()) {
+					        return {
+						        file : cachedImage
+					        }
+		                } else {
 				            return {
 					            status : 404,
                                 body : "Image not found."
 				            }
-		                } else {
-                            return 
                         }
                     }
                 } else {

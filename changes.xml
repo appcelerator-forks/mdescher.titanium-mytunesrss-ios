@@ -5,6 +5,14 @@
     </properties>
     <body>
 
+        <release version="2.4.0" date="___D___">
+        	<action dev="mdescher" type="update">
+        		Use internal http server for all image request. The http server either returns the cached image
+        		or fetches, caches and returns the remote image. This make the special implementation of the
+        		imageview with listeners obsolete.
+        	</action>
+        </release>
+
         <release version="2.3.1" date="2013-05-08">
         	<action dev="mdescher" type="fix">
         		Do not stop keep-alive background task when audio player stops due to
