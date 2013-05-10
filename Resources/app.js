@@ -65,9 +65,39 @@ function startHttpServer(okCallback) {
 				if (e.path.length < 2) {
 					return "OK";
 				}
-				return {
-					file : getFileForTrackCache(e.path.substr(1))
-				}
+                var splitChar = e.path.indexOf("/", 1);
+                var command = e.path.substr(1, splitChar);
+                var argument = e.path.substr(splitChar + 1);
+                if (command === "track") {
+				    return {
+					    file : getFileForTrackCache(argument)
+				    }
+                } else if (command === "image") {
+                    var cacheObjectId = command.split("/", 1)[0];
+                    var remoteImage = command.split("/", 1)[1];
+                    var cachedImage = getImageCacheFile(cacheObjectId);
+                    if (cachedImage.exists()) {
+				        return {
+					        file : cachedImage
+				        }
+                    } else {
+		                downloadImage(cacheObjectId, remoteImage);
+                        cachedImage = getImageCacheFile(cacheObjectId);
+		                if (cachedImage.exists()) {
+				            return {
+					            status : 404,
+                                body : "Image not found.";
+				            }
+		                } else {
+                            return 
+                        }
+                    }
+                } else {
+					return {
+                        status : 401,
+                        body : "Unrecognized command.";
+                    };
+                }
 			}});
 			Titanium.API.debug("HTTP server listening on port " + i + ".");
 			HTTP_SERVER_PORT = i;

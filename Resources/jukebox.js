@@ -383,8 +383,8 @@ function Jukebox() {
 		setProgress(0);
 	    var localFile = getCachedTrackFile(id);
 	    if (localFile != undefined) {
-	    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + "http://localhost:" + HTTP_SERVER_PORT + "/" + id + "\" (state=" + audioPlayer.getState() + ").");
-			audioPlayer.setUrl("http://localhost:" + HTTP_SERVER_PORT + "/" + id);
+	    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + "http://localhost:" + HTTP_SERVER_PORT + "/track/" + id + "\" (state=" + audioPlayer.getState() + ").");
+			audioPlayer.setUrl("http://localhost:" + HTTP_SERVER_PORT + "/track/" + id);
 	    } else {
 		    if (tcParam != undefined) {
 		    	Titanium.API.debug("[setPlayerUrl] Setting audio player URL \"" + url + '/' + tcParam + "\" (state=" + audioPlayer.getState() + ").");
