@@ -7,6 +7,12 @@
 
         <release version="2.4.0" date="___D___">
         	<action dev="mdescher" type="update">
+        		Use list view instead of table view.
+        	</action>
+        	<action dev="mdescher" type="remove">
+        		Removed iAd view in favor of a paid app.
+        	</action>
+        	<action dev="mdescher" type="update">
         		Use internal http server for all image request. The http server either returns the cached image
         		or fetches, caches and returns the remote image. This make the special implementation of the
         		imageview with listeners obsolete.
