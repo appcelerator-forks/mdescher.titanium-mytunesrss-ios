@@ -99,6 +99,34 @@ function setTableDataAndIndex(tableView, items, createTableViewRowCallback, getS
 	}*/
 }
 
+function setListDataAndIndex(listView, items, createListItemDataCallback, getSectionAndIndexNameCallback) {
+	var sectionTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '123'];
+	var indexTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#'];
+	var section = new Array(27);
+	for (var i = 0; i < items.length; i++) {
+		var itemName = getSectionAndIndexNameCallback(items[i]);
+		var index = itemName.toUpperCase().charCodeAt(0) - 65;
+		if (index < 0 || index > 25) {
+			index = 26;
+		}
+		if (!section[index]) {
+			section[index] = Titanium.UI.createListSection({headerTitle:sectionTitle[index]});
+		}
+		section[index].appendItems([createListItemDataCallback(items[i], i)]);
+	}
+	var indexData = [];
+	var tableData = [];
+	var globalIndex = 0;
+	for (i = 0; i < 27; i++) {
+		if (section[i]) {
+			tableData.push(section[i]);
+			indexData.push({title:indexTitle[i],index:globalIndex});
+			globalIndex += section[i].rowCount;
+		}
+	}
+	listView.setSections(tableData);
+}
+
 function removeUnsupportedTracks(items) {
     for (var i = items.length - 1; i >= 0; i--) {
         if ((items[i].mediaType != 'Audio' && items[i].mediaType != 'Video') || items[i].protected === true) {
@@ -584,18 +612,23 @@ function showError(options) {
 	Titanium.App.setIdleTimerDisabled(idleTimerDisabled);
 }
 
-function getAdSpacingStyleIfOnline(options) {
-	if (Titanium.Network.online) {
+function tryGetAdSpacingStyle(options) {
+	if (isAdActive()) {
 		return STYLE.get("iadSpacing", options);
 	} else {
 		return options;
 	}
 }
 
-function addIAddIfOnline(win) {
-	if (Titanium.Network.online) {
+function tryAddAd(win) {
+	if (isAdActive()) {
 		win.add(Titanium.UI.iOS.createAdView(STYLE.get("iad", {adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,backgroundColor:DARK_GRAY})));
 	}
+}
+
+function isAdActive() {
+	return false;
+	//return Titanium.Network.online;
 }
 
 function rememberServerUrl(url) {

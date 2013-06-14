@@ -73,7 +73,7 @@ function MenuWindow() {
 		return row;
 	}
 	
-	var tableView = GUI.createTableView(getAdSpacingStyleIfOnline({top:90,scrollable:false}));
+	var tableView = GUI.createTableView(tryGetAdSpacingStyle({top:90,scrollable:false}));
 	
 	var rowPlaylists = createMenuItem(L("menu.playlists"), "images/playlists.png");
 	rowPlaylists.addEventListener('click', function() {
@@ -201,7 +201,7 @@ function MenuWindow() {
 	win.add(GUI.createTopToolbar("MyTunesRSS", buttonLogout, buttonSettings));
 	win.add(searchBar);
 	win.add(tableView);
-	addIAddIfOnline(win);
+	tryAddAd(win);
 	
 	this.open = function() {
 		var rows = new RowArray();

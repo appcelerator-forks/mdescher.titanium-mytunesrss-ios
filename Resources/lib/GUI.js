@@ -4,6 +4,12 @@ exports.createTableView = function(options) {
 	return Titanium.UI.createTableView(options);
 }
 
+exports.createListView = function(options) {
+	options.separatorColor = "#000000";
+	options.backgroundColor = DARK_GRAY;
+	return Titanium.UI.createListView(options);
+}
+
 exports.createTextField = function(options) {
 	options.borderStyle = Titanium.UI.INPUT_BORDERSTYLE_ROUNDED;
 	options.font = {fontSize:14};

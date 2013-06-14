@@ -5,7 +5,55 @@ function AlbumsWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
-	var tableView = GUI.createTableView(getAdSpacingStyleIfOnline({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45}));
+	var template = {
+		childTemplates : [
+			{
+				type : "Titanium.UI.ImageView",
+				bindId : "pic",
+				properties : {
+					hires : Titanium.Platform.displayCaps.density === "high",
+					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					left : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					right : Titanium.Platform.osname === "ipad" ? 691 : 270,
+					defaultImage : "appicon.png"					
+				}
+			},
+			{
+				type : "Titanium.UI.Label",
+				bindId : "main",
+				properties : {
+					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
+					height : Titanium.Platform.osname === "ipad" ? 36 : 24,
+					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
+					font : {
+						fontSize : 16,
+						fontWeight : "bold"
+					},
+					color : "#CCCCCC",
+					minimumFontSize : 12
+				}
+			},
+			{
+				type : "Titanium.UI.Label",
+				bindId : "sub",
+				properties : {
+					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
+					height : Titanium.Platform.osname === "ipad" ? 26 : 18,
+					font : {
+						fontSize : 12,
+						fontWeight : "bold"
+					},
+					color : "#CCCCCC",
+					minimumFontSize : 12
+				}
+			}
+		]
+	};
+
+	var listView = GUI.createListView(tryGetAdSpacingStyle({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"}));
 	var buttonBack = GUI.createButton({title:L("albums.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -14,39 +62,46 @@ function AlbumsWindow(data) {
 	});
 	
 	win.add(GUI.createTopToolbar(L("albums.title"), buttonBack, undefined));
-	win.add(tableView);
-	addIAddIfOnline(win);
+	win.add(listView);
+	tryAddAd(win);
 	
-	tableView.addEventListener('click', function(e) {
+	listView.addEventListener('itemclick', function(e) {
 		var busyView = createBusyView();
 		Titanium.App.setIdleTimerDisabled(true);
 		win.add(busyView);
         try {
+        	var itemProps = e.section.getItemAt(e.itemIndex).properties;
 		    if (!offlineMode) {
-		        loadAndDisplayTracks(self, e.rowData.tracksUri);
+		        loadAndDisplayTracks(self, itemProps.tracksUri);
 		    } else {
-			    loadAndDisplayOfflineTracks(self, e.rowData.albumName, e.rowData.albumArtist);
+			    loadAndDisplayOfflineTracks(self, itemProps.albumName, itemProps.albumArtist);
 		    }
         } finally {
         	Titanium.App.setIdleTimerDisabled(false);
     	    win.remove(busyView);
         }
 	});
-	
-	setTableDataAndIndex(
-	        tableView,
+		
+	setListDataAndIndex(
+	        listView,
 	        data,
 	        function(item, index) {
-	            var row = GUI.createMediaItemRow(item.imageUri != undefined, getDisplayName(item.name));
-	            if (item.imageUri != undefined) {
-	                row.add(GUI.createMediaItemImage(item.imageHash, item.imageUri));
-	            }
-	            row.add(GUI.createMediaItemLabel(getDisplayName(item.name)));
-	            row.add(GUI.createMediaItemSubLabel(getDisplayName(item.artist)));
-	            row.tracksUri = item.tracksUri;
-	            row.albumName = item.name;
-	            row.albumArtist = item.artist;
-	            return row;
+	        	return {
+	        		pic : {
+	        			image : "http://localhost:" + HTTP_SERVER_PORT + "/image/" + item.imageHash + "/" + encodeURIComponent(item.imageUri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64)),
+	        		},
+	        		main : {
+	        			text : getDisplayName(item.name)
+	        		},
+	        		sub : {
+	        			text : getDisplayName(item.artist)
+	        		},
+	        		properties : {
+	        			tracksUri : item.tracksUri,
+						albumArtist : item.artist,
+						albumName : item.name
+	        		}
+	        	};
 	        },
 	        function(item) {
 	            return item.name;
