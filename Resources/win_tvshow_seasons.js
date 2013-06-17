@@ -98,7 +98,7 @@ function TvShowSeasonsWindow(data) {
 	        	};
 	        },
 	        function(item) {
-	            return item.name;
+	            return String.format(L("tvshow.seasons.itemName"), item.name);
 	        });
 
 	/**

@@ -5,7 +5,7 @@ function PlaylistsWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
-	var templateOnline = {
+	var templateOffline = {
 		childTemplates : [
 			{
 				type : "Titanium.UI.Label",
@@ -24,79 +24,9 @@ function PlaylistsWindow(data) {
 			}
 		]
 	};
-	var templateOffline = {
-		childTemplates : [
-			{
-				type : "Titanium.UI.Label",
-				bindId : "main",
-				properties : {
-					left : 10,
-					height : 24,
-					right : 40,
-					font : {
-						fontSize : 20,
-						fontWeight : "bold"
-					},
-					color : "#CCCCCC",
-					minimumFontSize : 12
-				}
-			},
-			{
-				type : "Titanium.UI.ImageView",
-				bindId : "syncIcon",
-				properties : {
-					width : 20,
-                    right : 10,
-                    image : "images/sync.png",
-                    touchEnabled : false
-				}
-			},
-			{
-				type : "Titanium.UI.View",
-				bindId : "syncGlow",
-				properties : GUI.glowViewOptions({right:20}),
-                events : {
-				    "touchstart" : function(e) {
-				    	e.source.setOpacity(0.75)
-				    },
-			  	    "touchend" : function(e) {
-				    	e.source.setOpacity(0)
-				    },
-			  	    "touchcancel" : function(e) {
-				    	e.source.setOpacity(0)
-				    },
-                    "click" : syncClick
-                }
-			}
-		]
-	};
-
-	var listView = GUI.createListView(tryGetAdSpacingStyle({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"online":templateOnline,"offline":templateOffline},defaultItemTemplate:offlineMode ? "offline" : "online"}));
-	var buttonBack = GUI.createButton({title:L("playlists.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-	
-	buttonBack.addEventListener('click', function() {
-		myParent.open();
-	    win.close();
-	});
-	
-	win.add(GUI.createTopToolbar(L("playlists.title"), buttonBack, undefined));	
-	win.add(listView);
-	tryAddAd(win);
-
-    listView.addEventListener("itemclick", function(e) {
-        var busyView = createBusyView();
-        win.add(busyView);
-        Titanium.App.setIdleTimerDisabled(true);
-        try {
-            var itemProps = e.section.getItemAt(e.itemIndex).properties;
-            loadAndDisplayTracks(self, itemProps.tracksUri);
-        } finally {
-            Titanium.App.setIdleTimerDisabled(false);
-            win.remove(busyView);
-        }
-    });
 
     var syncClick = function(e) {
+    	Ti.API.error("click:" + e.source);
 	    var busyView = createBusyView();
 	    win.add(busyView);
 	    Titanium.App.setIdleTimerDisabled(true);
@@ -129,6 +59,80 @@ function PlaylistsWindow(data) {
 		    Titanium.App.fireEvent("mytunesrss_sync", {data:tracks,index:0});
         }
     }
+
+	var templateOnline = {
+		childTemplates : [
+			{
+				type : "Titanium.UI.Label",
+				bindId : "main",
+				properties : {
+					left : 10,
+					height : 24,
+					right : 40,
+					font : {
+						fontSize : 20,
+						fontWeight : "bold"
+					},
+					color : "#CCCCCC",
+					minimumFontSize : 12
+				},
+			},
+			{
+				type : "Titanium.UI.ImageView",
+				bindId : "syncIcon",
+				properties : {
+					width : 20,
+                    right : 10,
+                    image : "images/sync.png",
+                    touchEnabled : false
+				}
+			},
+			{
+				type : "Titanium.UI.View",
+				bindId : "syncGlow",
+				properties : GUI.glowViewOptions({right:20}),
+				events : {
+				    touchstart : function(e) {
+				    	Ti.API.error("start");
+				    },
+			  	    touchend : function(e) {
+				    	Ti.API.error("stop");
+				    },
+			  	    touchcancel : function(e) {
+ 				    	Ti.API.error("cancel");
+				    },
+			  	    click : function(e) {
+ 				    	Ti.API.error("click");
+                    }
+                }				
+			}
+		]
+	};
+
+	var listView = GUI.createListView(tryGetAdSpacingStyle({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"online":templateOnline,"offline":templateOffline},defaultItemTemplate:offlineMode ? "offline" : "online"}));
+	var buttonBack = GUI.createButton({title:L("playlists.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	
+	buttonBack.addEventListener('click', function() {
+		myParent.open();
+	    win.close();
+	});
+	
+	win.add(GUI.createTopToolbar(L("playlists.title"), buttonBack, undefined));	
+	win.add(listView);
+	tryAddAd(win);
+
+    listView.addEventListener("itemclick", function(e) {
+        var busyView = createBusyView();
+        win.add(busyView);
+        Titanium.App.setIdleTimerDisabled(true);
+        try {
+            var itemProps = e.section.getItemAt(e.itemIndex).properties;
+            loadAndDisplayTracks(self, itemProps.tracksUri);
+        } finally {
+            Titanium.App.setIdleTimerDisabled(false);
+            win.remove(busyView);
+        }
+    });
 
 	setListDataAndIndex(
 	        listView,

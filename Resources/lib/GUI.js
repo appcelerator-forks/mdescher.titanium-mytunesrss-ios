@@ -77,7 +77,7 @@ exports.glowViewOptions = function(center){
 	var options = {
 		width:50,
 		height:50,
-		opacity:0,
+		opacity:0.1,
 		backgroundGradient:{
 			type:"radial",
 			startPoint:{
