@@ -73,7 +73,7 @@ exports.add = function(view, component) {
 	return component;
 }
 
-exports.glowViewOptions(center) {
+exports.glowViewOptions = function(center){
 	var options = {
 		width:50,
 		height:50,
