@@ -140,7 +140,7 @@ function PlaylistsWindow(data) {
 	        		},
                     syncGlow : {
                         tracksUri : item.tracksUri
-                    }
+                    },
 	        		properties : {
 	        			tracksUri : item.tracksUri
 	        		}
