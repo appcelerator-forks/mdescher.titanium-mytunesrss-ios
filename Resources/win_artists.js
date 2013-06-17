@@ -63,8 +63,8 @@ function ArtistsWindow(data) {
 	        			text : getDisplayName(item.name)
 	        		},
 	        		properties : {
-	        			albumsUri : item.albumsUri;
-						artistName : item.name;
+	        			albumsUri : item.albumsUri,
+						artistName : item.name
 	        		}
 	        	};
 	        },
