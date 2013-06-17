@@ -226,6 +226,6 @@ function MenuWindow() {
 		tableView.height = rows.getRows()[0].height * rows.getLength();
 		tableView.setData(rows.getRows());
 		win.open();
-	}
+	};
 
 }

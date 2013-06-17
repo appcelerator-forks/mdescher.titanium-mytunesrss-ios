@@ -80,6 +80,6 @@ function GenresWindow(data) {
 			myParent = parent;
 		}
 		win.open();
-	}
+	};
 	
 }

@@ -18,5 +18,5 @@ function OfflineLoginWindow(parent) {
 
 	this.getWindow = function() {
 		return win;
-	}
+	};
 }

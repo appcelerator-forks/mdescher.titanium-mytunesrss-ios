@@ -84,7 +84,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		    		var busyWindow = new BusyWindow(L("tracklist.busy.downloading"), data[e.index].name);
 		    		busyWindow.open();
 		    		Titanium.App.setIdleTimerDisabled(true);
-					cacheTrack(data[e.index].id, url, function(e) {busyWindow.setProgress(e);return true}, function(e) {
+					cacheTrack(data[e.index].id, url, function(e) {busyWindow.setProgress(e);return true;}, function(e) {
 						if (e.aborted == undefined) {
 				    		db = Titanium.Database.open("OfflineTracks");
 							db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
@@ -139,6 +139,6 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 			myParent = parent;
 		}
 		win.open();
-	}
+	};
 	
 }

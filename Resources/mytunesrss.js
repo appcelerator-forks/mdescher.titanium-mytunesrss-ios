@@ -580,7 +580,7 @@ function cacheTrack(id, uri, progressCallback, doneCallback) {
 						doneCallback({aborted:true});
 					}
 				}
-			}
+			};
 		}
 		if (doneCallback != undefined) {
 			httpClient.onload = doneCallback;

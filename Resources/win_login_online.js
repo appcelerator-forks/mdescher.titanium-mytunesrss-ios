@@ -107,6 +107,6 @@ function OnlineLoginWindow(parent) {
 	
 	this.getWindow = function() {
 		return win;
-	}
+	};
 
 }

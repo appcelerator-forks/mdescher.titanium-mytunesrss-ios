@@ -42,6 +42,6 @@ function VideoPlayerWindow(videoUrl) {
 		}
 		win.open();
 		Titanium.Analytics.featureEvent("videoplayer.open");
-	}
+	};
 
 }

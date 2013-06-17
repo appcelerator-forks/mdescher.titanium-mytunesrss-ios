@@ -27,6 +27,6 @@ function ServerHistoryWindow() {
 	 */
 	this.open = function() {
 		win.open();
-	}
+	};
 	
 }

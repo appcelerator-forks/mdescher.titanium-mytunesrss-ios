@@ -92,6 +92,6 @@ function MoviesWindow(data) {
 			myParent = parent;
 		}
 		win.open();
-	}
+	};
 
 }

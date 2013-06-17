@@ -35,16 +35,16 @@ function RowArray() {
 	this.push = function(row) {
 		row.backgroundColor = rows.length % 2 == 0 ? DARK_GRAY : LIGHT_GRAY;
 		rows.push(row);
-	}
+	};
 	
 	this.getRows = function() {
 		return rows;
-	}
+	};
 	
 	this.getLength = function() {
 		return rows.length;
-	}
-}
+	};
+};
 
 var GUI = require("lib/GUI");
 
@@ -73,7 +73,7 @@ function startHttpServer(okCallback) {
                 	Titanium.API.debug("Track '" + argument + "' requested.");
 				    return {
 					    file : getFileForTrackCache(argument)
-				    }
+				    };
                 } else if (command === "image") {
                     var cacheObjectId = argument.split("/", 2)[0];
                     var remoteImage = decodeURIComponent(argument.split("/", 2)[1]);
@@ -82,7 +82,7 @@ function startHttpServer(okCallback) {
                     if (cachedImage.exists()) {
 				        return {
 					        file : cachedImage
-				        }
+				        };
                     } else {
                     	Titanium.API.debug("Cached image not found, loading remote image from '" + remoteImage + "'.");
 		                downloadImage(cacheObjectId, remoteImage);
@@ -90,12 +90,12 @@ function startHttpServer(okCallback) {
 		                if (cachedImage.exists()) {
 					        return {
 						        file : cachedImage
-					        }
+					        };
 		                } else {
 				            return {
 					            status : 404,
                                 body : "Image not found."
-				            }
+				            };
                         }
                     }
                 } else {
@@ -142,7 +142,7 @@ var checkWebserverSanity = function(okCallback) {
 			startHttpServer(okCallback);
 		}
 	});
-	httpClient.open("GET", "http://127.0.0.1:" + HTTP_SERVER_PORT)
+	httpClient.open("GET", "http://127.0.0.1:" + HTTP_SERVER_PORT);
 	httpClient.send();
 };
 
@@ -160,7 +160,7 @@ var CANCEL_SYNC_AUDIO_TRACKS = false;
 Titanium.App.addEventListener("mytunesrss_sync", function(event) {
     var tcParam = getTcParam();
     var uri = event.data[event.index].playbackUri + (tcParam != undefined ? "/" + tcParam : "");
-	cacheTrack(event.data[event.index].id, uri, function() {return !CANCEL_SYNC_AUDIO_TRACKS}, function(e) {
+	cacheTrack(event.data[event.index].id, uri, function() {return !CANCEL_SYNC_AUDIO_TRACKS;}, function(e) {
 		if (e == undefined || (e.error == undefined && e.aborted !== true)) {
 			if (!getImageCacheFile(event.data[event.index].imageHash).exists()) {
 				downloadImage(event.data[event.index].imageHash, event.data[event.index].imageUri);
@@ -220,6 +220,6 @@ if (dbVersion < DB_VERSION) {
 Titanium.API.debug("Trying to create offline tracks table version " + DB_VERSION + " if it does not exist.");
 db.execute("CREATE TABLE IF NOT EXISTS track (id TEXT, name TEXT, album TEXT, artist TEXT, genre TEXT, album_artist TEXT, image_hash TEXT, protected INTEGER, media_type TEXT, time INTEGER, disc_number INTEGER, track_number INTEGER, play_count INTEGER DEFAULT 0)");
 db.close();
-Titanium.App.Properties.setInt("offlineTracksDbVersion", DB_VERSION)
+Titanium.App.Properties.setInt("offlineTracksDbVersion", DB_VERSION);
 
 new LoginWindow().open();

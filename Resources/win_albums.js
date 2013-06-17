@@ -115,6 +115,6 @@ function AlbumsWindow(data) {
 			myParent = parent;
 		}
 		win.open();
-	}
+	};
 
 }

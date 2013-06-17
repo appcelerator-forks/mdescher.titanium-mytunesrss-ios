@@ -44,6 +44,6 @@ function SafariLoginWindow() {
 	
 	this.getWindow = function() {
 		return win;
-	}
+	};
 	
 }

@@ -80,6 +80,6 @@ function ArtistsWindow(data) {
 			myParent = parent;
 		}
 		win.open();
-	}
+	};
 
 }

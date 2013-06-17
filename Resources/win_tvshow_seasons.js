@@ -109,6 +109,6 @@ function TvShowSeasonsWindow(data) {
 			myParent = parent;
 		}
 		win.open();
-	}
+	};
 
 }

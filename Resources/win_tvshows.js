@@ -109,6 +109,6 @@ function TvShowsWindow(data) {
 			myParent = parent;
 		}
 		win.open();
-	}
+	};
 
 }

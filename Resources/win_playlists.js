@@ -25,13 +25,12 @@ function PlaylistsWindow(data) {
 		]
 	};
 
-    var syncClick = function(e) {
-    	Ti.API.error("click:" + e.source);
+    function syncTracks(tracksUri, displayName) {
 	    var busyView = createBusyView();
 	    win.add(busyView);
 	    Titanium.App.setIdleTimerDisabled(true);
 	    try {
-		    var tracks = loadTracks(e.source.tracksUri);
+		    var tracks = loadTracks(tracksUri);
         	removeObsoleteTracks(tracks);
 	    } finally {
 		    Titanium.App.setIdleTimerDisabled(false);
@@ -45,15 +44,15 @@ function PlaylistsWindow(data) {
 		    });
 		    busyWindow.open();
 		    Titanium.App.setIdleTimerDisabled(true);
-		    var syncProgress = function(e2) {
-			    busyWindow.setProgress(e2.progress);
-		    }
+		    var syncProgress = function(e) {
+			    busyWindow.setProgress(e.progress);
+		    };
 		    var syncDone = function() {
 			    Titanium.App.setIdleTimerDisabled(false);
 			    busyWindow.close();
 			    Titanium.App.removeEventListener("mytunesrss_sync_progress", syncProgress);
 			    Titanium.App.removeEventListener("mytunesrss_sync_done", syncDone);
-		    }
+		    };
 		    Titanium.App.addEventListener("mytunesrss_sync_progress", syncProgress);
 		    Titanium.App.addEventListener("mytunesrss_sync_done", syncDone);
 		    Titanium.App.fireEvent("mytunesrss_sync", {data:tracks,index:0});
@@ -90,21 +89,7 @@ function PlaylistsWindow(data) {
 			{
 				type : "Titanium.UI.View",
 				bindId : "syncGlow",
-				properties : GUI.glowViewOptions({right:20}),
-				events : {
-				    touchstart : function(e) {
-				    	Ti.API.error("start");
-				    },
-			  	    touchend : function(e) {
-				    	Ti.API.error("stop");
-				    },
-			  	    touchcancel : function(e) {
- 				    	Ti.API.error("cancel");
-				    },
-			  	    click : function(e) {
- 				    	Ti.API.error("click");
-                    }
-                }				
+				properties : GUI.glowViewOptions({right:20})
 			}
 		]
 	};
@@ -122,16 +107,20 @@ function PlaylistsWindow(data) {
 	tryAddAd(win);
 
     listView.addEventListener("itemclick", function(e) {
-        var busyView = createBusyView();
-        win.add(busyView);
-        Titanium.App.setIdleTimerDisabled(true);
-        try {
-            var itemProps = e.section.getItemAt(e.itemIndex).properties;
-            loadAndDisplayTracks(self, itemProps.tracksUri);
-        } finally {
-            Titanium.App.setIdleTimerDisabled(false);
-            win.remove(busyView);
-        }
+    	var itemProps = e.section.getItemAt(e.itemIndex).properties;
+    	if (e.bindId === "syncIcon" || e.bindId === "syncGlow") {
+    		syncTracks(itemProps.tracksUri, e.section.getItemAt(e.itemIndex).main.text);
+    	} else {
+	        var busyView = createBusyView();
+	        win.add(busyView);
+	        Titanium.App.setIdleTimerDisabled(true);
+	        try {
+	            loadAndDisplayTracks(self, itemProps.tracksUri);
+	        } finally {
+	            Titanium.App.setIdleTimerDisabled(false);
+	            win.remove(busyView);
+	        }
+    	}
     });
 
 	setListDataAndIndex(
@@ -162,6 +151,6 @@ function PlaylistsWindow(data) {
 			myParent = parent;
 		}
 		win.open();
-	}
+	};
 
 }

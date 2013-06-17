@@ -9,7 +9,7 @@ function AppInfoWindow() {
 	
 	win.add(GUI.createTopToolbar("MyTunesRSS", buttonBack, undefined));
 	
-	var versionInfo = 'v' + Titanium.App.version
+	var versionInfo = 'v' + Titanium.App.version;
 	if (Titanium.App.version.indexOf('SNAPSHOT') > 0) {
 		versionInfo += "\n" + Titanium.Filesystem.getFile('white_noise.wav').modificationTimestamp();
 	}
@@ -30,6 +30,6 @@ function AppInfoWindow() {
 	 */
 	this.open = function() {
 		win.open();
-	}
+	};
 	
 }

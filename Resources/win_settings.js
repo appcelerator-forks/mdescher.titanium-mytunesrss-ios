@@ -187,6 +187,6 @@ function SettingsWindow(transcoders, searchFuzziness) {
 			myParent = parent;
 		}
 		win.open();
-	}
+	};
 	
 }

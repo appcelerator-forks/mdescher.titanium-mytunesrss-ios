@@ -11,6 +11,6 @@ function LoginWindow() {
 	this.open = function() {
 		tabGroup.setActiveTab(offlineMode ? 1 : 0);
 		tabGroup.open();
-	}
+	};
 	
 }
