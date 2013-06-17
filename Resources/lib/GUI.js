@@ -73,7 +73,7 @@ exports.add = function(view, component) {
 	return component;
 }
 
-exports.createGlow = function(center) {
+exports.glowViewOptions(center) {
 	var options = {
 		width:50,
 		height:50,
@@ -104,7 +104,7 @@ exports.createGlow = function(center) {
 	} else if (center.bottom != undefined) {
 		options.bottom = center.bottom - 25;
 	}
-	return Titanium.UI.createView(options);
+    return options;
 }
 
 exports.createMediaItemRow = function(image, title) {

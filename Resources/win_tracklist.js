@@ -53,7 +53,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	    });
 
 		if (!offlineMode && data[i].mediaType === "Audio") {
-		    var syncImageGlowView = GUI.createGlow({right:20});
+		    var syncImageGlowView = Titanium.UI.createView(GUI.glowViewOptions({right:20}));
 		    var syncImageViewImage = getCachedTrackFile(data[i].id) === undefined ? "images/download.png" : "images/delete.png"; 
 		    var syncImageView = Titanium.UI.createImageView({width:20,image:syncImageViewImage,right:10,touchEnabled:false});
 		    var touchView = Titanium.UI.createView({right:0,height:Titanium.UI.FILL,width:40,backgroundColor:"transparent",glow:syncImageGlowView});

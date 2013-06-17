@@ -65,7 +65,7 @@ function AlbumsWindow(data) {
 	win.add(listView);
 	tryAddAd(win);
 	
-	listView.addEventListener('itemclick', function(e) {
+	listView.addEventListener("itemclick", function(e) {
 		var busyView = createBusyView();
 		Titanium.App.setIdleTimerDisabled(true);
 		win.add(busyView);
@@ -88,7 +88,7 @@ function AlbumsWindow(data) {
 	        function(item, index) {
 	        	return {
 	        		pic : {
-	        			image : "http://localhost:" + HTTP_SERVER_PORT + "/image/" + item.imageHash + "/" + encodeURIComponent(item.imageUri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64)),
+	        			image : item.imageHash != undefined ? "http://localhost:" + HTTP_SERVER_PORT + "/image/" + item.imageHash + "/" + encodeURIComponent(item.imageUri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64)) : "appicon.png",
 	        		},
 	        		main : {
 	        			text : getDisplayName(item.name)

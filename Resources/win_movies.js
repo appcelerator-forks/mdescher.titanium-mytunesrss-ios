@@ -5,7 +5,40 @@ function MoviesWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
-	var tableView = GUI.createTableView(tryGetAdSpacingStyle({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}), filterAttribute:"filter",top:45}));
+	var template = {
+		childTemplates : [
+			{
+				type : "Titanium.UI.ImageView",
+				bindId : "pic",
+				properties : {
+					hires : Titanium.Platform.displayCaps.density === "high",
+					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					left : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					right : Titanium.Platform.osname === "ipad" ? 691 : 270,
+					defaultImage : "appicon.png"					
+				}
+			},
+			{
+				type : "Titanium.UI.Label",
+				bindId : "main",
+				properties : {
+					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
+					height : Titanium.Platform.osname === "ipad" ? 36 : 24,
+					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
+					font : {
+						fontSize : 16,
+						fontWeight : "bold"
+					},
+					color : "#CCCCCC",
+					minimumFontSize : 12
+				}
+			}
+		]
+	};
+
+	var listView = GUI.createListView(tryGetAdSpacingStyle({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"}));
 	var buttonBack = GUI.createButton({title:L("movies.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -14,15 +47,16 @@ function MoviesWindow(data) {
 	});
 	
 	win.add(GUI.createTopToolbar(L("movies.title"), buttonBack, undefined));
-	win.add(tableView);
+	win.add(listView);
 	tryAddAd(win);
 	
-	tableView.addEventListener('click', function(e) {
+	listView.addEventListener("itemclick", function(e) {
 		if (jukebox.isIos61BugPhase()) {
 			return;
 		}
         jukebox.reset();
-        var url = e.rowData.playbackUri;
+        var itemProps = e.section.getItemAt(e.itemIndex).properties;
+        var url = itemProps.playbackUri;
         var tcParam = getTcParam();
         if (tcParam != undefined) {
             url += '/' + tcParam;
@@ -30,17 +64,21 @@ function MoviesWindow(data) {
         new VideoPlayerWindow(url).open(self);
 	});
 	
-	setTableDataAndIndex(
-	        tableView,
+	setListDataAndIndex(
+	        listView,
 	        data,
 	        function(item, index) {
-	            var row = GUI.createMediaItemRow(item.imageUri != undefined, getDisplayName(item.name));
-	            if (item.imageUri != undefined) {
-	                row.add(GUI.createMediaItemImage(item.imageHash, item.imageUri));
-	            }
-	            row.add(GUI.createMediaItemLabel(getDisplayName(item.name)));
-	            row.playbackUri = item.httpLiveStreamUri != undefined ? item.httpLiveStreamUri : item.playbackUri;
-	            return row;
+	        	return {
+	        		pic : {
+	        			image : item.imageHash != undefined ?"http://localhost:" + HTTP_SERVER_PORT + "/image/" + item.imageHash + "/" + encodeURIComponent(item.imageUri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64)) : "appicon.png",
+	        		},
+	        		main : {
+	        			text : getDisplayName(item.name)
+	        		}
+	        		properties : {
+	        			playbackUri : item.httpLiveStreamUri != undefined ? item.httpLiveStreamUri : item.playbackUri;
+	        		}
+	        	};
 	        },
 	        function(item) {
 	            return item.name;

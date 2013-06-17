@@ -38,7 +38,7 @@ function PlaylistsWindow(data) {
 		    	});
 		        row.add(infoView);
 	            if (!offlineMode) {
-				    var syncImageGlowView = GUI.createGlow({right:20});
+				    var syncImageGlowView = Titanium.UI.createView(GUI.glowViewOptions({right:20}));
 				    var syncImageView = Titanium.UI.createImageView({width:20,image:"images/sync.png",right:10,touchEnabled:false});
 				    var touchView = Titanium.UI.createView({right:0,height:Titanium.UI.FILL,width:40,backgroundColor:"transparent",glow:syncImageGlowView});
 				    row.add(touchView);

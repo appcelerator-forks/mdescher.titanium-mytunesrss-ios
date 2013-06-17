@@ -5,7 +5,27 @@ function ArtistsWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 	
-	var tableView = GUI.createTableView(tryGetAdSpacingStyle({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}), filterAttribute:"filter",top:45}));
+	var template = {
+		childTemplates : [
+			{
+				type : "Titanium.UI.Label",
+				bindId : "main",
+				properties : {
+					left : 10,
+					height : 24,
+					right : 10,
+					font : {
+						fontSize : 20,
+						fontWeight : "bold"
+					},
+					color : "#CCCCCC",
+					minimumFontSize : 12
+				}
+			}
+		]
+	};
+
+	var listView = GUI.createListView(tryGetAdSpacingStyle({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"}));
 	var buttonBack = GUI.createButton({title:L("artists.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -14,18 +34,19 @@ function ArtistsWindow(data) {
 	});
 	
 	win.add(GUI.createTopToolbar(L("artists.title"), buttonBack, undefined));
-	win.add(tableView);
+	win.add(listView);
 	tryAddAd(win);
 	
-	tableView.addEventListener('click', function(e) {
+	listView.addEventListener('itemclick', function(e) {
 		var busyView = createBusyView();
 		win.add(busyView);
 		Titanium.App.setIdleTimerDisabled(true);
         try {
+            var itemProps = e.section.getItemAt(e.itemIndex).properties;
 	        if (!offlineMode) {
-	        	loadAndDisplayAlbums(self, e.rowData.albumsUri);
+	        	loadAndDisplayAlbums(self, itemProps.albumsUri);
 	        } else {
-	        	loadAndDisplayOfflineAlbums(self, e.rowData.artistName, undefined);
+	        	loadAndDisplayOfflineAlbums(self, itemProps.artistName, undefined);
 	        }
         } finally {
         	Titanium.App.setIdleTimerDisabled(false);
@@ -33,21 +54,24 @@ function ArtistsWindow(data) {
         }
 	});
 	
-	setTableDataAndIndex(
-	        tableView,
+	setListDataAndIndex(
+	        listView,
 	        data,
 	        function(item, index) {
-	            var displayName = getDisplayName(item.name);
-	            var row = GUI.createTableViewRow({height:48,className:'artist_row',height:TABLE_VIEW_ROW_HEIGHT,selectionStyle:Titanium.UI.iPhone.TableViewCellSelectionStyle.NONE,filter:displayName});
-	            row.add(GUI.createLabel({text:displayName,left:10,height:24,right:10,font:{fontSize:20,fontWeight:'bold'}}));
-	            row.albumsUri = item.albumsUri;
-	            row.artistName = item.name;
-	            return row;
+	        	return {
+	        		main : {
+	        			text : getDisplayName(item.name)
+	        		},
+	        		properties : {
+	        			albumsUri : item.albumsUri;
+						artistName : item.name;
+	        		}
+	        	};
 	        },
 	        function(item) {
 	            return item.name;
 	        });
-	
+
 	/**
 	 * Open the artists window. 
 	 */

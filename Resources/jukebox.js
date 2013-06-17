@@ -121,7 +121,7 @@ function Jukebox() {
 	var buttonBack = GUI.createButton({title:L("jukebox.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	var buttonPlaylist = GUI.createButton({title:L("jukebox.playlist"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
-	var controlRewind = Titanium.UI.createImageView(STYLE.get("jukeboxRewind",{glow:GUI.createGlow(STYLE.get("jukeboxRewindGlow"))}));
+	var controlRewind = Titanium.UI.createImageView(STYLE.get("jukeboxRewind",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxRewindGlow")))}));
 	controlRewind.addEventListener('click', function() {
 		if (jukebox.isIos61BugPhase()) {
 			return;
@@ -129,7 +129,7 @@ function Jukebox() {
 		rewind();
 	});
 	
-	var controlPlayPause = Titanium.UI.createImageView(STYLE.get("jukeboxPlayPause",{glow:GUI.createGlow(STYLE.get("jukeboxPlayPauseGlow"))}));
+	var controlPlayPause = Titanium.UI.createImageView(STYLE.get("jukeboxPlayPause",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxPlayPauseGlow")))}));
 	controlPlayPause.addEventListener('click', function() {
 		if (jukebox.isIos61BugPhase()) {
 			return;
@@ -137,7 +137,7 @@ function Jukebox() {
 		playPause();
 	});
 	
-	var controlFastForward = Titanium.UI.createImageView(STYLE.get("jukeboxForward",{glow:GUI.createGlow(STYLE.get("jukeboxForwardGlow"))}));
+	var controlFastForward = Titanium.UI.createImageView(STYLE.get("jukeboxForward",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxForwardGlow")))}));
 	controlFastForward.addEventListener('click', function() {
 		if (jukebox.isIos61BugPhase()) {
 			return;
@@ -145,7 +145,7 @@ function Jukebox() {
 	    fastForward();
 	});
 	
-	var controlShuffle = Titanium.UI.createImageView(STYLE.get("jukeboxShuffle",{glow:GUI.createGlow(STYLE.get("jukeboxShuffleGlow"))}));
+	var controlShuffle = Titanium.UI.createImageView(STYLE.get("jukeboxShuffle",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxShuffleGlow")))}));
 	controlShuffle.addEventListener('click', function() {
 		if (jukebox.isIos61BugPhase()) {
 			return;
