@@ -54,18 +54,16 @@ function PlaylistsWindow(data) {
 			{
 				type : "Titanium.UI.View",
 				bindId : "syncGlow",
-				properties : {
-                    GUI.glowViewOptions({right:20})
-				},
+				properties : GUI.glowViewOptions({right:20}),
                 events : {
 				    "touchstart" : function(e) {
-				    	e.source.setOpacity(0.75);
+				    	e.source.setOpacity(0.75)
 				    },
 			  	    "touchend" : function(e) {
-				    	e.source.setOpacity(0);
+				    	e.source.setOpacity(0)
 				    },
 			  	    "touchcancel" : function(e) {
-				    	e.source.setOpacity(0);
+				    	e.source.setOpacity(0)
 				    },
                     "click" : syncClick
                 }
