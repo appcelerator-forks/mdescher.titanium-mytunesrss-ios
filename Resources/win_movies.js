@@ -76,7 +76,7 @@ function MoviesWindow(data) {
 	        			text : getDisplayName(item.name)
 	        		},
 	        		properties : {
-	        			playbackUri : item.httpLiveStreamUri != undefined ? item.httpLiveStreamUri : item.playbackUri;
+	        			playbackUri : (item.httpLiveStreamUri != undefined ? item.httpLiveStreamUri : item.playbackUri)
 	        		}
 	        	};
 	        },
