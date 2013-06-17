@@ -63,8 +63,8 @@ function GenresWindow(data) {
 	        			text : getDisplayName(item.name)
 	        		},
 	        		properties : {
-	        			albumsUri : item.albumsUri;
-						genreName : item.name;
+	        			albumsUri : item.albumsUri,
+						genreName : item.name
 	        		}
 	        	};
 	        },
