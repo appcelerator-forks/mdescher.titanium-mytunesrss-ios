@@ -87,13 +87,13 @@ function TvShowSeasonsWindow(data) {
 	        			image : item.imageHash != undefined ? "http://localhost:" + HTTP_SERVER_PORT + "/image/" + item.imageHash + "/" + encodeURIComponent(item.imageUri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64)) : "appicon.png",
 	        		},
 	        		main : {
-	        			text : "Season " + item.name)
+	        			text : "Season " + item.name
 	        		},
 	        		sub : {
 	        			text : String.format(L("tvshow.seasons.info"), item.episodeCount)
 	        		},
 	        		properties : {
-	        			episodesUri : item.episodesUri;
+	        			episodesUri : item.episodesUri
 	        		}
 	        	};
 	        },
