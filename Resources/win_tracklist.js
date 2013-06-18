@@ -105,7 +105,6 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 				properties : {
 					width : 20,
                     right : 10,
-                    image : "images/sync.png",
                     touchEnabled : false
 				}
 			},
@@ -142,6 +141,9 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		    },
 		    sub : {
 			    text : getDisplayName(data[i].artist)
+		    },
+		    syncIcon : {
+		    	image : getCachedTrackFile(data[i].id) === undefined ? "images/download.png" : "images/delete.png"
 		    }
 	    };
         if (!offlineMode && data[i].mediaType === "Audio") {
@@ -164,13 +166,15 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	});
     */
 
-    function syncTrack(trackIndex) {
+    function syncTrack(section, trackIndex) {
     	if (getCachedTrackFile(data[trackIndex].id) != undefined) {
     		deleteCachedTrackFile(data[trackIndex].id);
     		db = Titanium.Database.open("OfflineTracks");
 			db.execute("DELETE FROM track WHERE id = ?", data[trackIndex].id);
 			db.close();
-			tableView.data[0].rows[e.index].getChildren()[2].setImage("images/download.png");
+			var item = section.getItemAt(trackIndex);
+			item.syncIcon.image = "images/download.png";
+			section.updateItemAt(trackIndex, item);
 			Titanium.Analytics.featureEvent("sync.deleteTrack");
     	} else {
 			var url = data[trackIndex].playbackUri;
@@ -201,7 +205,9 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 						data[trackIndex].trackNumber
 					);
 					db.close();
-					tableView.data[0].rows[e.index].getChildren()[2].setImage("images/delete.png");
+					var item = section.getItemAt(trackIndex);
+					item.syncIcon.image = "images/delete.png";
+					section.updateItemAt(trackIndex, item);
 					Titanium.Analytics.featureEvent("sync.downloadTrack");
 				}
 				Titanium.App.setIdleTimerDisabled(false);
@@ -228,7 +234,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
                 }
                 new VideoPlayerWindow(url).open(self);
             } else {
-                jukebox.setPlaylist(data, e.index);
+                jukebox.setPlaylist(data, trackIndex);
 		        jukebox.open(myCurrentJukeboxPlaylist === true ? undefined : self);
 		        if (myCurrentJukeboxPlaylist === true) {
 		        	win.close();
@@ -242,7 +248,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 
     listView.addEventListener("itemclick", function(e) {
         if (e.bindId === "syncIcon" || e.bindId === "syncGlow") {
-            syncTrack(e.itemIndex);
+            syncTrack(e.section, e.itemIndex);
         } else {
             playTrack(e.itemIndex);
         }
