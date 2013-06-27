@@ -282,6 +282,29 @@ function loadAndDisplayPlaylists(parent) {
     }
 }
 
+function loadAndDisplayPhotoAlbums(parent) {
+    var response = restCall("GET", getLibrary().photoAlbumsUri + "?attr.incl=name&attr.incl=tracksUri", {});
+    if (response.status / 100 === 2) {
+        var data = removeEmptyPhotoAlbums(response.result);
+        if (data.length === 0) {
+        	showError({message:L("photoalbums.noneFound"),buttonNames:['Ok']});
+        } else {
+	    	new PhotoAlbumsWindow(data).open(parent);
+	    }
+    } else {
+	    showError({message:response.result,buttonNames:['Ok']});
+    }
+}
+
+function removeEmptyPhotoAlbums(items) {
+    for (var i = items.length - 1; i >= 0; i--) {
+        if ((items[i].photoCount === 0) {
+            items = items.slice(0, i).concat(items.slice(i + 1));
+        }
+    }
+    return items;
+}
+
 function loadAndDisplayOfflineTracks(parent, album, albumArtist) {
 	db = Titanium.Database.open("OfflineTracks");
 	rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name IS NOT NULL AND LOWER(album) = LOWER(?) AND LOWER(album_artist) = LOWER(?) ORDER BY disc_number, track_number", album, albumArtist);
@@ -339,6 +362,19 @@ function loadAndDisplayTracks(parent, tracksUri) {
         	showError({message:L("tracks.online.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new TracksWindow(data).open(parent);
+	    }
+    } else {
+    	showError({message:response.result,buttonNames:['Ok']});
+    }
+}
+
+function loadAndDisplayPhotos(parent, photosUri) {
+    var response = restCall("GET", photosUri + "?attr.incl=name&attr.incl=date&attr.incl=thumbnailImageUri&attr.incl=originalImageUri", {});
+    if (response.status / 100 === 2) {
+        if (response.result.length === 0) {
+        	showError({message:L("photos.noneFound"),buttonNames:['Ok']});
+        } else {
+	    	new PhotosWindow(response.result).open(parent);
 	    }
     } else {
     	showError({message:response.result,buttonNames:['Ok']});
@@ -652,3 +688,9 @@ function getLastRememberedServerUrl() {
 function getRememberedServerUrls() {
 	return Titanium.App.Properties.getList("serverUrls", []);	
 }
+
+function toDisplayDate(ts) {
+    var date = new Date(ts);
+    return L("date", date.getDate(), date.getMonth() + 1, date.getFullYear());
+}
+

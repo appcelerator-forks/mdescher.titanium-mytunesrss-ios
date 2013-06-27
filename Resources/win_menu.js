@@ -180,6 +180,19 @@ function MenuWindow() {
         }
 	});
 
+	var rowPhotoalbums = createMenuItem(L("menu.photoalbums"), "images/photoalbums.png");
+	rowPlaylists.addEventListener('click', function() {
+		var busyView = createBusyView();
+		win.add(busyView);
+		Titanium.App.setIdleTimerDisabled(true);
+        try {
+    	    loadAndDisplayPhotoAlbums(self);
+        } finally {
+        	Titanium.App.setIdleTimerDisabled(false);
+    	    win.remove(busyView);
+        }
+	});
+
 	var rowNowPlaying = createMenuItem(L("menu.currentlyPlaying"), "images/currently.png");
 	rowNowPlaying.addEventListener('click', function() {
 		var busyView = createBusyView();
@@ -219,6 +232,7 @@ function MenuWindow() {
 			rows.push(rowGenres);
 			rows.push(rowMovies);
 			rows.push(rowTvShows);	
+            rows.push(rowPhotoalbums);
 		}
 		if (jukebox.isActive()) {
 			rows.push(rowNowPlaying);

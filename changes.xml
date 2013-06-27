@@ -5,7 +5,10 @@
     </properties>
     <body>
 
-        <release version="2.4.0" date="___D___">
+        <release version="3.0.0" date="___D___">
+        	<action dev="mdescher" type="update">
+                [MYTUNESRSSIPHONE-21] Support for photos
+        	</action>
         	<action dev="mdescher" type="update">
         		Use list view instead of table view.
         	</action>

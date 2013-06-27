@@ -74,7 +74,7 @@ function PlaylistsWindow(data) {
 					},
 					color : "#CCCCCC",
 					minimumFontSize : 12
-				},
+				}
 			},
 			{
 				type : "Titanium.UI.ImageView",

@@ -11,6 +11,8 @@
 	<string name="tvshows.seasons.noneFound">No seasons for the TV show found.</string>
 	<string name="tracks.search.offline.noneFound">No matching tracks found.</string>
 	<string name="tracks.search.online.noneFound">No matching unprotected tracks found.</string>
+    <string name="photoalbums.noneFound">No photo albums with photos found.</string>
+    <string name="photos.noneFound">No photos found.</string>
 	<string name="servererror.NO_VALID_USER_SESSION">There is no valid server session, please login again.</string>
 	<string name="servererror.EXISTING_USER_SESSION">You have already been logged in.</string>
 	<string name="servererror.INVALID_LOGIN">Your credentials are invalid.</string>
@@ -43,6 +45,7 @@
 	<string name="menu.movies">Movies</string>
 	<string name="menu.tvshows">TV Shows</string>
 	<string name="menu.random">Shuffle</string>
+    <string name="menu.photoalbums">Photo albums</string>
 	<string name="menu.currentlyPlaying">Currently playing</string>
 	<string name="menu.currentlyPlaying.none">There is no active playlist.</string>
 	<string name="albums.back">Back</string>
@@ -59,7 +62,11 @@
 	<string name="tracklist.back">Back</string>
 	<string name="tracklist.title">Tracks</string>
 	<string name="tracklist.busy.downloading">Downloading</string>
-	<string name="tvshows.back">Back</string>
+	<string name="photoalbums.title">Photo albums</string>
+	<string name="photoalbums.back">Back</string>
+	<string name="photos.title">Photos</string>
+	<string name="photos.back">Back</string>
+    <string name="tvshows.back">Back</string>
 	<string name="tvshows.title">TV Shows</string>
 	<string name="tvshows.info">%d season(s) with %d episode(s)</string>
 	<string name="tvshow.seasons.back">Back</string>
@@ -91,4 +98,5 @@
 	<string name="busy.cancel">Cancel</string>
 	<string name="offlineDatabaseDropped">The tracks downloaded to the device had to be removed since the new app version is not compatible with the old one.</string>
 	<string name="ios61bugphase">Due to a problem with iOS 6.1 playback cannot be interrupted during the last seconds of a track.</string>
+    <string name="date">%3$4d-%2$2d-%1$2d</string>
 </resources>

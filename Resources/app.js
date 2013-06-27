@@ -18,6 +18,8 @@ Titanium.include("win_movies.js");
 Titanium.include("win_appinfo.js");
 Titanium.include("win_busy.js");
 Titanium.include("win_server_history.js");
+Titanium.include("win_photoalbums.js");
+Titanium.include("win_photos.js");
 
 Titanium.API.debug("Platform version: \"" + Titanium.Platform.version + "\".");
 
