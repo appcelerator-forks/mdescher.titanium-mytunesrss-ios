@@ -181,7 +181,7 @@ function MenuWindow() {
 	});
 
 	var rowPhotoalbums = createMenuItem(L("menu.photoalbums"), "images/photoalbums.png");
-	rowPlaylists.addEventListener('click', function() {
+	rowPhotoalbums.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
 		Titanium.App.setIdleTimerDisabled(true);

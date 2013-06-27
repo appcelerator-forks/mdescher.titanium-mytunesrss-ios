@@ -77,7 +77,7 @@ function PhotosWindow(data, currentJukeboxPlaylist) {
 			    text : data[i].name
 		    },
 		    sub : {
-			    text : toDisplayDate(data[i].date);
+			    text : toDisplayDate(data[i].date)
 		    }
 	    };
         listSection.appendItems([item]);

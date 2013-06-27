@@ -12,9 +12,9 @@ function PhotoAlbumsWindow(data) {
 				bindId : "main",
 				properties : {
 					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
+					left : 10,
 					height : Titanium.Platform.osname === "ipad" ? 36 : 24,
-					right : 40,
+					right : 50,
 					font : {
 						fontSize : 16,
 						fontWeight : "bold"
@@ -28,9 +28,9 @@ function PhotoAlbumsWindow(data) {
 				bindId : "sub",
 				properties : {
 					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
+					left : 10,
 					height : Titanium.Platform.osname === "ipad" ? 26 : 18,
-					right : 40,
+					right : 50,
 					font : {
 						fontSize : 12,
 						fontWeight : "bold"
@@ -43,20 +43,21 @@ function PhotoAlbumsWindow(data) {
 				type : "Titanium.UI.Label",
 				bindId : "count",
 				properties : {
-					width : 20,
+					width : 30,
 					height : 24,
 					right : 10,
 					font : {
 						fontSize : 14,
 					},
 					color : "#CCCCCC",
-					minimumFontSize : 10
+					minimumFontSize : 10,
+					textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT
 				}
 			}
 		]
 	};
 
-	var listView = GUI.createListView(tryGetAdSpacingStyle({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:default}));
+	var listView = GUI.createListView(tryGetAdSpacingStyle({search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"}));
 	var buttonBack = GUI.createButton({title:L("photoalbums.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -81,13 +82,38 @@ function PhotoAlbumsWindow(data) {
         }
     });
 
-	setListDataAndIndex(
+    var listSection = Titanium.UI.createListSection({});
+    listView.setSections([listSection]);
+	var tableData = [];
+	for (var i = 0; i < data.length; i++) {
+        var dateText = toDisplayDate(data[i].firstDate);
+        if (data[i].firstDate != data[i].lastDate) {
+            dateText += " - " + toDisplayDate(data[i].lastDate);
+        }
+	    var item = {
+    		main : {
+    			text : data[i].name
+    		},
+    		count : {
+    			text : data[i].photoCount
+    		},
+    		sub : {
+                text : dateText
+    		},
+    		properties : {
+    			photosUri : data[i].photosUri
+    		}
+	    };
+        listSection.appendItems([item]);
+	}
+
+	/*setListDataAndIndex(
 	        listView,
 	        data,
 	        function(item, index) {
-                var dateText = toDisplayDate(firstDate);
+                var dateText = toDisplayDate(item.firstDate);
                 if (item.firstDate != item.lastDate) {
-                    dateText += " - " + toDisplayDate(lastDate);
+                    dateText += " - " + toDisplayDate(item.lastDate);
                 }
 	        	return {
 	        		main : {
@@ -106,7 +132,7 @@ function PhotoAlbumsWindow(data) {
 	        },
 	        function(item) {
 	            return item.name;
-	        });
+	        });*/
 		
 	/**
 	 * Open the photo albums window. 

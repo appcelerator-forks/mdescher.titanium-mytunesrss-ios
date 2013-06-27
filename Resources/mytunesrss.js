@@ -283,7 +283,7 @@ function loadAndDisplayPlaylists(parent) {
 }
 
 function loadAndDisplayPhotoAlbums(parent) {
-    var response = restCall("GET", getLibrary().photoAlbumsUri + "?attr.incl=name&attr.incl=tracksUri", {});
+    var response = restCall("GET", getLibrary().photoAlbumsUri + "?attr.incl=name&attr.incl=photosUri&attr.incl=photoCount&attr.incl=firstDate&attr.incl=lastDate", {});
     if (response.status / 100 === 2) {
         var data = removeEmptyPhotoAlbums(response.result);
         if (data.length === 0) {
@@ -298,7 +298,7 @@ function loadAndDisplayPhotoAlbums(parent) {
 
 function removeEmptyPhotoAlbums(items) {
     for (var i = items.length - 1; i >= 0; i--) {
-        if ((items[i].photoCount === 0) {
+        if (items[i].photoCount === 0) {
             items = items.slice(0, i).concat(items.slice(i + 1));
         }
     }
@@ -691,6 +691,7 @@ function getRememberedServerUrls() {
 
 function toDisplayDate(ts) {
     var date = new Date(ts);
-    return L("date", date.getDate(), date.getMonth() + 1, date.getFullYear());
+    return String.formatDate(date, "short")
+    //return L("date", date.getDate(), date.getMonth() + 1, date.getFullYear());
 }
 
