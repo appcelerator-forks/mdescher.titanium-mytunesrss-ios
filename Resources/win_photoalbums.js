@@ -82,10 +82,13 @@ function PhotoAlbumsWindow(data) {
         }
     });
 
-    var listSection = Titanium.UI.createListSection({});
-    listView.setSections([listSection]);
-	var tableData = [];
+    var lastYear = -1;
+    var listSections = [];
 	for (var i = 0; i < data.length; i++) {
+		var currYear = new Date(data[i].firstDate).getFullYear();
+		if (lastYear < currYear) {
+			listSections.push(Titanium.UI.createListSection({headerTitle:"" + currYear}));
+		}
         var dateText = toDisplayDate(data[i].firstDate);
         if (data[i].firstDate != data[i].lastDate) {
             dateText += " - " + toDisplayDate(data[i].lastDate);
@@ -104,36 +107,11 @@ function PhotoAlbumsWindow(data) {
     			photosUri : data[i].photosUri
     		}
 	    };
-        listSection.appendItems([item]);
-	}
+        listSections[listSections.length - 1].appendItems([item]);
+		lastYear = currYear;
+	};
+	listView.setSections(listSections);
 
-	/*setListDataAndIndex(
-	        listView,
-	        data,
-	        function(item, index) {
-                var dateText = toDisplayDate(item.firstDate);
-                if (item.firstDate != item.lastDate) {
-                    dateText += " - " + toDisplayDate(item.lastDate);
-                }
-	        	return {
-	        		main : {
-	        			text : item.name
-	        		},
-	        		count : {
-	        			text : item.photoCount
-	        		},
-	        		sub : {
-                        text : dateText
-	        		},
-	        		properties : {
-	        			photosUri : item.photosUri
-	        		}
-	        	};
-	        },
-	        function(item) {
-	            return item.name;
-	        });*/
-		
 	/**
 	 * Open the photo albums window. 
 	 */

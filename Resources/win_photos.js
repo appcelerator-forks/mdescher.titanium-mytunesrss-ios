@@ -5,55 +5,113 @@ function PhotosWindow(data, currentJukeboxPlaylist) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
-	var template = {
+	var templateIphone = {
 		childTemplates : [
 			{
 				type : "Titanium.UI.ImageView",
-				bindId : "pic",
+				bindId : "pic1",
 				properties : {
 					hires : Titanium.Platform.displayCaps.density === "high",
-					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					left : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					right : Titanium.Platform.osname === "ipad" ? 691 : 270,
-					defaultImage : "appicon.png"					
+					center : { x : 55, y : 55 },
+					top : 5,
+					bottom : 5,
+					left : 5,
+					right : 215
 				}
 			},
 			{
-				type : "Titanium.UI.Label",
-				bindId : "main",
+				type : "Titanium.UI.ImageView",
+				bindId : "pic2",
 				properties : {
-					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
-					height : Titanium.Platform.osname === "ipad" ? 36 : 24,
-					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
-					font : {
-						fontSize : 16,
-						fontWeight : "bold"
-					},
-					color : "#CCCCCC",
-					minimumFontSize : 12
+					hires : Titanium.Platform.displayCaps.density === "high",
+					center : { x : 160, y : 55 },
+					top : 5,
+					bottom : 5,
+					left : 110,
+					right : 110
 				}
 			},
 			{
-				type : "Titanium.UI.Label",
-				bindId : "sub",
+				type : "Titanium.UI.ImageView",
+				bindId : "pic3",
 				properties : {
-					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
-					height : Titanium.Platform.osname === "ipad" ? 26 : 18,
-					font : {
-						fontSize : 12,
-						fontWeight : "bold"
-					},
-					color : "#CCCCCC",
-					minimumFontSize : 12
+					hires : Titanium.Platform.displayCaps.density === "high",
+					center : { x : 265, y : 55 },
+					top : 5,
+					bottom : 5,
+					left : 215,
+					right : 5
 				}
 			}
 		]
 	};
+	var templateIpad = {
+		childTemplates : [
+			{
+				type : "Titanium.UI.ImageView",
+				bindId : "pic1",
+				properties : {
+					hires : Titanium.Platform.displayCaps.density === "high",
+					center : { x : 86, y : 85 },
+					top : 21,
+					bottom : 21,
+					left : 22,
+					right : 618
+				}
+			},
+			{
+				type : "Titanium.UI.ImageView",
+				bindId : "pic2",
+				properties : {
+					hires : Titanium.Platform.displayCaps.density === "high",
+					center : { x : 235, y : 85 },
+					top : 21,
+					bottom : 21,
+					left : 171,
+					right : 469
+				}
+			},
+			{
+				type : "Titanium.UI.ImageView",
+				bindId : "pic3",
+				properties : {
+					hires : Titanium.Platform.displayCaps.density === "high",
+					center : { x : 384, y : 85 },
+					top : 21,
+					bottom : 21,
+					left : 320,
+					right : 320
+				}
+			},
+			{
+				type : "Titanium.UI.ImageView",
+				bindId : "pic4",
+				properties : {
+					hires : Titanium.Platform.displayCaps.density === "high",
+					center : { x : 533, y : 85 },
+					top : 21,
+					bottom : 21,
+					left : 469,
+					right : 171
+				}
+			},
+			{
+				type : "Titanium.UI.ImageView",
+				bindId : "pic5",
+				properties : {
+					hires : Titanium.Platform.displayCaps.density === "high",
+					center : { x : 682, y : 85 },
+					top : 21,
+					bottom : 21,
+					left : 618,
+					right : 22
+				}
+			},
+		]
+	};
 
-	var listView = GUI.createListView(tryGetAdSpacingStyle({top:45,templates:{"default":template},defaultItemTemplate:"default"}));
+	var ipad = Titanium.Platform.osname === "ipad";
+	var listView = GUI.createListView(tryGetAdSpacingStyle({top:45,templates:{"default":ipad ? templateIpad : templateIphone},defaultItemTemplate:"default",rowHeight:ipad ? 170 : 110}));
 	var buttonBack = GUI.createButton({title:L("photos.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
@@ -65,23 +123,39 @@ function PhotosWindow(data, currentJukeboxPlaylist) {
 	win.add(listView);
 	tryAddAd(win);
 	
-    var listSection = Titanium.UI.createListSection({});
-    listView.setSections([listSection]);
-	var tableData = [];
+    var lastDate = "";
+    var listSections = [];
 	for (var i = 0; i < data.length; i++) {
+		var currDate = toDisplayDate(data[i].date);
+		if (currDate != lastDate) {
+			listSections.push(Titanium.UI.createListSection({headerTitle:currDate}));
+			lastDate = currDate;
+		}
+		var urls = [undefined, undefined, undefined, undefined, undefined];
+		for (var k = 0; i < data.length && toDisplayDate(data[i].date) == currDate && k < (ipad ? 5 : 3); k++) {
+			urls[k] = data[i].thumbnailImageUri;
+			i++;
+		}
 	    var item = {
-		    pic : {
-			    image : data[i].thumbnailImageUri,
+		    pic1 : {
+			    image : urls[0]
 		    },
-		    main : {
-			    text : data[i].name
+		    pic2 : {
+			    image : urls[1]
 		    },
-		    sub : {
-			    text : toDisplayDate(data[i].date)
+		    pic3 : {
+			    image : urls[2]
+		    },
+		    pic4 : {
+			    image : urls[3]
+		    },
+		    pic5 : {
+			    image : urls[4]
 		    }
 	    };
-        listSection.appendItems([item]);
+        listSections[listSections.length - 1].appendItems([item]);
 	}
+	listView.setSections(listSections);
 
     listView.addEventListener("itemclick", function(e) {
         // TODO: show photo
