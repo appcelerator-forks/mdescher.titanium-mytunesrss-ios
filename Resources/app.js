@@ -20,6 +20,7 @@ Titanium.include("win_busy.js");
 Titanium.include("win_server_history.js");
 Titanium.include("win_photoalbums.js");
 Titanium.include("win_photos.js");
+Titanium.include("win_photo.js");
 
 Titanium.API.debug("Platform version: \"" + Titanium.Platform.version + "\".");
 

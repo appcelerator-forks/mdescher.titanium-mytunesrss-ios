@@ -1,4 +1,4 @@
-function PhotosWindow(data, currentJukeboxPlaylist) {
+function PhotosWindow(data) {
 
 	var self = this;
 	var myParent;
@@ -158,7 +158,7 @@ function PhotosWindow(data, currentJukeboxPlaylist) {
 	listView.setSections(listSections);
 
     listView.addEventListener("itemclick", function(e) {
-        // TODO: show photo
+    	new PhotoWindow(data[0].originalImageUri).open(self);
     });
 	
 	/**

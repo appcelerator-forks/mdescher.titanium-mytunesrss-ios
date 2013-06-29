@@ -116,7 +116,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		]
 	};
 
-	var listView = GUI.createListView(tryGetAdSpacingStyle({top:45,templates:{"default":template,"onlineAudio":templateOnlineAudio},defaultItemTemplate:"default"}));
+	var listView = GUI.createListView(tryGetAdSpacingStyle({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template,"onlineAudio":templateOnlineAudio},defaultItemTemplate:"default"}));
 	var buttonBack = GUI.createButton({title:L("tracklist.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
