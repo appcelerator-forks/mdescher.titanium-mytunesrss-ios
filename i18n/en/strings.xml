@@ -99,4 +99,6 @@
 	<string name="offlineDatabaseDropped">The tracks downloaded to the device had to be removed since the new app version is not compatible with the old one.</string>
 	<string name="ios61bugphase">Due to a problem with iOS 6.1 playback cannot be interrupted during the last seconds of a track.</string>
     <string name="date">%3$4d-%2$2d-%1$2d</string>
+    <string name="photo.back">Back</string>
+    <string name="photo.title">Photo</string>
 </resources>

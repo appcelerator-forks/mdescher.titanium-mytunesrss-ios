@@ -9,7 +9,7 @@ function PhotosWindow(data) {
 		childTemplates : [
 			{
 				type : "Titanium.UI.ImageView",
-				bindId : "pic1",
+				bindId : "pic0",
 				properties : {
 					hires : Titanium.Platform.displayCaps.density === "high",
 					center : { x : 55, y : 55 },
@@ -21,7 +21,7 @@ function PhotosWindow(data) {
 			},
 			{
 				type : "Titanium.UI.ImageView",
-				bindId : "pic2",
+				bindId : "pic1",
 				properties : {
 					hires : Titanium.Platform.displayCaps.density === "high",
 					center : { x : 160, y : 55 },
@@ -33,7 +33,7 @@ function PhotosWindow(data) {
 			},
 			{
 				type : "Titanium.UI.ImageView",
-				bindId : "pic3",
+				bindId : "pic2",
 				properties : {
 					hires : Titanium.Platform.displayCaps.density === "high",
 					center : { x : 265, y : 55 },
@@ -49,7 +49,7 @@ function PhotosWindow(data) {
 		childTemplates : [
 			{
 				type : "Titanium.UI.ImageView",
-				bindId : "pic1",
+				bindId : "pic0",
 				properties : {
 					hires : Titanium.Platform.displayCaps.density === "high",
 					center : { x : 86, y : 85 },
@@ -61,7 +61,7 @@ function PhotosWindow(data) {
 			},
 			{
 				type : "Titanium.UI.ImageView",
-				bindId : "pic2",
+				bindId : "pic1",
 				properties : {
 					hires : Titanium.Platform.displayCaps.density === "high",
 					center : { x : 235, y : 85 },
@@ -73,7 +73,7 @@ function PhotosWindow(data) {
 			},
 			{
 				type : "Titanium.UI.ImageView",
-				bindId : "pic3",
+				bindId : "pic2",
 				properties : {
 					hires : Titanium.Platform.displayCaps.density === "high",
 					center : { x : 384, y : 85 },
@@ -85,7 +85,7 @@ function PhotosWindow(data) {
 			},
 			{
 				type : "Titanium.UI.ImageView",
-				bindId : "pic4",
+				bindId : "pic3",
 				properties : {
 					hires : Titanium.Platform.displayCaps.density === "high",
 					center : { x : 533, y : 85 },
@@ -97,7 +97,7 @@ function PhotosWindow(data) {
 			},
 			{
 				type : "Titanium.UI.ImageView",
-				bindId : "pic5",
+				bindId : "pic4",
 				properties : {
 					hires : Titanium.Platform.displayCaps.density === "high",
 					center : { x : 682, y : 85 },
@@ -114,7 +114,7 @@ function PhotosWindow(data) {
 	var listView = GUI.createListView(tryGetAdSpacingStyle({top:45,templates:{"default":ipad ? templateIpad : templateIphone},defaultItemTemplate:"default",rowHeight:ipad ? 170 : 110}));
 	var buttonBack = GUI.createButton({title:L("photos.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
-	buttonBack.addEventListener('click', function() {
+	buttonBack.addEventListener("click", function() {
 		myParent.open(undefined);
 	    win.close();
 	});
@@ -132,25 +132,30 @@ function PhotosWindow(data) {
 			lastDate = currDate;
 		}
 		var urls = [undefined, undefined, undefined, undefined, undefined];
+		var rowFirstIndex = i;
 		for (var k = 0; i < data.length && toDisplayDate(data[i].date) == currDate && k < (ipad ? 5 : 3); k++) {
 			urls[k] = data[i].thumbnailImageUri;
 			i++;
 		}
 	    var item = {
-		    pic1 : {
+		    pic0 : {
 			    image : urls[0]
 		    },
-		    pic2 : {
+		    pic1 : {
 			    image : urls[1]
 		    },
-		    pic3 : {
+		    pic2 : {
 			    image : urls[2]
 		    },
-		    pic4 : {
+		    pic3 : {
 			    image : urls[3]
 		    },
-		    pic5 : {
+		    pic4 : {
 			    image : urls[4]
+		    },
+		    properties : {
+		    	picIndex : rowFirstIndex,
+		    	selectionStyle : Titanium.UI.iPhone.ListViewCellSelectionStyle.NONE
 		    }
 	    };
         listSections[listSections.length - 1].appendItems([item]);
@@ -158,7 +163,10 @@ function PhotosWindow(data) {
 	listView.setSections(listSections);
 
     listView.addEventListener("itemclick", function(e) {
-    	new PhotoWindow(data[0].originalImageUri).open(self);
+        var itemProps = e.section.getItemAt(e.itemIndex).properties;
+        if (e.bindId != undefined && e.bindId.length === 4 && e.bindId.substr(0, 3) === "pic") {
+	    	new PhotoWindow(data, itemProps.picIndex + parseInt(e.bindId.substr(3, 1))).open(self);
+        }
     });
 	
 	/**
