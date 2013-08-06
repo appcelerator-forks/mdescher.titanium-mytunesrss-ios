@@ -1,9 +1,9 @@
 MOBILE_PROJECT_SDK_VERSION=1.7.2-patched
 eclipse.preferences.version=1
 iosLaunchConfigurationAttributes/ATTR_MINIFY=true
-iosLaunchConfigurationAttributes/ATTR_PROJECT_NAME=MyTunesRSS
+iosLaunchConfigurationAttributes/ATTR_PROJECT_NAME=MyTunesRSS-2.3.x
 iosLaunchConfigurationAttributes/appid=de.codewave.mytunesrss
-iosLaunchConfigurationAttributes/certificate=Michael Descher (KA3C22NAMD)
+iosLaunchConfigurationAttributes/certificate=Michael Descher
 iosLaunchConfigurationAttributes/keychain=
 iosLaunchConfigurationAttributes/sdk_version=6.1
-iosLaunchConfigurationAttributes/uuid=DE4B0D1A-C2AC-4548-8469-072438617BD0
+iosLaunchConfigurationAttributes/uuid=F69808BE-62CA-4F47-B1AC-13515B3E8CA6
