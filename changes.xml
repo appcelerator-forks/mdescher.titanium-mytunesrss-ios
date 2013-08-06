@@ -5,6 +5,12 @@
     </properties>
     <body>
 
+        <release version="2.3.2" date="2013-08-06">
+                <action dev="mdescher" type="remove">
+                        Removed iAd advertising.
+                </action>
+        </release>
+
         <release version="2.3.1" date="2013-05-08">
         	<action dev="mdescher" type="fix">
         		Do not stop keep-alive background task when audio player stops due to

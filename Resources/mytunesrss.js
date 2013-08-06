@@ -603,17 +603,18 @@ function showError(options) {
 }
 
 function getAdSpacingStyleIfOnline(options) {
-	if (Titanium.Network.online) {
+	/*if (Titanium.Network.online) {
 		return STYLE.get("iadSpacing", options);
 	} else {
 		return options;
-	}
+	}*/
+    return options;
 }
 
 function addIAddIfOnline(win) {
-	if (Titanium.Network.online) {
+	/*if (Titanium.Network.online) {
 		win.add(Titanium.UI.iOS.createAdView(STYLE.get("iad", {adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,backgroundColor:DARK_GRAY})));
-	}
+	}*/
 }
 
 function rememberServerUrl(url) {
