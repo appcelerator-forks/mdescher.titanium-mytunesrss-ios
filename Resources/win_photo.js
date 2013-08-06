@@ -34,19 +34,45 @@ function PhotoWindow(data, index) {
 	 	});
 		views.push(scrollView);
 	}
- 	var scrollableView = Titanium.UI.createScrollableView({top:45,cacheSize:3,views:views,currentPage:index});
+ 	var scrollableView = Titanium.UI.createScrollableView({cacheSize:3,views:views,currentPage:index});
  	
 	var buttonBack = GUI.createButton({title:L("photo.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
+	var orientationChangeFunction = function (e) {
+		var min = Math.max(0, scrollableView.getCurrentPage() - ((scrollableView.getCacheSize() - 1) / 2));
+		var max = Math.min(scrollableView.getCurrentPage() + ((scrollableView.getCacheSize() - 1) / 2), views.length - 1);
+		for (i = min; i <= max; i++) {
+			var scrollView = views[i];
+			var imageView = scrollView.getChildren()[0];
+			var image = imageView.toImage();
+			var scaleX = Titanium.Platform.displayCaps.platformWidth / image.width;
+			var scaleY = Titanium.Platform.displayCaps.platformHeight / image.height;
+			var scale = scaleX < scaleY ? scaleX : scaleY;
+			scrollView.setMinZoomScale(scale);
+			scrollView.setZoomScale(scale);
+		}
+	};
+
 	buttonBack.addEventListener("click", function() {
+		Ti.Gesture.removeEventListener("orientationchange", orientationChangeFunction);
 		myParent.open(undefined);
 	    win.close();
 	});
 	
-	win.add(GUI.createTopToolbar(L("photo.title"), buttonBack, undefined));
+	var toolbar = GUI.createTopToolbar(L("photo.title"), buttonBack, undefined);
+	toolbar.setVisible(false);
+
 	win.add(scrollableView);
+	win.add(toolbar);
+
 	tryAddAd(win);
 	
+	win.addEventListener("singletap", function() {
+		toolbar.setVisible(!toolbar.visible);		
+	});
+	
+	Ti.Gesture.addEventListener("orientationchange", orientationChangeFunction);
+
 	/**
 	 * Open the photo window. 
 	 */
