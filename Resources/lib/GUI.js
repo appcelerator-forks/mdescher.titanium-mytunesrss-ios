@@ -63,7 +63,7 @@ exports.createPopulatedTableViewRow = function(components, vScale) {
 };
 
 exports.createActivityIndicator = function() {
-	var view = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:'#000000',opacity:0.8,visible:false});
+	var view = Titanium.UI.createView({top:0,left:0,bottom:0,right:0,backgroundColor:"#000000",opacity:0.8,visible:false});
 	view.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	return view;
 };
