@@ -7,7 +7,7 @@ function PhotoWindow(data, index) {
 
 	var views = [];
 	for (var i = 0; i < data.length; i++) {
-		var imageView = Titanium.UI.createImageView(tryGetAdSpacingStyle({image:data[i].originalImageUri + (Titanium.Platform.osname === "ipad" ? "/size=2048" : "/size=1136")}));
+		var imageView = Titanium.UI.createImageView(tryGetAdSpacingStyle({image:data[i].originalImageUri + "/size=" + getSettingsMaxPhotoSize() + "/jpegQuality=" + getSettingsPhotoJpegQuality()}));
 		var scrollView = Titanium.UI.createScrollView({contentWidth:"auto",contentHeight:"auto",showVerticalScrollIndicator:false,showHorizontalScrollIndicator:false,backgroundColor:"#000000",minZoomScale:1,maxZoomScale:5,zoomScale:1,oldZoom:1});
 		scrollView.add(imageView);
 	    scrollView.addEventListener("pinch", function(e) {

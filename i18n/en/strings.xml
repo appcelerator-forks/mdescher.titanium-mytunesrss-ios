@@ -95,7 +95,14 @@
 	<string name="settings.invalidBufferSize">The buffer size must be a value from 1024 to 65536.</string>
 	<string name="settings.invalidSearchAccuracy">The result accuracy must be a value from 0 to 100.</string>
 	<string name="settings.bufferSizeHint">Size in bytes</string>
-	<string name="busy.cancel">Cancel</string>
+	<string name="settings.photo">Photos</string>
+    <string name="settings.maxPhotoSize">Maximum size</string>
+    <string name="settings.maxPhotoSizeHint">Size in pixel</string>
+    <string name="settings.photoJpegQuality">Quality</string>
+    <string name="settings.photoJpegQualityHint">JPEG quality in %</string>
+    <string name="settings.invalidMaxPhotoSize">The maximum photo size must be a value from 480 to 4096.</string>
+    <string name="settings.invalidPhotoJpegQuality">The photo image quality must be a value from 25 to 100.</string>
+    <string name="busy.cancel">Cancel</string>
 	<string name="offlineDatabaseDropped">The tracks downloaded to the device had to be removed since the new app version is not compatible with the old one.</string>
 	<string name="ios61bugphase">Due to a problem with iOS 6.1 playback cannot be interrupted during the last seconds of a track.</string>
     <string name="date">%3$4d-%2$2d-%1$2d</string>

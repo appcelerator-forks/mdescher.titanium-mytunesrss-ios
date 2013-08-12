@@ -695,3 +695,11 @@ function toDisplayDate(ts) {
     //return L("date", date.getDate(), date.getMonth() + 1, date.getFullYear());
 }
 
+function getSettingsMaxPhotoSize() {
+    return Titanium.App.Properties.getInt("maxPhotoSize", Titanium.Platform.osname === "ipad" ? 2048 : 1136);
+}
+
+function getSettingsPhotoJpegQuality() {
+    return Titanium.App.Properties.getInt("photoJpegQuality", 75);
+}
+

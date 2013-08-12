@@ -37,17 +37,27 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	});
 	
 	var buttonSave = GUI.createButton({title:L("settings.save"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-	buttonSave.addEventListener('click', function() {
+	buttonSave.addEventListener("click", function() {
 	   	if (bufferSizeInput.value < 1024 || bufferSizeInput.value > 65536) {
-			showError({message:L("settings.invalidBufferSize"),buttonNames:['Ok']});
+			showError({message:L("settings.invalidBufferSize"),buttonNames:["Ok"]});
 			return;
 		}
-	    if (bufferSizeInput.value != Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE)) {    	
-	        Titanium.App.Properties.setInt('audioBufferSize', bufferSizeInput.value);
+	    if (bufferSizeInput.value != Titanium.App.Properties.getInt("audioBufferSize", DEFAULT_AUDIO_BUFFER_SIZE)) {    	
+	        Titanium.App.Properties.setInt("audioBufferSize", bufferSizeInput.value);
 			if (!jukebox.isIos61BugPhase(true)) {
 				jukebox.restart();
 			}	        
 	    }
+	   	if (maxPhotoSizeInput.value < 480 || maxPhotoSizeInput.value > 4096) {
+			showError({message:L("settings.invalidMaxPhotoSize"),buttonNames:["Ok"]});
+			return;
+		}
+        Titanium.App.Properties.setInt("maxPhotoSize", maxPhotoSizeInput.value);
+	   	if (photoJpegQualityInput.value < 480 || maxPhotoSizeInput.value > 4096) {
+			showError({message:L("settings.invalidPhotoJpegQuality"),buttonNames:["Ok"]});
+			return;
+		}
+        Titanium.App.Properties.setInt("photoJpegQuality", photoJpegQualityInput.value);
 	    if (!offlineMode) {
 			if (searchAccuracyInput.value < 0 || searchAccuracyInput.value > 100) {
 				showError({message:L("settings.invalidSearchAccuracy"),buttonNames:['Ok']});
@@ -136,6 +146,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	sections.push(sectionCache);
 
 	if (!offlineMode) {		
+        // transcoder settings
 		if (transcoders != undefined  && transcoders.length > 0) {
 			var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
 		    var sectionTrans = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.transcoders"))});
@@ -174,6 +185,14 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		    sections.push(sectionTransMobile);
 		}
 	}
+
+	// photo settings
+	var sectionPhoto = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.photo"))});	
+	var maxPhotoSizeInput = GUI.createTextField({hintText:L("settings.maxPhotoSizeHint"),right:10,width:textFieldWidth,value:getSettingsMaxPhotoSize(),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
+	sectionPhoto.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.maxPhotoSize"),left:10}), maxPhotoSizeInput]));
+	var photoJpegQualityInput = GUI.createTextField({hintText:L("settings.photoJpegQualityHint"),right:10,width:textFieldWidth,value:getSettingsPhotoJpegQuality(),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
+	sectionPhoto.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.photoJpegQuality"),left:10}), photoJpegQualityInput]));
+	sections.push(sectionPhoto);
 
 	win.add(GUI.createTopToolbar(L("settings.title"), buttonCancel, buttonSave));
 	win.add(GUI.createTableView(tryGetAdSpacingStyle({data:sections,separatorStyle:Titanium.UI.iPhone.TableViewSeparatorStyle.NONE,top:45,allowsSelection:false})));
