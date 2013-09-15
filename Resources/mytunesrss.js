@@ -703,3 +703,7 @@ function getSettingsPhotoJpegQuality() {
     return Titanium.App.Properties.getInt("photoJpegQuality", 75);
 }
 
+function isIos7() {
+	return Titanium.Platform.version.split(".")[0] === "7";
+}
+

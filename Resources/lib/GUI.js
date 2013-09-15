@@ -46,7 +46,7 @@ exports.createTopToolbar = function(titleText, leftButton, rightButton) {
 	if (rightButton != undefined) {
 		items.push(rightButton);
 	}
-	var toolbar = Titanium.UI.iOS.createToolbar({width:Titanium.UI.FILL,top:0,height:45,items:items,barColor:"#000000"});
+	var toolbar = Titanium.UI.iOS.createToolbar(STYLE.get("topToolbar", {width:Titanium.UI.FILL,top:0,height:45,items:items,barColor:"#000000"}));
 	toolbar.add(Titanium.UI.createLabel({text:titleText,textAlign:"center",font:{fontSize:18,fontWeight:"bold"},color:"#CCCCCC"}));
 	return toolbar;
 };
@@ -192,12 +192,24 @@ exports.createMediaItemSubLabel = function(label) {
 };
 
 exports.Style = function() {
-	
+	var ios7 = Titanium.Platform.version.split(".")[0] === "7";
 	var styles = JSON.parse(Titanium.Filesystem.getFile("styles/iphone.json").read());
+	if (ios7) {
+		ios7Styles = JSON.parse(Titanium.Filesystem.getFile("styles/iphone7.json").read());
+		for (var attrname in ios7Styles) {
+			styles[attrname] = ios7Styles[attrname];
+		}
+	}
 	if (Titanium.Platform.osname === "ipad") {
 		var ipadStyles = JSON.parse(Titanium.Filesystem.getFile("styles/ipad.json").read());
 		for (var attrname in ipadStyles) {
 			styles[attrname] = ipadStyles[attrname];
+		}
+		if (ios7) {
+			ipadIos7Styles = JSON.parse(Titanium.Filesystem.getFile("styles/ipad7.json").read());
+			for (var attrname in ipadIos7Styles) {
+				styles[attrname] = ipadIos7Styles[attrname];
+			}
 		}
 	}
 	

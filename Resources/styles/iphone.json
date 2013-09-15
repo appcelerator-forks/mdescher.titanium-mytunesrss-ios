@@ -47,7 +47,8 @@
 		"height" : 32,
 		"backgroundImage" : "images/button_small.png",
 		"backgroundLeftCap" : 9,
-		"backgroundTopCap" : 32
+		"backgroundTopCap" : 32,
+		"tintColor" : "#CCCCCC"
 	},
 	
 	"serverAddressLabelSafari" : {
@@ -78,7 +79,8 @@
 		"height" : 32,
 		"backgroundImage" : "images/button_small.png",
 		"backgroundLeftCap" : 9,
-		"backgroundTopCap" : 32
+		"backgroundTopCap" : 32,
+		"tintColor" : "#CCCCCC"
 	},
 
 	"credentialsLabel" : {
@@ -150,7 +152,8 @@
 	},
 	
 	"infoButton" : {
-		"color" : "#CCCCCC"		
+		"color" : "#CCCCCC",
+		"tintColor" : "#CCCCCC"		
 	},
 
 	"window" : {

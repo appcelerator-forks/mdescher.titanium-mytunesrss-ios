@@ -1,0 +1,18 @@
+{
+
+	"window" : {
+		"opacity" : 1,
+		"backgroundColor" : "#2B2B2B",
+		"top" : 20
+	},
+	
+	"loginTabGroup" : {
+		"tabsBackgroundColor" : "#000000",
+		"tabsTintColor" : "#FFFFFF"
+	},
+	
+	"topToolbar" : {
+		"tintColor" : "#FFFFFF"
+	}
+	
+}
