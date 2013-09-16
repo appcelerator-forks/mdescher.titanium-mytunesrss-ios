@@ -125,12 +125,12 @@
 	},
 	
 	"watermarkOnline" : {
-		"image" : "images/logo_small.png",
+		"image" : "ios7/images/logo_small.png",
 		"top" : 55
 	},
 	
 	"watermarkOfflineSafari" : {
-		"image" : "images/logo_big.png",
+		"image" : "ios7/images/logo_big.png",
 		"top" : 90
 	},
 	
@@ -148,7 +148,7 @@
 		"height":38,
 		"bottom":0,
 		"left":34,
-		"image" : "images/back.png"
+		"image" : "ios7/images/back.png"
 	},
 
 	"jukeboxRewindGlow" : {
@@ -161,7 +161,7 @@
 		"height":38,
 		"bottom":0,
 		"left":105,
-		"image" : "images/play.png"
+		"image" : "ios7/images/play.png"
 	},
 
 	"jukeboxPlayPauseGlow" : {
@@ -174,7 +174,7 @@
 		"height":38,
 		"bottom":0,
 		"right":105,
-		"image" : "images/forward.png"
+		"image" : "ios7/images/forward.png"
 	},
 
 	"jukeboxForwardGlow" : {
@@ -187,7 +187,7 @@
 		"height":38,
 		"bottom":0,
 		"right":34,
-		"image" : "images/shuffle.png"
+		"image" : "ios7/images/shuffle.png"
 	},
 	
 	"jukeboxShuffleGlow" : {
@@ -315,6 +315,7 @@
 		"left" : 0,
 		"bottom" : 38,
 		"right" : 0,
+		"backgroundColor" : "#000000",
 		"opacity" : 0.8,
 		"visible" : false
 	}

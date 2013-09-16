@@ -338,12 +338,12 @@ function Jukebox() {
 		}
 		if (e.state == audioPlayer.STATE_INITIALIZED || e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED) {
 			Titanium.API.debug("Setting PLAY button image.");
-	   		controlPlayPause.setImage("images/play.png");
+	   		controlPlayPause.setImage("ios7/images/play.png");
 	   	}
 		if (e.state === audioPlayer.STATE_PLAYING || e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE || e.state === audioPlayer.STATE_STARTING) {
         	fastForwardOnStopped = true;
 	   		Titanium.API.debug("Setting PAUSE button image.");
-        	controlPlayPause.setImage("images/pause.png");
+        	controlPlayPause.setImage("ios7/images/pause.png");
         }
 	    if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
             showJukeboxActivityView();

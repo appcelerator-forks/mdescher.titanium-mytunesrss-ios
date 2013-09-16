@@ -18,7 +18,7 @@ function getServerBasedCacheDir() {
 }
 
 function createBusyView() {
-	var busyView = Titanium.UI.createView({opacity:0.8});
+	var busyView = Titanium.UI.createView({backgroundColor:"#000000",opacity:0.8});
 	busyView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	return busyView;
 }
