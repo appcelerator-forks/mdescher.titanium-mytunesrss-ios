@@ -192,24 +192,11 @@ exports.createMediaItemSubLabel = function(label) {
 };
 
 exports.Style = function() {
-	var ios7 = Titanium.Platform.version.split(".")[0] === "7";
 	var styles = JSON.parse(Titanium.Filesystem.getFile("styles/iphone.json").read());
-	if (ios7) {
-		ios7Styles = JSON.parse(Titanium.Filesystem.getFile("styles/iphone7.json").read());
-		for (var attrname in ios7Styles) {
-			styles[attrname] = ios7Styles[attrname];
-		}
-	}
 	if (Titanium.Platform.osname === "ipad") {
 		var ipadStyles = JSON.parse(Titanium.Filesystem.getFile("styles/ipad.json").read());
 		for (var attrname in ipadStyles) {
 			styles[attrname] = ipadStyles[attrname];
-		}
-		if (ios7) {
-			ipadIos7Styles = JSON.parse(Titanium.Filesystem.getFile("styles/ipad7.json").read());
-			for (var attrname in ipadIos7Styles) {
-				styles[attrname] = ipadIos7Styles[attrname];
-			}
 		}
 	}
 	

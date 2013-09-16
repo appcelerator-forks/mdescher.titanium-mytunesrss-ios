@@ -691,7 +691,7 @@ function getRememberedServerUrls() {
 
 function toDisplayDate(ts) {
     var date = new Date(ts);
-    return String.formatDate(date, "short")
+    return String.formatDate(date, "short");
     //return L("date", date.getDate(), date.getMonth() + 1, date.getFullYear());
 }
 

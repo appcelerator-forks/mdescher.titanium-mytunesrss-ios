@@ -166,10 +166,9 @@ exports.createMediaItemSubLabel = function(label) {
 };
 
 exports.Style = function() {
-	var ios7 = Titanium.Platform.version.split(".")[0] === "7";
-	var styles = ios7 ? JSON.parse(Titanium.Filesystem.getFile("styles/iphone7.json").read()) : JSON.parse(Titanium.Filesystem.getFile("styles/iphone.json").read());
+	var styles = JSON.parse(Titanium.Filesystem.getFile("ios7/styles/iphone.json").read());
 	if (Titanium.Platform.osname === "ipad") {
-		var ipadStyles = ios7 ? JSON.parse(Titanium.Filesystem.getFile("styles/ipad7.json").read()) : JSON.parse(Titanium.Filesystem.getFile("styles/ipad.json").read());
+		var ipadStyles = JSON.parse(Titanium.Filesystem.getFile("ios7/styles/ipad.json").read());
 		for (var attrname in ipadStyles) {
 			styles[attrname] = ipadStyles[attrname];
 		}

@@ -1,10 +1,10 @@
-Titanium.include('mytunesrss.js');
-Titanium.include('win_login.js');
-Titanium.include('win_login_online.js');
-Titanium.include('win_login_offline.js');
-Titanium.include('win_login_safari.js');
-Titanium.include('win_menu.js');
-Titanium.include('win_albums.js');
+Titanium.include("mytunesrss.js");
+Titanium.include("win_login.js");
+Titanium.include("win_login_online.js");
+Titanium.include("win_login_offline.js");
+Titanium.include("win_login_safari.js");
+Titanium.include("win_menu.js");
+Titanium.include("win_albums.js");
 Titanium.include("win_artists.js");
 Titanium.include("win_genres.js");
 Titanium.include("win_playlists.js");
@@ -24,6 +24,8 @@ Titanium.include("win_photo.js");
 
 Titanium.API.debug("Platform version: \"" + Titanium.Platform.version + "\".");
 
+var DARK_GRAY = "#2A2A2A";
+var LIGHT_GRAY = "#3A3A3A";
 // db versions
 // 1 = initial
 // 2 = added disc_number column
@@ -34,6 +36,7 @@ function RowArray() {
 	var rows = [];
 	
 	this.push = function(row) {
+		row.backgroundColor = rows.length % 2 == 0 ? DARK_GRAY : LIGHT_GRAY;
 		rows.push(row);
 	};
 	
@@ -123,7 +126,7 @@ var STYLE = new GUI.Style();
 
 Titanium.Media.audioSessionMode = Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK;
 
-var view = Titanium.UI.createView();
+var view = Titanium.UI.createView({backgroundColor:DARK_GRAY});
 
 var jukebox = new Jukebox();
 
