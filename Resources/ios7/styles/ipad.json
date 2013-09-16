@@ -1,0 +1,83 @@
+{
+
+	"menuRow" : {
+		"rightImage" : "images/children.png",
+		"height" : 88
+	},
+	
+	"menuLabel" : {
+		"left" : 60,
+		"font" : {
+			"fontSize" : 36,
+			"fontWeight" : "bold"
+		},
+		"color" : "#CCCCCC",
+		"minimumFontSize" : 24
+	},
+	
+	"jukeboxRewind" : {
+		"width":38,
+		"height":38,
+		"bottom":0,
+		"left":258,
+		"image" : "images/back.png"
+	},
+
+	"jukeboxRewindGlow" : {
+		"bottom":19,
+		"left":277
+	},
+
+	"jukeboxPlayPause" : {
+		"width":38,
+		"height":38,
+		"bottom":0,
+		"left":329,
+		"image" : "images/play.png"
+	},
+
+	"jukeboxPlayPauseGlow" : {
+		"bottom":19,
+		"left":348
+	},
+
+	"jukeboxForward" : {
+		"width":38,
+		"height":38,
+		"bottom":0,
+		"right":329,
+		"image" : "images/forward.png"
+	},
+
+	"jukeboxForwardGlow" : {
+		"bottom":19,
+		"right":348
+	},
+
+	"jukeboxShuffle" : {
+		"width":38,
+		"height":38,
+		"bottom":0,
+		"right":258,
+		"image" : "images/shuffle.png"
+	},
+	
+	"jukeboxShuffleGlow" : {
+		"bottom":19,
+		"right":277
+	},
+
+	"iad" : {
+		"height" : 66,
+		"bottom" : 0
+	},
+
+	"iadSpacing" : {
+		"bottom" : 66
+	},
+
+	"settingsRow" : {
+		"height" : 50
+	}
+
+}
