@@ -50,9 +50,6 @@ function MoviesWindow(data) {
 	tryAddAd(win);
 	
 	listView.addEventListener("itemclick", function(e) {
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
         jukebox.reset();
         var itemProps = e.section.getItemAt(e.itemIndex).properties;
         var url = itemProps.playbackUri;

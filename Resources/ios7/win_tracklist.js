@@ -150,9 +150,6 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 
     /* sweep delete 
 	tableView.addEventListener("delete", function(e) {
-    	if (jukebox.isIos61BugPhase()) {
-    		return;
-    	}
 		jukebox.reset();
 		deleteCachedTrackFile(data[e.index].id);
 		db = Titanium.Database.open("OfflineTracks");
@@ -214,9 +211,6 @@ function TracksWindow(data, currentJukeboxPlaylist) {
     };
 
     function playTrack(trackIndex) {
-    	if (jukebox.isIos61BugPhase()) {
-    		return;
-    	}
     	var busyView = createBusyView();
 		win.add(busyView);
 		Titanium.App.setIdleTimerDisabled(true);

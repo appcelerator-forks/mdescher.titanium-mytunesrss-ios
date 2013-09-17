@@ -123,33 +123,21 @@ function Jukebox() {
 	
 	var controlRewind = Titanium.UI.createImageView(STYLE.get("jukeboxRewind",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxRewindGlow")))}));
 	controlRewind.addEventListener('click', function() {
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 		rewind();
 	});
 	
 	var controlPlayPause = Titanium.UI.createImageView(STYLE.get("jukeboxPlayPause",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxPlayPauseGlow")))}));
 	controlPlayPause.addEventListener('click', function() {
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 		playPause();
 	});
 	
 	var controlFastForward = Titanium.UI.createImageView(STYLE.get("jukeboxForward",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxForwardGlow")))}));
 	controlFastForward.addEventListener('click', function() {
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 	    fastForward();
 	});
 	
 	var controlShuffle = Titanium.UI.createImageView(STYLE.get("jukeboxShuffle",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxShuffleGlow")))}));
 	controlShuffle.addEventListener('click', function() {
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 	    shuffle();
 	});
 	
@@ -195,44 +183,26 @@ function Jukebox() {
 	var mediaControlsView = MEDIA_CONTROLS.createView({left:0,top:0,width:0,height:0});
 	mediaControlsView.addEventListener("remoteControlPlay", function() {
 		Titanium.API.debug("RemoteControlPlay");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 		checkWebserverSanity(function() {play();});
 	}); 
 	mediaControlsView.addEventListener("remoteControlPause", function() {
 		Titanium.API.debug("RemoteControlPause");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 		pause();
 	}); 
 	mediaControlsView.addEventListener("remoteControlStop", function() {
 		Titanium.API.debug("RemoteControlStop");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 		jukebox.stopPlayback();
 	}); 
 	mediaControlsView.addEventListener("remoteControlTogglePlayPause", function() {
 		Titanium.API.debug("RemoteControlTogglePlayPause");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 		checkWebserverSanity(function() {playPause();});
 	}); 
 	mediaControlsView.addEventListener("remoteControlPreviousTrack", function() {
 		Titanium.API.debug("RemoteControlPreviousTrack");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 		checkWebserverSanity(function() {rewind();});
 	}); 
 	mediaControlsView.addEventListener("remoteControlNextTrack", function() {
 		Titanium.API.debug("RemoteControlNextTrack");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 		checkWebserverSanity(function() {fastForward();});
 	}); 
 	win.add(mediaControlsView);
@@ -407,17 +377,6 @@ function Jukebox() {
 		return state === audioPlayer.STATE_PLAYING || state === audioPlayer.STATE_BUFFERING || state === audioPlayer.STATE_WAITING_FOR_DATA || state === audioPlayer.STATE_WAITING_FOR_QUEUE || state === audioPlayer.STATE_STARTING || state === audioPlayer.STATE_STOPPING;
 	}
 	
-	this.isIos61BugPhase = function(disableAlert) {
-		var version = Titanium.Platform.version.split(".");
-		if (version[0] === "6" && version[1] === "1" && audioPlayer.getState() === audioPlayer.STATE_STOPPING) {
-			if (disableAlert === false || disableAlert === undefined) {
-				showError({message:L("ios61bugphase"),buttonNames:['Ok']});
-			}
-			return true;
-		}
-		return false;
-	};
-
 	function playTrack() {
     	setTrack();
     	Titanium.API.debug("[playTrack] Starting audio player.");

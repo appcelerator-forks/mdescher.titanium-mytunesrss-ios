@@ -44,9 +44,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		}
 	    if (bufferSizeInput.value != Titanium.App.Properties.getInt("audioBufferSize", DEFAULT_AUDIO_BUFFER_SIZE)) {    	
 	        Titanium.App.Properties.setInt("audioBufferSize", bufferSizeInput.value);
-			if (!jukebox.isIos61BugPhase(true)) {
-				jukebox.restart();
-			}	        
+			jukebox.restart();
 	    }
 	   	if (maxPhotoSizeInput.value < 480 || maxPhotoSizeInput.value > 4096) {
 			showError({message:L("settings.invalidMaxPhotoSize"),buttonNames:["Ok"]});

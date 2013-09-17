@@ -35,9 +35,6 @@ function MenuWindow() {
 		buttonLogout = GUI.createButton({title:L("menu.logout")});
 	} 
 	buttonLogout.addEventListener('click', function() {
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 		jukebox.reset();
 		connectedUsername = undefined;
 		connectedPassword = undefined;
@@ -159,9 +156,6 @@ function MenuWindow() {
 
 	var rowRandomMode = createMenuItem(L("menu.random"), "images/random.png");
 	rowRandomMode.addEventListener('click', function() {
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
 		var busyView = createBusyView();
 		win.add(busyView);
 		Titanium.App.setIdleTimerDisabled(true);
