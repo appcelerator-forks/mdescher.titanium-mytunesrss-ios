@@ -1,4 +1,7 @@
 eclipse.preferences.version=1
+provisioning_profiles/development/70C2E069-5A9D-481A-9558-451FD567827A/appid=*
+provisioning_profiles/development/70C2E069-5A9D-481A-9558-451FD567827A/name=iOS Team Provisioning Profile\: *
+provisioning_profiles/development/70C2E069-5A9D-481A-9558-451FD567827A/uuid=70C2E069-5A9D-481A-9558-451FD567827A
 provisioning_profiles/development/87FD3523-1A64-4B16-8274-B27E0A2F7EAD/appid=*
 provisioning_profiles/development/87FD3523-1A64-4B16-8274-B27E0A2F7EAD/name=Codewave Development
 provisioning_profiles/development/87FD3523-1A64-4B16-8274-B27E0A2F7EAD/uuid=87FD3523-1A64-4B16-8274-B27E0A2F7EAD
