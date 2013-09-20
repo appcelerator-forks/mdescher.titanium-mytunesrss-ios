@@ -66,25 +66,6 @@ exports.add = function(view, component) {
 	return component;
 };
 
-exports.glowViewOptions = function(center){
-	var options = {
-		width:50,
-		height:50,
-		opacity:0
-	};
-	if (center.left != undefined) {
-		options.left = center.left - 25;
-	} else if (center.right != undefined) {
-		options.right = center.right - 25;
-	}
-	if (center.top != undefined) {
-		options.top = center.top - 25;
-	} else if (center.bottom != undefined) {
-		options.bottom = center.bottom - 25;
-	}
-    return options;
-};
-
 exports.createMediaItemRow = function(image, title) {
 	return Titanium.UI.createTableViewRow({
 		className : "media_row" + (image ? "_image" : ""),

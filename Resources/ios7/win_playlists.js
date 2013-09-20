@@ -80,14 +80,9 @@ function PlaylistsWindow(data) {
 				properties : {
 					width : 20,
                     right : 10,
-                    image : "images/sync.png",
+                    image : "ios7/images/sync.png",
                     touchEnabled : false
 				}
-			},
-			{
-				type : "Titanium.UI.View",
-				bindId : "syncGlow",
-				properties : GUI.glowViewOptions({right:20})
 			}
 		]
 	};
@@ -106,7 +101,7 @@ function PlaylistsWindow(data) {
 
     listView.addEventListener("itemclick", function(e) {
     	var itemProps = e.section.getItemAt(e.itemIndex).properties;
-    	if (e.bindId === "syncIcon" || e.bindId === "syncGlow") {
+    	if (e.bindId === "syncIcon") {
     		syncTracks(itemProps.tracksUri, e.section.getItemAt(e.itemIndex).main.text);
     	} else {
 	        var busyView = createBusyView();
@@ -129,9 +124,6 @@ function PlaylistsWindow(data) {
 	        		main : {
 	        			text : getDisplayName(item.name)
 	        		},
-                    syncGlow : {
-                        tracksUri : item.tracksUri
-                    },
 	        		properties : {
 	        			tracksUri : item.tracksUri
 	        		}

@@ -24,6 +24,7 @@ Titanium.include("win_photo.js");
 
 Titanium.API.debug("Platform version: \"" + Titanium.Platform.version + "\".");
 
+var LIGHT_GRAY = "#CCCCCC";
 // db versions
 // 1 = initial
 // 2 = added disc_number column

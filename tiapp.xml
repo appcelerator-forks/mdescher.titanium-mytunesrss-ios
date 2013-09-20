@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
-    <sdk-version>3.1.3.GA</sdk-version>
+    <sdk-version>3.1.3.MYTUNESRSS</sdk-version>
     <deployment-targets>
         <target device="tizen">false</target>
         <target device="mobileweb">false</target>
@@ -44,40 +44,40 @@
                 <string>UIStatusBarStyleBlackOpaque</string>
                 <key>UILaunchImages~iphone</key>
                 <array>
-                	<dict>
-                		<key>UILaunchImageName</key>
-                		<string>Default7</string>
-                		<key>UILaunchImageMinimumOSVersion</key>
-                		<string>7.0</string>
-                		<key>UILaunchImageOrientation</key>
-                		<string>Portrait</string>
-                		<key>UILaunchImageSize</key>
-                		<string>{320, 480}</string>
-                	</dict>
-                	<dict>
-                		<key>UILaunchImageName</key>
-                		<string>Default7</string>
-                		<key>UILaunchImageMinimumOSVersion</key>
-                		<string>7.0</string>
-                		<key>UILaunchImageOrientation</key>
-                		<string>Portrait</string>
-                		<key>UILaunchImageSize</key>
-                		<string>{320, 568}</string>
-                	</dict>
-               	</array>
+                    <dict>
+                        <key>UILaunchImageName</key>
+                        <string>Default7</string>
+                        <key>UILaunchImageMinimumOSVersion</key>
+                        <string>7.0</string>
+                        <key>UILaunchImageOrientation</key>
+                        <string>Portrait</string>
+                        <key>UILaunchImageSize</key>
+                        <string>{320, 480}</string>
+                    </dict>
+                    <dict>
+                        <key>UILaunchImageName</key>
+                        <string>Default7</string>
+                        <key>UILaunchImageMinimumOSVersion</key>
+                        <string>7.0</string>
+                        <key>UILaunchImageOrientation</key>
+                        <string>Portrait</string>
+                        <key>UILaunchImageSize</key>
+                        <string>{320, 568}</string>
+                    </dict>
+                </array>
                 <key>UILaunchImages~ipad</key>
                 <array>
-                	<dict>
-                		<key>UILaunchImageName</key>
-                		<string>Default7-Portrait</string>
-                		<key>UILaunchImageMinimumOSVersion</key>
-                		<string>7.0</string>
-                		<key>UILaunchImageOrientation</key>
-                		<string>Portrait</string>
-                		<key>UILaunchImageSize</key>
-                		<string>{768, 1024}</string>
-                	</dict>
-               	</array>
+                    <dict>
+                        <key>UILaunchImageName</key>
+                        <string>Default7-Portrait</string>
+                        <key>UILaunchImageMinimumOSVersion</key>
+                        <string>7.0</string>
+                        <key>UILaunchImageOrientation</key>
+                        <string>Portrait</string>
+                        <key>UILaunchImageSize</key>
+                        <string>{768, 1024}</string>
+                    </dict>
+                </array>
             </dict>
         </plist>
     </ios>

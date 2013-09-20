@@ -87,18 +87,6 @@ function Jukebox() {
 	    }
 	}
 
-	function addTouchListener(control) {
-	    control.addEventListener("touchstart", function() {
-	        control.glow.opacity = 0.75;
-	    });
-	    control.addEventListener("touchend", function() {
-	        control.glow.opacity = 0;
-	    });
-	    control.addEventListener("touchcancel", function() {
-	        control.glow.opacity = 0;
-	    });
-	}
-	
 	var actIndicatorView = Titanium.UI.createView(STYLE.get("jukeboxActivityIndicator"));
 	actIndicatorView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 
@@ -121,22 +109,22 @@ function Jukebox() {
 	var buttonBack = GUI.createButton({title:L("jukebox.back")});
 	var buttonPlaylist = GUI.createButton({title:L("jukebox.playlist")});
 	
-	var controlRewind = Titanium.UI.createImageView(STYLE.get("jukeboxRewind",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxRewindGlow")))}));
+	var controlRewind = Titanium.UI.createButton(STYLE.get("jukeboxRewind"));
 	controlRewind.addEventListener('click', function() {
 		rewind();
 	});
 	
-	var controlPlayPause = Titanium.UI.createImageView(STYLE.get("jukeboxPlayPause",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxPlayPauseGlow")))}));
+	var controlPlayPause = Titanium.UI.createButton(STYLE.get("jukeboxPlayPause"));
 	controlPlayPause.addEventListener('click', function() {
 		playPause();
 	});
 	
-	var controlFastForward = Titanium.UI.createImageView(STYLE.get("jukeboxForward",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxForwardGlow")))}));
+	var controlFastForward = Titanium.UI.createButton(STYLE.get("jukeboxForward"));
 	controlFastForward.addEventListener('click', function() {
 	    fastForward();
 	});
 	
-	var controlShuffle = Titanium.UI.createImageView(STYLE.get("jukeboxShuffle",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxShuffleGlow")))}));
+	var controlShuffle = Titanium.UI.createButton(STYLE.get("jukeboxShuffle"));
 	controlShuffle.addEventListener('click', function() {
 	    shuffle();
 	});
@@ -163,20 +151,11 @@ function Jukebox() {
 		}
 	});
 
-	addTouchListener(controlRewind);
-	addTouchListener(controlFastForward);
-	addTouchListener(controlPlayPause);
-	addTouchListener(controlShuffle);
-	
 	win.add(Titanium.UI.createView({left:0,right:0,bottom:0,height:38}));
 	win.add(controlRewind);
-	win.add(controlRewind.glow);
 	win.add(controlFastForward);
-	win.add(controlFastForward.glow);
 	win.add(controlPlayPause);
-	win.add(controlPlayPause.glow);
 	win.add(controlShuffle);
-	win.add(controlShuffle.glow);
 
 	win.add(GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist));
 	

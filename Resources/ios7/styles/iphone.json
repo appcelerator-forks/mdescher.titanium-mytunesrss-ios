@@ -151,22 +151,12 @@
 		"image" : "ios7/images/back.png"
 	},
 
-	"jukeboxRewindGlow" : {
-		"bottom":19,
-		"left":53
-	},
-
 	"jukeboxPlayPause" : {
 		"width":38,
 		"height":38,
 		"bottom":0,
 		"left":105,
 		"image" : "ios7/images/play.png"
-	},
-
-	"jukeboxPlayPauseGlow" : {
-		"bottom":19,
-		"left":124
 	},
 
 	"jukeboxForward" : {
@@ -177,22 +167,12 @@
 		"image" : "ios7/images/forward.png"
 	},
 
-	"jukeboxForwardGlow" : {
-		"bottom":19,
-		"right":124
-	},
-
 	"jukeboxShuffle" : {
 		"width":38,
 		"height":38,
 		"bottom":0,
 		"right":34,
 		"image" : "ios7/images/shuffle.png"
-	},
-	
-	"jukeboxShuffleGlow" : {
-		"bottom":19,
-		"right":53
 	},
 	
 	"appInfoTitle" : {

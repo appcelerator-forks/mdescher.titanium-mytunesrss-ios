@@ -96,18 +96,13 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 				}
 			},
 			{
-				type : "Titanium.UI.ImageView",
+				type : "Titanium.UI.Button",
 				bindId : "syncIcon",
 				properties : {
 					width : 20,
                     right : 10,
                     touchEnabled : false
 				}
-			},
-			{
-				type : "Titanium.UI.View",
-				bindId : "syncGlow",
-				properties : GUI.glowViewOptions({right:20})
 			}
 		]
 	};
@@ -139,7 +134,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 			    text : getDisplayName(data[i].artist)
 		    },
 		    syncIcon : {
-		    	image : getCachedTrackFile(data[i].id) === undefined ? "images/download.png" : "images/delete.png"
+		    	image : getCachedTrackFile(data[i].id) === undefined ? "ios7/images/download.png" : "ios7/images/delete.png"
 		    }
 	    };
         if (!offlineMode && data[i].mediaType === "Audio") {
@@ -166,7 +161,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 			db.execute("DELETE FROM track WHERE id = ?", data[trackIndex].id);
 			db.close();
 			var item = section.getItemAt(trackIndex);
-			item.syncIcon.image = "images/download.png";
+			item.syncIcon.image = "ios7/images/download.png";
 			section.updateItemAt(trackIndex, item);
 			Titanium.Analytics.featureEvent("sync.deleteTrack");
     	} else {
@@ -199,7 +194,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 					);
 					db.close();
 					var item = section.getItemAt(trackIndex);
-					item.syncIcon.image = "images/delete.png";
+					item.syncIcon.image = "ios7/images/delete.png";
 					section.updateItemAt(trackIndex, item);
 					Titanium.Analytics.featureEvent("sync.downloadTrack");
 				}
@@ -237,7 +232,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
     };
 
     listView.addEventListener("itemclick", function(e) {
-        if (e.bindId === "syncIcon" || e.bindId === "syncGlow") {
+        if (e.bindId === "syncIcon") {
             syncTrack(e.section, e.itemIndex);
         } else {
             playTrack(e.itemIndex);
