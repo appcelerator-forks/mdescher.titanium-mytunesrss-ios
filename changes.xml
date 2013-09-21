@@ -7,13 +7,16 @@
 
         <release version="3.0.0" date="___D___">
         	<action dev="mdescher" type="update">
-                [MYTUNESRSSIPHONE-21] Support for photos
+				Works with iOS 7.
+        	</action>
+        	<action dev="mdescher" type="add">
+				[MYTUNESRSSIPHONE-21] Support for photos
         	</action>
         	<action dev="mdescher" type="update">
         		Use list view instead of table view.
         	</action>
         	<action dev="mdescher" type="remove">
-        		Removed iAd view in favor of a paid app.
+        		Removed iAd.
         	</action>
         	<action dev="mdescher" type="update">
         		Use internal http server for all image request. The http server either returns the cached image
