@@ -6,6 +6,9 @@
     <body>
 
         <release version="3.0.0" date="___D___">
+        	<action dev="mdescher" type="add">
+				Display "Now Playing" information.
+        	</action>
         	<action dev="mdescher" type="update">
 				Works with iOS 7.
         	</action>

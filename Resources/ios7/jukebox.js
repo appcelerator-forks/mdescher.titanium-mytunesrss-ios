@@ -73,6 +73,16 @@ function Jukebox() {
 	    win.add(timePlayed);
 	    timeRemaining = GUI.createLabel(STYLE.get("jukeboxProgressRemaining", {text:""}));
 	    win.add(timeRemaining);
+	    MEDIA_CONTROLS.setNowPlaying({
+	    	"title" : getDisplayName(track.name),
+	    	"artist" : getDisplayName(track.artist),
+	    	"albumTitle" : getDisplayName(track.album),
+	    	"playbackDuration" : track.time,
+	    	"genre" : getDisplayName(track.genre),
+	    	"albumArtist" : getDisplayName(track.albumArtist),
+	    	"discNumber" : track.discNumber,
+	    	"albumTrackNumber" : track.trackNumber
+	    });
 	}
 	
 	function setProgress(progress) {
