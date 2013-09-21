@@ -111,7 +111,7 @@ function PhotosWindow(data) {
 	};
 
 	var ipad = Titanium.Platform.osname === "ipad";
-	var listView = GUI.createListView(tryGetAdSpacingStyle({top:45,templates:{"default":ipad ? templateIpad : templateIphone},defaultItemTemplate:"default",rowHeight:ipad ? 170 : 110}));
+	var listView = GUI.createListView(tryGetAdSpacingStyle({separatorColor:DARK_GRAY,top:45,templates:{"default":ipad ? templateIpad : templateIphone},defaultItemTemplate:"default",rowHeight:ipad ? 170 : 110}));
 	var buttonBack = GUI.createButton({title:L("photos.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener("click", function() {

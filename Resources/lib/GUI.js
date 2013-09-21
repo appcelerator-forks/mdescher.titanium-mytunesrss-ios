@@ -5,7 +5,9 @@ exports.createTableView = function(options) {
 };
 
 exports.createListView = function(options) {
-	options.separatorColor = "#000000";
+	if (options.separatorColor === undefined) {
+		options.separatorColor = "#000000";
+	}
 	options.backgroundColor = DARK_GRAY;
 	return Titanium.UI.createListView(options);
 };
