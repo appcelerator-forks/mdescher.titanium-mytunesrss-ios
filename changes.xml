@@ -5,7 +5,7 @@
     </properties>
     <body>
 
-        <release version="3.0.0" date="___D___">
+        <release version="3.0.0" date="24.09.2013">
         	<action dev="mdescher" type="add">
 				Display "Now Playing" information.
         	</action>
