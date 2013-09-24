@@ -20,7 +20,7 @@ function getServerBasedCacheDir() {
 }
 
 function createBusyView() {
-	var busyView = Titanium.UI.createView({backgroundColor:'#000',opacity:0.8});
+	var busyView = Titanium.UI.createView({backgroundColor:"#000000",opacity:0.8});
 	busyView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	return busyView;
 }
@@ -691,7 +691,7 @@ function getRememberedServerUrls() {
 
 function toDisplayDate(ts) {
     var date = new Date(ts);
-    return String.formatDate(date, "short")
+    return String.formatDate(date, "short");
     //return L("date", date.getDate(), date.getMonth() + 1, date.getFullYear());
 }
 
@@ -701,5 +701,9 @@ function getSettingsMaxPhotoSize() {
 
 function getSettingsPhotoJpegQuality() {
     return Titanium.App.Properties.getInt("photoJpegQuality", 75);
+}
+
+function isIos7() {
+	return Titanium.Platform.version.split(".")[0] === "7";
 }
 

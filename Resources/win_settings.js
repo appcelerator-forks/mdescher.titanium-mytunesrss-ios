@@ -53,7 +53,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 			return;
 		}
         Titanium.App.Properties.setInt("maxPhotoSize", maxPhotoSizeInput.value);
-	   	if (photoJpegQualityInput.value < 480 || maxPhotoSizeInput.value > 4096) {
+	   	if (photoJpegQualityInput.value < 25 || photoJpegQualityInput.value > 100) {
 			showError({message:L("settings.invalidPhotoJpegQuality"),buttonNames:["Ok"]});
 			return;
 		}

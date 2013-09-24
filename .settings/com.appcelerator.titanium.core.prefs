@@ -1,7 +1,10 @@
 eclipse.preferences.version=1
-provisioning_profiles/development/DE4B0D1A-C2AC-4548-8469-072438617BD0/appid=*
-provisioning_profiles/development/DE4B0D1A-C2AC-4548-8469-072438617BD0/name=iOS Team Provisioning Profile\: *
-provisioning_profiles/development/DE4B0D1A-C2AC-4548-8469-072438617BD0/uuid=DE4B0D1A-C2AC-4548-8469-072438617BD0
-provisioning_profiles/distribution/F69808BE-62CA-4F47-B1AC-13515B3E8CA6/appid=de.codewave.mytunesrss
-provisioning_profiles/distribution/F69808BE-62CA-4F47-B1AC-13515B3E8CA6/name=MyTunesRSS AppStore
-provisioning_profiles/distribution/F69808BE-62CA-4F47-B1AC-13515B3E8CA6/uuid=F69808BE-62CA-4F47-B1AC-13515B3E8CA6
+provisioning_profiles/development/70C2E069-5A9D-481A-9558-451FD567827A/appid=*
+provisioning_profiles/development/70C2E069-5A9D-481A-9558-451FD567827A/name=iOS Team Provisioning Profile\: *
+provisioning_profiles/development/70C2E069-5A9D-481A-9558-451FD567827A/uuid=70C2E069-5A9D-481A-9558-451FD567827A
+provisioning_profiles/development/87FD3523-1A64-4B16-8274-B27E0A2F7EAD/appid=*
+provisioning_profiles/development/87FD3523-1A64-4B16-8274-B27E0A2F7EAD/name=Codewave Development
+provisioning_profiles/development/87FD3523-1A64-4B16-8274-B27E0A2F7EAD/uuid=87FD3523-1A64-4B16-8274-B27E0A2F7EAD
+provisioning_profiles/distribution/3A03EDA9-B53E-401A-B5EA-E8004EFE2000/appid=de.codewave.mytunesrss
+provisioning_profiles/distribution/3A03EDA9-B53E-401A-B5EA-E8004EFE2000/name=MyTunesRSS AppStore
+provisioning_profiles/distribution/3A03EDA9-B53E-401A-B5EA-E8004EFE2000/uuid=3A03EDA9-B53E-401A-B5EA-E8004EFE2000

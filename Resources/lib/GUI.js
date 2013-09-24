@@ -5,7 +5,9 @@ exports.createTableView = function(options) {
 };
 
 exports.createListView = function(options) {
-	options.separatorColor = "#000000";
+	if (options.separatorColor === undefined) {
+		options.separatorColor = "#000000";
+	}
 	options.backgroundColor = DARK_GRAY;
 	return Titanium.UI.createListView(options);
 };
@@ -46,7 +48,7 @@ exports.createTopToolbar = function(titleText, leftButton, rightButton) {
 	if (rightButton != undefined) {
 		items.push(rightButton);
 	}
-	var toolbar = Titanium.UI.iOS.createToolbar({width:Titanium.UI.FILL,top:0,height:45,items:items,barColor:"#000000"});
+	var toolbar = Titanium.UI.iOS.createToolbar(STYLE.get("topToolbar", {width:Titanium.UI.FILL,top:0,height:45,items:items,barColor:"#000000"}));
 	toolbar.add(Titanium.UI.createLabel({text:titleText,textAlign:"center",font:{fontSize:18,fontWeight:"bold"},color:"#CCCCCC"}));
 	return toolbar;
 };
@@ -192,7 +194,6 @@ exports.createMediaItemSubLabel = function(label) {
 };
 
 exports.Style = function() {
-	
 	var styles = JSON.parse(Titanium.Filesystem.getFile("styles/iphone.json").read());
 	if (Titanium.Platform.osname === "ipad") {
 		var ipadStyles = JSON.parse(Titanium.Filesystem.getFile("styles/ipad.json").read());

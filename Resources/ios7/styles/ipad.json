@@ -1,0 +1,62 @@
+{
+
+	"menuRow" : {
+		"rightImage" : "ios7/images/children.png",
+		"height" : 88
+	},
+	
+	"menuLabel" : {
+		"left" : 60,
+		"font" : {
+			"fontSize" : 36,
+			"fontWeight" : "bold"
+		},
+		"minimumFontSize" : 24
+	},
+	
+	"jukeboxRewind" : {
+		"width":38,
+		"height":38,
+		"bottom":0,
+		"left":258,
+		"image" : "ios7/images/back.png"
+	},
+
+	"jukeboxPlayPause" : {
+		"width":38,
+		"height":38,
+		"bottom":0,
+		"left":329,
+		"image" : "ios7/images/play.png"
+	},
+
+	"jukeboxForward" : {
+		"width":38,
+		"height":38,
+		"bottom":0,
+		"right":329,
+		"image" : "ios7/images/forward.png"
+	},
+
+	"jukeboxShuffle" : {
+		"width":38,
+		"height":38,
+		"bottom":0,
+		"right":258,
+		"image" : "ios7/images/shuffle.png"
+	},
+	
+	"iad" : {
+		"height" : 66,
+		"bottom" : 0
+	},
+
+	"iadSpacing" : {
+		"bottom" : 66
+	},
+
+	"settingsRow" : {
+		"height" : 50
+	}
+
+}
