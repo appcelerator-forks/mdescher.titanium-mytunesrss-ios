@@ -335,6 +335,7 @@ function Jukebox() {
 			}			
 		}
 		if (e.state === audioPlayer.STATE_STOPPED) {
+			MEDIA_CONTROLS.clearNowPlaying();
 			if (fastForwardOnStopped === true) {
 				Titanium.API.debug("Skipping to next track.");
 				fastForwardOnStopped = false;
