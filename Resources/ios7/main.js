@@ -1,5 +1,5 @@
 Titanium.include("mytunesrss.js");
-Titanium.include("../win_login.js");
+Titanium.include("win_login.js");
 Titanium.include("win_login_online.js");
 Titanium.include("win_login_offline.js");
 Titanium.include("win_login_safari.js");
