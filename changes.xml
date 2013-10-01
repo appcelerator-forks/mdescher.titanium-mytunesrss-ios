@@ -5,6 +5,12 @@
     </properties>
     <body>
 
+        <release version="3.0.2" date="___D___">
+        	<action dev="mdescher" type="update">
+				New iOS 7 icons for login screen. 
+        	</action>
+		</release>
+
         <release version="3.0.1" date="27.09.2013">
         	<action dev="mdescher" type="add">
 				Clear "Now Playing" information on stop.
