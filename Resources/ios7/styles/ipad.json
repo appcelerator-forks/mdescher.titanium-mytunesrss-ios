@@ -46,15 +46,6 @@
 		"image" : "ios7/images/shuffle.png"
 	},
 	
-	"iad" : {
-		"height" : 66,
-		"bottom" : 0
-	},
-
-	"iadSpacing" : {
-		"bottom" : 66
-	},
-
 	"settingsRow" : {
 		"height" : 50
 	}

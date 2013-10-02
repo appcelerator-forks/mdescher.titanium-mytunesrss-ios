@@ -7,6 +7,11 @@
 
         <release version="3.0.2" date="___D___">
         	<action dev="mdescher" type="update">
+				Better image and track caching using modification checks.
+				This version now requires a MyTunesRSS service 4.9.8 or
+				better.
+			</action>
+        	<action dev="mdescher" type="update">
 				New iOS 7 icons for login screen. Back to old App icons for iOS 6.
 				New App icons for iOS 7.
 			</action>

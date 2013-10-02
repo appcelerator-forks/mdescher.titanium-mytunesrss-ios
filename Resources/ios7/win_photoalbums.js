@@ -54,7 +54,7 @@ function PhotoAlbumsWindow(data) {
 		]
 	};
 
-	var listView = GUI.createListView(tryGetAdSpacingStyle({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"}));
+	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"});
 	var buttonBack = GUI.createButton({title:L("photoalbums.back")});
 	
 	buttonBack.addEventListener('click', function() {
@@ -64,8 +64,7 @@ function PhotoAlbumsWindow(data) {
 	
 	win.add(GUI.createTopToolbar(L("photoalbums.title"), buttonBack, undefined));	
 	win.add(listView);
-	tryAddAd(win);
-
+	
     listView.addEventListener("itemclick", function(e) {
     	var itemProps = e.section.getItemAt(e.itemIndex).properties;
         var busyView = createBusyView();

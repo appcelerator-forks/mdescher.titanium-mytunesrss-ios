@@ -111,7 +111,7 @@ function PhotosWindow(data) {
 	};
 
 	var ipad = Titanium.Platform.osname === "ipad";
-	var listView = GUI.createListView(tryGetAdSpacingStyle({separatorColor:"#FFFFFF",top:45,templates:{"default":ipad ? templateIpad : templateIphone},defaultItemTemplate:"default",rowHeight:ipad ? 170 : 110}));
+	var listView = GUI.createListView({separatorColor:"#FFFFFF",top:45,templates:{"default":ipad ? templateIpad : templateIphone},defaultItemTemplate:"default",rowHeight:ipad ? 170 : 110});
 	var buttonBack = GUI.createButton({title:L("photos.back")});
 	
 	buttonBack.addEventListener("click", function() {
@@ -121,7 +121,6 @@ function PhotosWindow(data) {
 	
 	win.add(GUI.createTopToolbar(L("photos.title"), buttonBack, undefined));
 	win.add(listView);
-	tryAddAd(win);
 	
     var lastDate = "";
     var listSections = [];

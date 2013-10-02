@@ -7,7 +7,7 @@ function PhotoWindow(data, index) {
 
 	var views = [];
 	for (var i = 0; i < data.length; i++) {
-		var imageView = Titanium.UI.createImageView(tryGetAdSpacingStyle({image:data[i].originalImageUri + "/size=" + getSettingsMaxPhotoSize() + "/jpegQuality=" + getSettingsPhotoJpegQuality()}));
+		var imageView = Titanium.UI.createImageView({image:data[i].originalImageUri + "/size=" + getSettingsMaxPhotoSize() + "/jpegQuality=" + getSettingsPhotoJpegQuality()});
 		var scrollView = Titanium.UI.createScrollView({contentWidth:"auto",contentHeight:"auto",showVerticalScrollIndicator:false,showHorizontalScrollIndicator:false,minZoomScale:1,maxZoomScale:5,zoomScale:1,oldZoom:1});
 		scrollView.add(imageView);
 	    scrollView.addEventListener("pinch", function(e) {
@@ -65,8 +65,6 @@ function PhotoWindow(data, index) {
 	win.add(scrollableView);
 	win.add(toolbar);
 
-	tryAddAd(win);
-	
 	win.addEventListener("singletap", function() {
 		toolbar.setVisible(!toolbar.visible);		
 	});

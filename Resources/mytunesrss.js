@@ -3,12 +3,10 @@ var DEFAULT_AUDIO_BUFFER_SIZE = 2048;
 var DEFAULT_SEARCH_ACCURACY = 40;
 var MININUM_SERVER_VERSION = {
 	major : 4,
-	minor : 3,
-	bugfix : 7,
-	text : "4.3.7"
+	minor : 9,
+	bugfix : 8,
+	text : "4.9.8"
 };
-var TRACKROW_BG_LOCAL = "#CCFFCC";
-var TRACKROW_BG_REMOTE = "white";
 var TRACK_ATTRIBUTES = "attr.incl=id&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected&attr.incl=album&attr.incl=albumArtist&attr.incl=genre&attr.incl=discNumber&attr.incl=trackNumber";
 
 function getServerBasedCacheDir() {
@@ -23,6 +21,17 @@ function createBusyView() {
 	var busyView = Titanium.UI.createView({backgroundColor:"#000000",opacity:0.8});
 	busyView.add(Titanium.UI.createActivityIndicator({top:0,bottom:0,left:0,right:0,visible:true}));
 	return busyView;
+}
+
+function isStaleCache(uri, ts) {
+	if (!Titanium.Network.online) {
+		return true;
+	}
+	var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
+	httpClient.open("HEAD",  uri, false);
+	httpClient.setRequestHeader("If-Modified-Since", ts.toGMTString());
+	httpClient.send();
+	return httpClient.status != 304;
 }
 
 function restCall(method, uri, params) {
@@ -63,40 +72,6 @@ function getDisplayName(name) {
         return "";
     }
     return name;
-}
-
-function setTableDataAndIndex(tableView, items, createTableViewRowCallback, getSectionAndIndexNameCallback) {
-	var sectionTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '123'];
-	var indexTitle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '#'];
-	var section = new Array(27);
-	for (var i = 0; i < items.length; i++) {
-		var itemName = getSectionAndIndexNameCallback(items[i]);
-		var index = itemName.toUpperCase().charCodeAt(0) - 65;
-		if (index < 0 || index > 25) {
-			index = 26;
-		}
-		if (!section[index]) {
-			var headerView = Titanium.UI.createView({height:25,width:Titanium.UI.FILL,backgroundGradient:{type:"linear", colors:["#808080","#CCCCCC"],startPoint:{x:0,y:0},endPoint:{x:0,y:24},backFillStart:false}});
-			headerView.add(Titanium.UI.createLabel({left:10,text:sectionTitle[index],font:{fontSize:12,fontWeight:"bold"},color:"#000000"}));
-			section[index] = Titanium.UI.createTableViewSection({headerView:headerView});
-		}
-		var row = createTableViewRowCallback(items[i], i);
-		section[index].add(row);
-	}
-	var indexData = [];
-	var tableData = [];
-	var globalIndex = 0;
-	for (i = 0; i < 27; i++) {
-		if (section[i]) {
-			tableData.push(section[i]);
-			indexData.push({title:indexTitle[i],index:globalIndex});
-			globalIndex += section[i].rowCount;
-		}
-	}
-	tableView.setData(tableData);
-	/*if (indexData.length > 5) {
-		tableView.setIndex(indexData);
-	}*/
 }
 
 function setListDataAndIndex(listView, items, createListItemDataCallback, getSectionAndIndexNameCallback) {
@@ -600,8 +575,14 @@ function getCachedTrackFile(id) {
 	}
 }
 
-function cacheTrack(id, uri, progressCallback, doneCallback) {
+function cacheTrack(id, headUri, uri, progressCallback, doneCallback) {
 	var file = getFileForTrackCache(id);
+	if (file.exists()) {
+		if (isStaleCache(headUri, file.modificationTimestamp())) {
+			Titanium.API.debug("Deleting stale cache file \"" + file.getName() + "\".");
+			file.deleteFile();
+		}
+	}
 	if (file.exists()) {
 		if (doneCallback != undefined) {
 			doneCallback({});
@@ -646,25 +627,6 @@ function showError(options) {
 	Titanium.App.setIdleTimerDisabled(false);
 	Titanium.UI.createAlertDialog(options).show();
 	Titanium.App.setIdleTimerDisabled(idleTimerDisabled);
-}
-
-function tryGetAdSpacingStyle(options) {
-	if (isAdActive()) {
-		return STYLE.get("iadSpacing", options);
-	} else {
-		return options;
-	}
-}
-
-function tryAddAd(win) {
-	if (isAdActive()) {
-		win.add(Titanium.UI.iOS.createAdView(STYLE.get("iad", {adSize:Titanium.UI.iOS.AD_SIZE_LANDSCAPE,backgroundColor:DARK_GRAY})));
-	}
-}
-
-function isAdActive() {
-	return false;
-	//return Titanium.Network.online;
 }
 
 function rememberServerUrl(url) {

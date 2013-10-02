@@ -107,7 +107,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		]
 	};
 
-	var listView = GUI.createListView(tryGetAdSpacingStyle({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template,"onlineAudio":templateOnlineAudio},defaultItemTemplate:"default"}));
+	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template,"onlineAudio":templateOnlineAudio},defaultItemTemplate:"default"});
 	var buttonBack = GUI.createButton({title:L("tracklist.back")});
 	
 	buttonBack.addEventListener('click', function() {
@@ -117,7 +117,6 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	
 	win.add(GUI.createTopToolbar(L("tracklist.title"), buttonBack, undefined));
 	win.add(listView);
-	tryAddAd(win);
 	
     var listSection = Titanium.UI.createListSection({});
     listView.setSections([listSection]);
@@ -166,6 +165,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 			Titanium.Analytics.featureEvent("sync.deleteTrack");
     	} else {
 			var url = data[trackIndex].playbackUri;
+			var plainUrl = url;
 			var tcParam = getTcParam();
     		if (tcParam != undefined) {
         		url += '/' + tcParam;
@@ -173,7 +173,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
     		var busyWindow = new BusyWindow(L("tracklist.busy.downloading"), data[trackIndex].name);
     		busyWindow.open();
     		Titanium.App.setIdleTimerDisabled(true);
-			cacheTrack(data[trackIndex].id, url, function(e) {busyWindow.setProgress(e);return true;}, function(e) {
+			cacheTrack(data[trackIndex].id, plainUrl, url, function(e) {busyWindow.setProgress(e);return true;}, function(e) {
 				if (e.aborted == undefined) {
 		    		db = Titanium.Database.open("OfflineTracks");
 					db.execute("DELETE FROM track WHERE id = ?", data[trackIndex].id);

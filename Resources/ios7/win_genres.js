@@ -24,7 +24,7 @@ function GenresWindow(data) {
 		]
 	};
 
-	var listView = GUI.createListView(tryGetAdSpacingStyle({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"}));
+	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"});
 	var buttonBack = GUI.createButton({title:L("genres.back")});
 	
 	buttonBack.addEventListener("click", function() {
@@ -34,7 +34,6 @@ function GenresWindow(data) {
 	
 	win.add(GUI.createTopToolbar(L("genres.title"), buttonBack, undefined));
 	win.add(listView);
-	tryAddAd(win);
 	
 	listView.addEventListener("itemclick", function(e) {
 		var busyView = createBusyView();

@@ -37,7 +37,7 @@ function MoviesWindow(data) {
 		]
 	};
 
-	var listView = GUI.createListView(tryGetAdSpacingStyle({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"}));
+	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"});
 	var buttonBack = GUI.createButton({title:L("movies.back")});
 	
 	buttonBack.addEventListener('click', function() {
@@ -47,7 +47,6 @@ function MoviesWindow(data) {
 	
 	win.add(GUI.createTopToolbar(L("movies.title"), buttonBack, undefined));
 	win.add(listView);
-	tryAddAd(win);
 	
 	listView.addEventListener("itemclick", function(e) {
         jukebox.reset();

@@ -87,7 +87,7 @@ function PlaylistsWindow(data) {
 		]
 	};
 
-	var listView = GUI.createListView(tryGetAdSpacingStyle({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"online":templateOnline,"offline":templateOffline},defaultItemTemplate:offlineMode ? "offline" : "online"}));
+	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"online":templateOnline,"offline":templateOffline},defaultItemTemplate:offlineMode ? "offline" : "online"});
 	var buttonBack = GUI.createButton({title:L("playlists.back")});
 	
 	buttonBack.addEventListener('click', function() {
@@ -97,8 +97,7 @@ function PlaylistsWindow(data) {
 	
 	win.add(GUI.createTopToolbar(L("playlists.title"), buttonBack, undefined));	
 	win.add(listView);
-	tryAddAd(win);
-
+	
     listView.addEventListener("itemclick", function(e) {
     	var itemProps = e.section.getItemAt(e.itemIndex).properties;
     	if (e.bindId === "syncIcon") {

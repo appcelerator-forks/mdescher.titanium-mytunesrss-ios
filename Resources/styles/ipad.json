@@ -67,15 +67,6 @@
 		"right":277
 	},
 
-	"iad" : {
-		"height" : 66,
-		"bottom" : 0
-	},
-
-	"iadSpacing" : {
-		"bottom" : 66
-	},
-
 	"settingsRow" : {
 		"height" : 50
 	}

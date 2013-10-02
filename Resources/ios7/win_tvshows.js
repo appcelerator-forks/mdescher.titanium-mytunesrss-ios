@@ -51,7 +51,7 @@ function TvShowsWindow(data) {
 		]
 	};
 
-	var listView = GUI.createListView(tryGetAdSpacingStyle({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"}));
+	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"});
 	var buttonBack = GUI.createButton({title:L("tvshows.back")});
 	
 	buttonBack.addEventListener('click', function() {
@@ -61,7 +61,6 @@ function TvShowsWindow(data) {
 	
 	win.add(GUI.createTopToolbar(L("tvshows.title"), buttonBack, undefined));
 	win.add(listView);
-	tryAddAd(win);
 	
 	listView.addEventListener("itemclick", function(e) {
 		var busyView = createBusyView();
