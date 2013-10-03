@@ -44,7 +44,7 @@ function restCall(method, uri, params) {
 	httpClient.send(params);
 	if (httpClient.status / 100 == 2) {
 		// 2xx response
-		return {status:httpClient.status,result:JSON.parse(httpClient.getResponseText()),header_totalNumberOfElements:httpClient.getResponseHeader("X-MyTunesRSS-TotalNumberOfElements")};
+		return {status:httpClient.status,result:JSON.parse(httpClient.getResponseText())};
 	} else if (httpClient.status === 401 && httpClient.getResponseText() === "NO_VALID_USER_SESSION" && connectedUsername != undefined) {
 		// probably session expired => login again
 		httpClient.open("POST",  Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session", false);
@@ -55,7 +55,7 @@ function restCall(method, uri, params) {
 			httpClient.send(params);
 			if (httpClient.status / 100 == 2) {
 				// 2xx response
-				return {status:httpClient.status,result:JSON.parse(httpClient.getResponseText()),header_totalNumberOfElements:httpClient.getResponseHeader("X-MyTunesRSS-TotalNumberOfElements")};
+				return {status:httpClient.status,result:JSON.parse(httpClient.getResponseText())};
 			} else {
 				// still no 2xx response
 				return {status:httpClient.status,result:httpClient.getResponseText()};

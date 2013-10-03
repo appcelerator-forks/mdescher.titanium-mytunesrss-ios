@@ -104,18 +104,19 @@ function PlaylistsWindow(data) {
     		syncTracks(itemProps.tracksUri, e.section.getItemAt(e.itemIndex).main.text);
     	} else {
 			var dialog = Ti.UI.createAlertDialog({
-			    buttonNames : [L("playlists.option.display"), L("playlists.option.shuffle")],
-			    message : L("playlists.option.text"),
-			    title : L("playlists.option.title")
+				cancel : 2,
+			    buttonNames : [L("playlists.option.display"), L("playlists.option.shuffle"), L("playlists.option.cancel")],
+			    message : String.format(L("playlists.option.text"), itemProps.trackCount),
+			    title : itemProps.name
 			});
 			dialog.addEventListener("click", function(e) {
 				var busyView = createBusyView();
 		        win.add(busyView);
 		        Titanium.App.setIdleTimerDisabled(true);
 		        try {
-				    if (e.index === 0){
+				    if (e.index === 0) {
 				        loadAndDisplayTracks(self, itemProps.tracksUri);
-				    } else {
+				    } else if (e.index === 1) {
 				    	onlineShuffleSession = loadTracks(itemProps.tracksUri);
 				    	removeUnsupportedAndNonAudioTracks(onlineShuffleSession);
 				    	if (onlineShuffleSession.length > 0) {
@@ -145,7 +146,8 @@ function PlaylistsWindow(data) {
 	        		},
 	        		properties : {
 	        			tracksUri : item.tracksUri,
-	        			trackCount : item.trackCount
+	        			trackCount : item.trackCount,
+	        			name : getDisplayName(item.name)
 	        		}
 	        	};
 	        },

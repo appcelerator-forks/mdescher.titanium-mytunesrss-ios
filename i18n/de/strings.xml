@@ -59,10 +59,10 @@
 	<string name="playlists.back">Zurück</string>
 	<string name="playlists.title">Listen</string>
 	<string name="playlists.busy.syncing">Synchronisieren</string>
-	<string name="playlists.option.title">Liste</string>
-	<string name="playlists.option.text">Möchten Sie die Liste anzeigen oder den Shuffle-Modus starten?</string>
+	<string name="playlists.option.text">Möchten Sie diese Liste mit %d Einträgen anzeigen oder den Shuffle-Modus starten?</string>
 	<string name="playlists.option.display">Anzeigen</string>
 	<string name="playlists.option.shuffle">Shuffle</string>
+	<string name="playlists.option.cancel">Abbrechen</string>
 	<string name="tracklist.back">Zurück</string>
 	<string name="tracklist.title">Titel</string>
 	<string name="tracklist.busy.downloading">Herunterladen</string>
