@@ -9,6 +9,7 @@ function Jukebox() {
 	
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
+	var myRandomOnlineMode;
 	var myRandomOfflineMode;
 	var myTrack;
 	var imageView;
@@ -73,6 +74,7 @@ function Jukebox() {
 	    win.add(timePlayed);
 	    timeRemaining = GUI.createLabel(STYLE.get("jukeboxProgressRemaining", {text:""}));
 	    win.add(timeRemaining);
+	    Titanium.API.debug("Setting now playing title = \"" + getDisplayName(track.name) + "\", artist = \"" + getDisplayName(track.artist) + "\", albumTitle = \"" + getDisplayName(track.album) + "\", playbackDuration = \"" + track.time + "\", genre = \"" + getDisplayName(track.genre) + "\", albumArtist = \"" + getDisplayName(track.albumArtist) + "\", discNumber = \"" + track.discNumber + "\", trackNumber = \"" + track.trackNumber + "\".");
 	    MEDIA_CONTROLS.setNowPlaying({
 	    	"title" : getDisplayName(track.name),
 	    	"artist" : getDisplayName(track.artist),
@@ -145,7 +147,7 @@ function Jukebox() {
 	});
 	
 	buttonPlaylist.addEventListener('click', function() {
-		if (myRandomOfflineMode != true) {
+		if (myRandomOnlineMode != true && myRandomOfflineMode != true) {
 			var busyView = createBusyView();
 			win.add(busyView);
 			Titanium.App.setIdleTimerDisabled(true);
@@ -398,7 +400,7 @@ function Jukebox() {
 		return isPlayingOrBuffering();
 	};
 
-	this.setPlaylist = function(playlist, index, randomOfflineMode) {
+	this.setPlaylist = function(playlist, index, randomOnlineMode, randomOfflineMode) {
 		Titanium.API.debug("[this.setPlaylist] Stopping audio player.");
 		fastForwardOnStopped = false;
 	    audioPlayer.stop();
@@ -413,6 +415,11 @@ function Jukebox() {
 	            }
 	        }
 	    }
+	    if (randomOnlineMode === true) {
+	    	myRandomOnlineMode = true;
+	    } else {
+	    	myRandomOnlineMode = false;
+	    }
 	    if (randomOfflineMode === true) {
 	    	myRandomOfflineMode = true;
 	    } else {
@@ -424,7 +431,7 @@ function Jukebox() {
 	function rewind() {
 		fastForwardOnStopped = false;
 		var playing = isPlayingOrBuffering();
-	    if (audioPlayer.progress > 2000 || myRandomOfflineMode === true) {
+	    if (audioPlayer.progress > 2000 || myRandomOnlineMode === true || myRandomOfflineMode === true) {
 	        if (playing === true) {
 	        	playTrack();
 	        } else {
@@ -444,6 +451,16 @@ function Jukebox() {
 		var playing = isPlayingOrBuffering();
 	    if (currentPlaylistIndex + 1 < currentPlaylist.length) {
 	        currentPlaylistIndex++;
+	        if (playing === true || forcePlayAfterFastforward === true) {
+	        	Titanium.API.debug("Playing on fast-forward [playing=" + playing + ", forcePlayAfterFastforward=" + forcePlayAfterFastforward + "].");
+	        	playTrack();
+	        	return true;
+	        } else {
+	        	setTrack();
+	        	return false;
+	        }
+	    } else if (myRandomOnlineMode === true) {
+	    	currentPlaylistIndex = 0;
 	        if (playing === true || forcePlayAfterFastforward === true) {
 	        	Titanium.API.debug("Playing on fast-forward [playing=" + playing + ", forcePlayAfterFastforward=" + forcePlayAfterFastforward + "].");
 	        	playTrack();
@@ -492,7 +509,7 @@ function Jukebox() {
 	};
 	
 	function shuffle() {
-		if (myRandomOfflineMode === true) {
+		if (myRandomOnlineMode === true || myRandomOfflineMode === true) {
 			fastForward();
 		} else {
 		    var playing = isPlayingOrBuffering();
@@ -542,6 +559,10 @@ function Jukebox() {
 	    audioPlayer.stop();
 	    setProgress(0);
 	};
+
+    this.isRandomOnlineMode = function() {
+    	return myRandomOnlineMode;
+    };
 
     this.isRandomOfflineMode = function() {
     	return myRandomOfflineMode;

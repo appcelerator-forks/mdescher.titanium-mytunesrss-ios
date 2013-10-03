@@ -162,7 +162,7 @@ function MenuWindow() {
         try {
         	var track = getRandomOfflineTrack();
         	if (track != undefined) {
-		        jukebox.setPlaylist([track], 0, true);
+		        jukebox.setPlaylist([track], 0, false, true);
 		        jukebox.open(self);
 		        win.close();
         	} else {

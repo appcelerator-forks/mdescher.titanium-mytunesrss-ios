@@ -110,15 +110,35 @@ function PlaylistsWindow(data) {
     	if (e.bindId === "syncIcon" || e.bindId === "syncGlow") {
     		syncTracks(itemProps.tracksUri, e.section.getItemAt(e.itemIndex).main.text);
     	} else {
-	        var busyView = createBusyView();
-	        win.add(busyView);
-	        Titanium.App.setIdleTimerDisabled(true);
-	        try {
-	            loadAndDisplayTracks(self, itemProps.tracksUri);
-	        } finally {
-	            Titanium.App.setIdleTimerDisabled(false);
-	            win.remove(busyView);
-	        }
+			var dialog = Ti.UI.createAlertDialog({
+			    buttonNames : [L("playlists.option.display"), L("playlists.option.shuffle")],
+			    message : L("playlists.option.text"),
+			    title : L("playlists.option.title")
+			});
+			dialog.addEventListener("click", function(e) {
+				var busyView = createBusyView();
+		        win.add(busyView);
+		        Titanium.App.setIdleTimerDisabled(true);
+		        try {
+				    if (e.index === 0){
+				        loadAndDisplayTracks(self, itemProps.tracksUri);
+				    } else {
+				    	onlineShuffleSession = loadTracks(itemProps.tracksUri);
+				    	removeUnsupportedAndNonAudioTracks(onlineShuffleSession);
+				    	if (onlineShuffleSession.length > 0) {
+					    	shuffleArray(onlineShuffleSession);
+						    jukebox.setPlaylist(onlineShuffleSession, 0, true, false);
+						    jukebox.open(self);
+			        	} else {
+			        		showError({message:L("tracks.offline.noneFound"),buttonNames:['Ok']});
+			        	}
+				    }
+		        } finally {
+		            Titanium.App.setIdleTimerDisabled(false);
+		            win.remove(busyView);
+		        }
+			});
+			dialog.show();
     	}
     });
 
@@ -134,7 +154,8 @@ function PlaylistsWindow(data) {
                         tracksUri : item.tracksUri
                     },
 	        		properties : {
-	        			tracksUri : item.tracksUri
+	        			tracksUri : item.tracksUri,
+	        			trackCount : item.trackCount
 	        		}
 	        	};
 	        },

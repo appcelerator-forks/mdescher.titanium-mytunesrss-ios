@@ -6,6 +6,9 @@
     <body>
 
         <release version="3.1" date="___D___">
+        	<action dev="mdescher" type="add">
+	        	[MYTUNESRSSIPHONE-60] Random playback of online playlist
+	        </action>
         	<action dev="mdescher" type="update">
 				Better image and track caching using modification checks.
 				This version now requires a MyTunesRSS service 4.9.8 or

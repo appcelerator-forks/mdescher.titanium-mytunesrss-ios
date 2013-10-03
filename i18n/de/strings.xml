@@ -59,6 +59,10 @@
 	<string name="playlists.back">Zurück</string>
 	<string name="playlists.title">Listen</string>
 	<string name="playlists.busy.syncing">Synchronisieren</string>
+	<string name="playlists.option.title">Liste</string>
+	<string name="playlists.option.text">Möchten Sie die Liste anzeigen oder den Shuffle-Modus starten?</string>
+	<string name="playlists.option.display">Anzeigen</string>
+	<string name="playlists.option.shuffle">Shuffle</string>
 	<string name="tracklist.back">Zurück</string>
 	<string name="tracklist.title">Titel</string>
 	<string name="tracklist.busy.downloading">Herunterladen</string>
@@ -74,9 +78,9 @@
 	<string name="tvshow.seasons.info">%d Episode(n)</string>
 	<string name="tvshow.seasons.itemName">Staffel %d</string>
 	<string name="jukebox.back">Zurück</string>
-	<string name="jukebox.playlist">Playlist</string>
+	<string name="jukebox.playlist">Liste</string>
 	<string name="jukebox.title">Jukebox</string>
-	<string name="jukebox.noPlaylistInRandomMode">Während der zufälligen Wiedergabe kann keine Playliste angezeigt werden.</string>
+	<string name="jukebox.noPlaylistInRandomMode">Während der zufälligen Wiedergabe kann keine Liste angezeigt werden.</string>
 	<string name="jukebox.noDataTimeout">Wiedergabe wurde gestoppt, da keine Daten empfangen werden konnten.</string>
 	<string name="settings.audioPlayer">Jukebox</string>
 	<string name="settings.search">Suche</string>

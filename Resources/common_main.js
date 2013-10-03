@@ -168,6 +168,7 @@ Titanium.App.addEventListener("mytunesrss_sync", function(event) {
 var connectedUsername;
 var connectedPassword;
 var offlineMode;
+var onlineShuffleSession;
 
 db = Titanium.Database.open("OfflineTracks");
 db.file.setRemoteBackup(false);

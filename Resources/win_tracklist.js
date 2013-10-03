@@ -234,7 +234,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
                 }
                 new VideoPlayerWindow(url).open(self);
             } else {
-                jukebox.setPlaylist(data, trackIndex);
+                jukebox.setPlaylist(data, trackIndex, false, false);
 		        jukebox.open(myCurrentJukeboxPlaylist === true ? undefined : self);
 		        if (myCurrentJukeboxPlaylist === true) {
 		        	win.close();

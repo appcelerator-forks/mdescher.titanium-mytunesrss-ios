@@ -44,7 +44,7 @@ function restCall(method, uri, params) {
 	httpClient.send(params);
 	if (httpClient.status / 100 == 2) {
 		// 2xx response
-		return {status:httpClient.status,result:JSON.parse(httpClient.getResponseText())};
+		return {status:httpClient.status,result:JSON.parse(httpClient.getResponseText()),header_totalNumberOfElements:httpClient.getResponseHeader("X-MyTunesRSS-TotalNumberOfElements")};
 	} else if (httpClient.status === 401 && httpClient.getResponseText() === "NO_VALID_USER_SESSION" && connectedUsername != undefined) {
 		// probably session expired => login again
 		httpClient.open("POST",  Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session", false);
@@ -55,7 +55,7 @@ function restCall(method, uri, params) {
 			httpClient.send(params);
 			if (httpClient.status / 100 == 2) {
 				// 2xx response
-				return {status:httpClient.status,result:JSON.parse(httpClient.getResponseText())};
+				return {status:httpClient.status,result:JSON.parse(httpClient.getResponseText()),header_totalNumberOfElements:httpClient.getResponseHeader("X-MyTunesRSS-TotalNumberOfElements")};
 			} else {
 				// still no 2xx response
 				return {status:httpClient.status,result:httpClient.getResponseText()};
@@ -111,9 +111,27 @@ function removeUnsupportedTracks(items) {
     return items;
 }
 
+function removeUnsupportedAndNonAudioTracks(items) {
+    for (var i = items.length - 1; i >= 0; i--) {
+        if (items[i].mediaType != "Audio" || items[i].protected === true) {
+            items = items.slice(0, i).concat(items.slice(i + 1));
+        }
+    }
+    return items;
+}
+
 function isSessionAlive() {
 	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=");
 	return response.status / 100 === 2;
+}
+
+function shuffleArray(arr) {
+	for (var i = 0; i < arr.length; i++) {
+		var rnd = Math.floor(Math.random() * arr.length);
+		var temp = arr[i];
+		arr[i] = arr[rnd];
+		arr[rnd] = temp;
+	}	
 }
 
 function getRandomOfflineTrack() {
@@ -245,7 +263,7 @@ function loadAndDisplayGenres(parent) {
 }
 
 function loadAndDisplayPlaylists(parent) {
-    var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri", {});
+    var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=trackCount", {});
     if (response.status / 100 === 2) {
         if (response.result.length === 0) {
         	showError({message:L("playlists.noneFound"),buttonNames:['Ok']});

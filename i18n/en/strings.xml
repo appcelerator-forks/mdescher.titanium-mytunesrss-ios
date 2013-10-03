@@ -59,6 +59,10 @@
 	<string name="playlists.back">Back</string>
 	<string name="playlists.title">Playlists</string>
 	<string name="playlists.busy.syncing">Synchronizing</string>
+	<string name="playlists.option.title">Playlist</string>
+	<string name="playlists.option.text">Do you want to display the playlist or start shuffle mode?</string>
+	<string name="playlists.option.display">Display</string>
+	<string name="playlists.option.shuffle">Shuffle</string>
 	<string name="tracklist.back">Back</string>
 	<string name="tracklist.title">Tracks</string>
 	<string name="tracklist.busy.downloading">Downloading</string>
