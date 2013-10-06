@@ -60,23 +60,24 @@ function Jukebox() {
 			albumTrackNumber : track.trackNumber
 		});
 	    if (track.imageUri != undefined) {
-	        imgUri = getCacheableImageUri(track.imageHash, track.imageUri);
+	        var imgUri = getCacheableImageUri(track.imageHash, track.imageUri);
+	        var imgView; 
 	        if (hires) {
-	        	imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:imgUri,width:size-20,height:size-20,defaultImage:noCoverImage}));
+	        	imgView = Titanium.UI.createImageView({top:10,hires:true,image:imgUri,width:size-20,height:size-20,defaultImage:noCoverImage});
 	        } else {
-	        	imageView.add(Titanium.UI.createImageView({top:10,image:imgUri,width:size-20,height:size-20,defaultImage:noCoverImage}));
+	        	imgView = Titanium.UI.createImageView({top:10,image:imgUri,width:size-20,height:size-20,defaultImage:noCoverImage});
 	        }
+	        imageView.add(imgView);
+		    nowPlayingInfo.artwork = imgUri;
 	        imgView.addEventListener("load", function() {
 	        	// defer so we have a cached local image
-		        nowPlayingInfo.artwork = imgUri;
 	        	nowPlayingInfo.setNowPlaying();
 	        });
 	    } else {
-	        imgUri = noCoverImage;
 	        if (hires) {
-	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:imgUri,width:size-20,height:size-20}));
+	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:noCoverImage,width:size-20,height:size-20}));
 	        } else {
-		        imageView.add(Titanium.UI.createImageView({top:10,image:imgUri,width:size-20,height:size-20}));
+		        imageView.add(Titanium.UI.createImageView({top:10,image:noCoverImage,width:size-20,height:size-20}));
 	        }
 	        nowPlayingInfo.setNowPlaying();
 	    }
