@@ -353,9 +353,12 @@ function Jukebox() {
 		        	myParent.open();
 	   				win.close(); // ... and return to parent view
 		        }
+			}				
+			if (keepNowPlayingInfoOnStopped === true) {
+				keepNowPlayingInfoOnStopped = false;
 			} else {
 				MEDIA_CONTROLS.clearNowPlaying();
-			}				
+			}
 		}
 		if (e.state == audioPlayer.STATE_INITIALIZED || e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED) {
 			Titanium.API.debug("Setting PLAY button image.");
@@ -418,6 +421,9 @@ function Jukebox() {
 	}
 	
 	function setTrack() {
+    	if (isPlayingOrBuffering()) {
+    		keepNowPlayingInfoOnStopped = true;
+    	}
 	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].id, currentPlaylist[currentPlaylistIndex].playbackUri);
 	    setTrackInformation(currentPlaylist[currentPlaylistIndex]);
 	    Titanium.Analytics.featureEvent("jukebox.setTrack");
@@ -446,6 +452,7 @@ function Jukebox() {
 	}
 	
 	var fastForwardOnStopped = true;
+	var keepNowPlayingInfoOnStopped = false;
 	
 	function createPlayer() {
 		if (audioPlayer != undefined) {
