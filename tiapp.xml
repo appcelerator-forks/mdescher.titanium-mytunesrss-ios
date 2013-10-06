@@ -84,6 +84,6 @@
     <android xmlns:android="http://schemas.android.com/apk/res/android"/>
     <modules>
         <module platform="iphone">com.0x82.webserver</module>
-        <module platform="iphone">de.codewave.ti.mediacontrols</module>
+        <module platform="iphone" version="3.0">de.codewave.ti.mediacontrols</module>
     </modules>
 </ti:app>

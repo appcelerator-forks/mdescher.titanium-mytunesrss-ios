@@ -549,11 +549,8 @@ function getImageCacheFile(cacheObjectId) {
 	return Titanium.Filesystem.getFile(baseDir, "cache/images/" + cacheObjectId);	
 }
 
-function createCachedImageView(options) {
-    var cacheObjectId = options.cacheObjectId;
-    delete(options.cacheObjectId);
-    options.image = "http://localhost:" + HTTP_SERVER_PORT + "/image/" + cacheObjectId + "/" + encodeURIComponent(options.image);
-    return Titanium.UI.createImageView(options);
+function getCacheableImageUri(cacheObjectId, uri) {
+	return "http://localhost:" + HTTP_SERVER_PORT + "/image/" + cacheObjectId + "/" + encodeURIComponent(uri);
 }
 
 function downloadImage(cacheObjectId, uri, callback) {

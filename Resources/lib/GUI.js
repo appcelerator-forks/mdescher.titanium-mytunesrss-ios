@@ -140,7 +140,7 @@ exports.createMediaTrackItemInfoView = function(imageHash, imageUri, label, subl
     if (imageUri != undefined) {
 		var hires = Titanium.Platform.displayCaps.density == "high";
 		var imagesize = hires ? 128 : 64;
-    	infoView.add(createCachedImageView({cacheObjectId:imageHash + "_" + imagesize,hires:true,image:imageUri + "/size=" + imagesize,top:spacer,left:spacer,bottom:spacer,right:spacerRight,defaultImage:"appicon.png"}));
+    	infoView.add(Titanium.UI.createImageView({hires:true,image:getCacheableImageUri(imageHash + "_" + imagesize, imageUri + "/size=" + imagesize),top:spacer,left:spacer,bottom:spacer,right:spacerRight,defaultImage:"appicon.png"}));
     }
     var trackName = GUI.createLabel({text:label,top:spacer,left:size + (3 * spacer),height:trackHeight,right:2 * spacer,font:{fontSize:14,fontWeight:"bold"},minimumFontSize:10,touchEnabled:false});
     var artistName = GUI.createLabel({text:sublabel,bottom:spacer,left:size + (3 * spacer),height:artistHeight,right:2 * spacer,font:{fontSize:10},touchEnabled:false});
@@ -150,10 +150,9 @@ exports.createMediaTrackItemInfoView = function(imageHash, imageUri, label, subl
 };
 
 exports.createMediaItemImage = function(hash, uri) {
-	return createCachedImageView({
-		cacheObjectId : hash + "_" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64),
+	return Titanium.UI.createImageView({
 		hires : Titanium.Platform.displayCaps.density === "high",
-		image : uri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64),
+		image : getCacheableImageUri(hash + "_" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64), uri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64)),
 		top : Titanium.Platform.osname === "ipad" ? 6 : 4,
 		bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
 		left : Titanium.Platform.osname === "ipad" ? 6 : 4,

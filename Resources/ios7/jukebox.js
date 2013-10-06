@@ -49,18 +49,36 @@ function Jukebox() {
 	    	win.remove(timeRemaining);
 	    }
 	    imageView = Titanium.UI.createView({top:vOffset+55,left:10,right:10,hires:true,image:track.imageUri,height:size});
+	    var nowPlayingInfo = MEDIA_CONTROLS.createNowPlayingInfo({
+	    	title : getDisplayName(track.name),
+			artist : getDisplayName(track.artist),
+			albumTitle : getDisplayName(track.album),
+			playbackDuration : track.time,
+			genre : getDisplayName(track.genre),
+			albumArtist : getDisplayName(track.albumArtist),
+			discNumber : track.discNumber,
+			albumTrackNumber : track.trackNumber
+		});
 	    if (track.imageUri != undefined) {
+	        var imgUri = getCacheableImageUri(track.imageHash, track.imageUri);
 	        if (hires) {
-	    	    imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,hires:true,image:track.imageUri,width:size-20,height:size-20,defaultImage:noCoverImage}));
+	        	imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:imgUri,width:size-20,height:size-20,defaultImage:noCoverImage}));
 	        } else {
-		        imageView.add(createCachedImageView({cacheObjectId:track.imageHash,top:10,image:track.imageUri,width:size-20,height:size-20,defaultImage:noCoverImage}));
+	        	imageView.add(Titanium.UI.createImageView({top:10,image:imgUri,width:size-20,height:size-20,defaultImage:noCoverImage}));
 	        }
+	        nowPlayingInfo.artwork = imgUri;
+	        imgView.addEventListener("load", function() {
+	        	// defer so we have a cached local image
+	        	nowPlayingInfo.setNowPlaying();
+	        });
 	    } else {
+	        var imgUri = noCoverImage;
 	        if (hires) {
-	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:noCoverImage,width:size-20,height:size-20}));
+	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:imgUri,width:size-20,height:size-20}));
 	        } else {
-		        imageView.add(Titanium.UI.createImageView({top:10,image:noCoverImage,width:size-20,height:size-20}));
+		        imageView.add(Titanium.UI.createImageView({top:10,image:imgUri,width:size-20,height:size-20}));
 	        }
+	        nowPlayingInfo.setNowPlaying();
 	    }
 	    infoView = Titanium.UI.createView({height:60,top:vOffset+size+65,left:10,right:10});
 	    infoView.add(GUI.createLabel({top:7,left:0,right:0,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name),textAlign:"center"}));
@@ -74,17 +92,6 @@ function Jukebox() {
 	    win.add(timePlayed);
 	    timeRemaining = GUI.createLabel(STYLE.get("jukeboxProgressRemaining", {text:""}));
 	    win.add(timeRemaining);
-	    Titanium.API.debug("Setting now playing title = \"" + getDisplayName(track.name) + "\", artist = \"" + getDisplayName(track.artist) + "\", albumTitle = \"" + getDisplayName(track.album) + "\", playbackDuration = \"" + track.time + "\", genre = \"" + getDisplayName(track.genre) + "\", albumArtist = \"" + getDisplayName(track.albumArtist) + "\", discNumber = \"" + track.discNumber + "\", trackNumber = \"" + track.trackNumber + "\".");
-	    MEDIA_CONTROLS.setNowPlaying({
-	    	"title" : getDisplayName(track.name),
-	    	"artist" : getDisplayName(track.artist),
-	    	"albumTitle" : getDisplayName(track.album),
-	    	"playbackDuration" : track.time,
-	    	"genre" : getDisplayName(track.genre),
-	    	"albumArtist" : getDisplayName(track.albumArtist),
-	    	"discNumber" : track.discNumber,
-	    	"albumTrackNumber" : track.trackNumber
-	    });
 	}
 	
 	function setProgress(progress) {
@@ -286,7 +293,6 @@ function Jukebox() {
 			}			
 		}
 		if (e.state === audioPlayer.STATE_STOPPED) {
-			MEDIA_CONTROLS.clearNowPlaying();
 			if (fastForwardOnStopped === true) {
 				Titanium.API.debug("Skipping to next track.");
 				fastForwardOnStopped = false;
@@ -296,6 +302,11 @@ function Jukebox() {
 		        	myParent.open();
 	   				win.close(); // ... and return to parent view
 		        }
+			}
+			if (keepNowPlayingInfoOnStopped === true) {
+				keepNowPlayingInfoOnStopped = false;
+			} else {
+				MEDIA_CONTROLS.clearNowPlaying();
 			}
 		}
 		if (e.state == audioPlayer.STATE_INITIALIZED || e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED) {
@@ -359,6 +370,9 @@ function Jukebox() {
 	}
 	
 	function setTrack() {
+    	if (isPlayingOrBuffering()) {
+    		keepNowPlayingInfoOnStopped = true;
+    	}
 	    setPlayerUrl(currentPlaylist[currentPlaylistIndex].id, currentPlaylist[currentPlaylistIndex].playbackUri);
 	    setTrackInformation(currentPlaylist[currentPlaylistIndex]);
 	    Titanium.Analytics.featureEvent("jukebox.setTrack");
@@ -376,6 +390,7 @@ function Jukebox() {
 	}
 	
 	var fastForwardOnStopped = true;
+	var keepNowPlayingInfoOnStopped = false;
 	
 	function createPlayer() {
 		if (audioPlayer != undefined) {

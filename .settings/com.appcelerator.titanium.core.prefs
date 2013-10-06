@@ -1,4 +1,10 @@
 eclipse.preferences.version=1
+provisioning_profiles/adhoc/263C4894-2BD6-48AB-9F7D-7A7391EEC7F2/appid=de.codewave.mytunesrss
+provisioning_profiles/adhoc/263C4894-2BD6-48AB-9F7D-7A7391EEC7F2/name=MyTunesRSS AdHoc
+provisioning_profiles/adhoc/263C4894-2BD6-48AB-9F7D-7A7391EEC7F2/uuid=263C4894-2BD6-48AB-9F7D-7A7391EEC7F2
+provisioning_profiles/adhoc/3A03EDA9-B53E-401A-B5EA-E8004EFE2000/appid=de.codewave.mytunesrss
+provisioning_profiles/adhoc/3A03EDA9-B53E-401A-B5EA-E8004EFE2000/name=MyTunesRSS AppStore
+provisioning_profiles/adhoc/3A03EDA9-B53E-401A-B5EA-E8004EFE2000/uuid=3A03EDA9-B53E-401A-B5EA-E8004EFE2000
 provisioning_profiles/development/70C2E069-5A9D-481A-9558-451FD567827A/appid=*
 provisioning_profiles/development/70C2E069-5A9D-481A-9558-451FD567827A/name=iOS Team Provisioning Profile\: *
 provisioning_profiles/development/70C2E069-5A9D-481A-9558-451FD567827A/uuid=70C2E069-5A9D-481A-9558-451FD567827A
