@@ -25,13 +25,13 @@ function createBusyView() {
 
 function isStaleCache(uri, ts) {
 	if (!Titanium.Network.online) {
-		return true;
+		return false;
 	}
 	var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
 	httpClient.open("HEAD",  uri, false);
 	httpClient.setRequestHeader("If-Modified-Since", ts.toGMTString());
 	httpClient.send();
-	return httpClient.status != 304;
+	return httpClient.status % 100 == 2;
 }
 
 function restCall(method, uri, params) {
