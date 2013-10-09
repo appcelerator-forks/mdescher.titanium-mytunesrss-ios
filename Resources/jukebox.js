@@ -396,10 +396,11 @@ function Jukebox() {
         	pauseTimeout = undefined;
         }
         if (e.state === audioPlayer.STATE_PLAYING) {
-        	nowPlayingInfo.setPlaybackRate(1);
         	nowPlayingInfo.setElapsedPlaybackTime(progressBar.value);
+        	nowPlayingInfo.setPlaybackRate(1);
         } else if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
         	nowPlayingInfo.setPlaybackRate(0);
+        	nowPlayingInfo.setElapsedPlaybackTime(progressBar.value);
         }
     };
 
