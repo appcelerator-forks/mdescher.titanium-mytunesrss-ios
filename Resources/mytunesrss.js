@@ -4,8 +4,8 @@ var DEFAULT_SEARCH_ACCURACY = 40;
 var MININUM_SERVER_VERSION = {
 	major : 4,
 	minor : 9,
-	bugfix : 8,
-	text : "4.9.8"
+	bugfix : 12,
+	text : "4.9.12"
 };
 var TRACK_ATTRIBUTES = "attr.incl=id&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected&attr.incl=album&attr.incl=albumArtist&attr.incl=genre&attr.incl=discNumber&attr.incl=trackNumber";
 
@@ -218,7 +218,7 @@ function loadAndDisplayArtists(parent) {
 	    	new ArtistsWindow(result).open(parent);
 	    }
 	} else {
-	    var response = restCall("GET", getLibrary().artistsUri + "?attr.incl=name&attr.incl=albumsUri", {});
+	    var response = restCall("GET", getLibrary().artistsUri + "?attr.incl=name&attr.incl=albumsUri&attr.incl=tracksUri", {});
 	    if (response.status / 100 === 2) {
 	        if (response.result.length === 0) {
 	        	showError({message:L("artists.noneFound"),buttonNames:['Ok']});
@@ -249,7 +249,7 @@ function loadAndDisplayGenres(parent) {
 	    	new GenresWindow(result).open(parent);
 	    }
 	} else {
-	    var response = restCall("GET", getLibrary().genresUri + "?attr.incl=name&attr.incl=albumsUri", {});
+	    var response = restCall("GET", getLibrary().genresUri + "?attr.incl=name&attr.incl=albumsUri&attr.incl=tracksUri", {});
 	    if (response.status / 100 === 2) {
 	        if (response.result.length === 0) {
 	        	showError({message:L("genres.noneFound"),buttonNames:['Ok']});
@@ -682,5 +682,41 @@ function getSettingsPhotoJpegQuality() {
 
 function isIos7() {
 	return Titanium.Platform.version.split(".")[0] === "7";
+}
+
+function syncTracks(win, tracksUri, displayName, analyticsEvent, sync) {
+    var busyView = createBusyView();
+    win.add(busyView);
+    Titanium.App.setIdleTimerDisabled(true);
+    try {
+	    var tracks = loadTracks(tracksUri);
+	    if (sync) {
+	    	removeObsoleteTracks(tracks);
+	    }
+    } finally {
+	    Titanium.App.setIdleTimerDisabled(false);
+        win.remove(busyView);
+    }
+    if (tracks != undefined && tracks.length > 0) {
+    	Titanium.Analytics.featureEvent(analyticsEvent);
+	    CANCEL_SYNC_AUDIO_TRACKS = false;
+	    var busyWindow = new BusyWindow(sync ? L("busy.syncing") : L("busy.downloading"), displayName, function() {
+		    CANCEL_SYNC_AUDIO_TRACKS = true;
+	    });
+	    busyWindow.open();
+	    Titanium.App.setIdleTimerDisabled(true);
+	    var syncProgress = function(e) {
+		    busyWindow.setProgress(e.progress);
+	    };
+	    var syncDone = function() {
+		    Titanium.App.setIdleTimerDisabled(false);
+		    busyWindow.close();
+		    Titanium.App.removeEventListener("mytunesrss_sync_progress", syncProgress);
+		    Titanium.App.removeEventListener("mytunesrss_sync_done", syncDone);
+	    };
+	    Titanium.App.addEventListener("mytunesrss_sync_progress", syncProgress);
+	    Titanium.App.addEventListener("mytunesrss_sync_done", syncDone);
+	    Titanium.App.fireEvent("mytunesrss_sync", {data:tracks,index:0});
+    }
 }
 

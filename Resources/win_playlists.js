@@ -25,40 +25,6 @@ function PlaylistsWindow(data) {
 		]
 	};
 
-    function syncTracks(tracksUri, displayName) {
-	    var busyView = createBusyView();
-	    win.add(busyView);
-	    Titanium.App.setIdleTimerDisabled(true);
-	    try {
-		    var tracks = loadTracks(tracksUri);
-        	removeObsoleteTracks(tracks);
-	    } finally {
-		    Titanium.App.setIdleTimerDisabled(false);
-	        win.remove(busyView);
-	    }
-        if (tracks != undefined && tracks.length > 0) {
-        	Titanium.Analytics.featureEvent("sync.playlist");
-		    CANCEL_SYNC_AUDIO_TRACKS = false;
-		    var busyWindow = new BusyWindow(L("playlists.busy.syncing"), displayName, function() {
-			    CANCEL_SYNC_AUDIO_TRACKS = true;
-		    });
-		    busyWindow.open();
-		    Titanium.App.setIdleTimerDisabled(true);
-		    var syncProgress = function(e) {
-			    busyWindow.setProgress(e.progress);
-		    };
-		    var syncDone = function() {
-			    Titanium.App.setIdleTimerDisabled(false);
-			    busyWindow.close();
-			    Titanium.App.removeEventListener("mytunesrss_sync_progress", syncProgress);
-			    Titanium.App.removeEventListener("mytunesrss_sync_done", syncDone);
-		    };
-		    Titanium.App.addEventListener("mytunesrss_sync_progress", syncProgress);
-		    Titanium.App.addEventListener("mytunesrss_sync_done", syncDone);
-		    Titanium.App.fireEvent("mytunesrss_sync", {data:tracks,index:0});
-        }
-    }
-
 	var templateOnline = {
 		childTemplates : [
 			{
@@ -67,7 +33,7 @@ function PlaylistsWindow(data) {
 				properties : {
 					left : 10,
 					height : 24,
-					right : 40,
+					right : 52,
 					font : {
 						fontSize : 20,
 						fontWeight : "bold"
@@ -78,17 +44,17 @@ function PlaylistsWindow(data) {
 			},
 			{
 				type : "Titanium.UI.ImageView",
-				bindId : "syncIcon",
+				bindId : "optionsMenu",
 				properties : {
-					width : 20,
+					width : 32,
                     right : 10,
-                    image : "images/sync.png",
+                    image : "images/more.png",
                     touchEnabled : false
 				}
 			},
 			{
 				type : "Titanium.UI.View",
-				bindId : "syncGlow",
+				bindId : "optionsMenuGlow",
 				properties : GUI.glowViewOptions({right:20})
 			}
 		]
@@ -106,40 +72,19 @@ function PlaylistsWindow(data) {
 	win.add(listView);
 	
     listView.addEventListener("itemclick", function(e) {
-    	var itemProps = e.section.getItemAt(e.itemIndex).properties;
-    	if (e.bindId === "syncIcon" || e.bindId === "syncGlow") {
-    		syncTracks(itemProps.tracksUri, e.section.getItemAt(e.itemIndex).main.text);
+    	if (e.bindId === "optionsMenu" || e.bindId === "optionsMenuGlow") {
+    		optionsMenu(itemProps);
     	} else {
-			var dialog = Ti.UI.createAlertDialog({
-				cancel : 2,
-			    buttonNames : [L("playlists.option.display"), L("playlists.option.shuffle"), L("playlists.option.cancel")],
-			    message : String.format(L("playlists.option.text"), itemProps.trackCount),
-			    title : itemProps.name
-			});
-			dialog.addEventListener("click", function(e) {
-				var busyView = createBusyView();
-		        win.add(busyView);
-		        Titanium.App.setIdleTimerDisabled(true);
-		        try {
-				    if (e.index === 0) {
-				        loadAndDisplayTracks(self, itemProps.tracksUri);
-				    } else if (e.index === 1) {
-				    	onlineShuffleSession = loadTracks(itemProps.tracksUri);
-				    	removeUnsupportedAndNonAudioTracks(onlineShuffleSession);
-				    	if (onlineShuffleSession.length > 0) {
-					    	shuffleArray(onlineShuffleSession);
-						    jukebox.setPlaylist(onlineShuffleSession, 0, true, false);
-						    jukebox.open(self);
-			        	} else {
-			        		showError({message:L("tracks.offline.noneFound"),buttonNames:['Ok']});
-			        	}
-				    }
-		        } finally {
-		            Titanium.App.setIdleTimerDisabled(false);
-		            win.remove(busyView);
-		        }
-			});
-			dialog.show();
+	    	var itemProps = e.section.getItemAt(e.itemIndex).properties;
+			var busyView = createBusyView();
+	        win.add(busyView);
+	        Titanium.App.setIdleTimerDisabled(true);
+			try {
+	    		loadAndDisplayTracks(self, itemProps.tracksUri);
+	        } finally {
+	            Titanium.App.setIdleTimerDisabled(false);
+	            win.remove(busyView);
+	        }
     	}
     });
 
@@ -174,5 +119,38 @@ function PlaylistsWindow(data) {
 		}
 		win.open();
 	};
+
+	function optionsMenu(ice) {
+    	var itemProps = ice.section.getItemAt(ice.itemIndex).properties;
+		var dialog = Ti.UI.createAlertDialog({
+			cancel : 2,
+		    buttonNames : [L("playlists.option.download"), L("playlists.option.shuffle"), L("common.option.cancel")],
+		    title : itemProps.name
+		});
+		dialog.addEventListener("click", function(e) {
+			var busyView = createBusyView();
+	        win.add(busyView);
+	        Titanium.App.setIdleTimerDisabled(true);
+	        try {
+			    if (e.index === 0) {
+			        syncTracks(itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.playlist", false);
+			    } else if (e.index === 1) {
+			    	onlineShuffleSession = loadTracks(itemProps.tracksUri);
+			    	removeUnsupportedAndNonAudioTracks(onlineShuffleSession);
+			    	if (onlineShuffleSession.length > 0) {
+				    	shuffleArray(onlineShuffleSession);
+					    jukebox.setPlaylist(onlineShuffleSession, 0, true, false);
+					    jukebox.open(self);
+		        	} else {
+		        		showError({message:L("tracks.online.noneFound"),buttonNames:['Ok']});
+		        	}
+			    }
+	        } finally {
+	            Titanium.App.setIdleTimerDisabled(false);
+	            win.remove(busyView);
+	        }
+		});
+		dialog.show();
+	}
 
 }
