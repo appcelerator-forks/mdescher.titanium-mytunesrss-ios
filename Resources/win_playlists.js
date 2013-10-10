@@ -73,7 +73,7 @@ function PlaylistsWindow(data) {
 	
     listView.addEventListener("itemclick", function(e) {
     	if (e.bindId === "optionsMenu" || e.bindId === "optionsMenuGlow") {
-    		optionsMenu(itemProps);
+    		optionsMenu(e);
     	} else {
 	    	var itemProps = e.section.getItemAt(e.itemIndex).properties;
 			var busyView = createBusyView();

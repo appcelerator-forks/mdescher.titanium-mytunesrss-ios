@@ -64,7 +64,7 @@
 	<string name="playlists.title">Playlists</string>
 	<string name="busy.syncing">Synchronizing</string>
 	<string name="busy.downloading">Downloading</string>
-	<string name="playlists.option.download">Herunterladen</string>
+	<string name="playlists.option.download">Download</string>
 	<string name="playlists.option.shuffle">Shuffle mode</string>
 	<string name="common.option.cancel">Cancel</string>
 	<string name="tracklist.back">Back</string>
