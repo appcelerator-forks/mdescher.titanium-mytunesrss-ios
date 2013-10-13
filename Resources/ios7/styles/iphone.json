@@ -289,5 +289,31 @@
 		"backgroundColor" : "#000000",
 		"opacity" : 0.8,
 		"visible" : false
+	},
+	
+	"menuGlassPane" : {
+		"backgroundColor" : "#000000",
+		"opacity" : 0.8
+	},
+	
+	"menuOuterView" : {
+		"backgroundColor" : "#FFFFFF",
+		"width" : 200
+	},
+
+	"menuInnerView" : {
+		"backgroundColor" : "#000000",
+		"left" : 1,
+		"right" : 1,
+		"top" : 1,
+		"bottom" : 1
+	},
+	
+	"menuTableView" : {
+		"top" : 3,
+		"left" : 3,
+		"right" : 3,
+		"bottom" : 3
 	}
+
 }

@@ -21,6 +21,7 @@ Titanium.include("win_server_history.js");
 Titanium.include("win_photoalbums.js");
 Titanium.include("win_photos.js");
 Titanium.include("win_photo.js");
+Titanium.include("../view_menu.js");
 
 var LIGHT_GRAY = "#CCCCCC";
 var view = Titanium.UI.createView();

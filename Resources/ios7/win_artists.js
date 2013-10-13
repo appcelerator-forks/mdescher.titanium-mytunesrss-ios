@@ -115,19 +115,14 @@ function ArtistsWindow(data) {
 
 	function optionsMenu(ice) {
 		var itemProps = ice.section.getItemAt(ice.itemIndex).properties;
-		var dialog = Ti.UI.createAlertDialog({
-			cancel : 2,
-		    buttonNames : [L("artists.option.download"), L("artists.option.shuffle"), L("common.option.cancel")],
-		    title : itemProps.artistName
-		});
-		dialog.addEventListener("click", function(e) {
+		new MenuView(win, itemProps.artistName, [L("playlists.option.download"), L("playlists.option.shuffle"), L("common.option.cancel")], function(index) {
 			var busyView = createBusyView();
 	        win.add(busyView);
 	        Titanium.App.setIdleTimerDisabled(true);
 	        try {
-	        	if (e.index === 0) {
+	        	if (index === 0) {
 	        		syncTracks(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.artist", false);
-	        	} else if (e.index === 1) {
+	        	} else if (index === 1) {
 			    	onlineShuffleSession = loadTracks(itemProps.tracksUri);
 			    	removeUnsupportedAndNonAudioTracks(onlineShuffleSession);
 			    	if (onlineShuffleSession.length > 0) {
@@ -142,8 +137,7 @@ function ArtistsWindow(data) {
 	            Titanium.App.setIdleTimerDisabled(false);
 	            win.remove(busyView);
 	        }
-		});
-		dialog.show();
+		}).show();
 	}
 
 }
