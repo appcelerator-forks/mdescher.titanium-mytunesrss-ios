@@ -299,14 +299,7 @@ function removeEmptyPhotoAlbums(items) {
 }
 
 function loadAndDisplayOfflineTracks(parent, album, albumArtist) {
-	db = Titanium.Database.open("OfflineTracks");
-	rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name IS NOT NULL AND LOWER(album) = LOWER(?) AND LOWER(album_artist) = LOWER(?) ORDER BY disc_number, track_number", album, albumArtist);
-	result = [];
-	while (rs.isValidRow()) {
-		result.push(mapTrack(rs));
-		rs.next();
-	}
-	db.close();
+	var result = loadOfflineAlbumTracks(album, albumArtist);
     if (result.length === 0) {
     	showError({message:L("tracks.offline.noneFound"),buttonNames:['Ok']});
     } else {
@@ -387,6 +380,42 @@ function loadTracks(tracksUri) {
     	showError({message:response.result,buttonNames:['Ok']});
     }
     return undefined;
+}
+
+function loadOfflineAlbumTracks(album, albumArtist) {
+	db = Titanium.Database.open("OfflineTracks");
+	rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name IS NOT NULL AND LOWER(album) = LOWER(?) AND LOWER(album_artist) = LOWER(?) ORDER BY disc_number, track_number", album, albumArtist);
+	result = [];
+	while (rs.isValidRow()) {
+		result.push(mapTrack(rs));
+		rs.next();
+	}
+	db.close();
+	return result;	
+}
+
+function loadOfflineArtistsTracks(artist) {
+	db = Titanium.Database.open("OfflineTracks");
+	rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name IS NOT NULL AND LOWER(artist) = LOWER(?) ORDER BY disc_number, track_number", artist);
+	result = [];
+	while (rs.isValidRow()) {
+		result.push(mapTrack(rs));
+		rs.next();
+	}
+	db.close();
+	return result;	
+}
+
+function loadOfflineGenreTracks(genre) {
+	db = Titanium.Database.open("OfflineTracks");
+	rs = db.execute("SELECT id, name, artist, image_hash, media_type, time FROM track WHERE name IS NOT NULL AND LOWER(genre) = LOWER(?) ORDER BY disc_number, track_number", genre);
+	result = [];
+	while (rs.isValidRow()) {
+		result.push(mapTrack(rs));
+		rs.next();
+	}
+	db.close();
+	return result;	
 }
 
 function loadAndDisplayMovies(parent) {
@@ -720,6 +749,18 @@ function syncTracks(win, tracksUri, displayName, analyticsEvent, sync) {
     }
 }
 
+function deleteLocalTracks(win, tracks, analyticsEvent) {
+	if (tracks != undefined && tracks.length > 0) {
+	   	var db = Titanium.Database.open("OfflineTracks");
+		for (var i = 0; i < tracks.length; i++) {
+			Titanium.API.debug("Deleting local track \"" + tracks[i].name + "\".");
+    		deleteCachedTrackFile(tracks[i].id);
+			db.execute("DELETE FROM track WHERE id = ?", tracks[i].id);
+		}
+		db.close();
+	}
+}
+
 function createCommonListView(template) {
 	return isIos7() ? GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:("default")}) : GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:("default")});
 }
@@ -733,18 +774,16 @@ function createCommonBackButton() {
 }
 
 function addMoreMenuToTemplate(template) {
-    if (!offlineMode) {
-        template.childTemplates.push({
-			type : "Titanium.UI.ImageView",
-			bindId : "optionsMenu",
-			properties : {
-				width : 32,
-                right : 10,
-                image : "images/more.png",
-                touchEnabled : false
-			}
-		});
-    }	
+    template.childTemplates.push({
+		type : "Titanium.UI.ImageView",
+		bindId : "optionsMenu",
+		properties : {
+			width : 32,
+            right : 10,
+            image : "images/more.png",
+            touchEnabled : false
+		}
+	});
 }
 
 function addTextColorToTemplates(template, indices) {

@@ -13,7 +13,7 @@ function ArtistsWindow(data) {
 				properties : {
 					left : 10,
 					height : 24,
-					right : offlineMode ? 10 : 52,
+					right : 52,
 					font : {
 						fontSize : 20,
 						fontWeight : "bold"
@@ -89,14 +89,19 @@ function ArtistsWindow(data) {
 
 	function optionsMenu(ice) {
 		var itemProps = ice.section.getItemAt(ice.itemIndex).properties;
-		new MenuView(win, itemProps.artistName, [L("playlists.option.download"), L("playlists.option.shuffle"), L("common.option.cancel")], function(index) {
+		var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.shuffle"), L("common.option.cancel")];
+		new MenuView(win, itemProps.artistName, buttons, function(selectedButton) {
 			var busyView = createBusyView();
 	        win.add(busyView);
 	        Titanium.App.setIdleTimerDisabled(true);
 	        try {
-	        	if (index === 0) {
+	        	if (selectedButton === L("common.option.download")) {
 	        		syncTracks(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.artist", false);
-	        	} else if (index === 1) {
+	            } else if (selectedButton === L("common.option.localdelete")) {
+	                deleteLocalTracks(win, loadOfflineArtistsTracks(itemProps.artistName), "localdelete.artist");
+	            	myParent.open();
+	            	win.close();
+	        	} else if (selectedButton === L("common.option.shuffle")) {
 			    	onlineShuffleSession = loadTracks(itemProps.tracksUri);
 			    	removeUnsupportedAndNonAudioTracks(onlineShuffleSession);
 			    	if (onlineShuffleSession.length > 0) {

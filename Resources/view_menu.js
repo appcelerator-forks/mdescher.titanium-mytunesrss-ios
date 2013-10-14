@@ -14,7 +14,7 @@ function MenuView(parentWindow, title, buttons, listener) {
 		tableViewRow.addEventListener("click", function(e) {
 			parentWindow.remove(whiteView);
 			parentWindow.remove(glassPane);
-			listener(e.index);
+			listener(buttons[e.index]);
 		});
 		tableView.appendRow(tableViewRow);
 		

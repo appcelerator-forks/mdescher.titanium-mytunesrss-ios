@@ -50,19 +50,14 @@
 	<string name="menu.currentlyPlaying">Currently playing</string>
 	<string name="menu.currentlyPlaying.none">There is no active playlist.</string>
 	<string name="albums.title">Albums</string>
-	<string name="albums.option.download">Download</string>
+	<string name="common.option.download">Download</string>
 	<string name="artists.title">Artists</string>
-	<string name="artists.option.download">Download</string>
-	<string name="artists.option.shuffle">Shuffle mode</string>
+	<string name="common.option.shuffle">Shuffle mode</string>
 	<string name="genres.title">Genres</string>
-	<string name="genres.option.download">Download</string>
-	<string name="genres.option.shuffle">Shuffle mode</string>
 	<string name="movies.title">Movies</string>
 	<string name="playlists.title">Playlists</string>
 	<string name="busy.syncing">Synchronizing</string>
 	<string name="busy.downloading">Downloading</string>
-	<string name="playlists.option.download">Download</string>
-	<string name="playlists.option.shuffle">Shuffle mode</string>
 	<string name="common.option.cancel">Cancel</string>
 	<string name="tracklist.title">Tracks</string>
 	<string name="tracklist.busy.downloading">Downloading</string>
@@ -106,4 +101,5 @@
 	<string name="ios61bugphase">Due to a problem with iOS 6.1 playback cannot be interrupted during the last seconds of a track.</string>
     <string name="date">%3$4d-%2$2d-%1$2d</string>
     <string name="photo.title">Photo</string>
+    <string name="common.option.localdelete">Remove</string>
 </resources>

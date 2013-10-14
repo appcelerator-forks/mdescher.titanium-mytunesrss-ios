@@ -50,19 +50,14 @@
 	<string name="menu.currentlyPlaying.none">Es gibt keine aktive Playlist.</string>
 	<string name="common.back">Zurück</string>
 	<string name="albums.title">Alben</string>
-	<string name="albums.option.download">Herunterladen</string>
+	<string name="common.option.download">Herunterladen</string>
 	<string name="artists.title">Künstler</string>
-	<string name="artists.option.download">Herunterladen</string>
-	<string name="artists.option.shuffle">Shuffle-Modus</string>
+	<string name="common.option.shuffle">Shuffle-Modus</string>
 	<string name="genres.title">Genre</string>
-	<string name="genres.option.download">Herunterladen</string>
-	<string name="genres.option.shuffle">Shuffle-Modus</string>
 	<string name="movies.title">Filme</string>
 	<string name="playlists.title">Listen</string>
 	<string name="busy.syncing">Synchronisieren</string>
 	<string name="busy.downloading">Herunterladen</string>
-	<string name="playlists.option.download">Herunterladen</string>
-	<string name="playlists.option.shuffle">Shuffle-Modus</string>
 	<string name="common.option.cancel">Abbrechen</string>
 	<string name="tracklist.title">Titel</string>
 	<string name="tracklist.busy.downloading">Herunterladen</string>
@@ -106,4 +101,5 @@
 	<string name="ios61bugphase">Wegen eines Problems mit iOS 6.1 kann die Wiedergabe in den letzten Sekunden des Titels nicht unterbrochen werden.</string>
     <string name="date">%1$2d.%2$2d.%3$4d</string>
     <string name="photo.title">Foto</string>
+    <string name="common.option.localdelete">Entfernen</string>
 </resources>

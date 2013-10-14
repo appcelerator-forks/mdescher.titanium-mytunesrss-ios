@@ -26,7 +26,7 @@ function AlbumsWindow(data) {
 					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
 					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
 					height : Titanium.Platform.osname === "ipad" ? 36 : 24,
-					right : (offlineMode ? 0 : 42) + (Titanium.Platform.osname === "ipad" ? 12 : 8),
+					right : 42 + (Titanium.Platform.osname === "ipad" ? 12 : 8),
 					font : {
 						fontSize : 16,
 						fontWeight : "bold"
@@ -41,7 +41,7 @@ function AlbumsWindow(data) {
 					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
 					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
 					height : Titanium.Platform.osname === "ipad" ? 26 : 18,
-					right : (offlineMode ? 0 : 42) + (Titanium.Platform.osname === "ipad" ? 12 : 8),
+					right : 42 + (Titanium.Platform.osname === "ipad" ? 12 : 8),
 					font : {
 						fontSize : 12,
 						fontWeight : "bold"
@@ -123,13 +123,18 @@ function AlbumsWindow(data) {
 
     function optionsMenu(ice) {
         var itemProps = ice.section.getItemAt(ice.itemIndex).properties;
-        new MenuView(win, itemProps.albumName, [L("albums.option.download"), L("common.option.cancel")], function(index) {
+        var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.cancel")];
+        new MenuView(win, itemProps.albumName, buttons, function(selectedButton) {
         var busyView = createBusyView();
         win.add(busyView);
         Titanium.App.setIdleTimerDisabled(true);
         try {
-            if (index === 0) {
+            if (selectedButton === L("common.option.download")) {
                 syncTracks(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.album", false);
+            } else if (selectedButton === L("common.option.localdelete")) {
+                deleteLocalTracks(win, loadOfflineAlbumTracks(itemProps.albumName, itemProps.albumArtist), "localdelete.album");
+            	myParent.open();
+            	win.close();
             }
         } finally {
             Titanium.App.setIdleTimerDisabled(false);
