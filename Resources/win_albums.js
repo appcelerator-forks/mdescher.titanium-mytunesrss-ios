@@ -26,12 +26,11 @@ function AlbumsWindow(data) {
 					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
 					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
 					height : Titanium.Platform.osname === "ipad" ? 36 : 24,
-					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
+					right : (offlineMode ? 0: 32) + Titanium.Platform.osname === "ipad" ? 12 : 8,
 					font : {
 						fontSize : 16,
 						fontWeight : "bold"
 					},
-					color : "#CCCCCC",
 					minimumFontSize : 12
 				}
 			},
@@ -42,21 +41,41 @@ function AlbumsWindow(data) {
 					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
 					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
 					height : Titanium.Platform.osname === "ipad" ? 26 : 18,
+					right : (offlineMode ? 0: 32) + Titanium.Platform.osname === "ipad" ? 12 : 8,
 					font : {
 						fontSize : 12,
 						fontWeight : "bold"
 					},
-					color : "#CCCCCC",
 					minimumFontSize : 12
 				}
 			}
 		]
 	};
+    if (!isIos7()) {
+        template.childTemplates[1].properties.color = "#CCCCCC";    
+        template.childTemplates[2].properties.color = "#CCCCCC";    
+    }
+    if (!offlineMode) {
+        template.childTemplates.push({
+			type : "Titanium.UI.ImageView",
+			bindId : "optionsMenu",
+			properties : {
+				width : 32,
+                right : 10,
+                image : "images/more.png",
+                touchEnabled : false
+			}
+		});
+    }
 
-	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"});
-	var buttonBack = GUI.createButton({title:L("albums.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var listView = isIos7() ? GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"}) : GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"});
+    var buttonBackArgs = {title:L("albums.back")};
+    if (!isIos7()) {
+        buttonBackArgs.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+    }
+	var buttonBack = GUI.createButton(buttonBackArgs);
 	
-	buttonBack.addEventListener('click', function() {
+	buttonBack.addEventListener("click", function() {
 		myParent.open();
 	    win.close();
 	});
@@ -65,20 +84,23 @@ function AlbumsWindow(data) {
 	win.add(listView);
 	
 	listView.addEventListener("itemclick", function(e) {
-		var busyView = createBusyView();
-		Titanium.App.setIdleTimerDisabled(true);
-		win.add(busyView);
-        try {
-        	var itemProps = e.section.getItemAt(e.itemIndex).properties;
-		    if (!offlineMode) {
-		        loadAndDisplayTracks(self, itemProps.tracksUri);
-		    } else {
-			    loadAndDisplayOfflineTracks(self, itemProps.albumName, itemProps.albumArtist);
-		    }
-        } finally {
-        	Titanium.App.setIdleTimerDisabled(false);
-    	    win.remove(busyView);
-        }
+		if (e.bindId === "optionsMenu") {
+    		optionsMenu(e);
+    	} else {
+		    Titanium.App.setIdleTimerDisabled(true);
+		    win.add(busyView);
+            try {
+            	var itemProps = e.section.getItemAt(e.itemIndex).properties;
+		        if (!offlineMode) {
+		            loadAndDisplayTracks(self, itemProps.tracksUri);
+		        } else {
+			        loadAndDisplayOfflineTracks(self, itemProps.albumName, itemProps.albumArtist);
+		        }
+            } finally {
+            	Titanium.App.setIdleTimerDisabled(false);
+        	    win.remove(busyView);
+            }
+    	}
 	});
 		
 	setListDataAndIndex(
@@ -115,5 +137,32 @@ function AlbumsWindow(data) {
 		}
 		win.open();
 	};
+
+    function optionsMenu(ice) {
+            var itemProps = ice.section.getItemAt(ice.itemIndex).properties;
+            new MenuView(win, itemProps.artistName, [L("albums.option.download"), L("common.option.cancel")], function(index) {
+                    var busyView = createBusyView();
+            win.add(busyView);
+            Titanium.App.setIdleTimerDisabled(true);
+            try {
+                    if (index === 0) {
+                            syncTracks(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.album", false);
+                    } else if (index === 1) {
+                            onlineShuffleSession = loadTracks(itemProps.tracksUri);
+                            removeUnsupportedAndNonAudioTracks(onlineShuffleSession);
+                            if (onlineShuffleSession.length > 0) {
+                                    shuffleArray(onlineShuffleSession);
+                                        jukebox.setPlaylist(onlineShuffleSession, 0, true, false);
+                                        jukebox.open(self);
+                            } else {
+                                    showError({message:L("tracks.online.noneFound"),buttonNames:["Ok"]});
+                            }
+                        }
+            } finally {
+                Titanium.App.setIdleTimerDisabled(false);
+                win.remove(busyView);
+            }
+            }).show();
+    }
 
 }

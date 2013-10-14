@@ -4,7 +4,7 @@ Titanium.include("win_login_online.js");
 Titanium.include("win_login_offline.js");
 Titanium.include("win_login_safari.js");
 Titanium.include("win_menu.js");
-Titanium.include("win_albums.js");
+Titanium.include("../win_albums.js");
 Titanium.include("win_artists.js");
 Titanium.include("win_genres.js");
 Titanium.include("win_playlists.js");
