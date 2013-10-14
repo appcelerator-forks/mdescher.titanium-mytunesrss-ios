@@ -720,14 +720,11 @@ function downloadTracksForUri(win, tracksUri, displayName, analyticsEvent) {
     var tracks;
     try {
 	    tracks = loadTracks(tracksUri);
-	    if (sync) {
-	    	removeObsoleteTracks(tracks);
-	    }
     } finally {
 	    Titanium.App.setIdleTimerDisabled(false);
         win.remove(busyView);
     }
-    downloadTracksForList(tracks);
+    downloadTracksForList(win, tracks, displayName, analyticsEvent);
 }
 
 function downloadTracksForList(win, tracks, displayName, analyticsEvent) {
@@ -780,7 +777,8 @@ function createCommonBackButton() {
 
 function addMoreMenuToTemplate(template) {
     template.childTemplates.push({
-		type : "Titanium.UI.MaskedImage",
+		//type : "Titanium.UI.MaskedImage",
+		type : "Titanium.UI.ImageView",
 		bindId : "optionsMenu",
 		properties : {
 			width : 32,

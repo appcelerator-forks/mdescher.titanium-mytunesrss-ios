@@ -62,9 +62,6 @@ function PlaylistsWindow(data) {
 	        		main : {
 	        			text : getDisplayName(item.name)
 	        		},
-                    syncGlow : {
-                        tracksUri : item.tracksUri
-                    },
 	        		properties : {
 	        			tracksUri : item.tracksUri,
 	        			trackCount : item.trackCount,
