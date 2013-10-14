@@ -69,6 +69,11 @@
 
 	"settingsRow" : {
 		"height" : 50
+	},
+	
+	"menuOuterView" : {
+		"backgroundColor" : "#FFFFFF",
+		"width" : 300
 	}
 
 }
