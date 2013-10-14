@@ -5,7 +5,7 @@ function GenresWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 	
-	var onlineTemplate = {
+	var template = {
 		childTemplates : [
 			{
 				type : "Titanium.UI.Label",
@@ -13,49 +13,21 @@ function GenresWindow(data) {
 				properties : {
 					left : 10,
 					height : 24,
-					right : 52,
+					right : offlineMode ? 10 : 42,
 					font : {
 						fontSize : 20,
 						fontWeight : "bold"
 					},
-					color : "#CCCCCC",
-					minimumFontSize : 12
-				}
-			},
-			{
-				type : "Titanium.UI.ImageView",
-				bindId : "optionsMenu",
-				properties : {
-					width : 32,
-                    right : 10,
-                    image : "images/more.png",
-                    touchEnabled : false
-				}
-			}
-		]
-	};
-	var offlineTemplate = {
-		childTemplates : [
-			{
-				type : "Titanium.UI.Label",
-				bindId : "main",
-				properties : {
-					left : 10,
-					height : 24,
-					right : 10,
-					font : {
-						fontSize : 20,
-						fontWeight : "bold"
-					},
-					color : "#CCCCCC",
 					minimumFontSize : 12
 				}
 			}
 		]
 	};
+	addTextColorToTemplates(template, [0]);
+    addMoreMenuToTemplate(template);
 
-	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"online":onlineTemplate,"offline":offlineTemplate},defaultItemTemplate:(offlineMode ? "offline" : "online")});
-	var buttonBack = GUI.createButton({title:L("genres.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var listView = createCommonListView(template);
+	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener("click", function() {
 		myParent.open();

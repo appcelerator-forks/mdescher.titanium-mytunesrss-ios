@@ -1,7 +1,7 @@
 function AppInfoWindow() {	
 	
 	var win = Titanium.UI.createWindow(STYLE.get("window",{navBarHidden:true}));
-	var buttonBack = GUI.createButton({title:L("albums.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = isIos7() ? GUI.createButton({title:L("common.back")}) : GUI.createButton({title:L("common.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonBack.addEventListener('click', function() {
 		win.close();

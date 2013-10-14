@@ -19,7 +19,6 @@ function PhotoAlbumsWindow(data) {
 						fontSize : 16,
 						fontWeight : "bold"
 					},
-					color : "#CCCCCC",
 					minimumFontSize : 12
 				}
 			},
@@ -35,7 +34,6 @@ function PhotoAlbumsWindow(data) {
 						fontSize : 12,
 						fontWeight : "bold"
 					},
-					color : "#CCCCCC",
 					minimumFontSize : 12
 				}
 			},
@@ -49,16 +47,17 @@ function PhotoAlbumsWindow(data) {
 					font : {
 						fontSize : 14,
 					},
-					color : "#CCCCCC",
 					minimumFontSize : 10,
 					textAlign: Ti.UI.TEXT_ALIGNMENT_RIGHT
 				}
 			}
 		]
 	};
+	addTextColorToTemplates(template, [0, 1, 2]);
 
-	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"});
-	var buttonBack = GUI.createButton({title:L("photoalbums.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+
+	var listView = createCommonListView(template);
+	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open();

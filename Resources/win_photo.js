@@ -8,7 +8,10 @@ function PhotoWindow(data, index) {
 	var views = [];
 	for (var i = 0; i < data.length; i++) {
 		var imageView = Titanium.UI.createImageView({image:data[i].originalImageUri + "/size=" + getSettingsMaxPhotoSize() + "/jpegQuality=" + getSettingsPhotoJpegQuality()});
-		var scrollView = Titanium.UI.createScrollView({contentWidth:"auto",contentHeight:"auto",showVerticalScrollIndicator:false,showHorizontalScrollIndicator:false,backgroundColor:"#000000",minZoomScale:1,maxZoomScale:5,zoomScale:1,oldZoom:1});
+		var scrollView = Titanium.UI.createScrollView({contentWidth:"auto",contentHeight:"auto",showVerticalScrollIndicator:false,showHorizontalScrollIndicator:false,minZoomScale:1,maxZoomScale:5,zoomScale:1,oldZoom:1});
+		if (!isIos7()) {
+			scrollView.backgroundColor = "#000000";
+		}
 		scrollView.add(imageView);
 	    scrollView.addEventListener("pinch", function(e) {
 	 		if (e.scale > 1) {
@@ -36,7 +39,7 @@ function PhotoWindow(data, index) {
 	}
  	var scrollableView = Titanium.UI.createScrollableView({cacheSize:3,views:views,currentPage:index});
  	
-	var buttonBack = GUI.createButton({title:L("photo.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = createCommonBackButton();
 	
 	var orientationChangeFunction = function (e) {
 		var min = Math.max(0, scrollableView.getCurrentPage() - ((scrollableView.getCacheSize() - 1) / 2));

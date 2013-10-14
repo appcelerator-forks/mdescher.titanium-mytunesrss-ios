@@ -6,7 +6,7 @@ function BusyWindow(label1, label2, cancelCallback) {
 		
 	var cancelButton = undefined;
 	if (cancelCallback != undefined) {
-		cancelButton = GUI.createButton({title:L("busy.cancel"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+		cancelButton = isIos7() ? GUI.createButton({title:L("busy.cancel")}) : GUI.createButton({title:L("busy.cancel"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 		cancelButton.addEventListener("click", function() {
         	var busyView = createBusyView();
 		    win.add(busyView);

@@ -1,7 +1,7 @@
 function ServerHistoryWindow() {	
 	
 	var win = Titanium.UI.createWindow(STYLE.get("window",{navBarHidden:true,modal:true}));
-	var buttonClose = GUI.createButton({title:"x",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonClose = isIos7() ? GUI.createButton({title:"x"}) : GUI.createButton({title:"x",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
 	
 	buttonClose.addEventListener("click", function() {
 		win.close();

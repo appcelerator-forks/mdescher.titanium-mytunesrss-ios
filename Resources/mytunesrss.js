@@ -720,3 +720,39 @@ function syncTracks(win, tracksUri, displayName, analyticsEvent, sync) {
     }
 }
 
+function createCommonListView(template) {
+	return isIos7() ? GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:("default")}) : GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:("default")});
+}
+
+function createCommonBackButton() {
+    var buttonBackArgs = {title:L("common.back")};
+    if (!isIos7()) {
+        buttonBackArgs.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+    }
+	return GUI.createButton(buttonBackArgs);
+}
+
+function addMoreMenuToTemplate(template) {
+    if (!offlineMode) {
+        template.childTemplates.push({
+			type : "Titanium.UI.ImageView",
+			bindId : "optionsMenu",
+			properties : {
+				width : 32,
+                right : 10,
+                image : "images/more.png",
+                touchEnabled : false
+			}
+		});
+    }	
+}
+
+function addTextColorToTemplates(template, indices) {
+    if (!isIos7()) {
+    	for (var i = 0; i < indices.length; i++) {
+	        template.childTemplates[indices[i]].properties.color = "#CCCCCC";    
+    	}
+    }
+	
+}
+

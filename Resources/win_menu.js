@@ -4,7 +4,10 @@ function MenuWindow() {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 	
-	var searchBar = Titanium.UI.createSearchBar({hintText:L("menu.search.hint"),width:Titanium.UI.FILL,top:45,height:45,autocorrect:false,autocapitalization:false,autocomplete:false,barColor:"#000000"});
+	var searchBar = Titanium.UI.createSearchBar({hintText:L("menu.search.hint"),width:Titanium.UI.FILL,top:45,height:45,autocorrect:false,autocapitalization:false,autocomplete:false});
+	if (!isIos7()) {
+		searchBar.barColor = "#000000";
+	}
 	searchBar.addEventListener('return', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
@@ -30,10 +33,13 @@ function MenuWindow() {
 	
 	var buttonLogout;
 	if (offlineMode) {
-		buttonLogout = GUI.createButton({title:L("menu.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+		buttonLogout = GUI.createButton({title:L("menu.back")});
 	} else {
-		buttonLogout = GUI.createButton({title:L("menu.logout"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-	} 
+		buttonLogout = GUI.createButton({title:L("menu.logout")});
+	}
+	if (!isIos7()) {
+		buttonLogout.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+	}
 	buttonLogout.addEventListener('click', function() {
 		if (jukebox.isIos61BugPhase()) {
 			return;
@@ -44,7 +50,10 @@ function MenuWindow() {
 	    win.close();
 	});
 
-	var buttonSettings = GUI.createButton({image:"images/config.png",style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonSettings = GUI.createButton({image:"images/config.png"});
+	if (!isIos7()) {
+		buttonSettings.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+	}
 	buttonSettings.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);

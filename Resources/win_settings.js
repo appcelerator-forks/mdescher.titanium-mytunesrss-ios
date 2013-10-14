@@ -30,13 +30,19 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	var transcoderSwitchesWifi = [];
 	var transcoderSwitchesMobile = [];
 	
-	var buttonCancel = GUI.createButton({title:L("settings.cancel"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonCancel = GUI.createButton({title:L("settings.cancel")});
+	if (!isIos7()) {
+		buttonCancel.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+	}
 	buttonCancel.addEventListener('click', function() {
 		myParent.open();
 	    win.close();
 	});
 	
-	var buttonSave = GUI.createButton({title:L("settings.save"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonSave = GUI.createButton({title:L("settings.save")});
+	if (!isIos7()) {
+		buttonSave.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+	}
 	buttonSave.addEventListener("click", function() {
 	   	if (bufferSizeInput.value < 1024 || bufferSizeInput.value > 65536) {
 			showError({message:L("settings.invalidBufferSize"),buttonNames:["Ok"]});
@@ -76,19 +82,37 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		return view;
 	}
 	
+	function styleButton(button) {
+		if (!isIos7()) {
+			button.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+			button.backgroundImage = "images/button_small.png";
+			button.backgroundLeftCap = 9;
+			button.backgroundTopCap = 30;
+			button.color = "#CCCCCC";
+		}
+	}
+	
+	function createSection(text) {
+		if (isIos7()) {
+			return Titanium.UI.createTableViewSection({headerTitle:text});
+		} else {
+			return Titanium.UI.createTableViewSection({headerView:createHeaderView(text)});
+		}
+	}
+	
 	var sections = [];
 
 	var textFieldWidth = Titanium.Platform.osname === "ipad" ? 160 : 80;
 
 	// audio player settings
-	var sectionPlayer = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.audioPlayer"))});	
+	var sectionPlayer = createSection(L("settings.audioPlayer"));	
 	var bufferSizeInput = GUI.createTextField({hintText:L("settings.bufferSizeHint"),right:10,width:textFieldWidth,value:Titanium.App.Properties.getInt('audioBufferSize', DEFAULT_AUDIO_BUFFER_SIZE),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 	sectionPlayer.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.bufferSize"),left:10}), bufferSizeInput]));
 	sections.push(sectionPlayer);
 
 	if (!offlineMode) {
 		// search settings
-		var sectionSearch = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.search"))});
+		var sectionSearch = createSection(L("settings.search"));
 		var staticSearchFuzziness = (searchFuzziness >= 0 && searchFuzziness <= 100);
 		var searchAccuracy = staticSearchFuzziness ? 100 - searchFuzziness : Titanium.App.Properties.getInt('searchAccuracy', DEFAULT_SEARCH_ACCURACY);
 		var searchAccuracyInput = GUI.createTextField({editable:!staticSearchFuzziness,right:10,width:textFieldWidth,hintText:L("settings.accuracyHint"),value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
@@ -97,10 +121,11 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	}
 	
 	// cache settings
-	var sectionCache = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.cache"))});
+	var sectionCache = createSection(L("settings.cache"));
 
 	if (!offlineMode) {
-		var clearImageCacheButton = GUI.createButton({title:L("settings.imageCache.clear"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
+		var clearImageCacheButton = GUI.createButton({title:L("settings.imageCache.clear"),right:10,height:32,font:{fontSize:13,fontWeight:"bold"}});
+		styleButton(clearImageCacheButton);
 		clearImageCacheButton.addEventListener("click", function() {
 			var busyView = createBusyView();
 	        win.add(busyView);
@@ -114,7 +139,8 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		});
 	    sectionCache.add(wrapInRow([clearImageCacheButton]));
 
-		var clearTrackCacheButton = GUI.createButton({title:L("settings.trackCache.clear"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
+		var clearTrackCacheButton = GUI.createButton({title:L("settings.trackCache.clear"),right:10,height:32,font:{fontSize:13,fontWeight:"bold"}});
+		styleButton(clearTrackCacheButton);
 		clearTrackCacheButton.addEventListener("click", function() {
 				var busyView = createBusyView();
         		win.add(busyView);
@@ -129,7 +155,8 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		sectionCache.add(wrapInRow([clearTrackCacheButton]));
 	}
 	
-	var resetTrackCachePlayCountButton = GUI.createButton({title:L("settings.trackCache.resetPlayCount"),right:10,style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,backgroundImage:"images/button_small.png",backgroundLeftCap:9,backgroundTopCap:30,height:32,color:"#CCCCCC",font:{fontSize:13,fontWeight:"bold"}});
+	var resetTrackCachePlayCountButton = GUI.createButton({title:L("settings.trackCache.resetPlayCount"),right:10,height:32,font:{fontSize:13,fontWeight:"bold"}});
+	styleButton(resetTrackCachePlayCountButton);
 	resetTrackCachePlayCountButton.addEventListener("click", function() {
 			var busyView = createBusyView();
     		win.add(busyView);
@@ -149,7 +176,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
         // transcoder settings
 		if (transcoders != undefined  && transcoders.length > 0) {
 			var activeTranscoders = Titanium.App.Properties.getList("transcoders", []);
-		    var sectionTrans = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.transcoders"))});
+		    var sectionTrans = createSection(L("settings.transcoders"));
 		    for (var i = 0; i < transcoders.length; i++) {
 		        var transcoderName = transcoders[i];
 		        var switchValue = false;
@@ -168,7 +195,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		
 		if (transcoders != undefined  && transcoders.length > 0) {
 			var activeTranscoders = Titanium.App.Properties.getList("transcoders_mobile", []);
-		    var sectionTransMobile = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.mobileTranscoders"))});
+		    var sectionTransMobile = createSection(L("settings.mobileTranscoders"));
 		    for (var i = 0; i < transcoders.length; i++) {
 		        var transcoderName = transcoders[i];
 		        var switchValue = false;
@@ -187,7 +214,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	}
 
 	// photo settings
-	var sectionPhoto = Titanium.UI.createTableViewSection({headerView:createHeaderView(L("settings.photo"))});	
+	var sectionPhoto = createSection(L("settings.photo"));	
 	var maxPhotoSizeInput = GUI.createTextField({hintText:L("settings.maxPhotoSizeHint"),right:10,width:textFieldWidth,value:getSettingsMaxPhotoSize(),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 	sectionPhoto.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.maxPhotoSize"),left:10}), maxPhotoSizeInput]));
 	var photoJpegQualityInput = GUI.createTextField({hintText:L("settings.photoJpegQualityHint"),right:10,width:textFieldWidth,value:getSettingsPhotoJpegQuality(),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});

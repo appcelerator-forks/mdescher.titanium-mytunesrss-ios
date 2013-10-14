@@ -111,8 +111,8 @@ function PhotosWindow(data) {
 	};
 
 	var ipad = Titanium.Platform.osname === "ipad";
-	var listView = GUI.createListView({separatorColor:DARK_GRAY,top:45,templates:{"default":ipad ? templateIpad : templateIphone},defaultItemTemplate:"default",rowHeight:ipad ? 170 : 110});
-	var buttonBack = GUI.createButton({title:L("photos.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var listView = GUI.createListView({separatorColor:isIos7() ? "#FFFFFF" : DARK_GRAY,top:45,templates:{"default":ipad ? templateIpad : templateIphone},defaultItemTemplate:"default",rowHeight:ipad ? 170 : 110});
+	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener("click", function() {
 		myParent.open(undefined);

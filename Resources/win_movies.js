@@ -31,15 +31,15 @@ function MoviesWindow(data) {
 						fontSize : 16,
 						fontWeight : "bold"
 					},
-					color : "#CCCCCC",
 					minimumFontSize : 12
 				}
 			}
 		]
 	};
+	addTextColorToTemplates(template, [1]);
 
-	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:"default"});
-	var buttonBack = GUI.createButton({title:L("movies.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var listView = createCommonListView(template);
+	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open();

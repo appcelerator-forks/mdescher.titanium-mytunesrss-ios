@@ -5,7 +5,7 @@ function PlaylistsWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
-	var templateOffline = {
+	var template = {
 		childTemplates : [
 			{
 				type : "Titanium.UI.Label",
@@ -13,55 +13,21 @@ function PlaylistsWindow(data) {
 				properties : {
 					left : 10,
 					height : 24,
-					right : 10,
+					right : offlineMode ? 10 : 42,
 					font : {
 						fontSize : 20,
 						fontWeight : "bold"
 					},
-					color : "#CCCCCC",
 					minimumFontSize : 12
 				}
 			}
 		]
 	};
+	addTextColorToTemplates(template, [0]);
+    addMoreMenuToTemplate(template);
 
-	var templateOnline = {
-		childTemplates : [
-			{
-				type : "Titanium.UI.Label",
-				bindId : "main",
-				properties : {
-					left : 10,
-					height : 24,
-					right : 52,
-					font : {
-						fontSize : 20,
-						fontWeight : "bold"
-					},
-					color : "#CCCCCC",
-					minimumFontSize : 12
-				}
-			},
-			{
-				type : "Titanium.UI.ImageView",
-				bindId : "optionsMenu",
-				properties : {
-					width : 32,
-                    right : 10,
-                    image : "images/more.png",
-                    touchEnabled : false
-				}
-			},
-			{
-				type : "Titanium.UI.View",
-				bindId : "optionsMenuGlow",
-				properties : GUI.glowViewOptions({right:20})
-			}
-		]
-	};
-
-	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"online":templateOnline,"offline":templateOffline},defaultItemTemplate:offlineMode ? "offline" : "online"});
-	var buttonBack = GUI.createButton({title:L("playlists.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var listView = createCommonListView(template);
+	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open();

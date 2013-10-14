@@ -81,8 +81,16 @@ function Jukebox() {
 	        }
 	    }
 	    infoView = Titanium.UI.createView({height:60,top:vOffset+size+65,left:10,right:10});
-	    infoView.add(GUI.createLabel({top:7,left:0,right:0,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name),textAlign:"center",color:"#CCCCCC"}));
-	    infoView.add(GUI.createLabel({bottom:7,left:0,right:0,height:24,font:{fontSize:12},text:getDisplayName(track.artist),textAlign:"center",color:"#CCCCCC"}));
+	    var labelTrackName = GUI.createLabel({top:7,left:0,right:0,height:30,font:{fontSize:16,fontWeight:'bold'},text:getDisplayName(track.name),textAlign:"center"});
+	    if (!isIos7()) {
+	    	labelTrackName.color = "#CCCCCC";
+	    }
+	    infoView.add(labelTrackName);
+	    var labelArtistName = GUI.createLabel({bottom:7,left:0,right:0,height:24,font:{fontSize:12},text:getDisplayName(track.artist),textAlign:"center"});
+	    if (!isIos7()) {
+	    	labelArtistName.color = "#CCCCCC";
+	    }
+	    infoView.add(labelArtistName);
 	    win.add(imageView);
 	    win.add(infoView);
 	    progressBar = Titanium.UI.createProgressBar(STYLE.get("jukeboxProgressBar", {min:0,max:track.time,value:0}));
@@ -137,10 +145,19 @@ function Jukebox() {
 	    }
 	};
 	
-	var buttonBack = GUI.createButton({title:L("jukebox.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
-	var buttonPlaylist = GUI.createButton({title:L("jukebox.playlist"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = GUI.createButton({title:L("common.back")});
+	if (!isIos7()) {
+		buttonBack.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+	}
+	var buttonPlaylist = GUI.createButton({title:L("jukebox.playlist")});
+	if (!isIos7()) {
+		buttonPlaylist.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+	}
 	
-	var controlRewind = Titanium.UI.createImageView(STYLE.get("jukeboxRewind",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxRewindGlow")))}));
+	var controlRewind = Titanium.UI.createImageView(STYLE.get("jukeboxRewind"));
+	if (!isIos7()) {
+		controlRewind.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxRewindGlow")));
+	}
 	controlRewind.addEventListener('click', function() {
 		if (jukebox.isIos61BugPhase()) {
 			return;
@@ -148,7 +165,10 @@ function Jukebox() {
 		rewind();
 	});
 	
-	var controlPlayPause = Titanium.UI.createImageView(STYLE.get("jukeboxPlayPause",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxPlayPauseGlow")))}));
+	var controlPlayPause = Titanium.UI.createImageView(STYLE.get("jukeboxPlayPause"));
+	if (!isIos7()) {
+		controlPlayPause.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxPlayPauseGlow")));
+	}
 	controlPlayPause.addEventListener('click', function() {
 		if (jukebox.isIos61BugPhase()) {
 			return;
@@ -156,7 +176,10 @@ function Jukebox() {
 		playPause();
 	});
 	
-	var controlFastForward = Titanium.UI.createImageView(STYLE.get("jukeboxForward",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxForwardGlow")))}));
+	var controlFastForward = Titanium.UI.createImageView(STYLE.get("jukeboxForward"));
+	if (!isIos7()) {
+		controlFastForward.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxForwardGlow")));
+	}
 	controlFastForward.addEventListener('click', function() {
 		if (jukebox.isIos61BugPhase()) {
 			return;
@@ -164,7 +187,10 @@ function Jukebox() {
 	    fastForward();
 	});
 	
-	var controlShuffle = Titanium.UI.createImageView(STYLE.get("jukeboxShuffle",{glow:Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxShuffleGlow")))}));
+	var controlShuffle = Titanium.UI.createImageView(STYLE.get("jukeboxShuffle"));
+	if (!isIos7()) {
+		controlShuffle.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxShuffleGlow")));
+	}
 	controlShuffle.addEventListener('click', function() {
 		if (jukebox.isIos61BugPhase()) {
 			return;
@@ -194,20 +220,28 @@ function Jukebox() {
 		}
 	});
 
-	addTouchListener(controlRewind);
-	addTouchListener(controlFastForward);
-	addTouchListener(controlPlayPause);
-	addTouchListener(controlShuffle);
+	if (!isIos7()) {
+		addTouchListener(controlRewind);
+		addTouchListener(controlFastForward);
+		addTouchListener(controlPlayPause);
+		addTouchListener(controlShuffle);		
+	}
 	
-	win.add(Titanium.UI.createView({left:0,right:0,bottom:0,height:38,backgroundGradient:{type:"linear",colors:["#1F1F1F","#323232"],startPoint:{x:0,y:37},endPoint:{x:0,y:0},backFillStart:false}}));
+	var playbackControlsView = Titanium.UI.createView({left:0,right:0,bottom:0,height:38});
+	if (!isIos7()) {
+		playbackControlsView.backgroundGradient = {type:"linear",colors:["#1F1F1F","#323232"],startPoint:{x:0,y:37},endPoint:{x:0,y:0},backFillStart:false};
+	} 
+	win.add(playbackControlsView);
 	win.add(controlRewind);
-	win.add(controlRewind.glow);
 	win.add(controlFastForward);
-	win.add(controlFastForward.glow);
 	win.add(controlPlayPause);
-	win.add(controlPlayPause.glow);
 	win.add(controlShuffle);
-	win.add(controlShuffle.glow);
+	if (!isIos7()) {
+		win.add(controlRewind.glow);
+		win.add(controlFastForward.glow);
+		win.add(controlPlayPause.glow);
+		win.add(controlShuffle.glow);
+	}
 
 	win.add(GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist));
 	
@@ -362,12 +396,12 @@ function Jukebox() {
 		}
 		if (e.state == audioPlayer.STATE_INITIALIZED || e.state == audioPlayer.STATE_PAUSED || e.state === audioPlayer.STATE_STOPPED) {
 			Titanium.API.debug("Setting PLAY button image.");
-	   		controlPlayPause.setImage("images/play.png");
+	   		controlPlayPause.setImage((isIos7() ? "ios7/" : "") + "images/play.png");
 	   	}
 		if (e.state === audioPlayer.STATE_PLAYING || e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE || e.state === audioPlayer.STATE_STARTING) {
         	fastForwardOnStopped = true;
 	   		Titanium.API.debug("Setting PAUSE button image.");
-        	controlPlayPause.setImage("images/pause.png");
+        	controlPlayPause.setImage((isIos7() ? "ios7/" : "") + "images/pause.png");
         }
 	    if (e.state === audioPlayer.STATE_BUFFERING || e.state === audioPlayer.STATE_WAITING_FOR_DATA || e.state === audioPlayer.STATE_WAITING_FOR_QUEUE) {
             showJukeboxActivityView();

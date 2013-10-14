@@ -32,7 +32,6 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 						fontSize : 16,
 						fontWeight : "bold"
 					},
-					color : "#CCCCCC",
 					minimumFontSize : 12
 				}
 			},
@@ -47,12 +46,12 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 						fontSize : 12,
 						fontWeight : "bold"
 					},
-					color : "#CCCCCC",
 					minimumFontSize : 12
 				}
 			}
 		]
 	};
+	addTextColorToTemplates(template, [1, 2]);
 	var templateOnlineAudio = {
 		childTemplates : [
 			{
@@ -79,7 +78,6 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 						fontSize : 16,
 						fontWeight : "bold"
 					},
-					color : "#CCCCCC",
 					minimumFontSize : 12
 				}
 			},
@@ -95,7 +93,6 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 						fontSize : 12,
 						fontWeight : "bold"
 					},
-					color : "#CCCCCC",
 					minimumFontSize : 12
 				}
 			},
@@ -107,17 +104,21 @@ function TracksWindow(data, currentJukeboxPlaylist) {
                     right : 10,
                     touchEnabled : false
 				}
-			},
-			{
-				type : "Titanium.UI.View",
-				bindId : "syncGlow",
-				properties : GUI.glowViewOptions({right:20})
 			}
 		]
 	};
+	if (!isIos7()) {
+        templateOnlineAudio.childTemplates.push({
+			type : "Titanium.UI.View",
+			bindId : "syncGlow",
+			properties : GUI.glowViewOptions({right:20})
+		});
+		
+	}
+	addTextColorToTemplates(templateOnlineAudio, [1, 2]);
 
 	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template,"onlineAudio":templateOnlineAudio},defaultItemTemplate:"default"});
-	var buttonBack = GUI.createButton({title:L("tracklist.back"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED});
+	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener('click', function() {
 		myParent.open(undefined);
@@ -142,7 +143,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 			    text : getDisplayName(data[i].artist)
 		    },
 		    syncIcon : {
-		    	image : getCachedTrackFile(data[i].id) === undefined ? "images/download.png" : "images/delete.png"
+		    	image : getCachedTrackFile(data[i].id) === undefined ? (isIos7() ? "ios7/" : "") + "images/download.png" : (isIos7() ? "ios7/" : "") + "images/delete.png"
 		    }
 	    };
         if (!offlineMode && data[i].mediaType === "Audio") {
@@ -151,20 +152,6 @@ function TracksWindow(data, currentJukeboxPlaylist) {
         listSection.appendItems([item]);
 	}
 
-    /* sweep delete 
-	tableView.addEventListener("delete", function(e) {
-    	if (jukebox.isIos61BugPhase()) {
-    		return;
-    	}
-		jukebox.reset();
-		deleteCachedTrackFile(data[e.index].id);
-		db = Titanium.Database.open("OfflineTracks");
-		db.execute("DELETE FROM track WHERE id = ?", data[e.index].id);
-		db.close();
-		data.splice(e.index, 1);
-	});
-    */
-
     function syncTrack(section, trackIndex) {
     	if (getCachedTrackFile(data[trackIndex].id) != undefined) {
     		deleteCachedTrackFile(data[trackIndex].id);
@@ -172,7 +159,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 			db.execute("DELETE FROM track WHERE id = ?", data[trackIndex].id);
 			db.close();
 			var item = section.getItemAt(trackIndex);
-			item.syncIcon.image = "images/download.png";
+			item.syncIcon.image = (isIos7() ? "ios7/" : "") + "images/download.png";
 			section.updateItemAt(trackIndex, item);
 			Titanium.Analytics.featureEvent("sync.deleteTrack");
     	} else {
@@ -206,7 +193,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 					);
 					db.close();
 					var item = section.getItemAt(trackIndex);
-					item.syncIcon.image = "images/delete.png";
+					item.syncIcon.image = (isIos7() ? "ios7/" : "") + "images/delete.png";
 					section.updateItemAt(trackIndex, item);
 					Titanium.Analytics.featureEvent("sync.downloadTrack");
 				}

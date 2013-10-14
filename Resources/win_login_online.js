@@ -1,6 +1,9 @@
 function OnlineLoginWindow(parent) {	
 	
-	var infoButton = Titanium.UI.createButton(STYLE.get("infoButton",{style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT}));
+	var infoButton = Titanium.UI.createButton(STYLE.get("infoButton",{systemButton:Titanium.UI.iPhone.SystemButton.INFO_LIGHT}));
+	if (!isIos7()) {
+		infoButton.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+	}
 	infoButton.addEventListener("click", function() {
 		new AppInfoWindow().open();
 	});
@@ -14,10 +17,16 @@ function OnlineLoginWindow(parent) {
 	var inputPassword = GUI.add(win, Titanium.UI.createTextField(STYLE.get("passwordInput",{borderStyle:Titanium.UI.INPUT_BORDERSTYLE_ROUNDED,hintText:L("login.password"),value:Titanium.App.Properties.getString('password'),returnKeyType:Titanium.UI.RETURNKEY_DONE,autocorrect:false,autocapitalization:false,autocomplete:false,passwordMask:true,clearButtonMode:Titanium.UI.INPUT_BUTTONMODE_ALWAYS})));
 	var inputSaveCredentials = GUI.add(win, Titanium.UI.createSwitch(STYLE.get("saveCredentialsSwitch",{value:Titanium.App.Properties.getBool('saveCredentials', false)})));
 	win.add(Titanium.UI.createLabel(STYLE.get("saveCredentialsLabel",{text:L("login.saveCredentials")})));
-	var buttonLogin = GUI.add(win, Titanium.UI.createButton(STYLE.get("loginButton",{title:L("login.connect"),style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED})));
+	var buttonLogin = GUI.add(win, Titanium.UI.createButton(STYLE.get("loginButton",{title:L("login.connect")})));
+	if (!isIos7()) {
+		buttonLogin.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+	}
 	win.add(Titanium.UI.createImageView(STYLE.get("watermarkOnline")));
 
-	var buttonServerUrlHistory = GUI.add(win, Titanium.UI.createButton(STYLE.get("serverAddressHistoryButtonOnline",{style:Titanium.UI.iPhone.SystemButtonStyle.BORDERED,image:"images/history.png"})));
+	var buttonServerUrlHistory = GUI.add(win, Titanium.UI.createButton(STYLE.get("serverAddressHistoryButtonOnline",{image:"images/history.png"})));
+	if (!isIos7()) {
+		buttonServerUrlHistory.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+	}
 	buttonServerUrlHistory.addEventListener("click", function() {
 		if (getRememberedServerUrls().length === 0) {
 			showError({message:L("login.noHistoryAvailable"),buttonNames:['Ok']});
