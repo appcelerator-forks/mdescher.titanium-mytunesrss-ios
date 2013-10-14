@@ -27,7 +27,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
 					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
 					height : Titanium.Platform.osname === "ipad" ? 36 : 24,
-					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
+					right : 42 + (Titanium.Platform.osname === "ipad" ? 12 : 8),
 					font : {
 						fontSize : 16,
 						fontWeight : "bold"
@@ -42,6 +42,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
 					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
 					height : Titanium.Platform.osname === "ipad" ? 26 : 18,
+					right : 42 + (Titanium.Platform.osname === "ipad" ? 12 : 8),
 					font : {
 						fontSize : 12,
 						fontWeight : "bold"
@@ -51,8 +52,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 			}
 		]
 	};
-	addTextColorToTemplates(template, [1, 2]);
-	var templateOnlineAudio = {
+	var noMoreMenu = {
 		childTemplates : [
 			{
 				type : "Titanium.UI.ImageView",
@@ -73,7 +73,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
 					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
 					height : Titanium.Platform.osname === "ipad" ? 36 : 24,
-					right : 40,
+					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
 					font : {
 						fontSize : 16,
 						fontWeight : "bold"
@@ -88,36 +88,21 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
 					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
 					height : Titanium.Platform.osname === "ipad" ? 26 : 18,
-                    right : 40,
+					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
 					font : {
 						fontSize : 12,
 						fontWeight : "bold"
 					},
 					minimumFontSize : 12
 				}
-			},
-			{
-				type : "Titanium.UI.ImageView",
-				bindId : "syncIcon",
-				properties : {
-					width : 20,
-                    right : 10,
-                    touchEnabled : false
-				}
 			}
 		]
 	};
-	if (!isIos7()) {
-        templateOnlineAudio.childTemplates.push({
-			type : "Titanium.UI.View",
-			bindId : "syncGlow",
-			properties : GUI.glowViewOptions({right:20})
-		});
-		
-	}
-	addTextColorToTemplates(templateOnlineAudio, [1, 2]);
+	addTextColorToTemplates(template, [1, 2]);
+	addTextColorToTemplates(noMoreMenu, [1, 2]);
+    addMoreMenuToTemplate(template);
 
-	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template,"onlineAudio":templateOnlineAudio},defaultItemTemplate:"default"});
+	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template,"noMoreMenu":noMoreMenu},defaultItemTemplate:"default"});
 	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener('click', function() {
@@ -142,67 +127,15 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		    sub : {
 			    text : getDisplayName(data[i].artist)
 		    },
-		    syncIcon : {
-		    	image : getCachedTrackFile(data[i].id) === undefined ? (isIos7() ? "ios7/" : "") + "images/download.png" : (isIos7() ? "ios7/" : "") + "images/delete.png"
+		    properties : {
+		    	track : data[i]
 		    }
 	    };
-        if (!offlineMode && data[i].mediaType === "Audio") {
-            item.template = "onlineAudio";
+        if (!offlineMode && (data[i].mediaType != "Audio" || data[i].protected === true)) {
+            item.template = "noMoreMenu";
         }
         listSection.appendItems([item]);
 	}
-
-    function syncTrack(section, trackIndex) {
-    	if (getCachedTrackFile(data[trackIndex].id) != undefined) {
-    		deleteCachedTrackFile(data[trackIndex].id);
-    		db = Titanium.Database.open("OfflineTracks");
-			db.execute("DELETE FROM track WHERE id = ?", data[trackIndex].id);
-			db.close();
-			var item = section.getItemAt(trackIndex);
-			item.syncIcon.image = (isIos7() ? "ios7/" : "") + "images/download.png";
-			section.updateItemAt(trackIndex, item);
-			Titanium.Analytics.featureEvent("sync.deleteTrack");
-    	} else {
-			var url = data[trackIndex].playbackUri;
-			var plainUrl = url;
-			var tcParam = getTcParam();
-    		if (tcParam != undefined) {
-        		url += '/' + tcParam;
-    		}
-    		var busyWindow = new BusyWindow(L("tracklist.busy.downloading"), data[trackIndex].name);
-    		busyWindow.open();
-    		Titanium.App.setIdleTimerDisabled(true);
-			cacheTrack(data[trackIndex].id, plainUrl, url, function(e) {busyWindow.setProgress(e);return true;}, function(e) {
-				if (e.aborted == undefined) {
-		    		db = Titanium.Database.open("OfflineTracks");
-					db.execute("DELETE FROM track WHERE id = ?", data[trackIndex].id);
-					db.execute(
-						"INSERT INTO track (id, name, album, artist, genre, album_artist, image_hash, protected, media_type, time, disc_number, track_number) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
-						data[trackIndex].id,
-						data[trackIndex].name,
-						data[trackIndex].album,
-						data[trackIndex].artist,
-						data[trackIndex].genre,
-						data[trackIndex].albumArtist,
-						data[trackIndex].imageHash,
-						data[trackIndex].protected,
-						data[trackIndex].mediaType,
-						data[trackIndex].time,
-						data[trackIndex].discNumber,
-						data[trackIndex].trackNumber
-					);
-					db.close();
-					var item = section.getItemAt(trackIndex);
-					item.syncIcon.image = (isIos7() ? "ios7/" : "") + "images/delete.png";
-					section.updateItemAt(trackIndex, item);
-					Titanium.Analytics.featureEvent("sync.downloadTrack");
-				}
-				Titanium.App.setIdleTimerDisabled(false);
-				busyWindow.close();		    				
-			});
-			downloadImage(data[trackIndex].imageHash,data[trackIndex].imageUri);
-    	}
-    };
 
     function playTrack(trackIndex) {
     	if (jukebox.isIos61BugPhase()) {
@@ -234,8 +167,8 @@ function TracksWindow(data, currentJukeboxPlaylist) {
     };
 
     listView.addEventListener("itemclick", function(e) {
-        if (e.bindId === "syncIcon" || e.bindId === "syncGlow") {
-            syncTrack(e.section, e.itemIndex);
+		if (e.bindId === "optionsMenu") {
+    		optionsMenu(e);
         } else {
             playTrack(e.itemIndex);
         }
@@ -250,5 +183,27 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		}
 		win.open();
 	};
+
+    function optionsMenu(ice) {
+        var itemProps = ice.section.getItemAt(ice.itemIndex).properties;
+        var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.cancel")];
+        new MenuView(win, ice.section.getItemAt(ice.itemIndex).main.text, buttons, function(selectedButton) {
+        var busyView = createBusyView();
+        win.add(busyView);
+        Titanium.App.setIdleTimerDisabled(true);
+        try {
+            if (selectedButton === L("common.option.download")) {
+                downloadTracksForList(win, [data[ice.itemIndex]], ice.section.getItemAt(ice.itemIndex).main.text, "download.track");
+            } else if (selectedButton === L("common.option.localdelete")) {
+                deleteLocalTracks(win, [data[ice.itemIndex]], "localdelete.track");
+	            myParent.open();
+            	win.close();
+            }
+        } finally {
+            Titanium.App.setIdleTimerDisabled(false);
+            win.remove(busyView);
+        }
+        }).show();
+    }
 	
 }

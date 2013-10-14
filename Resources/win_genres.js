@@ -96,7 +96,7 @@ function GenresWindow(data) {
 	        Titanium.App.setIdleTimerDisabled(true);
 	        try {
 	        	if (selectedButton === L("common.option.download")) {
-	        		syncTracks(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.genre", false);
+	        		downloadTracksForUri(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.genre");
 	            } else if (selectedButton === L("common.option.localdelete")) {
 	                deleteLocalTracks(win, loadOfflineGenreTracks(itemProps.genreName), "localdelete.genre");
 	            	myParent.open();

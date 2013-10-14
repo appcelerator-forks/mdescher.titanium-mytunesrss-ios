@@ -130,7 +130,7 @@ function AlbumsWindow(data) {
         Titanium.App.setIdleTimerDisabled(true);
         try {
             if (selectedButton === L("common.option.download")) {
-                syncTracks(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.album", false);
+                downloadTracksForUri(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.album");
             } else if (selectedButton === L("common.option.localdelete")) {
                 deleteLocalTracks(win, loadOfflineAlbumTracks(itemProps.albumName, itemProps.albumArtist), "localdelete.album");
             	myParent.open();

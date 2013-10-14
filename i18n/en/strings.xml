@@ -56,7 +56,6 @@
 	<string name="genres.title">Genres</string>
 	<string name="movies.title">Movies</string>
 	<string name="playlists.title">Playlists</string>
-	<string name="busy.syncing">Synchronizing</string>
 	<string name="busy.downloading">Downloading</string>
 	<string name="common.option.cancel">Cancel</string>
 	<string name="tracklist.title">Tracks</string>

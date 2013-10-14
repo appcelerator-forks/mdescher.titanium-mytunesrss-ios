@@ -713,12 +713,13 @@ function isIos7() {
 	return Titanium.Platform.version.split(".")[0] === "7";
 }
 
-function syncTracks(win, tracksUri, displayName, analyticsEvent, sync) {
+function downloadTracksForUri(win, tracksUri, displayName, analyticsEvent) {
     var busyView = createBusyView();
     win.add(busyView);
     Titanium.App.setIdleTimerDisabled(true);
+    var tracks;
     try {
-	    var tracks = loadTracks(tracksUri);
+	    tracks = loadTracks(tracksUri);
 	    if (sync) {
 	    	removeObsoleteTracks(tracks);
 	    }
@@ -726,10 +727,14 @@ function syncTracks(win, tracksUri, displayName, analyticsEvent, sync) {
 	    Titanium.App.setIdleTimerDisabled(false);
         win.remove(busyView);
     }
+    downloadTracksForList(tracks);
+}
+
+function downloadTracksForList(win, tracks, displayName, analyticsEvent) {
     if (tracks != undefined && tracks.length > 0) {
     	Titanium.Analytics.featureEvent(analyticsEvent);
 	    CANCEL_SYNC_AUDIO_TRACKS = false;
-	    var busyWindow = new BusyWindow(sync ? L("busy.syncing") : L("busy.downloading"), displayName, function() {
+	    var busyWindow = new BusyWindow(L("busy.downloading"), displayName, function() {
 		    CANCEL_SYNC_AUDIO_TRACKS = true;
 	    });
 	    busyWindow.open();
@@ -746,7 +751,7 @@ function syncTracks(win, tracksUri, displayName, analyticsEvent, sync) {
 	    Titanium.App.addEventListener("mytunesrss_sync_progress", syncProgress);
 	    Titanium.App.addEventListener("mytunesrss_sync_done", syncDone);
 	    Titanium.App.fireEvent("mytunesrss_sync", {data:tracks,index:0});
-    }
+    }	
 }
 
 function deleteLocalTracks(win, tracks, analyticsEvent) {
@@ -775,13 +780,14 @@ function createCommonBackButton() {
 
 function addMoreMenuToTemplate(template) {
     template.childTemplates.push({
-		type : "Titanium.UI.ImageView",
+		type : "Titanium.UI.MaskedImage",
 		bindId : "optionsMenu",
 		properties : {
 			width : 32,
             right : 10,
             image : "images/more.png",
-            touchEnabled : false
+            touchEnabled : false,
+            tint : isIos7() ? "#007AFF" : "#CCCCCC"
 		}
 	});
 }

@@ -96,7 +96,7 @@ function ArtistsWindow(data) {
 	        Titanium.App.setIdleTimerDisabled(true);
 	        try {
 	        	if (selectedButton === L("common.option.download")) {
-	        		syncTracks(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.artist", false);
+	        		downloadTracksForUri(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.artist");
 	            } else if (selectedButton === L("common.option.localdelete")) {
 	                deleteLocalTracks(win, loadOfflineArtistsTracks(itemProps.artistName), "localdelete.artist");
 	            	myParent.open();

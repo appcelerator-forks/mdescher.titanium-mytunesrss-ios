@@ -94,7 +94,7 @@ function PlaylistsWindow(data) {
 	        Titanium.App.setIdleTimerDisabled(true);
 	        try {
 			    if (selectedButton === L("common.option.download")) {
-			        syncTracks(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.playlist", false);
+			        downloadTracksForUri(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.playlist");
 			    } else if (selectedButton === L("common.option.shuffle")) {
 			    	onlineShuffleSession = loadTracks(itemProps.tracksUri);
 			    	removeUnsupportedAndNonAudioTracks(onlineShuffleSession);
