@@ -44,13 +44,11 @@ function PlaylistsWindow(data) {
 	    	var itemProps = e.section.getItemAt(e.itemIndex).properties;
 			var busyView = createBusyView();
 	        win.add(busyView);
-            Titanium.API.debug("Idle timer off.");
-	        Titanium.App.setIdleTimerDisabled(true);
+	        disableIdleTimer();
 			try {
 	    		loadAndDisplayTracks(self, itemProps.tracksUri);
 	        } finally {
-                Titanium.API.debug("Idle timer on.");
-	            Titanium.App.setIdleTimerDisabled(false);
+	            enableIdleTimer();
 	            win.remove(busyView);
 	        }
     	}
@@ -90,14 +88,12 @@ function PlaylistsWindow(data) {
 		new MenuView(win, itemProps.name, [L("common.option.download"), L("common.option.shuffle"), L("common.option.cancel")], function(selectedButton) {
 			var busyView = createBusyView();
 	        win.add(busyView);
-            Titanium.API.debug("Idle timer off.");
-	        Titanium.App.setIdleTimerDisabled(true);
+	        disableIdleTimer();
 	        try {
 			    if (selectedButton === L("common.option.download")) {
 			        downloadTracksForUri(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.playlist");
 			    } else if (selectedButton === L("common.option.shuffle")) {
-			    	onlineShuffleSession = loadTracks(itemProps.tracksUri);
-			    	removeUnsupportedAndNonAudioTracks(onlineShuffleSession);
+			    	onlineShuffleSession = removeUnsupportedAndNonAudioTracks(loadTracks(itemProps.tracksUri));
 			    	if (onlineShuffleSession.length > 0) {
 				    	shuffleArray(onlineShuffleSession);
 					    jukebox.setPlaylist(onlineShuffleSession, 0, true, false);
@@ -107,8 +103,7 @@ function PlaylistsWindow(data) {
 		        	}
 			    }
 	        } finally {
-                Titanium.API.debug("Idle timer on.");
-	            Titanium.App.setIdleTimerDisabled(false);
+	            enableIdleTimer();
 	            win.remove(busyView);
 	        }
 		}).show();

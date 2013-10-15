@@ -143,8 +143,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
     	}
     	var busyView = createBusyView();
 		win.add(busyView);
-        Titanium.API.debug("Idle timer off.");
-		Titanium.App.setIdleTimerDisabled(true);
+		disableIdleTimer();
         try {
             if (data[trackIndex].mediaType === "Video") {
                 jukebox.reset();
@@ -162,8 +161,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		        }
             }
         } finally {
-            Titanium.API.debug("Idle timer on.");
-        	Titanium.App.setIdleTimerDisabled(false);
+        	enableIdleTimer();
             win.remove(busyView);
         }
     };
@@ -192,8 +190,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
         new MenuView(win, ice.section.getItemAt(ice.itemIndex).main.text, buttons, function(selectedButton) {
         var busyView = createBusyView();
         win.add(busyView);
-        Titanium.API.debug("Idle timer off.");
-        Titanium.App.setIdleTimerDisabled(true);
+        disableIdleTimer();
         try {
             if (selectedButton === L("common.option.download")) {
                 downloadTracksForList(win, [data[ice.itemIndex]], ice.section.getItemAt(ice.itemIndex).main.text, "download.track");
@@ -203,8 +200,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
             	win.close();
             }
         } finally {
-            Titanium.API.debug("Idle timer on.");
-            Titanium.App.setIdleTimerDisabled(false);
+            enableIdleTimer();
             win.remove(busyView);
         }
         }).show();

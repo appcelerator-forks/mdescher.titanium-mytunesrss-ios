@@ -71,13 +71,11 @@ function PhotoAlbumsWindow(data) {
     	var itemProps = e.section.getItemAt(e.itemIndex).properties;
         var busyView = createBusyView();
         win.add(busyView);
-        Titanium.API.debug("Idle timer off.");
-        Titanium.App.setIdleTimerDisabled(true);
+        disableIdleTimer();
         try {
             loadAndDisplayPhotos(self, itemProps.photosUri);
         } finally {
-            Titanium.API.debug("Idle timer on.");
-            Titanium.App.setIdleTimerDisabled(false);
+            enableIdleTimer();
             win.remove(busyView);
         }
     });

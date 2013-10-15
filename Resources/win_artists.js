@@ -44,8 +44,7 @@ function ArtistsWindow(data) {
     		var itemProps = e.section.getItemAt(e.itemIndex).properties;
 			var busyView = createBusyView();
 	        win.add(busyView);
-            Titanium.API.debug("Idle timer off.");
-	        Titanium.App.setIdleTimerDisabled(true);
+	        disableIdleTimer();
 			try {
 		        if (!offlineMode) {
 		        	loadAndDisplayAlbums(self, itemProps.albumsUri);
@@ -53,8 +52,7 @@ function ArtistsWindow(data) {
 		        	loadAndDisplayOfflineAlbums(self, itemProps.artistName, undefined);
 		        }
 	        } finally {
-                Titanium.API.debug("Idle timer on.");
-	            Titanium.App.setIdleTimerDisabled(false);
+	            enableIdleTimer();
 	            win.remove(busyView);
 	        }
     	}
@@ -95,8 +93,7 @@ function ArtistsWindow(data) {
 		new MenuView(win, itemProps.artistName, buttons, function(selectedButton) {
 			var busyView = createBusyView();
 	        win.add(busyView);
-            Titanium.API.debug("Idle timer off.");
-	        Titanium.App.setIdleTimerDisabled(true);
+	        disableIdleTimer();
 	        try {
 	        	if (selectedButton === L("common.option.download")) {
 	        		downloadTracksForUri(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.artist");
@@ -105,8 +102,7 @@ function ArtistsWindow(data) {
 	            	myParent.open();
 	            	win.close();
 	        	} else if (selectedButton === L("common.option.shuffle")) {
-			    	onlineShuffleSession = loadTracks(itemProps.tracksUri);
-			    	removeUnsupportedAndNonAudioTracks(onlineShuffleSession);
+			    	onlineShuffleSession = removeUnsupportedAndNonAudioTracks(loadTracks(itemProps.tracksUri));
 			    	if (onlineShuffleSession.length > 0) {
 				    	shuffleArray(onlineShuffleSession);
 					    jukebox.setPlaylist(onlineShuffleSession, 0, true, false);
@@ -116,8 +112,7 @@ function ArtistsWindow(data) {
 		        	}
 			    }
 	        } finally {
-                Titanium.API.debug("Idle timer on.");
-	            Titanium.App.setIdleTimerDisabled(false);
+	            enableIdleTimer();
 	            win.remove(busyView);
 	        }
 		}).show();

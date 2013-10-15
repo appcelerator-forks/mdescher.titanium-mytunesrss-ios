@@ -668,8 +668,7 @@ function showError(options) {
 		options.message = L("servererror." + options.message, options.message);
 	}
 	var idleTimerDisabled = Titanium.App.getIdleTimerDisabled();
-    Titanium.API.debug("Idle timer on.");
-	Titanium.App.setIdleTimerDisabled(false);
+	enableIdleTimer();
 	Titanium.UI.createAlertDialog(options).show();
     Titanium.API.debug("Idle timer " + idleTimeDisabled ? "off" : "on" + ".");
 	Titanium.App.setIdleTimerDisabled(idleTimerDisabled);
@@ -718,14 +717,12 @@ function isIos7() {
 function downloadTracksForUri(win, tracksUri, displayName, analyticsEvent) {
     var busyView = createBusyView();
     win.add(busyView);
-    Titanium.API.debug("Idle timer off.");
-    Titanium.App.setIdleTimerDisabled(true);
+    disableIdleTimer();
     var tracks;
     try {
-	    tracks = loadTracks(tracksUri);
+	    tracks = removeUnsupportedAndNonAudioTracks(loadTracks(tracksUri));
     } finally {
-        Titanium.API.debug("Idle timer on.");
-	    Titanium.App.setIdleTimerDisabled(false);
+	    enableIdleTimer();
         win.remove(busyView);
     }
     downloadTracksForList(win, tracks, displayName, analyticsEvent);
@@ -739,14 +736,12 @@ function downloadTracksForList(win, tracks, displayName, analyticsEvent) {
 		    CANCEL_SYNC_AUDIO_TRACKS = true;
 	    });
 	    busyWindow.open();
-        Titanium.API.debug("Idle timer off.");
-	    Titanium.App.setIdleTimerDisabled(true);
+	    disableIdleTimer();
 	    var syncProgress = function(e) {
 		    busyWindow.setProgress(e.progress);
 	    };
 	    var syncDone = function() {
-            Titanium.API.debug("Idle timer on.");
-		    Titanium.App.setIdleTimerDisabled(false);
+		    enableIdleTimer();
 		    busyWindow.close();
 		    Titanium.App.removeEventListener("mytunesrss_sync_progress", syncProgress);
 		    Titanium.App.removeEventListener("mytunesrss_sync_done", syncDone);
@@ -802,6 +797,22 @@ function addTextColorToTemplates(template, indices) {
 	        template.childTemplates[indices[i]].properties.color = "#CCCCCC";    
     	}
     }
-	
 }
 
+var IDLE_TIMER_COUNT = 0;
+
+function disableIdleTimer() {
+	if (IDLE_TIMER_COUNT === 0) {
+		Titanium.API.debug("Disabling idle timer.");
+		Titanium.App.setIdleTimerDisabled(true);
+	}
+	IDLE_TIMER_COUNT++;
+}
+
+function enableIdleTimer() {
+	IDLE_TIMER_COUNT--;
+	if (IDLE_TIMER_COUNT === 0) {
+		Titanium.API.debug("Enabling idle timer.");
+		Titanium.App.setIdleTimerDisabled(false);
+	}
+}
