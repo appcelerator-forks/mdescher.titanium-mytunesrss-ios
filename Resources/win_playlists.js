@@ -44,10 +44,12 @@ function PlaylistsWindow(data) {
 	    	var itemProps = e.section.getItemAt(e.itemIndex).properties;
 			var busyView = createBusyView();
 	        win.add(busyView);
+            Titanium.API.debug("Idle timer off.");
 	        Titanium.App.setIdleTimerDisabled(true);
 			try {
 	    		loadAndDisplayTracks(self, itemProps.tracksUri);
 	        } finally {
+                Titanium.API.debug("Idle timer on.");
 	            Titanium.App.setIdleTimerDisabled(false);
 	            win.remove(busyView);
 	        }
@@ -88,6 +90,7 @@ function PlaylistsWindow(data) {
 		new MenuView(win, itemProps.name, [L("common.option.download"), L("common.option.shuffle"), L("common.option.cancel")], function(selectedButton) {
 			var busyView = createBusyView();
 	        win.add(busyView);
+            Titanium.API.debug("Idle timer off.");
 	        Titanium.App.setIdleTimerDisabled(true);
 	        try {
 			    if (selectedButton === L("common.option.download")) {
@@ -104,6 +107,7 @@ function PlaylistsWindow(data) {
 		        	}
 			    }
 	        } finally {
+                Titanium.API.debug("Idle timer on.");
 	            Titanium.App.setIdleTimerDisabled(false);
 	            win.remove(busyView);
 	        }

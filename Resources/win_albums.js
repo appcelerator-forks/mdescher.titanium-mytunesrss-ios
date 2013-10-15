@@ -71,6 +71,7 @@ function AlbumsWindow(data) {
     	} else {
         	var itemProps = e.section.getItemAt(e.itemIndex).properties;
 			var busyView = createBusyView();
+            Titanium.API.debug("Idle timer off.");
 		    Titanium.App.setIdleTimerDisabled(true);
 		    win.add(busyView);
             try {
@@ -80,6 +81,7 @@ function AlbumsWindow(data) {
 			        loadAndDisplayOfflineTracks(self, itemProps.albumName, itemProps.albumArtist);
 		        }
             } finally {
+                Titanium.API.debug("Idle timer on.");
             	Titanium.App.setIdleTimerDisabled(false);
         	    win.remove(busyView);
             }
@@ -127,6 +129,7 @@ function AlbumsWindow(data) {
         new MenuView(win, itemProps.albumName, buttons, function(selectedButton) {
         var busyView = createBusyView();
         win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
         Titanium.App.setIdleTimerDisabled(true);
         try {
             if (selectedButton === L("common.option.download")) {
@@ -137,6 +140,7 @@ function AlbumsWindow(data) {
             	win.close();
             }
         } finally {
+            Titanium.API.debug("Idle timer on.");
             Titanium.App.setIdleTimerDisabled(false);
             win.remove(busyView);
         }

@@ -129,10 +129,12 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		clearImageCacheButton.addEventListener("click", function() {
 			var busyView = createBusyView();
 	        win.add(busyView);
+            Titanium.API.debug("Idle timer off.");
 	        Titanium.App.setIdleTimerDisabled(true);
             try {
 				clearImageCache();
 			} finally {
+                Titanium.API.debug("Idle timer on.");
 				Titanium.App.setIdleTimerDisabled(false);
 				win.remove(busyView);
 			}
@@ -144,10 +146,12 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		clearTrackCacheButton.addEventListener("click", function() {
 				var busyView = createBusyView();
         		win.add(busyView);
+                Titanium.API.debug("Idle timer off.");
         		Titanium.App.setIdleTimerDisabled(true);
 				try {
 					clearTrackCache();
 				} finally {
+                    Titanium.API.debug("Idle timer on.");
 					Titanium.App.setIdleTimerDisabled(false);
 					win.remove(busyView);
 				}
@@ -160,10 +164,12 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	resetTrackCachePlayCountButton.addEventListener("click", function() {
 			var busyView = createBusyView();
     		win.add(busyView);
+            Titanium.API.debug("Idle timer off.");
     		Titanium.App.setIdleTimerDisabled(true);
 			try {
 				resetTrackCachePlayCount();
 			} finally {
+                Titanium.API.debug("Idle timer on.");
 				Titanium.App.setIdleTimerDisabled(false);
 				win.remove(busyView);
 			}

@@ -44,6 +44,7 @@ function GenresWindow(data) {
     		var itemProps = e.section.getItemAt(e.itemIndex).properties;
 			var busyView = createBusyView();
 			win.add(busyView);
+            Titanium.API.debug("Idle timer off.");
 			Titanium.App.setIdleTimerDisabled(true);
 	        try {
 		        if (!offlineMode) {
@@ -52,6 +53,7 @@ function GenresWindow(data) {
 		        	loadAndDisplayOfflineAlbums(self, undefined, itemProps.genreName);
 		        }
 	        } finally {
+                Titanium.API.debug("Idle timer on.");
 	        	Titanium.App.setIdleTimerDisabled(false);
 	    	    win.remove(busyView);
 	        }
@@ -93,6 +95,7 @@ function GenresWindow(data) {
 		new MenuView(win, itemProps.genreName, buttons, function(selectedButton) {
 			var busyView = createBusyView();
 	        win.add(busyView);
+            Titanium.API.debug("Idle timer off.");
 	        Titanium.App.setIdleTimerDisabled(true);
 	        try {
 	        	if (selectedButton === L("common.option.download")) {
@@ -113,6 +116,7 @@ function GenresWindow(data) {
 		        	}
 			    }
 	        } finally {
+                Titanium.API.debug("Idle timer on.");
 	            Titanium.App.setIdleTimerDisabled(false);
 	            win.remove(busyView);
 	        }

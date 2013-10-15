@@ -66,11 +66,13 @@ function TvShowsWindow(data) {
 	listView.addEventListener("itemclick", function(e) {
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
             var itemProps = e.section.getItemAt(e.itemIndex).properties;
     	    loadAndDisplayTvShowSeasons(self, itemProps.seasonsUri);
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
     	    win.remove(busyView);
         }

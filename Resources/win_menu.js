@@ -57,6 +57,7 @@ function MenuWindow() {
 	buttonSettings.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
 		    if (offlineMode) {
@@ -70,6 +71,7 @@ function MenuWindow() {
 			    }
 		    }
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
 		    win.remove(busyView);
         }
@@ -88,10 +90,12 @@ function MenuWindow() {
 	rowPlaylists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
     	    loadAndDisplayPlaylists(self);
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
     	    win.remove(busyView);
         }
@@ -101,6 +105,7 @@ function MenuWindow() {
 	rowAlbums.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        if (!offlineMode) {
@@ -109,6 +114,7 @@ function MenuWindow() {
 	        	loadAndDisplayOfflineAlbums(self, undefined, undefined);
 	        }
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
@@ -118,10 +124,12 @@ function MenuWindow() {
 	rowArtists.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        loadAndDisplayArtists(self);
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
@@ -131,10 +139,12 @@ function MenuWindow() {
 	rowGenres.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        loadAndDisplayGenres(self);
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
@@ -144,10 +154,12 @@ function MenuWindow() {
 	rowMovies.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        loadAndDisplayMovies(self);
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
@@ -157,10 +169,12 @@ function MenuWindow() {
 	rowTvShows.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        loadAndDisplayTvShows(self);
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
@@ -173,6 +187,7 @@ function MenuWindow() {
 		}
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
         	var track = getRandomOfflineTrack();
@@ -184,6 +199,7 @@ function MenuWindow() {
         		showError({message:L("tracks.offline.noneFound"),buttonNames:['Ok']});
         	}
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }
@@ -193,10 +209,12 @@ function MenuWindow() {
 	rowPhotoalbums.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
     	    loadAndDisplayPhotoAlbums(self);
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
     	    win.remove(busyView);
         }
@@ -206,6 +224,7 @@ function MenuWindow() {
 	rowNowPlaying.addEventListener('click', function() {
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
 	        if (jukebox.isActive()) {
@@ -215,6 +234,7 @@ function MenuWindow() {
 	            showError({message:L("menu.currentlyPlaying.none"),buttonNames:['Ok']});
 	        }
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
 	        win.remove(busyView);
         }

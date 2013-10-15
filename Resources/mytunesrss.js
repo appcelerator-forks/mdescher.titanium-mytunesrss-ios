@@ -668,8 +668,10 @@ function showError(options) {
 		options.message = L("servererror." + options.message, options.message);
 	}
 	var idleTimerDisabled = Titanium.App.getIdleTimerDisabled();
+    Titanium.API.debug("Idle timer on.");
 	Titanium.App.setIdleTimerDisabled(false);
 	Titanium.UI.createAlertDialog(options).show();
+    Titanium.API.debug("Idle timer " + idleTimeDisabled ? "off" : "on" + ".");
 	Titanium.App.setIdleTimerDisabled(idleTimerDisabled);
 }
 
@@ -716,11 +718,13 @@ function isIos7() {
 function downloadTracksForUri(win, tracksUri, displayName, analyticsEvent) {
     var busyView = createBusyView();
     win.add(busyView);
+    Titanium.API.debug("Idle timer off.");
     Titanium.App.setIdleTimerDisabled(true);
     var tracks;
     try {
 	    tracks = loadTracks(tracksUri);
     } finally {
+        Titanium.API.debug("Idle timer on.");
 	    Titanium.App.setIdleTimerDisabled(false);
         win.remove(busyView);
     }
@@ -735,11 +739,13 @@ function downloadTracksForList(win, tracks, displayName, analyticsEvent) {
 		    CANCEL_SYNC_AUDIO_TRACKS = true;
 	    });
 	    busyWindow.open();
+        Titanium.API.debug("Idle timer off.");
 	    Titanium.App.setIdleTimerDisabled(true);
 	    var syncProgress = function(e) {
 		    busyWindow.setProgress(e.progress);
 	    };
 	    var syncDone = function() {
+            Titanium.API.debug("Idle timer on.");
 		    Titanium.App.setIdleTimerDisabled(false);
 		    busyWindow.close();
 		    Titanium.App.removeEventListener("mytunesrss_sync_progress", syncProgress);

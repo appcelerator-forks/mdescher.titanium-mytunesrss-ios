@@ -41,6 +41,7 @@ function OnlineLoginWindow(parent) {
 	function doLogin() {
 		var busyView = createBusyView();
 		win.add(busyView);
+        Titanium.API.debug("Idle timer off.");
 		Titanium.App.setIdleTimerDisabled(true);
         try {
 		    Titanium.Network.createHTTPClient().clearCookies(Titanium.App.Properties.getString('resolvedServerUrl'));
@@ -62,6 +63,7 @@ function OnlineLoginWindow(parent) {
 			    }
 		    }
         } finally {
+            Titanium.API.debug("Idle timer on.");
         	Titanium.App.setIdleTimerDisabled(false);
     		win.remove(busyView);
         }

@@ -207,11 +207,13 @@ function Jukebox() {
 		if (myRandomOnlineMode != true && myRandomOfflineMode != true) {
 			var busyView = createBusyView();
 			win.add(busyView);
+            Titanium.API.debug("Idle timer off.");
 			Titanium.App.setIdleTimerDisabled(true);
 	        try {
 			    new TracksWindow(jukebox.getCurrentPlaylist(), true).open(self);
 		        win.close();
 	        } finally {
+                Titanium.API.debug("Idle timer on.");
 	        	Titanium.App.setIdleTimerDisabled(false);
 			    win.remove(busyView);
 	        }
