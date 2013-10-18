@@ -65,7 +65,8 @@ function PlaylistsWindow(data) {
 	        		properties : {
 	        			tracksUri : item.tracksUri,
 	        			trackCount : item.trackCount,
-	        			name : getDisplayName(item.name)
+	        			name : getDisplayName(item.name),
+	        			canRefresh : (item.type === "MyTunesSmart" && item.owner === connectedUsername)
 	        		}
 	        	};
 	        },
@@ -85,7 +86,12 @@ function PlaylistsWindow(data) {
 
 	function optionsMenu(ice) {
 		var itemProps = ice.section.getItemAt(ice.itemIndex).properties;
-		new MenuView(win, itemProps.name, [L("common.option.download"), L("common.option.shuffle"), L("common.option.cancel")], function(selectedButton) {
+		var menuItems = [L("common.option.download"), L("common.option.shuffle")];
+		if (itemProps.canRefresh === true) {
+			menuItems.push(L("playlists.option.refresh"));
+		}
+		menuItems.push(L("common.option.cancel"));
+		new MenuView(win, itemProps.name, menuItems, function(selectedButton) {
 			var busyView = createBusyView();
 	        win.add(busyView);
 	        disableIdleTimer();
@@ -101,6 +107,8 @@ function PlaylistsWindow(data) {
 		        	} else {
 		        		showError({message:L("tracks.online.noneFound"),buttonNames:['Ok']});
 		        	}
+			    } else if (selectedButton === L("playlists.option.refresh")) {
+			    	refreshSmartPlaylist(itemProps.tracksUri.substring(0, itemProps.tracksUri.lastIndexOf("/tracks")));
 			    }
 	        } finally {
 	            enableIdleTimer();

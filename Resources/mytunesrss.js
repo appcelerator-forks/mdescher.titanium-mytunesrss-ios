@@ -263,7 +263,7 @@ function loadAndDisplayGenres(parent) {
 }
 
 function loadAndDisplayPlaylists(parent) {
-    var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=trackCount", {});
+    var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=trackCount&attr.incl=type&attr.incl=owner", {});
     if (response.status / 100 === 2) {
         if (response.result.length === 0) {
         	showError({message:L("playlists.noneFound"),buttonNames:['Ok']});
@@ -286,6 +286,13 @@ function loadAndDisplayPhotoAlbums(parent) {
 	    }
     } else {
 	    showError({message:response.result,buttonNames:['Ok']});
+    }
+}
+
+function refreshSmartPlaylist(playlistUri) {
+    var response = restCall("POST", playlistUri + "/refresh?attr.incl=none", {});
+    if (response.status / 100 != 2) {
+	    showError({message:L("playlists.refreshError"),buttonNames:['Ok']});
     }
 }
 

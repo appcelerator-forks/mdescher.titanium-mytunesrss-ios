@@ -56,6 +56,8 @@
 	<string name="genres.title">Genre</string>
 	<string name="movies.title">Filme</string>
 	<string name="playlists.title">Listen</string>
+	<string name="playlists.option.refresh">Auf Server erneuern</string>
+	<string name="playlists.refreshError">Die Wiedergabeliste konnte nicht auf dem Server erneuert werden.</string>
 	<string name="busy.downloading">Herunterladen</string>
 	<string name="common.option.cancel">Abbrechen</string>
 	<string name="tracklist.title">Titel</string>

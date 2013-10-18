@@ -371,7 +371,7 @@
 	
 	"menuOuterView" : {
 		"backgroundColor" : "#FFFFFF",
-		"width" : 200
+		"width" : 250
 	},
 
 	"menuInnerView" : {
