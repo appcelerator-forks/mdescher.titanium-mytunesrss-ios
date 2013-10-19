@@ -785,8 +785,8 @@ function createCommonBackButton() {
 
 function addMoreMenuToTemplate(template) {
     template.childTemplates.push({
-		//type : "Titanium.UI.MaskedImage",
-		type : "Titanium.UI.ImageView",
+		type : "Titanium.UI.MaskedImage",
+		//type : "Titanium.UI.ImageView",
 		bindId : "optionsMenu",
 		properties : {
 			width : 32,

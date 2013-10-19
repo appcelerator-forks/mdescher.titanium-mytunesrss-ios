@@ -1,3 +1,5 @@
+Titanium.UI.createMaskedImage(); // workaround to make it work in the listview template later
+
 Titanium.include("mytunesrss.js");
 Titanium.include("win_login.js");
 Titanium.include("win_login_online.js");
