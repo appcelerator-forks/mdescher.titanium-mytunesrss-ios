@@ -30,7 +30,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 					right : 42 + (Titanium.Platform.osname === "ipad" ? 12 : 8),
 					font : {
 						fontSize : 16,
-						fontWeight : "bold"
+						fontWeight : (isIos7() ? "normal" : "bold")
 					},
 					minimumFontSize : 12
 				}
@@ -45,7 +45,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 					right : 42 + (Titanium.Platform.osname === "ipad" ? 12 : 8),
 					font : {
 						fontSize : 12,
-						fontWeight : "bold"
+						fontWeight : (isIos7() ? "normal" : "bold")
 					},
 					minimumFontSize : 12
 				}
@@ -76,7 +76,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
 					font : {
 						fontSize : 16,
-						fontWeight : "bold"
+						fontWeight : (isIos7() ? "normal" : "bold")
 					},
 					minimumFontSize : 12
 				}
@@ -91,7 +91,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
 					font : {
 						fontSize : 12,
-						fontWeight : "bold"
+						fontWeight : (isIos7() ? "normal" : "bold")
 					},
 					minimumFontSize : 12
 				}

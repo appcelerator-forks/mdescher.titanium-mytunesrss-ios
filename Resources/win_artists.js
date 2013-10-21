@@ -16,7 +16,7 @@ function ArtistsWindow(data) {
 					right : 52,
 					font : {
 						fontSize : 20,
-						fontWeight : "bold"
+						fontWeight : (isIos7() ? "normal" : "bold")
 					},
 					minimumFontSize : 12
 				}

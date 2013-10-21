@@ -5,6 +5,8 @@ function TvShowSeasonsWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
+	var padding = isIos7() ? 8 : 4;
+	
 	var template = {
 		childTemplates : [
 			{
@@ -12,10 +14,10 @@ function TvShowSeasonsWindow(data) {
 				bindId : "pic",
 				properties : {
 					hires : Titanium.Platform.displayCaps.density === "high",
-					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					left : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					right : Titanium.Platform.osname === "ipad" ? 691 : 270,
+					top : Titanium.Platform.osname === "ipad" ? 6 : padding,
+					bottom : Titanium.Platform.osname === "ipad" ? 6 : padding,
+					left : Titanium.Platform.osname === "ipad" ? 6 : padding,
+					right : Titanium.Platform.osname === "ipad" ? 691 : (isIos7() ? 274 : 270),
 					defaultImage : "appicon.png"					
 				}
 			},
@@ -23,13 +25,13 @@ function TvShowSeasonsWindow(data) {
 				type : "Titanium.UI.Label",
 				bindId : "main",
 				properties : {
-					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
+					top : Titanium.Platform.osname === "ipad" ? 6 : padding,
+					left : Titanium.Platform.osname === "ipad" ? 78 : (isIos7() ? 56 : 52),
 					height : Titanium.Platform.osname === "ipad" ? 36 : 24,
-					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
+					right : Titanium.Platform.osname === "ipad" ? 6 : padding,
 					font : {
 						fontSize : 16,
-						fontWeight : "bold"
+						fontWeight : (isIos7() ? "normal" : "bold")
 					},
 					minimumFontSize : 12
 				}
@@ -38,12 +40,13 @@ function TvShowSeasonsWindow(data) {
 				type : "Titanium.UI.Label",
 				bindId : "sub",
 				properties : {
-					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
-					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
+					bottom : Titanium.Platform.osname === "ipad" ? 6 : padding,
+					left : Titanium.Platform.osname === "ipad" ? 78 : (isIos7() ? 56 : 52),
 					height : Titanium.Platform.osname === "ipad" ? 26 : 18,
+					right : Titanium.Platform.osname === "ipad" ? 6 : padding,
 					font : {
 						fontSize : 12,
-						fontWeight : "bold"
+						fontWeight : (isIos7() ? "normal" : "bold")
 					},
 					minimumFontSize : 12
 				}

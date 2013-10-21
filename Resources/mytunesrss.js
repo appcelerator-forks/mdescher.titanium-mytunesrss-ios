@@ -772,7 +772,7 @@ function deleteLocalTracks(win, tracks, analyticsEvent) {
 }
 
 function createCommonListView(template) {
-	return isIos7() ? GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:("default")}) : GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:("default")});
+	return isIos7() ? GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : (isIos7() ? 58: 48),search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:("default")}) : GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:("default")});
 }
 
 function createCommonBackButton() {
@@ -786,12 +786,12 @@ function createCommonBackButton() {
 function addMoreMenuToTemplate(template) {
     template.childTemplates.push({
 		type : "Titanium.UI.MaskedImage",
-		//type : "Titanium.UI.ImageView",
 		bindId : "optionsMenu",
 		properties : {
-			width : 32,
-            right : 10,
-            image : "images/more.png",
+			width : 42,
+			height : 43,
+            right : 5,
+            image : (isIos7() ? "ios7/images/more.png" : "images/more.png"),
             touchEnabled : false,
             tint : isIos7() ? "#007AFF" : "#CCCCCC"
 		}

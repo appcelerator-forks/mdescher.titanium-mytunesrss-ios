@@ -5,19 +5,21 @@ function PhotoAlbumsWindow(data) {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 
+	var padding = isIos7() ? 8 : 4;
+
 	var template = {
 		childTemplates : [
 			{
 				type : "Titanium.UI.Label",
 				bindId : "main",
 				properties : {
-					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					top : Titanium.Platform.osname === "ipad" ? 6 : padding,
 					left : 10,
 					height : Titanium.Platform.osname === "ipad" ? 36 : 24,
 					right : 50,
 					font : {
 						fontSize : 16,
-						fontWeight : "bold"
+						fontWeight : (isIos7() ? "normal" : "bold")
 					},
 					minimumFontSize : 12
 				}
@@ -26,13 +28,13 @@ function PhotoAlbumsWindow(data) {
 				type : "Titanium.UI.Label",
 				bindId : "sub",
 				properties : {
-					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					bottom : Titanium.Platform.osname === "ipad" ? 6 : padding,
 					left : 10,
 					height : Titanium.Platform.osname === "ipad" ? 26 : 18,
 					right : 50,
 					font : {
 						fontSize : 12,
-						fontWeight : "bold"
+						fontWeight : (isIos7() ? "normal" : "bold")
 					},
 					minimumFontSize : 12
 				}

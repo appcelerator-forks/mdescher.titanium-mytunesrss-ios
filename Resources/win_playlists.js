@@ -16,7 +16,7 @@ function PlaylistsWindow(data) {
 					right : offlineMode ? 10 : 42,
 					font : {
 						fontSize : 20,
-						fontWeight : "bold"
+						fontWeight : (isIos7() ? "normal" : "bold")
 					},
 					minimumFontSize : 12
 				}
