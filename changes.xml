@@ -5,7 +5,10 @@
     </properties>
     <body>
 
-        <release version="3.1" date="___D___">
+        <release version="3.1.0" date="2013-10-29">
+        	<action dev="mdescher" type="add">
+        		[MYTUNESRSSIPHONE-56] Add refresh action to own smart playlists
+	        </action>
         	<action dev="mdescher" type="add">
 	        	Album artwork is displayed in the now playing info now as well.
 	        </action>
@@ -23,7 +26,7 @@
 			</action>
 		</release>
 
-        <release version="3.0.0" date="24.09.2013">
+        <release version="3.0.0" date="2013-09-24">
         	<action dev="mdescher" type="add">
 				Display "Now Playing" information.
         	</action>
