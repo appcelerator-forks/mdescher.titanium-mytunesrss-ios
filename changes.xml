@@ -5,7 +5,7 @@
     </properties>
     <body>
 
-        <release version="3.1.0" date="2013-10-29">
+        <release version="3.5.0" date="2013-10-29">
         	<action dev="mdescher" type="add">
         		[MYTUNESRSSIPHONE-56] Add refresh action to own smart playlists
 	        </action>
