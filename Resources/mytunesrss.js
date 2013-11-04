@@ -677,7 +677,7 @@ function showError(options) {
 	var idleTimerDisabled = Titanium.App.getIdleTimerDisabled();
 	enableIdleTimer();
 	Titanium.UI.createAlertDialog(options).show();
-    Titanium.API.debug("Idle timer " + idleTimeDisabled ? "off" : "on" + ".");
+    Titanium.API.debug("Idle timer " + idleTimerDisabled ? "off" : "on" + ".");
 	Titanium.App.setIdleTimerDisabled(idleTimerDisabled);
 }
 
