@@ -51,7 +51,7 @@ function Jukebox() {
 	    	win.remove(timePlayed);
 	    	win.remove(timeRemaining);
 	    }
-	    imageView = Titanium.UI.createView({top:vOffset+55,left:10,right:10,hires:true,image:track.imageUri,height:size});
+	    imageView = Titanium.UI.createView({top:vOffset+55,left:0,right:0,hires:true,image:track.imageUri,height:size});
 	    nowPlayingInfo.setTitle(track.name != undefined ? getDisplayName(track.name) : "");
        	nowPlayingInfo.setArtist(track.artist != undefined ? getDisplayName(track.artist) : "");
 	    nowPlayingInfo.setAlbumTitle(track.album != undefined ? getDisplayName(track.album) : "");
@@ -66,18 +66,18 @@ function Jukebox() {
 	        var imgUri = getCacheableImageUri(track.imageHash, track.imageUri);
 	        var imgView; 
 	        if (hires) {
-	        	imgView = Titanium.UI.createImageView({top:10,hires:true,image:imgUri,width:size-20,height:size-20,defaultImage:noCoverImage});
+	        	imgView = Titanium.UI.createImageView({hires:true,image:imgUri,center:{x:Titanium.Platform.displayCaps.platformWidth/2,y:10+(size/2)},defaultImage:noCoverImage});
 	        } else {
-	        	imgView = Titanium.UI.createImageView({top:10,image:imgUri,width:size-20,height:size-20,defaultImage:noCoverImage});
+	        	imgView = Titanium.UI.createImageView({image:imgUri,center:{x:Titanium.Platform.displayCaps.platformWidth/2,y:10+(size/2)},defaultImage:noCoverImage});
 	        }
 	        imageView.add(imgView);
 		    nowPlayingInfo.setArtwork(imgUri);
 	    } else {
 	    	nowPlayingInfo.setArtwork("");
 	        if (hires) {
-	    	    imageView.add(Titanium.UI.createImageView({top:10,hires:true,image:noCoverImage,width:size-20,height:size-20}));
+	    	    imageView.add(Titanium.UI.createImageView({hires:true,image:noCoverImage,enter:{x:Titanium.Platform.displayCaps.platformWidth/2,y:10+(size/2)}}));
 	        } else {
-		        imageView.add(Titanium.UI.createImageView({top:10,image:noCoverImage,width:size-20,height:size-20}));
+		        imageView.add(Titanium.UI.createImageView({image:noCoverImage,enter:{x:Titanium.Platform.displayCaps.platformWidth/2,y:10+(size/2)}}));
 	        }
 	    }
 	    infoView = Titanium.UI.createView({height:60,top:vOffset+size+65,left:10,right:10});
