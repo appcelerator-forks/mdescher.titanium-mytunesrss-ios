@@ -225,6 +225,7 @@ function MenuWindow() {
 	win.add(tableView);
 	
 	this.open = function() {
+		var permissions = getPermissions();
 		var rows = new RowArray();
 		if (offlineMode) {
 			rows.push(rowAlbums);
@@ -238,9 +239,15 @@ function MenuWindow() {
 			rows.push(rowAlbums);
 			rows.push(rowArtists);
 			rows.push(rowGenres);
-			rows.push(rowMovies);
-			rows.push(rowTvShows);	
-            rows.push(rowPhotoalbums);
+			if (permissions.indexOf("movies") > 0) {
+				rows.push(rowMovies);
+			}
+			if (permissions.indexOf("tvShows") > 0) {
+				rows.push(rowTvShows);	
+			}
+			if (permissions.indexOf("photos") > 0) {
+	            rows.push(rowPhotoalbums);
+			}
 		}
 		if (jukebox.isActive()) {
 			rows.push(rowNowPlaying);

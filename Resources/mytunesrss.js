@@ -125,6 +125,11 @@ function isSessionAlive() {
 	return response.status / 100 === 2;
 }
 
+function getPermissions() {
+	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=permissions");
+	return response.status / 100 === 2 ? response.result.permissions : [];
+}
+
 function shuffleArray(arr) {
 	for (var i = 0; i < arr.length; i++) {
 		var rnd = Math.floor(Math.random() * arr.length);
