@@ -73,6 +73,14 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		    saveTranscoders(transcoderSwitchesWifi, "");
 		    saveTranscoders(transcoderSwitchesMobile, "_mobile");
 	    }
+        Titanium.App.Properties.setBool("mainMenuPlaylists", switchMenuPlaylists.value);
+        Titanium.App.Properties.setBool("mainMenuAlbums", switchMenuAlbums.value);
+        Titanium.App.Properties.setBool("mainMenuArtists", switchMenuArtists.value);
+        Titanium.App.Properties.setBool("mainMenuGenres", switchMenuGenres.value);
+        Titanium.App.Properties.setBool("mainMenuMovies", switchMenuMovies.value);
+        Titanium.App.Properties.setBool("mainMenuTvShows", switchMenuTvShows.value);
+        Titanium.App.Properties.setBool("mainMenuPhotos", switchMenuPhotos.value);
+        Titanium.App.Properties.setBool("mainMenuOfflineShuffle", switchMenuOfflineShuffle.value);
 	    win.close();
 	});
 	
@@ -220,6 +228,26 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	var photoJpegQualityInput = GUI.createTextField({hintText:L("settings.photoJpegQualityHint"),right:10,width:textFieldWidth,value:getSettingsPhotoJpegQuality(),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 	sectionPhoto.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.photoJpegQuality"),left:10}), photoJpegQualityInput]));
 	sections.push(sectionPhoto);
+
+	// main menu settings
+	var sectionMainMenu = createSection(L("settings.mainMenu"));	
+    var switchMenuPlaylists = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("mainMenuPlaylists", true),right:10});
+    sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.playlists"),left:10}), switchMenuPlaylists]));
+    var switchMenuAlbums = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("mainMenuAlbums", true),right:10});
+    sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.albums"),left:10}), switchMenuAlbums]));
+    var switchMenuArtists = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("mainMenuArtists", true),right:10});
+    sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.artists"),left:10}), switchMenuArtists]));
+    var switchMenuGenres = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("mainMenuGenres", true),right:10});
+    sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.genres"),left:10}), switchMenuGenres]));
+	var switchMenuMovies = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("mainMenuMovies", true),right:10});
+    sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.movies"),left:10}), switchMenuMovies]));
+    var switchMenuTvShows = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("mainMenuTvShows", true),right:10});
+    sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.tvshows"),left:10}), switchMenuTvShows]));
+    var switchMenuPhotos = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("mainMenuPhotos", true),right:10});
+    sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.photoalbums"),left:10}), switchMenuPhotos]));
+    var switchMenuOfflineShuffle = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("mainMenuOfflineShuffle", true),right:10});
+    sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.random"),left:10}), switchMenuOfflineShuffle]));
+    sections.push(sectionMainMenu);
 
 	win.add(GUI.createTopToolbar(L("settings.title"), buttonCancel, buttonSave));
 	win.add(GUI.createTableView({data:sections,separatorStyle:Titanium.UI.iPhone.TableViewSeparatorStyle.NONE,top:45,allowsSelection:false}));

@@ -228,24 +228,38 @@ function MenuWindow() {
 		var permissions = getPermissions();
 		var rows = new RowArray();
 		if (offlineMode) {
-			rows.push(rowAlbums);
-			rows.push(rowArtists);
-			rows.push(rowGenres);
-			if (!jukebox.isActive() || !jukebox.isRandomOfflineMode()) {
+            if (Titanium.App.Properties.getBool("mainMenuAlbums", true)) {
+    			rows.push(rowAlbums);
+            }
+            if (Titanium.App.Properties.getBool("mainMenuArtists", true)) {
+			    rows.push(rowArtists);
+            }
+            if (Titanium.App.Properties.getBool("mainMenuGenres", true)) {
+    			rows.push(rowGenres);
+            }
+			if (!jukebox.isActive() || !jukebox.isRandomOfflineMode() && Titanium.App.Properties.getBool("mainMenuOfflineShuffle", true)) {
 				rows.push(rowRandomMode);
 			}
 		} else {
-			rows.push(rowPlaylists);
-			rows.push(rowAlbums);
-			rows.push(rowArtists);
-			rows.push(rowGenres);
-			if (permissions.indexOf("movies") > 0) {
+            if (Titanium.App.Properties.getBool("mainMenuPlaylists", true)) {
+    			rows.push(rowPlaylists);
+            }
+            if (Titanium.App.Properties.getBool("mainMenuAlbums", true)) {
+    			rows.push(rowAlbums);
+            }
+            if (Titanium.App.Properties.getBool("mainMenuArtists", true)) {
+    			rows.push(rowArtists);
+            }
+            if (Titanium.App.Properties.getBool("mainMenuGenres", true)) {
+    			rows.push(rowGenres);
+            }
+			if (permissions.indexOf("movies") > 0 && Titanium.App.Properties.getBool("mainMenuMovies", true)) {
 				rows.push(rowMovies);
 			}
-			if (permissions.indexOf("tvShows") > 0) {
+			if (permissions.indexOf("tvShows") > 0 && Titanium.App.Properties.getBool("mainMenuTvShows", true)) {
 				rows.push(rowTvShows);	
 			}
-			if (permissions.indexOf("photos") > 0) {
+			if (permissions.indexOf("photos") > 0 && Titanium.App.Properties.getBool("mainMenuPhotos", true)) {
 	            rows.push(rowPhotoalbums);
 			}
 		}

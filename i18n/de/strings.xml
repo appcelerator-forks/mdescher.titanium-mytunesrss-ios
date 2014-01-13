@@ -97,6 +97,7 @@
     <string name="settings.photoJpegQualityHint">JPEG Qualität in %</string>
     <string name="settings.invalidMaxPhotoSize">Die maximale Photogröße muss zwischen 480 und 4096 liegen.</string>
     <string name="settings.invalidPhotoJpegQuality">Die Photoqualität muss zwischen 25 und 100 liegen.</string>
+    <string name="settings.mainMenu">Hauptmenü</string>
 	<string name="busy.cancel">Abbrechen</string>
 	<string name="offlineDatabaseDropped">Die auf das Gerät synchronisierten Titel mussten leider entfernt werden, da die neue App-Version nicht mit der alten kompatibel ist.</string>
 	<string name="ios61bugphase">Wegen eines Problems mit iOS 6.1 kann die Wiedergabe in den letzten Sekunden des Titels nicht unterbrochen werden.</string>
