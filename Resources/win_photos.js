@@ -124,7 +124,7 @@ function PhotosWindow(data) {
 	
     var lastDate = "";
     var listSections = [];
-	for (var i = 0; i < data.length; i++) {
+	for (var i = 0; i < data.length; ) { // no "i++" since we increment "i" inside the "k-loop"
 		var currDate = toDisplayDate(data[i].date);
 		if (currDate != lastDate) {
 			listSections.push(Titanium.UI.createListSection({headerTitle:currDate}));

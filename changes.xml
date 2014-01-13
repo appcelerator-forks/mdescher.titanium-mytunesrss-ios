@@ -6,6 +6,9 @@
     <body>
 
         <release version="3.6.0" date="___D___">
+        	<action dev="mdescher" type="fix">
+	        	[MYTUNESRSSIPHONE-69] Missing photos on the overview page
+	        </action>
         	<action dev="mdescher" type="add">
 	        	[MYTUNESRSSIPHONE-63] Cover artwork is "squared" in jukebox
 	        </action>
