@@ -4,6 +4,8 @@ function PhotoWindow(data, index) {
 	var myParent;
 
 	var win = Titanium.UI.createWindow(STYLE.get("window", {orientationModes:[Titanium.UI.LANDSCAPE_LEFT,Titanium.UI.LANDSCAPE_RIGHT,Titanium.UI.PORTRAIT,Titanium.UI.UPSIDE_PORTRAIT]}));
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
 
 	var views = [];
 	for (var i = 0; i < data.length; i++) {
@@ -65,10 +67,10 @@ function PhotoWindow(data, index) {
 	var toolbar = GUI.createTopToolbar(L("photo.title"), buttonBack, undefined);
 	toolbar.setVisible(false);
 
-	win.add(scrollableView);
-	win.add(toolbar);
+	mediaControlsView.add(scrollableView);
+	mediaControlsView.add(toolbar);
 
-	win.addEventListener("singletap", function() {
+	mediaControlsView.addEventListener("singletap", function() {
 		toolbar.setVisible(!toolbar.visible);		
 	});
 	
@@ -82,6 +84,7 @@ function PhotoWindow(data, index) {
 			myParent = parent;
 		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 	
 }

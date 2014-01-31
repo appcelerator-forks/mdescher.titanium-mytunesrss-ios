@@ -4,13 +4,13 @@ function MenuWindow() {
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 	
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
+	
 	var searchBar = Titanium.UI.createSearchBar({hintText:L("menu.search.hint"),width:Titanium.UI.FILL,top:45,height:45,autocorrect:false,autocapitalization:false,autocomplete:false});
-	if (!isIos7()) {
-		searchBar.barColor = "#000000";
-	}
 	searchBar.addEventListener('return', function() {
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
         try  {
 	        searchBar.showCancel = false;
 	        searchBar.blur();
@@ -20,7 +20,7 @@ function MenuWindow() {
 	            searchAndDisplayTracks(self, searchBar.value);
 	        }
         } finally {
-    	    win.remove(busyView);
+    	    mediaControlsView.remove(busyView);
         }
 	});
 	searchBar.addEventListener('focus', function() {
@@ -56,7 +56,7 @@ function MenuWindow() {
 	}
 	buttonSettings.addEventListener('click', function() {
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
 		    if (offlineMode) {
@@ -71,7 +71,7 @@ function MenuWindow() {
 		    }
         } finally {
         	enableIdleTimer();
-		    win.remove(busyView);
+		    mediaControlsView.remove(busyView);
         }
 	});
 	
@@ -87,82 +87,96 @@ function MenuWindow() {
 	var rowPlaylists = createMenuItem(L("menu.playlists"), "images/playlists.png");
 	rowPlaylists.addEventListener('click', function() {
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
-    	    loadAndDisplayPlaylists(self);
+    	    if (loadAndDisplayPlaylists(self)) {
+    	    	win.close();
+    	    }
         } finally {
         	enableIdleTimer();
-    	    win.remove(busyView);
+    	    mediaControlsView.remove(busyView);
         }
 	});
 
 	var rowAlbums = createMenuItem(L("menu.albums"), "images/albums.png");
 	rowAlbums.addEventListener('click', function() {
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
 	        if (!offlineMode) {
-	        	loadAndDisplayAlbums(self, getLibrary().albumsUri);
+	        	if (loadAndDisplayAlbums(self, getLibrary().albumsUri)) {
+	        		win.close();
+	        	}
 	        } else {
-	        	loadAndDisplayOfflineAlbums(self, undefined, undefined);
+	        	if (loadAndDisplayOfflineAlbums(self, undefined, undefined)) {
+	        		win.close();
+	        	}
 	        }
         } finally {
         	enableIdleTimer();
-	        win.remove(busyView);
+	        mediaControlsView.remove(busyView);
         }
 	});
 
 	var rowArtists = createMenuItem(L("menu.artists"), "images/artists.png");
 	rowArtists.addEventListener('click', function() {
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
-	        loadAndDisplayArtists(self);
+	        if (loadAndDisplayArtists(self)) {
+		        win.close();
+	        }
         } finally {
         	enableIdleTimer();
-	        win.remove(busyView);
+	        mediaControlsView.remove(busyView);
         }
 	});
 
 	var rowGenres = createMenuItem(L("menu.genres"), "images/genres.png");
 	rowGenres.addEventListener('click', function() {
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
-	        loadAndDisplayGenres(self);
+	        if (loadAndDisplayGenres(self)) {
+	        	win.close();
+	        }
         } finally {
         	enableIdleTimer();
-	        win.remove(busyView);
+	        mediaControlsView.remove(busyView);
         }
 	});
 
 	var rowMovies = createMenuItem(L("menu.movies"), "images/movies.png");
 	rowMovies.addEventListener('click', function() {
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
-	        loadAndDisplayMovies(self);
+	        if (loadAndDisplayMovies(self)) {
+	        	win.close();	        	
+	        }
         } finally {
         	enableIdleTimer();
-	        win.remove(busyView);
+	        mediaControlsView.remove(busyView);
         }
 	});
 
 	var rowTvShows = createMenuItem(L("menu.tvshows"), "images/tvshows.png");
 	rowTvShows.addEventListener('click', function() {
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
-	        loadAndDisplayTvShows(self);
+	        if (loadAndDisplayTvShows(self)) {
+		        win.close();
+	        }
         } finally {
         	enableIdleTimer();
-	        win.remove(busyView);
+	        mediaControlsView.remove(busyView);
         }
 	});
 
@@ -172,7 +186,7 @@ function MenuWindow() {
 			return;
 		}
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
         	var track = getRandomOfflineTrack();
@@ -185,27 +199,29 @@ function MenuWindow() {
         	}
         } finally {
         	enableIdleTimer();
-	        win.remove(busyView);
+	        mediaControlsView.remove(busyView);
         }
 	});
 
 	var rowPhotoalbums = createMenuItem(L("menu.photoalbums"), "images/photoalbums.png");
 	rowPhotoalbums.addEventListener('click', function() {
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
-    	    loadAndDisplayPhotoAlbums(self);
+    	    if (loadAndDisplayPhotoAlbums(self)) {
+	    	    win.close();
+    	    }
         } finally {
         	enableIdleTimer();
-    	    win.remove(busyView);
+    	    mediaControlsView.remove(busyView);
         }
 	});
 
 	var rowNowPlaying = createMenuItem(L("menu.currentlyPlaying"), "images/currently.png");
 	rowNowPlaying.addEventListener('click', function() {
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
 	        if (jukebox.isActive()) {
@@ -216,13 +232,13 @@ function MenuWindow() {
 	        }
         } finally {
         	enableIdleTimer();
-	        win.remove(busyView);
+	        mediaControlsView.remove(busyView);
         }
 	});
 			
-	win.add(GUI.createTopToolbar("MyTunesRSS", buttonLogout, buttonSettings));
-	win.add(searchBar);
-	win.add(tableView);
+	mediaControlsView.add(GUI.createTopToolbar("MyTunesRSS", buttonLogout, buttonSettings));
+	mediaControlsView.add(searchBar);
+	mediaControlsView.add(tableView);
 	
 	this.open = function() {
 		var permissions = getPermissions();
@@ -237,38 +253,41 @@ function MenuWindow() {
             if (Titanium.App.Properties.getBool("mainMenuGenres", true)) {
     			rows.push(rowGenres);
             }
-			if (!jukebox.isActive() || !jukebox.isRandomOfflineMode() && Titanium.App.Properties.getBool("mainMenuOfflineShuffle", true)) {
+			if ((!jukebox.isActive() || !jukebox.isRandomOfflineMode()) && Titanium.App.Properties.getBool("mainMenuOfflineShuffle", true)) {
 				rows.push(rowRandomMode);
 			}
 		} else {
             if (Titanium.App.Properties.getBool("mainMenuPlaylists", true)) {
     			rows.push(rowPlaylists);
             }
-            if (Titanium.App.Properties.getBool("mainMenuAlbums", true)) {
+            if (permissions.indexOf("audio") >= 0 && Titanium.App.Properties.getBool("mainMenuAlbums", true)) {
     			rows.push(rowAlbums);
             }
-            if (Titanium.App.Properties.getBool("mainMenuArtists", true)) {
+            if (permissions.indexOf("audio") >= 0 && Titanium.App.Properties.getBool("mainMenuArtists", true)) {
     			rows.push(rowArtists);
             }
             if (Titanium.App.Properties.getBool("mainMenuGenres", true)) {
     			rows.push(rowGenres);
             }
-			if (permissions.indexOf("movies") > 0 && Titanium.App.Properties.getBool("mainMenuMovies", true)) {
+			if (permissions.indexOf("video") >= 0 && Titanium.App.Properties.getBool("mainMenuMovies", true)) {
 				rows.push(rowMovies);
 			}
-			if (permissions.indexOf("tvShows") > 0 && Titanium.App.Properties.getBool("mainMenuTvShows", true)) {
+			if (permissions.indexOf("video") >= 0 && Titanium.App.Properties.getBool("mainMenuTvShows", true)) {
 				rows.push(rowTvShows);	
 			}
-			if (permissions.indexOf("photos") > 0 && Titanium.App.Properties.getBool("mainMenuPhotos", true)) {
+			if (permissions.indexOf("photos") >= 0 && Titanium.App.Properties.getBool("mainMenuPhotos", true)) {
 	            rows.push(rowPhotoalbums);
 			}
 		}
 		if (jukebox.isActive()) {
 			rows.push(rowNowPlaying);
 		}
-		tableView.height = rows.getRows()[0].height * rows.getLength();
-		tableView.setData(rows.getRows());
+		if (rows.getRows().length > 0) {
+			tableView.height = rows.getRows()[0].height * rows.getLength();
+			tableView.setData(rows.getRows());
+		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 
 }

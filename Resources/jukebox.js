@@ -8,6 +8,8 @@ function Jukebox() {
 	var myParent;
 	
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
 
 	var myRandomOnlineMode;
 	var myRandomOfflineMode;
@@ -45,13 +47,13 @@ function Jukebox() {
 	function setTrackInformation(track) {
 		myTrack = track;
 	    if (imageView != undefined) {
-	        win.remove(imageView);
-	        win.remove(infoView);
-	        win.remove(progressBar);
-	    	win.remove(timePlayed);
-	    	win.remove(timeRemaining);
+	        mediaControlsView.remove(imageView);
+	        mediaControlsView.remove(infoView);
+	        mediaControlsView.remove(progressBar);
+	    	mediaControlsView.remove(timePlayed);
+	    	mediaControlsView.remove(timeRemaining);
 	    }
-	    imageView = Titanium.UI.createView({top:vOffset+55,left:0,right:0,hires:true,image:track.imageUri,height:size});
+	    imageView = Titanium.UI.createView({top:vOffset+55,left:0,right:0,hires:true,height:20 + size});
 	    nowPlayingInfo.setTitle(track.name != undefined ? getDisplayName(track.name) : "");
        	nowPlayingInfo.setArtist(track.artist != undefined ? getDisplayName(track.artist) : "");
 	    nowPlayingInfo.setAlbumTitle(track.album != undefined ? getDisplayName(track.album) : "");
@@ -91,15 +93,15 @@ function Jukebox() {
 	    	labelArtistName.color = "#CCCCCC";
 	    }
 	    infoView.add(labelArtistName);
-	    win.add(imageView);
-	    win.add(infoView);
+	    mediaControlsView.add(imageView);
+	    mediaControlsView.add(infoView);
 	    progressBar = Titanium.UI.createProgressBar(STYLE.get("jukeboxProgressBar", {min:0,max:track.time,value:0}));
-	    win.add(progressBar);
+	    mediaControlsView.add(progressBar);
 	    progressBar.show();
 	    timePlayed = GUI.createLabel(STYLE.get("jukeboxProgressPlayed", {text:""}));
-	    win.add(timePlayed);
+	    mediaControlsView.add(timePlayed);
 	    timeRemaining = GUI.createLabel(STYLE.get("jukeboxProgressRemaining", {text:""}));
-	    win.add(timeRemaining);
+	    mediaControlsView.add(timeRemaining);
 	}
 	
 	function setProgress(progress) {
@@ -132,7 +134,7 @@ function Jukebox() {
 	function showJukeboxActivityView() {
 	    if (!actIndicatorView.visible) {
 	        Titanium.API.debug("Showing jukebox activity view.");
-	        win.add(actIndicatorView);
+	        mediaControlsView.add(actIndicatorView);
 	        actIndicatorView.show();
 	    }
 	};
@@ -141,7 +143,7 @@ function Jukebox() {
 	    if (actIndicatorView.visible) {
 	    	Titanium.API.debug("Hiding jukebox activity view.");
 	        actIndicatorView.hide();
-	        win.remove(actIndicatorView);
+	        mediaControlsView.remove(actIndicatorView);
 	    }
 	};
 	
@@ -206,14 +208,14 @@ function Jukebox() {
 	buttonPlaylist.addEventListener('click', function() {
 		if (myRandomOnlineMode != true && myRandomOfflineMode != true) {
 			var busyView = createBusyView();
-			win.add(busyView);
+			mediaControlsView.add(busyView);
 			disableIdleTimer();
 	        try {
 			    new TracksWindow(jukebox.getCurrentPlaylist(), true).open(self);
 		        win.close();
 	        } finally {
 	        	enableIdleTimer();
-			    win.remove(busyView);
+			    mediaControlsView.remove(busyView);
 	        }
 		} else {
 			showError({message:L("jukebox.noPlaylistInRandomMode"),buttonNames:['Ok']});
@@ -231,64 +233,19 @@ function Jukebox() {
 	if (!isIos7()) {
 		playbackControlsView.backgroundGradient = {type:"linear",colors:["#1F1F1F","#323232"],startPoint:{x:0,y:37},endPoint:{x:0,y:0},backFillStart:false};
 	} 
-	win.add(playbackControlsView);
-	win.add(controlRewind);
-	win.add(controlFastForward);
-	win.add(controlPlayPause);
-	win.add(controlShuffle);
+	mediaControlsView.add(playbackControlsView);
+	mediaControlsView.add(controlRewind);
+	mediaControlsView.add(controlFastForward);
+	mediaControlsView.add(controlPlayPause);
+	mediaControlsView.add(controlShuffle);
 	if (!isIos7()) {
-		win.add(controlRewind.glow);
-		win.add(controlFastForward.glow);
-		win.add(controlPlayPause.glow);
-		win.add(controlShuffle.glow);
+		mediaControlsView.add(controlRewind.glow);
+		mediaControlsView.add(controlFastForward.glow);
+		mediaControlsView.add(controlPlayPause.glow);
+		mediaControlsView.add(controlShuffle.glow);
 	}
 
-	win.add(GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist));
-	
-	var mediaControlsView = MEDIA_CONTROLS.createView({left:0,top:0,width:0,height:0});
-	mediaControlsView.addEventListener("remoteControlPlay", function() {
-		Titanium.API.debug("RemoteControlPlay");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
-		checkWebserverSanity(function() {play();});
-	}); 
-	mediaControlsView.addEventListener("remoteControlPause", function() {
-		Titanium.API.debug("RemoteControlPause");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
-		pause();
-	}); 
-	mediaControlsView.addEventListener("remoteControlStop", function() {
-		Titanium.API.debug("RemoteControlStop");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
-		jukebox.stopPlayback();
-	}); 
-	mediaControlsView.addEventListener("remoteControlTogglePlayPause", function() {
-		Titanium.API.debug("RemoteControlTogglePlayPause");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
-		checkWebserverSanity(function() {playPause();});
-	}); 
-	mediaControlsView.addEventListener("remoteControlPreviousTrack", function() {
-		Titanium.API.debug("RemoteControlPreviousTrack");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
-		checkWebserverSanity(function() {rewind();});
-	}); 
-	mediaControlsView.addEventListener("remoteControlNextTrack", function() {
-		Titanium.API.debug("RemoteControlNextTrack");
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
-		checkWebserverSanity(function() {fastForward();});
-	}); 
-	win.add(mediaControlsView);
+	mediaControlsView.add(GUI.createTopToolbar(L("jukebox.title"), buttonBack, buttonPlaylist));
 	
 	/**
 	 * Open the jukebox window. 
@@ -298,6 +255,7 @@ function Jukebox() {
 			myParent = parent;
 		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 	
 	// =================================
@@ -546,6 +504,10 @@ function Jukebox() {
 	    playTrack();
 	};
 	
+	this.rewind = function() {
+		rewind();		
+	};
+	
 	function rewind() {
 		fastForwardOnStopped = false;
 		var playing = isPlayingOrBuffering();
@@ -565,6 +527,10 @@ function Jukebox() {
 	    }
 	};
 		
+	this.fastForward = function(forcePlayAfterFastforward) {
+		fastForward();
+	};
+	
 	function fastForward(forcePlayAfterFastforward) {
 		var playing = isPlayingOrBuffering();
 	    if (currentPlaylistIndex + 1 < currentPlaylist.length) {
@@ -602,6 +568,10 @@ function Jukebox() {
 	    return false;
 	};
 	
+	this.playPause = function() {
+		playPause();
+	};
+	
 	function playPause() {
 	    if (isPlayingOrBuffering()) {
 	    	Titanium.API.debug("[playPause] Pausing audio player.");
@@ -612,11 +582,19 @@ function Jukebox() {
 	    }
 	};
 
+	this.play = function() {
+		play();
+	};
+	
 	function play() {
 	    if (!isPlayingOrBuffering()) {
 	    	Titanium.API.debug("[playPause] Starting audio player.");
 		    audioPlayer.start();
 	    }
+	};
+	
+	this.pause = function() {
+		pause();
 	};
 	
 	function pause() {
@@ -708,7 +686,7 @@ function Jukebox() {
 			}				
 		}
 	};
-
+	
 	createPlayer();
 }
 

@@ -4,6 +4,8 @@ function AlbumsWindow(data) {
 	var myParent;
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
 
 	var padding = isIos7() ? 8 : 4;
 
@@ -64,8 +66,8 @@ function AlbumsWindow(data) {
 	    win.close();
 	});
 	
-	win.add(GUI.createTopToolbar(L("albums.title"), buttonBack, undefined));
-	win.add(listView);
+	mediaControlsView.add(GUI.createTopToolbar(L("albums.title"), buttonBack, undefined));
+	mediaControlsView.add(listView);
 	
 	listView.addEventListener("itemclick", function(e) {
 		if (e.bindId === "optionsMenu") {
@@ -74,7 +76,7 @@ function AlbumsWindow(data) {
         	var itemProps = e.section.getItemAt(e.itemIndex).properties;
 			var busyView = createBusyView();
 		    disableIdleTimer();
-		    win.add(busyView);
+		    mediaControlsView.add(busyView);
             try {
 		        if (!offlineMode) {
 		            loadAndDisplayTracks(self, itemProps.tracksUri);
@@ -83,7 +85,7 @@ function AlbumsWindow(data) {
 		        }
             } finally {
             	enableIdleTimer();
-        	    win.remove(busyView);
+        	    mediaControlsView.remove(busyView);
             }
     	}
 	});
@@ -105,7 +107,8 @@ function AlbumsWindow(data) {
 	        		properties : {
 	        			tracksUri : item.tracksUri,
 						albumArtist : item.artist,
-						albumName : item.name
+						albumName : item.name,
+						searchableText : item.name
 	        		}
 	        	};
 	        },
@@ -121,6 +124,7 @@ function AlbumsWindow(data) {
 			myParent = parent;
 		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 
     function optionsMenu(ice) {
@@ -128,11 +132,11 @@ function AlbumsWindow(data) {
         var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.cancel")];
         new MenuView(win, itemProps.albumName, buttons, function(selectedButton) {
         var busyView = createBusyView();
-        win.add(busyView);
+        mediaControlsView.add(busyView);
         disableIdleTimer();
         try {
             if (selectedButton === L("common.option.download")) {
-                downloadTracksForUri(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.album");
+                downloadTracksForUri(mediaControlsView, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.album");
             } else if (selectedButton === L("common.option.localdelete")) {
                 deleteLocalTracks(win, loadOfflineAlbumTracks(itemProps.albumName, itemProps.albumArtist), "localdelete.album");
             	myParent.open();
@@ -140,7 +144,7 @@ function AlbumsWindow(data) {
             }
         } finally {
             enableIdleTimer();
-            win.remove(busyView);
+            mediaControlsView.remove(busyView);
         }
         }).show();
     }

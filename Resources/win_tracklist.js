@@ -5,6 +5,8 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	var myCurrentJukeboxPlaylist = currentJukeboxPlaylist != undefined ? currentJukeboxPlaylist : false;
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
 
 	var template = {
 		childTemplates : [
@@ -110,8 +112,8 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	    win.close();
 	});
 	
-	win.add(GUI.createTopToolbar(L("tracklist.title"), buttonBack, undefined));
-	win.add(listView);
+	mediaControlsView.add(GUI.createTopToolbar(L("tracklist.title"), buttonBack, undefined));
+	mediaControlsView.add(listView);
 	
     var listSection = Titanium.UI.createListSection({});
     listView.setSections([listSection]);
@@ -142,7 +144,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
     		return;
     	}
     	var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
             if (data[trackIndex].mediaType === "Video") {
@@ -162,7 +164,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
             }
         } finally {
         	enableIdleTimer();
-            win.remove(busyView);
+            mediaControlsView.remove(busyView);
         }
     };
 
@@ -182,6 +184,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 			myParent = parent;
 		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 
     function optionsMenu(ice) {
@@ -189,7 +192,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
         var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.cancel")];
         new MenuView(win, ice.section.getItemAt(ice.itemIndex).main.text, buttons, function(selectedButton) {
         var busyView = createBusyView();
-        win.add(busyView);
+        mediaControlsView.add(busyView);
         disableIdleTimer();
         try {
             if (selectedButton === L("common.option.download")) {
@@ -201,7 +204,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
             }
         } finally {
             enableIdleTimer();
-            win.remove(busyView);
+            mediaControlsView.remove(busyView);
         }
         }).show();
     }

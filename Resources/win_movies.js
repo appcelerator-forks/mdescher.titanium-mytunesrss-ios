@@ -4,6 +4,8 @@ function MoviesWindow(data) {
 	var myParent;
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
 
 	var padding = isIos7() ? 8 : 4;
 
@@ -47,8 +49,8 @@ function MoviesWindow(data) {
 	    win.close();
 	});
 	
-	win.add(GUI.createTopToolbar(L("movies.title"), buttonBack, undefined));
-	win.add(listView);
+	mediaControlsView.add(GUI.createTopToolbar(L("movies.title"), buttonBack, undefined));
+	mediaControlsView.add(listView);
 	
 	listView.addEventListener("itemclick", function(e) {
 		if (jukebox.isIos61BugPhase()) {
@@ -92,6 +94,7 @@ function MoviesWindow(data) {
 			myParent = parent;
 		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 
 }

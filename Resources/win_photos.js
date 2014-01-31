@@ -4,6 +4,8 @@ function PhotosWindow(data) {
 	var myParent;
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
 
 	var templateIphone = {
 		childTemplates : [
@@ -119,8 +121,8 @@ function PhotosWindow(data) {
 	    win.close();
 	});
 	
-	win.add(GUI.createTopToolbar(L("photos.title"), buttonBack, undefined));
-	win.add(listView);
+	mediaControlsView.add(GUI.createTopToolbar(L("photos.title"), buttonBack, undefined));
+	mediaControlsView.add(listView);
 	
     var lastDate = "";
     var listSections = [];
@@ -176,6 +178,7 @@ function PhotosWindow(data) {
 			myParent = parent;
 		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 	
 }

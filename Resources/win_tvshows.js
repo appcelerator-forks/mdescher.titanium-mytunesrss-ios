@@ -4,6 +4,8 @@ function TvShowsWindow(data) {
 	var myParent;
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
 
 	var padding = isIos7() ? 8 : 4;
 
@@ -63,19 +65,19 @@ function TvShowsWindow(data) {
 	    win.close();
 	});
 	
-	win.add(GUI.createTopToolbar(L("tvshows.title"), buttonBack, undefined));
-	win.add(listView);
+	mediaControlsView.add(GUI.createTopToolbar(L("tvshows.title"), buttonBack, undefined));
+	mediaControlsView.add(listView);
 	
 	listView.addEventListener("itemclick", function(e) {
 		var busyView = createBusyView();
-		win.add(busyView);
+		mediaControlsView.add(busyView);
 		disableIdleTimer();
         try {
             var itemProps = e.section.getItemAt(e.itemIndex).properties;
     	    loadAndDisplayTvShowSeasons(self, itemProps.seasonsUri);
         } finally {
         	enableIdleTimer();
-    	    win.remove(busyView);
+    	    mediaControlsView.remove(busyView);
         }
 	});
 	
@@ -110,6 +112,7 @@ function TvShowsWindow(data) {
 			myParent = parent;
 		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 
 }

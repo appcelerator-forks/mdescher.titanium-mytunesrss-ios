@@ -4,6 +4,8 @@ function GenresWindow(data) {
 	var myParent;
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
 	
 	var template = {
 		childTemplates : [
@@ -34,8 +36,8 @@ function GenresWindow(data) {
 	    win.close();
 	});
 	
-	win.add(GUI.createTopToolbar(L("genres.title"), buttonBack, undefined));
-	win.add(listView);
+	mediaControlsView.add(GUI.createTopToolbar(L("genres.title"), buttonBack, undefined));
+	mediaControlsView.add(listView);
 	
 	listView.addEventListener("itemclick", function(e) {
     	if (e.bindId === "optionsMenu") {
@@ -43,7 +45,7 @@ function GenresWindow(data) {
     	} else {
     		var itemProps = e.section.getItemAt(e.itemIndex).properties;
 			var busyView = createBusyView();
-			win.add(busyView);
+			mediaControlsView.add(busyView);
 			disableIdleTimer();
 	        try {
 		        if (!offlineMode) {
@@ -53,7 +55,7 @@ function GenresWindow(data) {
 		        }
 	        } finally {
 	        	enableIdleTimer();
-	    	    win.remove(busyView);
+	    	    mediaControlsView.remove(busyView);
 	        }
     	}
 	});
@@ -85,6 +87,7 @@ function GenresWindow(data) {
 			myParent = parent;
 		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 
 	function optionsMenu(ice) {
@@ -92,11 +95,11 @@ function GenresWindow(data) {
 		var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.shuffle"), L("common.option.cancel")];
 		new MenuView(win, itemProps.genreName, buttons, function(selectedButton) {
 			var busyView = createBusyView();
-	        win.add(busyView);
+	        mediaControlsView.add(busyView);
 	        disableIdleTimer();
 	        try {
 	        	if (selectedButton === L("common.option.download")) {
-	        		downloadTracksForUri(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.genre");
+	        		downloadTracksForUri(mediaControlsView, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.genre");
 	            } else if (selectedButton === L("common.option.localdelete")) {
 	                deleteLocalTracks(win, loadOfflineGenreTracks(itemProps.genreName), "localdelete.genre");
 	            	myParent.open();
@@ -113,7 +116,7 @@ function GenresWindow(data) {
 			    }
 	        } finally {
 	            enableIdleTimer();
-	            win.remove(busyView);
+	            mediaControlsView.remove(busyView);
 	        }
 		}).show();
 	}

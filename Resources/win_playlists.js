@@ -4,6 +4,8 @@ function PlaylistsWindow(data) {
 	var myParent;
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
 
 	var template = {
 		childTemplates : [
@@ -34,8 +36,8 @@ function PlaylistsWindow(data) {
 	    win.close();
 	});
 	
-	win.add(GUI.createTopToolbar(L("playlists.title"), buttonBack, undefined));	
-	win.add(listView);
+	mediaControlsView.add(GUI.createTopToolbar(L("playlists.title"), buttonBack, undefined));	
+	mediaControlsView.add(listView);
 	
     listView.addEventListener("itemclick", function(e) {
     	if (e.bindId === "optionsMenu" || e.bindId === "optionsMenuGlow") {
@@ -43,13 +45,13 @@ function PlaylistsWindow(data) {
     	} else {
 	    	var itemProps = e.section.getItemAt(e.itemIndex).properties;
 			var busyView = createBusyView();
-	        win.add(busyView);
+	        mediaControlsView.add(busyView);
 	        disableIdleTimer();
 			try {
 	    		loadAndDisplayTracks(self, itemProps.tracksUri);
 	        } finally {
 	            enableIdleTimer();
-	            win.remove(busyView);
+	            mediaControlsView.remove(busyView);
 	        }
     	}
     });
@@ -82,6 +84,7 @@ function PlaylistsWindow(data) {
 			myParent = parent;
 		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 
 	function optionsMenu(ice) {
@@ -93,11 +96,11 @@ function PlaylistsWindow(data) {
 		menuItems.push(L("common.option.cancel"));
 		new MenuView(win, itemProps.name, menuItems, function(selectedButton) {
 			var busyView = createBusyView();
-	        win.add(busyView);
+	        mediaControlsView.add(busyView);
 	        disableIdleTimer();
 	        try {
 			    if (selectedButton === L("common.option.download")) {
-			        downloadTracksForUri(win, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.playlist");
+			        downloadTracksForUri(mediaControlsView, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.playlist");
 			    } else if (selectedButton === L("common.option.shuffle")) {
 			    	onlineShuffleSession = removeUnsupportedAndNonAudioTracks(loadTracks(itemProps.tracksUri));
 			    	if (onlineShuffleSession.length > 0) {
@@ -112,7 +115,7 @@ function PlaylistsWindow(data) {
 			    }
 	        } finally {
 	            enableIdleTimer();
-	            win.remove(busyView);
+	            mediaControlsView.remove(busyView);
 	        }
 		}).show();
 	}

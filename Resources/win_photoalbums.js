@@ -4,6 +4,8 @@ function PhotoAlbumsWindow(data) {
 	var myParent;
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
 
 	var padding = isIos7() ? 8 : 4;
 
@@ -66,19 +68,19 @@ function PhotoAlbumsWindow(data) {
 	    win.close();
 	});
 	
-	win.add(GUI.createTopToolbar(L("photoalbums.title"), buttonBack, undefined));	
-	win.add(listView);
+	mediaControlsView.add(GUI.createTopToolbar(L("photoalbums.title"), buttonBack, undefined));	
+	mediaControlsView.add(listView);
 	
     listView.addEventListener("itemclick", function(e) {
     	var itemProps = e.section.getItemAt(e.itemIndex).properties;
         var busyView = createBusyView();
-        win.add(busyView);
+        mediaControlsView.add(busyView);
         disableIdleTimer();
         try {
             loadAndDisplayPhotos(self, itemProps.photosUri);
         } finally {
             enableIdleTimer();
-            win.remove(busyView);
+            mediaControlsView.remove(busyView);
         }
     });
 
@@ -120,6 +122,7 @@ function PhotoAlbumsWindow(data) {
 			myParent = parent;
 		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 
 }

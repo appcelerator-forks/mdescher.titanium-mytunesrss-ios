@@ -2,10 +2,10 @@ var TABLE_VIEW_ROW_HEIGHT = 40;
 var DEFAULT_AUDIO_BUFFER_SIZE = 2048;
 var DEFAULT_SEARCH_ACCURACY = 40;
 var MININUM_SERVER_VERSION = {
-	major : 4,
-	minor : 9,
-	bugfix : 12,
-	text : "4.9.12"
+	major : 5,
+	minor : 0,
+	bugfix : 0,
+	text : "5.0.0"
 };
 var TRACK_ATTRIBUTES = "attr.incl=id&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected&attr.incl=album&attr.incl=albumArtist&attr.incl=genre&attr.incl=discNumber&attr.incl=trackNumber";
 
@@ -100,6 +100,7 @@ function setListDataAndIndex(listView, items, createListItemDataCallback, getSec
 		}
 	}
 	listView.setSections(tableData);
+	listView.setSectionIndexTitles(indexData);
 }
 
 function removeUnsupportedTracks(items) {
@@ -189,7 +190,9 @@ function loadAndDisplayOfflineAlbums(parent, artist, genre) {
     	showError({message:L("albums.noneFound"),buttonNames:['Ok']});
     } else {
     	new AlbumsWindow(result).open(parent);
+    	return true;
     }
+    return false;
 }
 
 function loadAndDisplayAlbums(parent, uri) {
@@ -199,10 +202,12 @@ function loadAndDisplayAlbums(parent, uri) {
         	showError({message:L("albums.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new AlbumsWindow(response.result).open(parent);
+	    	return true;
 	    }
     } else {
 	    showError({message:response.result,buttonNames:['Ok']});
     }
+    return false;
 }
 
 function loadAndDisplayArtists(parent) {
@@ -221,6 +226,7 @@ function loadAndDisplayArtists(parent) {
         	showError({message:L("artists.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new ArtistsWindow(result).open(parent);
+	    	return true;
 	    }
 	} else {
 	    var response = restCall("GET", getLibrary().artistsUri + "?attr.incl=name&attr.incl=albumsUri&attr.incl=tracksUri", {});
@@ -229,11 +235,13 @@ function loadAndDisplayArtists(parent) {
 	        	showError({message:L("artists.noneFound"),buttonNames:['Ok']});
 	        } else {
 		    	new ArtistsWindow(response.result).open(parent);
+		    	return true;
 		    }
 	    } else {
 		    showError({message:response.result,buttonNames:['Ok']});
 	    }
 	}
+	return false;
 }
 
 function loadAndDisplayGenres(parent) {
@@ -252,6 +260,7 @@ function loadAndDisplayGenres(parent) {
         	showError({message:L("genres.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new GenresWindow(result).open(parent);
+	    	return true;
 	    }
 	} else {
 	    var response = restCall("GET", getLibrary().genresUri + "?attr.incl=name&attr.incl=albumsUri&attr.incl=tracksUri", {});
@@ -260,11 +269,13 @@ function loadAndDisplayGenres(parent) {
 	        	showError({message:L("genres.noneFound"),buttonNames:['Ok']});
 	        } else {
 		    	new GenresWindow(response.result).open(parent);
+		    	return true;
 		    }
 	    } else {
 		    showError({message:response.result,buttonNames:['Ok']}).show();
 	    }
 	}
+	return false;
 }
 
 function loadAndDisplayPlaylists(parent) {
@@ -274,10 +285,12 @@ function loadAndDisplayPlaylists(parent) {
         	showError({message:L("playlists.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new PlaylistsWindow(response.result).open(parent);
+	    	return true;
 	    }
     } else {
 	    showError({message:response.result,buttonNames:['Ok']});
     }
+    return false;
 }
 
 function loadAndDisplayPhotoAlbums(parent) {
@@ -288,10 +301,12 @@ function loadAndDisplayPhotoAlbums(parent) {
         	showError({message:L("photoalbums.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new PhotoAlbumsWindow(data).open(parent);
+	    	return true;
 	    }
     } else {
 	    showError({message:response.result,buttonNames:['Ok']});
     }
+    return false;
 }
 
 function refreshSmartPlaylist(playlistUri) {
@@ -438,10 +453,12 @@ function loadAndDisplayMovies(parent) {
         	showError({message:L("movies.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new MoviesWindow(data).open(parent);
+	    	return true;
 	    }
     } else {
     	showError({message:response.result,buttonNames:['Ok']});
     }
+    return false;
 }
 
 function loadAndDisplayTvShows(parent) {
@@ -451,10 +468,12 @@ function loadAndDisplayTvShows(parent) {
         	showError({message:L("tvshows.noneFound"),buttonNames:['Ok']});
         } else {
 	    	new TvShowsWindow(response.result).open(parent);
+	    	return true;
 	    }
     } else {
     	showError({message:response.result,buttonNames:['Ok']});
     }
+    return false;
 }
 
 function loadAndDisplayTvShowSeasons(parent, seasonsUri) {
@@ -726,21 +745,21 @@ function isIos7() {
 	return Titanium.Platform.version.split(".")[0] === "7";
 }
 
-function downloadTracksForUri(win, tracksUri, displayName, analyticsEvent) {
+function downloadTracksForUri(view, tracksUri, displayName, analyticsEvent) {
     var busyView = createBusyView();
-    win.add(busyView);
+    view.add(busyView);
     disableIdleTimer();
     var tracks;
     try {
 	    tracks = removeUnsupportedAndNonAudioTracks(loadTracks(tracksUri));
     } finally {
 	    enableIdleTimer();
-        win.remove(busyView);
+        view.remove(busyView);
     }
-    downloadTracksForList(win, tracks, displayName, analyticsEvent);
+    downloadTracksForList(tracks, displayName, analyticsEvent);
 }
 
-function downloadTracksForList(win, tracks, displayName, analyticsEvent) {
+function downloadTracksForList(tracks, displayName, analyticsEvent) {
     if (tracks != undefined && tracks.length > 0) {
     	Titanium.Analytics.featureEvent(analyticsEvent);
 	    CANCEL_SYNC_AUDIO_TRACKS = false;
@@ -777,7 +796,7 @@ function deleteLocalTracks(win, tracks, analyticsEvent) {
 }
 
 function createCommonListView(template) {
-	return isIos7() ? GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : (isIos7() ? 58: 48),search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:("default")}) : GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,search:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),filterAttribute:"filter",top:45,templates:{"default":template},defaultItemTemplate:("default")});
+	return isIos7() ? GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : (isIos7() ? 58: 48),searchView:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),caseInsensitiveSearch:true,top:45,templates:{"default":template},defaultItemTemplate:("default")}) : GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,searchView:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),caseInsensitiveSearch:true,top:45,templates:{"default":template},defaultItemTemplate:("default")});
 }
 
 function createCommonBackButton() {
@@ -827,4 +846,51 @@ function enableIdleTimer() {
 		Titanium.API.debug("Enabling idle timer.");
 		Titanium.App.setIdleTimerDisabled(false);
 	}
+}
+
+function createMediaControlsView() {
+	var mediaControlsView = MEDIA_CONTROLS.createView({left:0,top:0,right:0,bottom:0});
+	mediaControlsView.addEventListener("remoteControlPlay", function() {
+		Titanium.API.debug("RemoteControlPlay");
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
+		checkWebserverSanity(function() {jukebox.play();});
+	}); 
+	mediaControlsView.addEventListener("remoteControlPause", function() {
+		Titanium.API.debug("RemoteControlPause");
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
+		jukebox.pause();
+	}); 
+	mediaControlsView.addEventListener("remoteControlStop", function() {
+		Titanium.API.debug("RemoteControlStop");
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
+		jukebox.stopPlayback();
+	}); 
+	mediaControlsView.addEventListener("remoteControlTogglePlayPause", function() {
+		Titanium.API.debug("RemoteControlTogglePlayPause");
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
+		checkWebserverSanity(function() {jukebox.playPause();});
+	}); 
+	mediaControlsView.addEventListener("remoteControlPreviousTrack", function() {
+		Titanium.API.debug("RemoteControlPreviousTrack");
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
+		checkWebserverSanity(function() {jukebox.rewind();});
+	}); 
+	mediaControlsView.addEventListener("remoteControlNextTrack", function() {
+		Titanium.API.debug("RemoteControlNextTrack");
+		if (jukebox.isIos61BugPhase()) {
+			return;
+		}
+		checkWebserverSanity(function() {jukebox.fastForward();});
+	}); 
+	return mediaControlsView;
 }

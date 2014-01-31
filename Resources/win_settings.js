@@ -26,6 +26,8 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	}
 	
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
+	var mediaControlsView = createMediaControlsView();
+	win.add(mediaControlsView);
 	
 	var transcoderSwitchesWifi = [];
 	var transcoderSwitchesMobile = [];
@@ -136,13 +138,13 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		styleButton(clearImageCacheButton);
 		clearImageCacheButton.addEventListener("click", function() {
 			var busyView = createBusyView();
-	        win.add(busyView);
+	        mediaControlsView.add(busyView);
 	        disableIdleTimer();
             try {
 				clearImageCache();
 			} finally {
 				enableIdleTimer();
-				win.remove(busyView);
+				mediaControlsView.remove(busyView);
 			}
 		});
 	    sectionCache.add(wrapInRow([clearImageCacheButton]));
@@ -151,13 +153,13 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		styleButton(clearTrackCacheButton);
 		clearTrackCacheButton.addEventListener("click", function() {
 				var busyView = createBusyView();
-        		win.add(busyView);
+        		mediaControlsView.add(busyView);
         		disableIdleTimer();
 				try {
 					clearTrackCache();
 				} finally {
 					enableIdleTimer();
-					win.remove(busyView);
+					mediaControlsView.remove(busyView);
 				}
 		});
 		sectionCache.add(wrapInRow([clearTrackCacheButton]));
@@ -167,13 +169,13 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	styleButton(resetTrackCachePlayCountButton);
 	resetTrackCachePlayCountButton.addEventListener("click", function() {
 			var busyView = createBusyView();
-    		win.add(busyView);
+    		mediaControlsView.add(busyView);
     		disableIdleTimer();
 			try {
 				resetTrackCachePlayCount();
 			} finally {
 				enableIdleTimer();
-				win.remove(busyView);
+				mediaControlsView.remove(busyView);
 			}
 	});
 	sectionCache.add(wrapInRow([resetTrackCachePlayCountButton]));
@@ -249,8 +251,8 @@ function SettingsWindow(transcoders, searchFuzziness) {
     sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.random"),left:10}), switchMenuOfflineShuffle]));
     sections.push(sectionMainMenu);
 
-	win.add(GUI.createTopToolbar(L("settings.title"), buttonCancel, buttonSave));
-	win.add(GUI.createTableView({data:sections,separatorStyle:Titanium.UI.iPhone.TableViewSeparatorStyle.NONE,top:45,allowsSelection:false}));
+	mediaControlsView.add(GUI.createTopToolbar(L("settings.title"), buttonCancel, buttonSave));
+	mediaControlsView.add(GUI.createTableView({data:sections,separatorStyle:Titanium.UI.iPhone.TableViewSeparatorStyle.NONE,top:45,allowsSelection:false}));
 	
 	/**
 	 * Open the settings window. 
@@ -260,6 +262,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
 			myParent = parent;
 		}
 		win.open();
+		mediaControlsView.becomeFirstResponder();
 	};
 	
 }
