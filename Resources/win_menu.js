@@ -241,7 +241,6 @@ function MenuWindow() {
 	mediaControlsView.add(tableView);
 	
 	this.open = function() {
-		var permissions = getPermissions();
 		var rows = new RowArray();
 		if (offlineMode) {
             if (Titanium.App.Properties.getBool("mainMenuAlbums", true)) {
@@ -257,6 +256,7 @@ function MenuWindow() {
 				rows.push(rowRandomMode);
 			}
 		} else {
+			var permissions = getPermissions();
             if (Titanium.App.Properties.getBool("mainMenuPlaylists", true)) {
     			rows.push(rowPlaylists);
             }
