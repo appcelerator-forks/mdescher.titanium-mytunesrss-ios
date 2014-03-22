@@ -91,16 +91,21 @@ function setListDataAndIndex(listView, items, createListItemDataCallback, getSec
 	}
 	var indexData = [];
 	var tableData = [];
-	var globalIndex = 0;
+	var sectionIndex = 0;
 	for (i = 0; i < 27; i++) {
 		if (section[i]) {
 			tableData.push(section[i]);
-			indexData.push({title:indexTitle[i],index:globalIndex});
-			globalIndex += section[i].rowCount;
+			indexData.push({title:indexTitle[i],index:sectionIndex++});
 		}
 	}
-	listView.setSections(tableData);
-	//listView.setSectionIndexTitles(indexData);
+	if (tableData.length == 1) {
+		listView.setSections([Titanium.UI.createListSection({items:tableData[0].items})]);
+	} else {
+		listView.setSections(tableData);
+	}
+	/*if (tableData.length > 1) {
+		listView.setSectionIndexTitles(indexData);
+	}*/
 }
 
 function removeUnsupportedTracks(items) {
