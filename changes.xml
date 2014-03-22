@@ -7,6 +7,9 @@
 
         <release version="3.6.0" date="___D___">
         	<action dev="mdescher" type="add">
+	        	[MYTUNESRSSIPHONE-51] Filter attribute for list views
+	        </action>
+        	<action dev="mdescher" type="add">
                 Fixed loss of remote control event handling.
 	        </action>
         	<action dev="mdescher" type="add">

@@ -57,7 +57,7 @@ function TvShowSeasonsWindow(data) {
 	};
 	addTextColorToTemplates(template, [1, 2]);
 
-	var listView = createCommonListView(template);
+	var listView = createCommonListView(template, false);
 	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener('click', function() {

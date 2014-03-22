@@ -26,72 +26,8 @@ function GenresWindow(data) {
 		]
 	};
 	addTextColorToTemplates(template, [0]);
-    addMoreMenuToTemplate(template);
-
-	var listView = createCommonListView(template);
-	var buttonBack = createCommonBackButton();
-	
-	buttonBack.addEventListener("click", function() {
-		myParent.open();
-	    win.close();
-	});
-	
-	mediaControlsView.add(GUI.createTopToolbar(L("genres.title"), buttonBack, undefined));
-	mediaControlsView.add(listView);
-	
-	listView.addEventListener("itemclick", function(e) {
-    	if (e.bindId === "optionsMenu") {
-    		optionsMenu(e);
-    	} else {
-    		var itemProps = e.section.getItemAt(e.itemIndex).properties;
-			var busyView = createBusyView();
-			mediaControlsView.add(busyView);
-			disableIdleTimer();
-	        try {
-		        if (!offlineMode) {
-		        	loadAndDisplayAlbums(self, itemProps.albumsUri);
-		        } else {
-		        	loadAndDisplayOfflineAlbums(self, undefined, itemProps.genreName);
-		        }
-	        } finally {
-	        	enableIdleTimer();
-	    	    mediaControlsView.remove(busyView);
-	        }
-    	}
-	});
-	
-	setListDataAndIndex(
-	        listView,
-	        data,
-	        function(item, index) {
-	        	return {
-	        		main : {
-	        			text : getDisplayName(item.name)
-	        		},
-	        		properties : {
-	        			albumsUri : item.albumsUri,
-	        			tracksUri : item.tracksUri,
-						genreName : item.name						
-	        		}
-	        	};
-	        },
-	        function(item) {
-	            return item.name;
-	        });
-
-	/**
-	 * Open the genres window. 
-	 */
-	this.open = function(parent) {
-		if (parent != undefined) {
-			myParent = parent;
-		}
-		win.open();
-		mediaControlsView.becomeFirstResponder();
-	};
-
-	function optionsMenu(ice) {
-		var itemProps = ice.section.getItemAt(ice.itemIndex).properties;
+    addMoreMenuToTemplate(template, function optionsMenu(item) {
+		var itemProps = item.properties;
 		var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.shuffle"), L("common.option.cancel")];
 		new MenuView(win, itemProps.genreName, buttons, function(selectedButton) {
 			var busyView = createBusyView();
@@ -99,7 +35,7 @@ function GenresWindow(data) {
 	        disableIdleTimer();
 	        try {
 	        	if (selectedButton === L("common.option.download")) {
-	        		downloadTracksForUri(mediaControlsView, itemProps.tracksUri, ice.section.getItemAt(ice.itemIndex).main.text, "download.genre");
+	        		downloadTracksForUri(mediaControlsView, itemProps.tracksUri, item.main.text, "download.genre");
 	            } else if (selectedButton === L("common.option.localdelete")) {
 	                deleteLocalTracks(win, loadOfflineGenreTracks(itemProps.genreName), "localdelete.genre");
 	            	myParent.open();
@@ -119,6 +55,69 @@ function GenresWindow(data) {
 	            mediaControlsView.remove(busyView);
 	        }
 		}).show();
-	}
+	});
+
+	var listView = createCommonListView(template);
+	var buttonBack = createCommonBackButton();
 	
+	buttonBack.addEventListener("click", function() {
+		myParent.open();
+	    win.close();
+	});
+	
+	mediaControlsView.add(GUI.createTopToolbar(L("genres.title"), buttonBack, undefined));
+	mediaControlsView.add(listView);
+	
+	listView.addEventListener("itemclick", function(e) {
+		if (suppressItemClick) {
+			suppressItemClick = false;
+		} else {
+			var itemProps = e.section.getItemAt(e.itemIndex).properties;
+			var busyView = createBusyView();
+			mediaControlsView.add(busyView);
+			disableIdleTimer();
+	        try {
+		        if (!offlineMode) {
+		        	loadAndDisplayAlbums(self, itemProps.albumsUri);
+		        } else {
+		        	loadAndDisplayOfflineAlbums(self, undefined, itemProps.genreName);
+		        }
+	        } finally {
+	        	enableIdleTimer();
+	    	    mediaControlsView.remove(busyView);
+	        }
+		}
+	});
+	
+	setListDataAndIndex(
+	        listView,
+	        data,
+	        function(item, index) {
+	        	return {
+	        		main : {
+	        			text : getDisplayName(item.name)
+	        		},
+	        		properties : {
+	        			albumsUri : item.albumsUri,
+	        			tracksUri : item.tracksUri,
+						genreName : item.name,
+						searchableText : item.name						
+	        		}
+	        	};
+	        },
+	        function(item) {
+	            return item.name;
+	        });
+
+	/**
+	 * Open the genres window. 
+	 */
+	this.open = function(parent) {
+		if (parent != undefined) {
+			myParent = parent;
+		}
+		win.open();
+		mediaControlsView.becomeFirstResponder();
+	};
+
 }

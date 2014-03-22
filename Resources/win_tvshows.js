@@ -96,7 +96,8 @@ function TvShowsWindow(data) {
 	        			text : String.format(L("tvshows.info"), item.seasonCount, item.episodeCount)
 	        		},
 	        		properties : {
-	        			seasonsUri : item.seasonsUri
+	        			seasonsUri : item.seasonsUri,
+	        			searchableText : item.name
 	        		}
 	        	};
 	        },

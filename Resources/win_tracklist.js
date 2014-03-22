@@ -102,9 +102,29 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	};
 	addTextColorToTemplates(template, [1, 2]);
 	addTextColorToTemplates(noMoreMenu, [1, 2]);
-    addMoreMenuToTemplate(template);
+    addMoreMenuToTemplate(template, function optionsMenu(item, itemIndex) {
+        var itemProps = item.properties;
+        var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.cancel")];
+        new MenuView(win, item.main.text, buttons, function(selectedButton) {
+        var busyView = createBusyView();
+        mediaControlsView.add(busyView);
+        disableIdleTimer();
+        try {
+            if (selectedButton === L("common.option.download")) {
+                downloadTracksForList(win, [data[itemIndex]], item.main.text, "download.track");
+            } else if (selectedButton === L("common.option.localdelete")) {
+                deleteLocalTracks(win, [data[itemIndex]], "localdelete.track");
+	            myParent.open();
+            	win.close();
+            }
+        } finally {
+            enableIdleTimer();
+            mediaControlsView.remove(busyView);
+        }
+        }).show();
+    });
 
-	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template,"noMoreMenu":noMoreMenu},defaultItemTemplate:"default"});
+	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template,"noMoreMenu":noMoreMenu},defaultItemTemplate:"default",searchView:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),caseInsensitiveSearch:true});
 	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener('click', function() {
@@ -130,7 +150,8 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 			    text : getDisplayName(data[i].artist)
 		    },
 		    properties : {
-		    	track : data[i]
+		    	track : data[i],
+		    	searchableText : data[i].name + " " + data[i].artist
 		    }
 	    };
         if (!offlineMode && (data[i].mediaType != "Audio" || data[i].protected === true)) {
@@ -169,9 +190,9 @@ function TracksWindow(data, currentJukeboxPlaylist) {
     };
 
     listView.addEventListener("itemclick", function(e) {
-		if (e.bindId === "optionsMenu") {
-    		optionsMenu(e);
-        } else {
+		if (suppressItemClick) {
+			suppressItemClick = false;
+		} else {
             playTrack(e.itemIndex);
         }
     });
@@ -186,27 +207,5 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 		win.open();
 		mediaControlsView.becomeFirstResponder();
 	};
-
-    function optionsMenu(ice) {
-        var itemProps = ice.section.getItemAt(ice.itemIndex).properties;
-        var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.cancel")];
-        new MenuView(win, ice.section.getItemAt(ice.itemIndex).main.text, buttons, function(selectedButton) {
-        var busyView = createBusyView();
-        mediaControlsView.add(busyView);
-        disableIdleTimer();
-        try {
-            if (selectedButton === L("common.option.download")) {
-                downloadTracksForList(win, [data[ice.itemIndex]], ice.section.getItemAt(ice.itemIndex).main.text, "download.track");
-            } else if (selectedButton === L("common.option.localdelete")) {
-                deleteLocalTracks(win, [data[ice.itemIndex]], "localdelete.track");
-	            myParent.open();
-            	win.close();
-            }
-        } finally {
-            enableIdleTimer();
-            mediaControlsView.remove(busyView);
-        }
-        }).show();
-    }
 	
 }

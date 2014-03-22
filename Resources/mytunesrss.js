@@ -100,7 +100,7 @@ function setListDataAndIndex(listView, items, createListItemDataCallback, getSec
 		}
 	}
 	listView.setSections(tableData);
-	listView.setSectionIndexTitles(indexData);
+	//listView.setSectionIndexTitles(indexData);
 }
 
 function removeUnsupportedTracks(items) {
@@ -795,8 +795,17 @@ function deleteLocalTracks(win, tracks, analyticsEvent) {
 	}
 }
 
-function createCommonListView(template) {
-	return isIos7() ? GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : (isIos7() ? 58: 48),searchView:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),caseInsensitiveSearch:true,top:45,templates:{"default":template},defaultItemTemplate:("default")}) : GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,searchView:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false,barColor:"#000000"}),caseInsensitiveSearch:true,top:45,templates:{"default":template},defaultItemTemplate:("default")});
+function createCommonListView(template, search) {
+	if (search === undefined) {
+		search = true;
+	}
+	var rowHeight = Titanium.Platform.osname === "ipad" ? 72 : (isIos7() ? 58: 48);
+	var options = {rowHeight:rowHeight,top:45,templates:{"default":template},defaultItemTemplate:("default")};
+	if (search === true) {
+		options.searchView = Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false});
+		options.caseInsensitiveSearch = true;
+	}
+	return GUI.createListView(options);
 }
 
 function createCommonBackButton() {
@@ -807,7 +816,9 @@ function createCommonBackButton() {
 	return GUI.createButton(buttonBackArgs);
 }
 
-function addMoreMenuToTemplate(template) {
+var suppressItemClick = false;
+
+function addMoreMenuToTemplate(template, handler) {
     template.childTemplates.push({
 		type : "Titanium.UI.MaskedImage",
 		bindId : "optionsMenu",
@@ -816,8 +827,13 @@ function addMoreMenuToTemplate(template) {
 			height : 43,
             right : 5,
             image : (isIos7() ? "ios7/images/more.png" : "images/more.png"),
-            touchEnabled : false,
             tint : isIos7() ? "#007AFF" : "#CCCCCC"
+		},
+		events : {
+			click : function(e) {
+				suppressItemClick = true;
+				handler(e.section.getItemAt(e.itemIndex), e.itemIndex);
+			}
 		}
 	});
 }

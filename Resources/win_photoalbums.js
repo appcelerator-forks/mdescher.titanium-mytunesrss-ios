@@ -106,7 +106,8 @@ function PhotoAlbumsWindow(data) {
                 text : dateText
     		},
     		properties : {
-    			photosUri : data[i].photosUri
+    			photosUri : data[i].photosUri,
+    			searchableText : data[i].name + " " + dateText
     		}
 	    };
         listSections[listSections.length - 1].appendItems([item]);
