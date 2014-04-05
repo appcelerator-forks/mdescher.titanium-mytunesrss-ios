@@ -11,11 +11,11 @@
     </deployment-targets>
     <id>de.codewave.mytunesrss</id>
     <name>MyTunesRSS</name>
-    <version>3.5</version>
+    <version>3.6</version>
     <publisher>Codewave Software Michael Descher</publisher>
     <url>http://www.codewave.de</url>
     <description>MyTunesRSS iOS client</description>
-    <copyright>2013 by Codewave Software Michael Descher</copyright>
+    <copyright>2014 by Codewave Software Michael Descher</copyright>
     <icon>appicon.png</icon>
     <fullscreen>false</fullscreen>
     <navbar-hidden>false</navbar-hidden>
