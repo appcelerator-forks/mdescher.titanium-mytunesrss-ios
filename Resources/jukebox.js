@@ -16,6 +16,7 @@ function Jukebox() {
 	var myTrack;
 	var imageView;
 	var infoView;
+	var bufferBar;
 	var progressBar;
 	var timePlayed;
 	var timeRemaining;
@@ -23,6 +24,7 @@ function Jukebox() {
 	var vOffset = 0;
 	var hires = false;
 	var noCoverImage;
+	var draggingSlider = false;
 	
 	var nowPlayingInfo = MEDIA_CONTROLS.createNowPlayingInfo();
 	
@@ -95,7 +97,18 @@ function Jukebox() {
 	    infoView.add(labelArtistName);
 	    mediaControlsView.add(imageView);
 	    mediaControlsView.add(infoView);
+	    bufferBar = Titanium.UI.createProgressBar(STYLE.get("jukeboxBufferBar", {min:0,max:100,value:0,color:"#CCCCCC"}));
+	    mediaControlsView.add(bufferBar);
+	    bufferBar.show();
 	    progressBar = Titanium.UI.createProgressBar(STYLE.get("jukeboxProgressBar", {min:0,max:track.time,value:0}));
+	    /*progressBar = Titanium.UI.createSlider(STYLE.get("jukeboxProgressSlider", {min:0,max:track.time,value:0}));
+	    progressBar.addEventListener("start", function(e) {
+	    	draggingSlider = true;
+	    });
+	    progressBar.addEventListener("stop", function(e) {
+	    	audioPlayer.seek(e.value);
+	    	draggingSlider = false;
+	    });*/
 	    mediaControlsView.add(progressBar);
 	    progressBar.show();
 	    timePlayed = GUI.createLabel(STYLE.get("jukeboxProgressPlayed", {text:""}));
@@ -105,7 +118,10 @@ function Jukebox() {
 	}
 	
 	function setProgress(progress) {
-	    if (progressBar != undefined) {
+	    if (bufferBar != undefined) {
+	        bufferBar.value = audioPlayer.bufferFilledPercentage;
+	    }
+	    if (!draggingSlider && progressBar != undefined) {
 	        progressBar.value = Math.floor(progress / 1000);
 	    }
 	    if (timePlayed != undefined) {

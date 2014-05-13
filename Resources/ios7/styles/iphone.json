@@ -253,13 +253,27 @@
 		"height" : 40
 	},
 
+	"jukeboxBufferBar" : {
+		"bottom" : 100,
+		"left" : 40,
+		"right" : 40,
+		"height" : 10
+	},
+
 	"jukeboxProgressBar" : {
-		"bottom" : 60,
+		"bottom" : 61,
 		"left" : 60,
 		"right" : 60,
 		"height" : 10
 	},
 	
+	"jukeboxProgressSlider" : {
+		"bottom" : 52,
+		"left" : 60,
+		"right" : 60,
+		"height" : 10
+	},
+
 	"jukeboxProgressPlayed" : {
 		"bottom" : 60,
 		"left" : 10,
