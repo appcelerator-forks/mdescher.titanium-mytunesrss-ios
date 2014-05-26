@@ -51,6 +51,33 @@ function RowArray() {
 
 Titanium.API.debug("Platform version: \"" + Titanium.Platform.version + "\".");
 
+Titanium.Platform.setBatteryMonitoring(true);
+var onBattery = (Titanium.Platform.getBatteryState() === Titanium.Platform.BATTERY_STATE_CHARGING || Titanium.Platform.getBatteryState() === Titanium.Platform.BATTERY_STATE_FULL);
+if (onBattery) {
+	alert("on battery");
+	Titanium.API.info("Battery detected => disabling idle timer!");
+	//disableIdleTimer();
+}
+Titanium.Platform.addEventListener("battery", function(e) {
+	alert("battery: " + e.state);
+	Titanium.API.debug("Battery state is \"" + e.state + "\".");
+	if (e.state === Titanium.Platform.BATTERY_STATE_CHARGING || e.state === Titanium.Platform.BATTERY_STATE_FULL) {
+		if (!onBattery) {
+			alert("on battery");
+			Titanium.API.info("Battery detected => disabling idle timer!");
+			onBattery = true;
+			//disableIdleTimer();
+		}
+	} else {
+		if (onBattery) {
+			alert("off battery");
+			Titanium.API.info("Battery lost => enabling idle timer!");
+			onBattery = false;
+			//enableIdleTimer();
+		}
+	}
+});
+
 // db versions
 // 1 = initial
 // 2 = added disc_number column
@@ -138,6 +165,13 @@ var STYLE = new GUI.Style();
 Titanium.Media.audioSessionMode = Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK;
 
 var jukebox = new Jukebox();
+Titanium.Media.addEventListener("linechange", function() {
+	Titanium.API.info("Line change, new state is \"" + Titanium.Media.audioLineType + "\".");
+	if (Titanium.Media.audioLineType === Titanium.Media.AUDIO_SPEAKER || Titanium.Media.audioLineType === Titanium.Media.AUDIO_UNAVAILABLE || Titanium.Media.audioLineType === Titanium.Media.AUDIO_UNKNOWN) {
+		Titanium.API.info("Stopping playback due to line change.");
+		jukebox.stopPlayback();	
+	}
+});
 
 var checkWebserverSanity = function(okCallback) {
 	var httpClient = Titanium.Network.createHTTPClient({
@@ -171,7 +205,7 @@ Titanium.App.addEventListener("pause", function() {
 var CANCEL_SYNC_AUDIO_TRACKS = false;
 Titanium.App.addEventListener("mytunesrss_sync", function(event) {
     var tcParam = getTcParam();
-    var uri = event.data[event.index].playbackUri;
+    var uri = event.data[event.index].downloadUri;
     var plainUri = uri;
     if (tcParam != undefined) {
     	uri += "/" + tcParam;

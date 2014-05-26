@@ -5,7 +5,16 @@
     </properties>
     <body>
 
-        <release version="3.6.0" date="___D___">
+        <release version="4.0.0" date="___D___">
+        	<action dev="mdescher" type="add">
+	        	[MYTUNESRSSIPHONE-71] Hierarchical playlist view
+	        </action>
+        	<action dev="mdescher" type="add">
+	        	[MYTUNESRSSIPHONE-73] Pause playback when removed from dock or earphones are unplugged
+	        </action>
+	    </release>
+
+        <release version="3.6.0" date="2014-04-09">
         	<action dev="mdescher" type="add">
 	        	[MYTUNESRSSIPHONE-51] Filter attribute for list views
 	        </action>

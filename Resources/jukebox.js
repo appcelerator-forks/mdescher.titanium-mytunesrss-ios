@@ -99,7 +99,7 @@ function Jukebox() {
 	    mediaControlsView.add(infoView);
 	    bufferBar = Titanium.UI.createProgressBar(STYLE.get("jukeboxBufferBar", {min:0,max:100,value:0,color:"#CCCCCC"}));
 	    mediaControlsView.add(bufferBar);
-	    bufferBar.show();
+	    //bufferBar.show();
 	    progressBar = Titanium.UI.createProgressBar(STYLE.get("jukeboxProgressBar", {min:0,max:track.time,value:0}));
 	    /*progressBar = Titanium.UI.createSlider(STYLE.get("jukeboxProgressSlider", {min:0,max:track.time,value:0}));
 	    progressBar.addEventListener("start", function(e) {

@@ -2,6 +2,7 @@ function PlaylistsWindow(data) {
 
 	var self = this;
 	var myParent;
+	var myPath = [];
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 	var mediaControlsView = createMediaControlsView();
@@ -25,7 +26,27 @@ function PlaylistsWindow(data) {
 			}
 		]
 	};
+	var padding = isIos7() ? 8 : 4;
+	var templateForFolder = {
+		childTemplates : [
+			{
+				type : "Titanium.UI.Label",
+				bindId : "main",
+				properties : {
+					left : 10,
+					height : 24,
+					right : 42,
+					font : {
+						fontSize : 20,
+						fontWeight : (isIos7() ? "normal" : "bold")
+					},
+					minimumFontSize : 12,
+				}
+			}
+		]
+	};
 	addTextColorToTemplates(template, [0]);
+	addTextColorToTemplates(templateForFolder, [0]);
     addMoreMenuToTemplate(template, function optionsMenu(item) {
 		var itemProps = item.properties;
 		var menuItems = [L("common.option.download"), L("common.option.shuffle")];
@@ -59,54 +80,81 @@ function PlaylistsWindow(data) {
 		}).show();
 	});
 
-	var listView = createCommonListView(template);
+	var listView = createCommonListViewWithTemplates({"default":template,"folder":templateForFolder}, false);
 	var buttonBack = createCommonBackButton();
 	
-	buttonBack.addEventListener('click', function() {
-		myParent.open();
-	    win.close();
+	buttonBack.addEventListener("click", function() {
+		if (myPath.length > 0) {
+			myPath.pop();
+			createListView();
+		} else {
+			myParent.open();
+		    win.close();
+		}
 	});
 	
 	mediaControlsView.add(GUI.createTopToolbar(L("playlists.title"), buttonBack, undefined));	
 	mediaControlsView.add(listView);
+	
+	function createListView() {
+		var currentLevel = [];
+		var currentContainer = myPath.length === 0 ? undefined : myPath[myPath.length - 1];
+		for (var i = 0; i < data.length; i++) {
+			if (data[i].containerId === currentContainer) {
+				currentLevel.push(data[i]);
+			}
+		}
+		setListDataAndIndex(
+		        listView,
+		        currentLevel,
+		        function(item, index) {
+		        	return {
+		        		main : {
+		        			text : getDisplayName(item.name)
+		        		},
+		        		properties : {
+			        		accessoryType : item.type === "ITunesFolder" ? Titanium.UI.LIST_ACCESSORY_TYPE_DISCLOSURE : Titanium.UI.LIST_ACCESSORY_TYPE_NONE,
+		        			tracksUri : item.tracksUri,
+		        			trackCount : item.trackCount,
+		        			name : getDisplayName(item.name),
+		        			canRefresh : (item.type === "MyTunesSmart" && item.owner === connectedUsername),
+		        			searchableText : item.name,
+		        			isFolder : item.type === "ITunesFolder",
+		        			itemId : item.id
+		        		},
+		        		template : item.type === "ITunesFolder" ? "folder" : "default"
+
+		        	};
+		        },
+		        function(item) {
+		            return item.name;
+		        });
+		listView.scrollToItem(0, 0);
+	}
 	
     listView.addEventListener("itemclick", function(e) {
 		if (suppressItemClick) {
 			suppressItemClick = false;
 		} else {
 	    	var itemProps = e.section.getItemAt(e.itemIndex).properties;
-			var busyView = createBusyView();
-	        mediaControlsView.add(busyView);
-	        disableIdleTimer();
-			try {
-	    		loadAndDisplayTracks(self, itemProps.tracksUri);
-	        } finally {
-	            enableIdleTimer();
-	            mediaControlsView.remove(busyView);
-	        }
+	    	if (itemProps.isFolder) {
+	    		myPath.push(itemProps.itemId);
+	    		createListView();
+	    	} else {
+				var busyView = createBusyView();
+		        mediaControlsView.add(busyView);
+		        disableIdleTimer();
+				try {
+		    		loadAndDisplayTracks(self, itemProps.tracksUri);
+		        } finally {
+		            enableIdleTimer();
+		            mediaControlsView.remove(busyView);
+		        }
+	    	}
     	}
     });
 
-	setListDataAndIndex(
-	        listView,
-	        data,
-	        function(item, index) {
-	        	return {
-	        		main : {
-	        			text : getDisplayName(item.name)
-	        		},
-	        		properties : {
-	        			tracksUri : item.tracksUri,
-	        			trackCount : item.trackCount,
-	        			name : getDisplayName(item.name),
-	        			canRefresh : (item.type === "MyTunesSmart" && item.owner === connectedUsername),
-	        			searchableText : item.name
-	        		}
-	        	};
-	        },
-	        function(item) {
-	            return item.name;
-	        });
+	createListView();
 		
 	/**
 	 * Open the genres window. 

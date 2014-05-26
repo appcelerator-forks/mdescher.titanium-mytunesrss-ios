@@ -7,7 +7,7 @@ var MININUM_SERVER_VERSION = {
 	bugfix : 0,
 	text : "5.0.0"
 };
-var TRACK_ATTRIBUTES = "attr.incl=id&attr.incl=name&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected&attr.incl=album&attr.incl=albumArtist&attr.incl=genre&attr.incl=discNumber&attr.incl=trackNumber";
+var TRACK_ATTRIBUTES = "attr.incl=id&attr.incl=name&attr.incl=downloadUri&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected&attr.incl=album&attr.incl=albumArtist&attr.incl=genre&attr.incl=discNumber&attr.incl=trackNumber";
 
 function getServerBasedCacheDir() {
 	var dir = Titanium.Filesystem.getFile(Titanium.Filesystem.applicationCacheDirectory);
@@ -284,7 +284,7 @@ function loadAndDisplayGenres(parent) {
 }
 
 function loadAndDisplayPlaylists(parent) {
-    var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=trackCount&attr.incl=type&attr.incl=owner", {});
+    var response = restCall("GET", getLibrary().playlistsUri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=trackCount&attr.incl=type&attr.incl=owner&attr.incl=containerId&attr.incl=id", {});
     if (response.status / 100 === 2) {
         if (response.result.length === 0) {
         	showError({message:L("playlists.noneFound"),buttonNames:['Ok']});
@@ -801,11 +801,15 @@ function deleteLocalTracks(win, tracks, analyticsEvent) {
 }
 
 function createCommonListView(template, search) {
+	return createCommonListViewWithTemplates({"default":template}, search);
+}
+
+function createCommonListViewWithTemplates(templates, search) {
 	if (search === undefined) {
 		search = true;
 	}
 	var rowHeight = Titanium.Platform.osname === "ipad" ? 72 : (isIos7() ? 58: 48);
-	var options = {rowHeight:rowHeight,top:45,templates:{"default":template},defaultItemTemplate:("default")};
+	var options = {rowHeight:rowHeight,top:45,templates:templates,defaultItemTemplate:("default")};
 	if (search === true) {
 		options.searchView = Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false});
 		options.caseInsensitiveSearch = true;
