@@ -64,7 +64,32 @@ function PhotoWindow(data, index) {
 	    win.close();
 	});
 	
-	var toolbar = GUI.createTopToolbar(L("photo.title"), buttonBack, undefined);
+	var buttonSave = createToolbarButton(L("common.save"));
+
+	buttonSave.addEventListener("click", function() {
+		var busyView = createBusyView();
+		mediaControlsView.add(busyView);
+		var httpClient = Titanium.Network.createHTTPClient();
+		httpClient.onload = function() {
+			Titanium.Media.saveToPhotoGallery(httpClient.getResponseData(), {
+				success : function() {
+					mediaControlsView.remove(busyView);
+				},
+				error : function(e) {
+					showError({message:L("savephoto.gallery.error"),buttonNames:['Ok']});
+					mediaControlsView.remove(busyView);
+				}
+			});
+		};
+		httpClient.onerror = function() {
+			showError({message:L("savephoto.network.error"),buttonNames:['Ok']});
+			mediaControlsView.remove(busyView);
+		};
+		httpClient.open("GET", data[scrollableView.getCurrentPage()].originalImageUri, true);
+		httpClient.send();
+	});
+	
+	var toolbar = GUI.createTopToolbar(L("photo.title"), buttonBack, buttonSave);
 	toolbar.setVisible(false);
 
 	mediaControlsView.add(scrollableView);

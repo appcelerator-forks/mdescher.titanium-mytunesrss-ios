@@ -7,6 +7,9 @@
 
         <release version="4.0.0" date="___D___">
         	<action dev="mdescher" type="add">
+	        	[MYTUNESRSSIPHONE-57] Download full sized photo
+	        </action>
+        	<action dev="mdescher" type="add">
 	        	[MYTUNESRSSIPHONE-71] Hierarchical playlist view
 	        </action>
         	<action dev="mdescher" type="add">

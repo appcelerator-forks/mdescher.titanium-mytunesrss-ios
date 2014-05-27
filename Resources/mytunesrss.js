@@ -817,12 +817,16 @@ function createCommonListViewWithTemplates(templates, search) {
 	return GUI.createListView(options);
 }
 
-function createCommonBackButton() {
-    var buttonBackArgs = {title:L("common.back")};
+function createToolbarButton(text) {
+    var buttonBackArgs = {title:text};
     if (!isIos7()) {
         buttonBackArgs.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
     }
 	return GUI.createButton(buttonBackArgs);
+}
+
+function createCommonBackButton() {
+    return createToolbarButton(L("common.back"));
 }
 
 var suppressItemClick = false;

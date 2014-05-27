@@ -104,4 +104,7 @@
     <string name="date">%3$4d-%2$2d-%1$2d</string>
     <string name="photo.title">Photo</string>
     <string name="common.option.localdelete">Remove</string>
+    <string name="common.save">Save</string>
+    <string name="savephoto.gallery.error">Could not save photo to gallery.</string>
+    <string name="savephoto.network.error">Could not download photo from server.</string>
 </resources>
