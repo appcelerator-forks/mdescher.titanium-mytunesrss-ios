@@ -107,4 +107,7 @@
     <string name="common.save">Speichern</string>
     <string name="savephoto.gallery.error">Das Foto konnte nicht gespeichert werden.</string>
     <string name="savephoto.network.error">Das Foto konnte nicht vom Server geladen werden.</string>
+    <string name="common.option.rc">Fernsteuerung</string>
+    <string name="common.option.rc.replace">Ersetzen</string>
+    <string name="common.option.rc.add">Hinzufügen</string>
 </resources>

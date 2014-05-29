@@ -28,7 +28,7 @@ function GenresWindow(data) {
 	addTextColorToTemplates(template, [0]);
     addMoreMenuToTemplate(template, function optionsMenu(item) {
 		var itemProps = item.properties;
-		var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.shuffle"), L("common.option.cancel")];
+		var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.shuffle"), L("common.option.rc"), L("common.option.cancel")];
 		new MenuView(win, itemProps.genreName, buttons, function(selectedButton) {
 			var busyView = createBusyView();
 	        mediaControlsView.add(busyView);
@@ -49,6 +49,8 @@ function GenresWindow(data) {
 		        	} else {
 		        		showError({message:L("tracks.online.noneFound"),buttonNames:['Ok']});
 		        	}
+	            } else if (selectedButton === L("common.option.rc")) {
+	            	remoteControlMenu(win, item.main.text, {genre:itemProps.genreName});
 			    }
 	        } finally {
 	            enableIdleTimer();

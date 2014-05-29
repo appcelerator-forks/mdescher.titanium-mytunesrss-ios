@@ -53,6 +53,7 @@ function PlaylistsWindow(data) {
 		if (itemProps.canRefresh === true) {
 			menuItems.push(L("playlists.option.refresh"));
 		}
+		menuItems.push(L("common.option.rc"));
 		menuItems.push(L("common.option.cancel"));
 		new MenuView(win, itemProps.name, menuItems, function(selectedButton) {
 			var busyView = createBusyView();
@@ -72,6 +73,8 @@ function PlaylistsWindow(data) {
 		        	}
 			    } else if (selectedButton === L("playlists.option.refresh")) {
 			    	refreshSmartPlaylist(itemProps.tracksUri.substring(0, itemProps.tracksUri.lastIndexOf("/tracks")));
+	            } else if (selectedButton === L("common.option.rc")) {
+	            	remoteControlMenu(win, item.main.text, {playlist:itemProps.itemId});
 			    }
 	        } finally {
 	            enableIdleTimer();

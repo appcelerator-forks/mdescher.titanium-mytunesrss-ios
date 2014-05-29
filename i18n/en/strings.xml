@@ -107,4 +107,7 @@
     <string name="common.save">Save</string>
     <string name="savephoto.gallery.error">Could not save photo to gallery.</string>
     <string name="savephoto.network.error">Could not download photo from server.</string>
+    <string name="common.option.rc">Remote control</string>
+    <string name="common.option.rc.replace">Replace</string>
+    <string name="common.option.rc.add">Add</string>
 </resources>

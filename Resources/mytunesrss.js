@@ -750,6 +750,17 @@ function isIos7() {
 	return Titanium.Platform.version.split(".")[0] === "7";
 }
 
+function remoteControlMenu(win, name, params) {
+	var buttons = [L("common.option.rc.replace"), L("common.option.rc.add"), L("common.option.cancel")];
+    new MenuView(win, name, buttons, function(selectedButton) {
+        if (selectedButton === L("common.option.rc.replace")) {
+			restCall("PUT", getLibrary().mediaPlayerUri + "/playlist", params);
+        } else if (selectedButton === L("common.option.rc.add")) {
+			restCall("POST", getLibrary().mediaPlayerUri + "/playlist", params);
+        }
+    }).show();
+}
+
 function downloadTracksForUri(view, tracksUri, displayName, analyticsEvent) {
     var busyView = createBusyView();
     view.add(busyView);

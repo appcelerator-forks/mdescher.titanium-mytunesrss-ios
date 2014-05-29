@@ -104,7 +104,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	addTextColorToTemplates(noMoreMenu, [1, 2]);
     addMoreMenuToTemplate(template, function optionsMenu(item, itemIndex) {
         var itemProps = item.properties;
-        var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.cancel")];
+        var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.rc"), L("common.option.cancel")];
         new MenuView(win, item.main.text, buttons, function(selectedButton) {
         var busyView = createBusyView();
         mediaControlsView.add(busyView);
@@ -116,6 +116,8 @@ function TracksWindow(data, currentJukeboxPlaylist) {
                 deleteLocalTracks(win, [data[itemIndex]], "localdelete.track");
 	            myParent.open();
             	win.close();
+            } else if (selectedButton === L("common.option.rc")) {
+            	remoteControlMenu(win, item.main.text, {track:data[itemIndex].id});
             }
         } finally {
             enableIdleTimer();

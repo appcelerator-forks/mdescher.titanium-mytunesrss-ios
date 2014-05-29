@@ -58,23 +58,25 @@ function AlbumsWindow(data) {
 	addTextColorToTemplates(template, [1, 2]);
     addMoreMenuToTemplate(template, function(item) {
         var itemProps = item.properties;
-        var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.cancel")];
+        var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.rc"), L("common.option.cancel")];
         new MenuView(win, itemProps.albumName, buttons, function(selectedButton) {
-        var busyView = createBusyView();
-        mediaControlsView.add(busyView);
-        disableIdleTimer();
-        try {
-            if (selectedButton === L("common.option.download")) {
-                downloadTracksForUri(mediaControlsView, itemProps.tracksUri, item.main.text, "download.album");
-            } else if (selectedButton === L("common.option.localdelete")) {
-                deleteLocalTracks(win, loadOfflineAlbumTracks(itemProps.albumName, itemProps.albumArtist), "localdelete.album");
-            	myParent.open();
-            	win.close();
-            }
-        } finally {
-            enableIdleTimer();
-            mediaControlsView.remove(busyView);
-        }
+	        var busyView = createBusyView();
+	        mediaControlsView.add(busyView);
+	        disableIdleTimer();
+	        try {
+	            if (selectedButton === L("common.option.download")) {
+	                downloadTracksForUri(mediaControlsView, itemProps.tracksUri, item.main.text, "download.album");
+	            } else if (selectedButton === L("common.option.localdelete")) {
+	                deleteLocalTracks(win, loadOfflineAlbumTracks(itemProps.albumName, itemProps.albumArtist), "localdelete.album");
+	            	myParent.open();
+	            	win.close();
+	            } else if (selectedButton === L("common.option.rc")) {
+	            	remoteControlMenu(win, item.main.text, {album:itemProps.albumName,albumArtist:itemProps.albumArtist});
+	            }
+	        } finally {
+	            enableIdleTimer();
+	            mediaControlsView.remove(busyView);
+	        }
         }).show();
 	});
 
