@@ -23,6 +23,7 @@ Titanium.include("win_server_history.js");
 Titanium.include("win_photoalbums.js");
 Titanium.include("win_photos.js");
 Titanium.include("win_photo.js");
+Titanium.include("win_remote.js");
 Titanium.include("view_menu.js");
 
 var DARK_GRAY = "#2A2A2A";

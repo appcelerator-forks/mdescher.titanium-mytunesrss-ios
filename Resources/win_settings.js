@@ -82,6 +82,7 @@ function SettingsWindow(transcoders, searchFuzziness) {
         Titanium.App.Properties.setBool("mainMenuMovies", switchMenuMovies.value);
         Titanium.App.Properties.setBool("mainMenuTvShows", switchMenuTvShows.value);
         Titanium.App.Properties.setBool("mainMenuPhotos", switchMenuPhotos.value);
+        Titanium.App.Properties.setBool("mainMenuRemoteControl", switchMenuRemoteControl.value);
         Titanium.App.Properties.setBool("mainMenuOfflineShuffle", switchMenuOfflineShuffle.value);
 	    win.close();
 	});
@@ -247,6 +248,8 @@ function SettingsWindow(transcoders, searchFuzziness) {
     sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.tvshows"),left:10}), switchMenuTvShows]));
     var switchMenuPhotos = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("mainMenuPhotos", true),right:10});
     sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.photoalbums"),left:10}), switchMenuPhotos]));
+    var switchMenuRemoteControl = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("mainMenuRemoteControl", true),right:10});
+    sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.remotecontrol"),left:10}), switchMenuRemoteControl]));
     var switchMenuOfflineShuffle = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("mainMenuOfflineShuffle", true),right:10});
     sectionMainMenu.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("menu.random"),left:10}), switchMenuOfflineShuffle]));
     sections.push(sectionMainMenu);

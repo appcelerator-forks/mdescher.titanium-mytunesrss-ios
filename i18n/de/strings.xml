@@ -46,6 +46,7 @@
 	<string name="menu.tvshows">TV Serien</string>
 	<string name="menu.random">Shuffle</string>
     <string name="menu.photoalbums">Fotoalben</string>
+    <string name="menu.remotecontrol">Fernsteuerung</string>
 	<string name="menu.currentlyPlaying">Aktueller Titel</string>
 	<string name="menu.currentlyPlaying.none">Es gibt keine aktive Playlist.</string>
 	<string name="common.back">Zurück</string>
@@ -110,4 +111,6 @@
     <string name="common.option.rc">Fernsteuerung</string>
     <string name="common.option.rc.replace">Ersetzen</string>
     <string name="common.option.rc.add">Hinzufügen</string>
+    <string name="remotecontrol.title">Fernsteuerung</string>
+    <string name="remotecontrol.noneFound">Die entfernte Wiedergabeliste ist leer.</string>
 </resources>

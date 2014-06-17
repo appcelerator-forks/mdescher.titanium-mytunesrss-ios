@@ -47,6 +47,7 @@
 	<string name="menu.tvshows">TV Shows</string>
 	<string name="menu.random">Shuffle</string>
     <string name="menu.photoalbums">Photo albums</string>
+    <string name="menu.remotecontrol">Remote control</string>
 	<string name="menu.currentlyPlaying">Currently playing</string>
 	<string name="menu.currentlyPlaying.none">There is no active playlist.</string>
 	<string name="albums.title">Albums</string>
@@ -110,4 +111,6 @@
     <string name="common.option.rc">Remote control</string>
     <string name="common.option.rc.replace">Replace</string>
     <string name="common.option.rc.add">Add</string>
+    <string name="remotecontrol.title">Remote control</string>
+    <string name="remotecontrol.noneFound">The remote control playlist is empty.</string>
 </resources>

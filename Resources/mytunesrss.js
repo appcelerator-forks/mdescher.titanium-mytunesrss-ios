@@ -314,6 +314,29 @@ function loadAndDisplayPhotoAlbums(parent) {
     return false;
 }
 
+function loadAndDisplayRemoteControl(parent) {
+    var response = restCall("GET", getLibrary().mediaPlayerUri + "?attr.incl=playlistVersion", {});
+    if (response.status / 100 === 2) {
+        var playlistVersion = response.result.playlistVersion;
+	    response = restCall("GET", getLibrary().mediaPlayerUri + "/playlist?" + TRACK_ATTRIBUTES, {});
+	    if (response.status / 100 === 2) {
+	        var data = response.result;
+	        if (data.length === 0) {
+	        	showError({message:L("remotecontrol.noneFound"),buttonNames:['Ok']});
+	        } else {
+		    	new RemoteControlWindow(playlistVersion, data).open(parent);
+		    	return true;
+		    }
+	    } else {
+		    showError({message:response.result,buttonNames:['Ok']});
+	    }
+    } else {
+	    showError({message:response.result,buttonNames:['Ok']});
+	    return false;
+    }
+    return false;
+}
+
 function refreshSmartPlaylist(playlistUri) {
     var response = restCall("POST", playlistUri + "/refresh?attr.incl=none", {});
     if (response.status / 100 != 2) {

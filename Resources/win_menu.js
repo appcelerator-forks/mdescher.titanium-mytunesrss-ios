@@ -218,6 +218,21 @@ function MenuWindow() {
         }
 	});
 
+	var rowRemoteControl = createMenuItem(L("menu.remotecontrol"), "images/remotecontrol.png");
+	rowRemoteControl.addEventListener("click", function() {
+		var busyView = createBusyView();
+		mediaControlsView.add(busyView);
+		disableIdleTimer();
+        try {
+    	    if (loadAndDisplayRemoteControl(self)) {
+	    	    win.close();
+    	    }
+        } finally {
+        	enableIdleTimer();
+    	    mediaControlsView.remove(busyView);
+        }
+	});
+
 	var rowNowPlaying = createMenuItem(L("menu.currentlyPlaying"), "images/currently.png");
 	rowNowPlaying.addEventListener('click', function() {
 		var busyView = createBusyView();
@@ -277,6 +292,9 @@ function MenuWindow() {
 			}
 			if (permissions.indexOf("photos") >= 0 && Titanium.App.Properties.getBool("mainMenuPhotos", true)) {
 	            rows.push(rowPhotoalbums);
+			}
+			if (permissions.indexOf("remoteControl") >= 0 && Titanium.App.Properties.getBool("mainMenuRemoteControl", true)) {
+	            rows.push(rowRemoteControl);
 			}
 		}
 		if (jukebox.isActive()) {
