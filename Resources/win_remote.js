@@ -96,6 +96,10 @@ function RemoteControlWindow(playlistVersion, data) {
         listSection.appendItems([item]);
 	}
 
+	function playTrack(trackIndex) {
+		restCall("POST", getLibrary().mediaPlayerUri, {action:"PLAY",track:trackIndex});
+	}
+
     listView.addEventListener("itemclick", function(e) {
 		if (suppressItemClick) {
 			suppressItemClick = false;
@@ -104,6 +108,9 @@ function RemoteControlWindow(playlistVersion, data) {
         }
     });
     
+    var currentTrackIndex;
+    var currentTrackData;
+    
     function refresh() {
     	var response = restCall("GET", getLibrary().mediaPlayerUri, {});
 	    if (response.status / 100 === 2) {
@@ -111,7 +118,16 @@ function RemoteControlWindow(playlistVersion, data) {
 	        	reloadPlaylist();
 	        }
 	        // mark current track
-	        response.result.currentTrack;
+	        if (currentTrackIndex != response.result.currentTrack) {
+	        	if (currentTrackIndex != undefined) {
+	        		currentTrackData.main.setBackgroundColor('#FFFFFF');
+	        		listView.replaceItem(currentTrackIndex, 1, currentTrackData);
+	        	}
+	        	currentTrackIndex = response.result.currentTrack;
+	        	currentTrackData = listView.getSections()[0].getItemAt(response.result.currentTrack); 
+	        	currentTrackData.main.setBackgroundColor('#CCCC00');
+	        	listView.replaceItem(currentTrackIndex, 1, currentTrackData);
+	        }
 	        // mark current playback state and show current time and volume
 	        response.result.playing;
 	        response.result.length;
@@ -119,9 +135,10 @@ function RemoteControlWindow(playlistVersion, data) {
 	        response.result.volume;
 	        // display current media renderer
 	        response.result.mediaRenderer;
-	    } else {
-		    showError({message:response.result,buttonNames:['Ok']});
+	    //} else {
+		//    showError({message:response.result,buttonNames:['Ok']});
 	    }
+		setTimeout(refresh, 1000);
     }
 	
 	/**
@@ -133,6 +150,7 @@ function RemoteControlWindow(playlistVersion, data) {
 		}
 		win.open();
 		mediaControlsView.becomeFirstResponder();
+		setTimeout(refresh, 1000);
 	};
 	
 }
