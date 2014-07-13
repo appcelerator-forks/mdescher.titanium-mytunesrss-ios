@@ -62,8 +62,56 @@ function RemoteControlWindow(playlistVersion, data) {
 		]
 	};
 	addTextColorToTemplates(template, [1, 2]);
+	var currentPlayingTemplate = {
+		childTemplates : [
+			{
+				type : "Titanium.UI.ImageView",
+				bindId : "pic",
+				properties : {
+					hires : Titanium.Platform.displayCaps.density === "high",
+					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					left : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					right : Titanium.Platform.osname === "ipad" ? 691 : 270,
+					defaultImage : "appicon.png"					
+				}
+			},
+			{
+				type : "Titanium.UI.Label",
+				bindId : "main",
+				properties : {
+					top : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
+					height : Titanium.Platform.osname === "ipad" ? 36 : 24,
+					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
+					font : {
+						fontSize : 16,
+						fontWeight : (isIos7() ? "normal" : "bold")
+					},
+					minimumFontSize : 12,
+					backgroundColor : "#FFCCCC"
+				}
+			},
+			{
+				type : "Titanium.UI.Label",
+				bindId : "sub",
+				properties : {
+					bottom : Titanium.Platform.osname === "ipad" ? 6 : 4,
+					left : Titanium.Platform.osname === "ipad" ? 78 : 52,
+					height : Titanium.Platform.osname === "ipad" ? 26 : 18,
+					right : Titanium.Platform.osname === "ipad" ? 12 : 8,
+					font : {
+						fontSize : 12,
+						fontWeight : (isIos7() ? "normal" : "bold")
+					},
+					minimumFontSize : 12,
+					backgroundColor : "#FFCCCC"
+				}
+			}
+		]
+	};
 
-	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template},defaultItemTemplate:"default"});
+	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template,"nowPlaying":currentPlayingTemplate},defaultItemTemplate:"default"});
 	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener("click", function() {
@@ -97,7 +145,7 @@ function RemoteControlWindow(playlistVersion, data) {
 	}
 
 	function playTrack(trackIndex) {
-		restCall("POST", getLibrary().mediaPlayerUri, {action:"PLAY",track:trackIndex});
+		restCall("POST", getLibrary().mediaPlayerUri, {action:"PLAY",track:(trackIndex - 1)});
 	}
 
     listView.addEventListener("itemclick", function(e) {
@@ -113,20 +161,23 @@ function RemoteControlWindow(playlistVersion, data) {
     
     function refresh() {
     	var response = restCall("GET", getLibrary().mediaPlayerUri, {});
+	    Ti.API.info("result = " + response.result);
 	    if (response.status / 100 === 2) {
+	    	Ti.API.info("playlist version = " + response.result.playlistVersion);
 	        if (myPlaylistVersion != response.result.playlistVersion) {
 	        	reloadPlaylist();
 	        }
 	        // mark current track
+	    	Ti.API.info("current track = " + response.result.currentTrack);
 	        if (currentTrackIndex != response.result.currentTrack) {
 	        	if (currentTrackIndex != undefined) {
-	        		currentTrackData.main.setBackgroundColor('#FFFFFF');
-	        		listView.replaceItem(currentTrackIndex, 1, currentTrackData);
+	        		currentTrackData.template = "default";
+	        		listView.getSections()[0].replaceItemsAt(currentTrackIndex, 1, [currentTrackData]);
 	        	}
 	        	currentTrackIndex = response.result.currentTrack;
-	        	currentTrackData = listView.getSections()[0].getItemAt(response.result.currentTrack); 
-	        	currentTrackData.main.setBackgroundColor('#CCCC00');
-	        	listView.replaceItem(currentTrackIndex, 1, currentTrackData);
+	        	currentTrackData = listView.getSections()[0].getItemAt(response.result.currentTrack);
+	        	currentTrackData.template = "nowPlaying";
+	        	listView.getSections()[0].replaceItemsAt(currentTrackIndex, 1, [currentTrackData]);
 	        }
 	        // mark current playback state and show current time and volume
 	        response.result.playing;
