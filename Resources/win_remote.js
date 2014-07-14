@@ -65,6 +65,17 @@ function RemoteControlWindow(playlistVersion, data) {
 	var currentPlayingTemplate = {
 		childTemplates : [
 			{
+				type : "Titanium.UI.View",
+				bindId : "background",
+				properties : {
+					top : 0,
+					bottom : 0,
+					left : 0,
+					right : 0,
+					backgroundColor : "#FFCCCC"
+				}
+			},
+			{
 				type : "Titanium.UI.ImageView",
 				bindId : "pic",
 				properties : {
@@ -88,8 +99,7 @@ function RemoteControlWindow(playlistVersion, data) {
 						fontSize : 16,
 						fontWeight : (isIos7() ? "normal" : "bold")
 					},
-					minimumFontSize : 12,
-					backgroundColor : "#FFCCCC"
+					minimumFontSize : 12
 				}
 			},
 			{
@@ -104,14 +114,13 @@ function RemoteControlWindow(playlistVersion, data) {
 						fontSize : 12,
 						fontWeight : (isIos7() ? "normal" : "bold")
 					},
-					minimumFontSize : 12,
-					backgroundColor : "#FFCCCC"
+					minimumFontSize : 12
 				}
 			}
 		]
 	};
 
-	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template,"nowPlaying":currentPlayingTemplate},defaultItemTemplate:"default"});
+	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,bottom:72,templates:{"default":template,"nowPlaying":currentPlayingTemplate},defaultItemTemplate:"default"});
 	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener("click", function() {
@@ -142,6 +151,81 @@ function RemoteControlWindow(playlistVersion, data) {
 		    }
 	    };
         listSection.appendItems([item]);
+	}
+
+    var progressBar = Titanium.UI.createSlider(STYLE.get("jukeboxProgressSlider", {min:0,max:track.time,value:0}));
+    progressBar.addEventListener("start", function(e) {
+    	draggingSlider = true;
+    });
+    progressBar.addEventListener("stop", function(e) {
+    	audioPlayer.seek(e.value);
+    	draggingSlider = false;
+    });
+    mediaControlsView.add(progressBar);
+    progressBar.show();
+    timePlayed = GUI.createLabel(STYLE.get("jukeboxProgressPlayed", {text:""}));
+    mediaControlsView.add(timePlayed);
+    timeRemaining = GUI.createLabel(STYLE.get("jukeboxProgressRemaining", {text:""}));
+    mediaControlsView.add(timeRemaining);
+
+	function addTouchListener(control) {
+	    control.addEventListener("touchstart", function() {
+	        control.glow.opacity = 0.75;
+	    });
+	    control.addEventListener("touchend", function() {
+	        control.glow.opacity = 0;
+	    });
+	    control.addEventListener("touchcancel", function() {
+	        control.glow.opacity = 0;
+	    });
+	}
+
+	var controlRewind = Titanium.UI.createImageView(STYLE.get("jukeboxRewind"));
+	if (!isIos7()) {
+		controlRewind.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxRewindGlow")));
+	}
+	controlRewind.addEventListener('click', function() {
+        // TODO
+	});
+	
+	var controlPlayPause = Titanium.UI.createImageView(STYLE.get("jukeboxPlayPause"));
+	if (!isIos7()) {
+		controlPlayPause.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxPlayPauseGlow")));
+	}
+	controlPlayPause.addEventListener('click', function() {
+        // TODO
+	});
+	
+	var controlFastForward = Titanium.UI.createImageView(STYLE.get("jukeboxForward"));
+	if (!isIos7()) {
+		controlFastForward.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxForwardGlow")));
+	}
+	controlFastForward.addEventListener('click', function() {
+        // TODO
+	});
+	
+	var controlShuffle = Titanium.UI.createImageView(STYLE.get("jukeboxShuffle"));
+	if (!isIos7()) {
+		controlShuffle.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxShuffleGlow")));
+	}
+	controlShuffle.addEventListener('click', function() {
+        // TODO
+	});
+
+	var playbackControlsView = Titanium.UI.createView({left:0,right:0,bottom:0,height:38});
+	if (!isIos7()) {
+		playbackControlsView.backgroundGradient = {type:"linear",colors:["#1F1F1F","#323232"],startPoint:{x:0,y:37},endPoint:{x:0,y:0},backFillStart:false};
+	} 
+	mediaControlsView.add(playbackControlsView);
+	mediaControlsView.add(controlRewind);
+	mediaControlsView.add(controlFastForward);
+	mediaControlsView.add(controlPlayPause);
+	mediaControlsView.add(controlShuffle);
+	if (!isIos7()) {
+		mediaControlsView.add(controlRewind.glow);
+		mediaControlsView.add(controlFastForward.glow);
+		mediaControlsView.add(controlPlayPause.glow);
+		mediaControlsView.add(controlShuffle.glow);
 	}
 
 	function playTrack(trackIndex) {
