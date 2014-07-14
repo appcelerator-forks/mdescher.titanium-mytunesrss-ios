@@ -120,7 +120,7 @@ function RemoteControlWindow(playlistVersion, data) {
 		]
 	};
 
-	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,bottom:72,templates:{"default":template,"nowPlaying":currentPlayingTemplate},defaultItemTemplate:"default"});
+	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,bottom:100,templates:{"default":template,"nowPlaying":currentPlayingTemplate},defaultItemTemplate:"default"});
 	var buttonBack = createCommonBackButton();
 	
 	buttonBack.addEventListener("click", function() {
@@ -153,7 +153,8 @@ function RemoteControlWindow(playlistVersion, data) {
         listSection.appendItems([item]);
 	}
 
-    var progressBar = Titanium.UI.createSlider(STYLE.get("jukeboxProgressSlider", {min:0,max:track.time,value:0}));
+	var draggingSlider = false;
+    var progressBar = Titanium.UI.createSlider(STYLE.get("jukeboxProgressSlider", {min:0,max:0,value:0}));
     progressBar.addEventListener("start", function(e) {
     	draggingSlider = true;
     });
@@ -163,6 +164,10 @@ function RemoteControlWindow(playlistVersion, data) {
     });
     mediaControlsView.add(progressBar);
     progressBar.show();
+	var timePlayed = GUI.createLabel(STYLE.get("jukeboxProgressPlayed", {text:""}));
+	mediaControlsView.add(timePlayed);
+	var timeRemaining = GUI.createLabel(STYLE.get("jukeboxProgressRemaining", {text:""}));
+	mediaControlsView.add(timeRemaining);
     timePlayed = GUI.createLabel(STYLE.get("jukeboxProgressPlayed", {text:""}));
     mediaControlsView.add(timePlayed);
     timeRemaining = GUI.createLabel(STYLE.get("jukeboxProgressRemaining", {text:""}));
@@ -243,16 +248,22 @@ function RemoteControlWindow(playlistVersion, data) {
     var currentTrackIndex;
     var currentTrackData;
     
+	function getDisplayTime(time) {
+	    var mins = Math.floor(time / 60);
+	    var secs = Math.floor(time % 60);
+	    if (secs < 10) {
+	        return mins + ':0' + secs;
+	    }
+	    return mins + ':' + secs;
+	}
+
     function refresh() {
     	var response = restCall("GET", getLibrary().mediaPlayerUri, {});
-	    Ti.API.info("result = " + response.result);
 	    if (response.status / 100 === 2) {
-	    	Ti.API.info("playlist version = " + response.result.playlistVersion);
 	        if (myPlaylistVersion != response.result.playlistVersion) {
 	        	reloadPlaylist();
 	        }
 	        // mark current track
-	    	Ti.API.info("current track = " + response.result.currentTrack);
 	        if (currentTrackIndex != response.result.currentTrack) {
 	        	if (currentTrackIndex != undefined) {
 	        		currentTrackData.template = "default";
@@ -265,8 +276,16 @@ function RemoteControlWindow(playlistVersion, data) {
 	        }
 	        // mark current playback state and show current time and volume
 	        response.result.playing;
-	        response.result.length;
-	        response.result.currentTime;
+	        progressBar.setMax(response.result.length);
+		    if (!draggingSlider && progressBar != undefined) {
+	        	progressBar.setValue(response.result.currentTime);
+		    }
+		    if (timePlayed != undefined) {
+			    timePlayed.text = getDisplayTime(response.result.currentTime);
+		    }
+		    if (timeRemaining != undefined) {
+			    timeRemaining.text = response.result.length > Math.floor(response.result.currentTime) ? getDisplayTime(response.result.length - Math.floor(response.result.currentTime)) : "0:00";
+		    }
 	        response.result.volume;
 	        // display current media renderer
 	        response.result.mediaRenderer;
