@@ -130,28 +130,8 @@ function RemoteControlWindow(playlistVersion, data) {
 	
 	mediaControlsView.add(GUI.createTopToolbar(L("remotecontrol.title"), buttonBack, buttonSettings));
 	mediaControlsView.add(listView);
-	
-    var listSection = Titanium.UI.createListSection({});
-    listView.setSections([listSection]);
-	var tableData = [];
-	for (var i = 0; i < data.length; i++) {
-	    var item = {
-		    pic : {
-			    image : data[i].imageHash != undefined ? "http://localhost:" + HTTP_SERVER_PORT + "/image/" + data[i].imageHash + "_" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64) + "/" + encodeURIComponent(data[i].imageUri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64)) : "appicon.png",
-		    },
-		    main : {
-			    text : getDisplayName(data[i].name)
-		    },
-		    sub : {
-			    text : getDisplayName(data[i].artist)
-		    },
-		    properties : {
-		    	track : data[i],
-		    	searchableText : data[i].name + " " + data[i].artist
-		    }
-	    };
-        listSection.appendItems([item]);
-	}
+
+	createListView(data);	
 
 	var draggingSlider = false;
     var progressBar = Titanium.UI.createSlider(STYLE.get("jukeboxProgressSlider", {min:0,max:0,value:0}));
@@ -159,7 +139,7 @@ function RemoteControlWindow(playlistVersion, data) {
     	draggingSlider = true;
     });
     progressBar.addEventListener("stop", function(e) {
-    	restCall("POST", getLibrary().mediaPlayerUri, {action:"SEEK", seek:e.value});
+    	restCall("POST", getLibrary().mediaPlayerUri, {action:"SEEK", seek:Math.round((100 * e.value) / progressBar.getMax())});
     	draggingSlider = false;
     });
     mediaControlsView.add(progressBar);
@@ -234,7 +214,7 @@ function RemoteControlWindow(playlistVersion, data) {
 	}
 
 	function playTrack(trackIndex) {
-		restCall("POST", getLibrary().mediaPlayerUri, {action:"PLAY",track:(trackIndex - 1)});
+		restCall("POST", getLibrary().mediaPlayerUri, {action:"PLAY",track:(trackIndex)});
 	}
 
     listView.addEventListener("itemclick", function(e) {
@@ -265,13 +245,13 @@ function RemoteControlWindow(playlistVersion, data) {
 	        	reloadPlaylist();
 	        }
 	        // mark current track
-	        if (currentTrackIndex != response.result.currentTrack) {
+	        if (currentTrackIndex != response.result.currentTrack - 1) {
 	        	if (currentTrackIndex != undefined) {
 	        		currentTrackData.template = "default";
 	        		listView.getSections()[0].replaceItemsAt(currentTrackIndex, 1, [currentTrackData]);
 	        	}
-	        	currentTrackIndex = response.result.currentTrack;
-	        	currentTrackData = listView.getSections()[0].getItemAt(response.result.currentTrack);
+	        	currentTrackIndex = response.result.currentTrack - 1;
+	        	currentTrackData = listView.getSections()[0].getItemAt(currentTrackIndex);
 	        	currentTrackData.template = "nowPlaying";
 	        	listView.getSections()[0].replaceItemsAt(currentTrackIndex, 1, [currentTrackData]);
 	        }
@@ -295,6 +275,53 @@ function RemoteControlWindow(playlistVersion, data) {
 	    }
 		setTimeout(refresh, 1000);
     }
+	
+	function reloadPlaylist() {
+	    var response = restCall("GET", getLibrary().mediaPlayerUri + "?attr.incl=playlistVersion", {});
+	    if (response.status / 100 === 2) {
+	        myPlaylistVersion = response.result.playlistVersion;
+		    response = restCall("GET", getLibrary().mediaPlayerUri + "/playlist?" + TRACK_ATTRIBUTES, {});
+		    if (response.status / 100 === 2) {
+		        var data = response.result;
+		        if (data.length > 0) {
+			    	createListView(data);
+			    	currentTrackIndex = undefined;
+			    	currentTrackData = undefined;
+			    	return;
+			    }
+		    } else {
+			    showError({message:response.result,buttonNames:['Ok']});
+		    }
+	    } else {
+		    showError({message:response.result,buttonNames:['Ok']});
+	    }
+		myParent.open(undefined);
+	    win.close();
+	}
+	
+	function createListView(data) {
+	    var listSection = Titanium.UI.createListSection({});
+	    listView.setSections([listSection]);
+		var tableData = [];
+		for (var i = 0; i < data.length; i++) {
+		    var item = {
+			    pic : {
+				    image : data[i].imageHash != undefined ? "http://localhost:" + HTTP_SERVER_PORT + "/image/" + data[i].imageHash + "_" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64) + "/" + encodeURIComponent(data[i].imageUri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64)) : "appicon.png",
+			    },
+			    main : {
+				    text : getDisplayName(data[i].name)
+			    },
+			    sub : {
+				    text : getDisplayName(data[i].artist)
+			    },
+			    properties : {
+			    	track : data[i],
+			    	searchableText : data[i].name + " " + data[i].artist
+			    }
+		    };
+	        listSection.appendItems([item]);
+		}
+	}
 	
 	/**
 	 * Open the remote control window. 
