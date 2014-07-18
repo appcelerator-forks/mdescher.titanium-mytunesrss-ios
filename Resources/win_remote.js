@@ -1,10 +1,3 @@
-// TODO:
-// - display slider for volume and playback time
-// - display playback state (playing/paused)
-// - add controls for play, pause, stop, rewind, forward
-// - add actions for volume and playback time changes
-// - add button for media renderer selection
-
 function RemoteControlWindow(playlistVersion, data) {
 
 	var myPlaylistVersion = playlistVersion;
@@ -127,8 +120,15 @@ function RemoteControlWindow(playlistVersion, data) {
 		myParent.open(undefined);
 	    win.close();
 	});
+	var buttonSettings = GUI.createButton({image:"images/config.png"});
+	if (!isIos7()) {
+		buttonSettings.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
+	}
+    buttonSettings.addEventListener("click", function() {
+        // TODO open settings window (volume control, renderer selection, maybe option to clear playlist)
+    });
 	
-	mediaControlsView.add(GUI.createTopToolbar(L("remotecontrol.title"), buttonBack, undefined));
+	mediaControlsView.add(GUI.createTopToolbar(L("remotecontrol.title"), buttonBack, buttonSettings));
 	mediaControlsView.add(listView);
 	
     var listSection = Titanium.UI.createListSection({});
@@ -159,7 +159,7 @@ function RemoteControlWindow(playlistVersion, data) {
     	draggingSlider = true;
     });
     progressBar.addEventListener("stop", function(e) {
-    	audioPlayer.seek(e.value);
+    	restCall("POST", getLibrary().mediaPlayerUri, {action:"SEEK", seek:e.value});
     	draggingSlider = false;
     });
     mediaControlsView.add(progressBar);
@@ -189,32 +189,32 @@ function RemoteControlWindow(playlistVersion, data) {
 	if (!isIos7()) {
 		controlRewind.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxRewindGlow")));
 	}
-	controlRewind.addEventListener('click', function() {
-        // TODO
+	controlRewind.addEventListener("click", function() {
+        restCall("POST", getLibrary().mediaPlayerUri, {action:"PREVIOUS"});
 	});
 	
 	var controlPlayPause = Titanium.UI.createImageView(STYLE.get("jukeboxPlayPause"));
 	if (!isIos7()) {
 		controlPlayPause.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxPlayPauseGlow")));
 	}
-	controlPlayPause.addEventListener('click', function() {
-        // TODO
+	controlPlayPause.addEventListener("click", function() {
+        restCall("POST", getLibrary().mediaPlayerUri, {action:"TOGGLE_PLAY_PAUSE"});
 	});
 	
 	var controlFastForward = Titanium.UI.createImageView(STYLE.get("jukeboxForward"));
 	if (!isIos7()) {
 		controlFastForward.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxForwardGlow")));
 	}
-	controlFastForward.addEventListener('click', function() {
-        // TODO
+	controlFastForward.addEventListener("click", function() {
+        restCall("POST", getLibrary().mediaPlayerUri, {action:"NEXT"});
 	});
 	
 	var controlShuffle = Titanium.UI.createImageView(STYLE.get("jukeboxShuffle"));
 	if (!isIos7()) {
 		controlShuffle.glow = Titanium.UI.createView(GUI.glowViewOptions(STYLE.get("jukeboxShuffleGlow")));
 	}
-	controlShuffle.addEventListener('click', function() {
-        // TODO
+	controlShuffle.addEventListener("click", function() {
+        restCall("POST", getLibrary().mediaPlayerUri, {action:"SHUFFLE"});
 	});
 
 	var playbackControlsView = Titanium.UI.createView({left:0,right:0,bottom:0,height:38});
@@ -258,6 +258,7 @@ function RemoteControlWindow(playlistVersion, data) {
 	}
 
     function refresh() {
+        Titanium.API.debug("Refreshing media player state.");
     	var response = restCall("GET", getLibrary().mediaPlayerUri, {});
 	    if (response.status / 100 === 2) {
 	        if (myPlaylistVersion != response.result.playlistVersion) {
@@ -274,8 +275,11 @@ function RemoteControlWindow(playlistVersion, data) {
 	        	currentTrackData.template = "nowPlaying";
 	        	listView.getSections()[0].replaceItemsAt(currentTrackIndex, 1, [currentTrackData]);
 	        }
-	        // mark current playback state and show current time and volume
-	        response.result.playing;
+	        if (response.result.playing) {
+                controlPlayPause.setImage((isIos7() ? "ios7/" : "") + "images/pause.png");
+            } else {
+                controlPlayPause.setImage((isIos7() ? "ios7/" : "") + "images/play.png");
+            }
 	        progressBar.setMax(response.result.length);
 		    if (!draggingSlider && progressBar != undefined) {
 	        	progressBar.setValue(response.result.currentTime);
@@ -286,11 +290,8 @@ function RemoteControlWindow(playlistVersion, data) {
 		    if (timeRemaining != undefined) {
 			    timeRemaining.text = response.result.length > Math.floor(response.result.currentTime) ? getDisplayTime(response.result.length - Math.floor(response.result.currentTime)) : "0:00";
 		    }
-	        response.result.volume;
-	        // display current media renderer
-	        response.result.mediaRenderer;
-	    //} else {
-		//    showError({message:response.result,buttonNames:['Ok']});
+	        // response.result.volume;
+	        // response.result.mediaRenderer;
 	    }
 		setTimeout(refresh, 1000);
     }
@@ -304,7 +305,8 @@ function RemoteControlWindow(playlistVersion, data) {
 		}
 		win.open();
 		mediaControlsView.becomeFirstResponder();
-		setTimeout(refresh, 1000);
+		refresh();
+        // TODO auto-open settings if no media renderer is set
 	};
 	
 }
