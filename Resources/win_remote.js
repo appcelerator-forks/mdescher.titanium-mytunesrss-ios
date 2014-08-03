@@ -125,7 +125,7 @@ function RemoteControlWindow(playlistVersion, data) {
 		buttonSettings.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
 	}
     buttonSettings.addEventListener("click", function() {
-        // TODO open settings window (volume control, renderer selection, maybe option to clear playlist)
+        new RemoteControlSettingsWindow().open(self);
     });
 	
 	mediaControlsView.add(GUI.createTopToolbar(L("remotecontrol.title"), buttonBack, buttonSettings));
@@ -239,7 +239,7 @@ function RemoteControlWindow(playlistVersion, data) {
 
     function refresh() {
         Titanium.API.debug("Refreshing media player state.");
-    	var response = restCall("GET", getLibrary().mediaPlayerUri, {});
+    	var response = restCall("GET", getLibrary().mediaPlayerUri, {}, 1000);
 	    if (response.status / 100 === 2) {
 	        if (myPlaylistVersion != response.result.playlistVersion) {
 	        	reloadPlaylist();
@@ -270,8 +270,6 @@ function RemoteControlWindow(playlistVersion, data) {
 		    if (timeRemaining != undefined) {
 			    timeRemaining.text = response.result.length > Math.floor(response.result.currentTime) ? getDisplayTime(response.result.length - Math.floor(response.result.currentTime)) : "0:00";
 		    }
-	        // response.result.volume;
-	        // response.result.mediaRenderer;
 	    }
 		setTimeout(refresh, 1000);
     }
@@ -326,14 +324,20 @@ function RemoteControlWindow(playlistVersion, data) {
 	/**
 	 * Open the remote control window. 
 	 */
-	this.open = function(parent) {
+	this.open = function(parent, skipMediaRendererCheck) {
 		if (parent != undefined) {
 			myParent = parent;
 		}
 		win.open();
 		mediaControlsView.becomeFirstResponder();
 		refresh();
-        // TODO auto-open settings if no media renderer is set
+		if (skipMediaRendererCheck != true) {
+		response = restCall("GET", getLibrary().mediaPlayerUri + "?attr.incl=mediaRendererId");
+			if (response.status / 100 === 2 && response.result.mediaRendererId === "") {
+				showError({message:L("remote.noMediaRenderer"),buttonNames:["Ok"]});
+		        new RemoteControlSettingsWindow().open(self);
+			}
+		}
 	};
 	
 }

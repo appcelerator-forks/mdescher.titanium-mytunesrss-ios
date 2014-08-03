@@ -113,4 +113,9 @@
     <string name="common.option.rc.add">Add</string>
     <string name="remotecontrol.title">Remote control</string>
     <string name="remotecontrol.noneFound">The remote control playlist is empty.</string>
+    <string name="remotecontrol.settings.renderer">Media renderer</string>
+    <string name="remotecontrol.settings.renderer.apply">Select renderer</string>
+    <string name="remotecontrol.settings.volume">Volume</string>
+    <string name="remotecontrol.settings.renderer.none">- none -</string>
+    <string name="remote.noMediaRenderer">Please select a media renderer to start playback.</string>
 </resources>

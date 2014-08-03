@@ -34,11 +34,14 @@ function isStaleCache(uri, ts) {
 	return httpClient.status % 100 == 2;
 }
 
-function restCall(method, uri, params) {
+function restCall(method, uri, params, timeout) {
+	if (timeout === undefined) {
+		timeout = 30000;
+	}
 	if (!Titanium.Network.online) {
 		return {status:500,result:"NO_NETWORK"};
 	}
-	var httpClient = Titanium.Network.createHTTPClient({timeout:30000});
+	var httpClient = Titanium.Network.createHTTPClient({timeout:timeout});
 	// send request
 	httpClient.open(method,  uri, false);
 	httpClient.send(params);

@@ -274,6 +274,13 @@
 		"height" : 10
 	},
 
+	"remoteVolumeSlider" : {
+		"bottom" : 52,
+		"left" : 60,
+		"right" : 60,
+		"height" : 10
+	},
+
 	"jukeboxProgressPlayed" : {
 		"bottom" : 60,
 		"left" : 10,

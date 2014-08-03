@@ -113,4 +113,9 @@
     <string name="common.option.rc.add">Hinzufügen</string>
     <string name="remotecontrol.title">Fernsteuerung</string>
     <string name="remotecontrol.noneFound">Die entfernte Wiedergabeliste ist leer.</string>
+    <string name="remotecontrol.settings.renderer">Media-Renderer</string>
+    <string name="remotecontrol.settings.renderer.apply">Renderer auswählen</string>
+    <string name="remotecontrol.settings.volume">Lautstärke</string>
+    <string name="remotecontrol.settings.renderer.none">- keiners -</string>
+    <string name="remote.noMediaRenderer">Bitte wählen Sie einen Media-Renderer um die Wiedergabe zu starten.</string>
 </resources>
