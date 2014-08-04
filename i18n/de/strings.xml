@@ -116,6 +116,6 @@
     <string name="remotecontrol.settings.renderer">Media-Renderer</string>
     <string name="remotecontrol.settings.renderer.apply">Renderer auswählen</string>
     <string name="remotecontrol.settings.volume">Lautstärke</string>
-    <string name="remotecontrol.settings.renderer.none">- keiners -</string>
+    <string name="remotecontrol.settings.renderer.none">- keiner -</string>
     <string name="remote.noMediaRenderer">Bitte wählen Sie einen Media-Renderer um die Wiedergabe zu starten.</string>
 </resources>
