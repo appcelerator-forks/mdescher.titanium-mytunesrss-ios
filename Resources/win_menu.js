@@ -218,7 +218,7 @@ function MenuWindow() {
         }
 	});
 
-	var rowRemoteControl = createMenuItem(L("menu.remotecontrol"), "images/remotecontrol.png");
+	var rowRemoteControl = createMenuItem(L("menu.remotecontrol"), "images/remote.png");
 	rowRemoteControl.addEventListener("click", function() {
 		var busyView = createBusyView();
 		mediaControlsView.add(busyView);
