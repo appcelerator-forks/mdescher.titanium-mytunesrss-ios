@@ -53,18 +53,24 @@ function RowArray() {
 
 Titanium.API.debug("Platform version: \"" + Titanium.Platform.version + "\".");
 
-var lastBatteryState = Titanium.Platform.BATTERY_STATE_UNKNOWN;
+var lastBatteryState = -1;
+function parseBatteryState(batteryState) {
+	if (batteryState === Titanium.Platform.BATTERY_STATE_CHARGING || batteryState === Titanium.Platform.BATTERY_STATE_FULL) {
+		return 1;
+	}
+	return 0;
+}
 function checkBatteryState() {
     Titanium.Platform.setBatteryMonitoring(true);
-    var batteryState = Titanium.Platform.getBatteryState();
+    var batteryState = parseBatteryState(Titanium.Platform.getBatteryState());
     Titanium.Platform.setBatteryMonitoring(false);
     if (batteryState != lastBatteryState) {
-        if (batteryState === Titanium.Platform.BATTERY_STATE_CHARGING || batteryState === Titanium.Platform.BATTERY_STATE_FULL) {
-			alert("Battery charging or full, disabling idle timer.");
+        if (batteryState == 1) {
+			//alert("Battery charging or full, disabling idle timer.");
 			Titanium.API.info("Battery charging or full, disabling idle timer.");
 			disableIdleTimer();
-        } else if (batteryState === Titanium.Platform.BATTERY_STATE_UNPLUGGED || batteryState === Titanium.Platform.BATTERY_STATE_UNKNOWN) {
-			alert("Battery unplugged or state unknown, enabling idle timer.");
+        } else {
+			//alert("Battery unplugged or state unknown, enabling idle timer.");
 			Titanium.API.info("Battery unplugged or state unknown, enabling idle timer.");
 			enableIdleTimer();
         }

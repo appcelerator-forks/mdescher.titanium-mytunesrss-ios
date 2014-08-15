@@ -907,10 +907,12 @@ function disableIdleTimer() {
 }
 
 function enableIdleTimer() {
-	IDLE_TIMER_COUNT--;
-	if (IDLE_TIMER_COUNT === 0) {
-		Titanium.API.debug("Enabling idle timer.");
-		Titanium.App.setIdleTimerDisabled(false);
+	if (IDLE_TIMER_COUNT > 0) {
+		IDLE_TIMER_COUNT--;
+		if (IDLE_TIMER_COUNT === 0) {
+			Titanium.API.debug("Enabling idle timer.");
+			Titanium.App.setIdleTimerDisabled(false);
+		}
 	}
 }
 
