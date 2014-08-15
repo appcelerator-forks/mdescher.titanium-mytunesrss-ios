@@ -6,6 +6,9 @@
     <body>
 
         <release version="4.0.0" date="___D___">
+        	<action dev="mdescher" type="update">
+	        	[MYTUNESRSSIPHONE-75] Remove alert boxes from audio player
+	        </action>
         	<action dev="mdescher" type="add">
 	        	[MYTUNESRSSIPHONE-22] Support for remote control
 	        </action>

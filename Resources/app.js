@@ -174,6 +174,22 @@ Titanium.Media.addEventListener("linechange", function() {
 		jukebox.stopPlayback();	
 	}
 });
+alert("Initial battery state is \"" + mapBatteryState(Titanium.Platform.getBatteryState()) + "\".");
+Titanium.Platform.addEventListener("battery", function(e) {
+	alert("Battery state changed to \"" + mapBatteryState(e.state) + "\".");
+});
+function mapBatteryState(state) {
+	if (state === Titanium.Platform.BATTERY_STATE_CHARGING) {
+		return "CHARGING";
+	} else if (state === Titanium.Platform.BATTERY_STATE_FULL) {
+		return "FULL";
+	} else if (state === Titanium.Platform.BATTERY_STATE_UNKNOWN) {
+		return "UNKNOWN";
+	} else if (state === Titanium.Platform.BATTERY_STATE_UNPLUGGED) {
+		return "UNPLUGGED";
+	}
+	return state;
+}
 
 var checkWebserverSanity = function(okCallback) {
 	var httpClient = Titanium.Network.createHTTPClient({
