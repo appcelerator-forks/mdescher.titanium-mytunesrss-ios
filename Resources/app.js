@@ -53,32 +53,26 @@ function RowArray() {
 
 Titanium.API.debug("Platform version: \"" + Titanium.Platform.version + "\".");
 
-Titanium.Platform.setBatteryMonitoring(true);
-var onBattery = (Titanium.Platform.getBatteryState() === Titanium.Platform.BATTERY_STATE_CHARGING || Titanium.Platform.getBatteryState() === Titanium.Platform.BATTERY_STATE_FULL);
-if (onBattery) {
-	alert("on battery");
-	Titanium.API.info("Battery detected => disabling idle timer!");
-	//disableIdleTimer();
+var lastBatteryState = Titanium.Platform.BATTERY_STATE_UNKNOWN;
+function checkBatteryState() {
+    Titanium.Platform.setBatteryMonitoring(true);
+    var batteryState = Titanium.Platform.getBatteryState();
+    Titanium.Platform.setBatteryMonitoring(false);
+    if (batteryState != lastBatteryState) {
+        if (batteryState === Titanium.Platform.BATTERY_STATE_CHARGING || batteryState === Titanium.Platform.BATTERY_STATE_FULL) {
+			alert("Battery charging or full, disabling idle timer.");
+			Titanium.API.info("Battery charging or full, disabling idle timer.");
+			disableIdleTimer();
+        } else if (batteryState === Titanium.Platform.BATTERY_STATE_UNPLUGGED || batteryState === Titanium.Platform.BATTERY_STATE_UNKNOWN) {
+			alert("Battery unplugged or state unknown, enabling idle timer.");
+			Titanium.API.info("Battery unplugged or state unknown, enabling idle timer.");
+			enableIdleTimer();
+        }
+        lastBatteryState = batteryState;
+    }
+    setTimeout(checkBatteryState, 10000);
 }
-Titanium.Platform.addEventListener("battery", function(e) {
-	alert("battery: " + e.state);
-	Titanium.API.debug("Battery state is \"" + e.state + "\".");
-	if (e.state === Titanium.Platform.BATTERY_STATE_CHARGING || e.state === Titanium.Platform.BATTERY_STATE_FULL) {
-		if (!onBattery) {
-			alert("on battery");
-			Titanium.API.info("Battery detected => disabling idle timer!");
-			onBattery = true;
-			//disableIdleTimer();
-		}
-	} else {
-		if (onBattery) {
-			alert("off battery");
-			Titanium.API.info("Battery lost => enabling idle timer!");
-			onBattery = false;
-			//enableIdleTimer();
-		}
-	}
-});
+setTimeout(checkBatteryState, 0);
 
 // db versions
 // 1 = initial
@@ -174,22 +168,6 @@ Titanium.Media.addEventListener("linechange", function() {
 		jukebox.stopPlayback();	
 	}
 });
-alert("Initial battery state is \"" + mapBatteryState(Titanium.Platform.getBatteryState()) + "\".");
-Titanium.Platform.addEventListener("battery", function(e) {
-	alert("Battery state changed to \"" + mapBatteryState(e.state) + "\".");
-});
-function mapBatteryState(state) {
-	if (state === Titanium.Platform.BATTERY_STATE_CHARGING) {
-		return "CHARGING";
-	} else if (state === Titanium.Platform.BATTERY_STATE_FULL) {
-		return "FULL";
-	} else if (state === Titanium.Platform.BATTERY_STATE_UNKNOWN) {
-		return "UNKNOWN";
-	} else if (state === Titanium.Platform.BATTERY_STATE_UNPLUGGED) {
-		return "UNPLUGGED";
-	}
-	return state;
-}
 
 var checkWebserverSanity = function(okCallback) {
 	var httpClient = Titanium.Network.createHTTPClient({
