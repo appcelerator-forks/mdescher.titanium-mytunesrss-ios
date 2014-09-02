@@ -3,9 +3,9 @@ var DEFAULT_AUDIO_BUFFER_SIZE = 2048;
 var DEFAULT_SEARCH_ACCURACY = 40;
 var MININUM_SERVER_VERSION = {
 	major : 6,
-	minor : 2,
+	minor : 3,
 	bugfix : 0,
-	text : "6.2"
+	text : "6.3.0"
 };
 var TRACK_ATTRIBUTES = "attr.incl=id&attr.incl=name&attr.incl=downloadUri&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected&attr.incl=album&attr.incl=albumArtist&attr.incl=genre&attr.incl=discNumber&attr.incl=trackNumber";
 

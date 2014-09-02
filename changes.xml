@@ -5,7 +5,10 @@
     </properties>
     <body>
 
-        <release version="4.0.0" date="___D___">
+        <release version="4.0.0" date="2014-09-02">
+        	<action dev="mdescher" type="update">
+	        	Requires server version 6.3.0.
+	        </action>
         	<action dev="mdescher" type="add">
 	        	[MYTUNESRSSIPHONE-74] Keep screen on when connected to a power source
 	        </action>
