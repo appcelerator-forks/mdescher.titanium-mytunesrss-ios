@@ -773,7 +773,8 @@ function getSettingsPhotoJpegQuality() {
 }
 
 function isIos7() {
-	return Titanium.Platform.version.split(".")[0] === "7";
+	var major = Titanium.Platform.version.split(".")[0];
+	return major === "7" || major === "8";
 }
 
 function remoteControlMenu(win, name, params) {

@@ -5,6 +5,12 @@
     </properties>
     <body>
 
+        <release version="4.1.0" date="2014-09-17">
+        	<action dev="mdescher" type="update">
+	        	Added iOS 8 and iPhone 6 support.
+	        </action>
+	    </release>
+
         <release version="4.0.0" date="2014-09-02">
         	<action dev="mdescher" type="update">
 	        	Requires server version 6.3.0.
