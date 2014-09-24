@@ -46,9 +46,9 @@ function OnlineLoginWindow(parent) {
 		    Titanium.Network.createHTTPClient().clearCookies(Titanium.App.Properties.getString('resolvedServerUrl'));
 		    serverVersion = getServerVersion();
 		    if (serverVersion === undefined) {
-		        showError({message:String.format(L("login.noValidResponse"), MININUM_SERVER_VERSION.text),buttonNames:['Ok']});
-		    } else if (compareVersions(serverVersion, MININUM_SERVER_VERSION) < 0) {
-		        showError({message:String.format(L("login.wrongServerVersion"), serverVersion.text, MININUM_SERVER_VERSION.text),buttonNames:['Ok']});
+		        showError({message:String.format(L("login.noValidResponse"), MINIMUM_SERVER_VERSION.text),buttonNames:['Ok']});
+		    } else if (compareVersions(serverVersion, MINIMUM_SERVER_VERSION) < 0) {
+		        showError({message:String.format(L("login.wrongServerVersion"), serverVersion.text, MINIMUM_SERVER_VERSION.text),buttonNames:['Ok']});
 		    } else {
 			    var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value});
 			    if (response.status / 100 === 2) {
