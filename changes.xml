@@ -5,6 +5,13 @@
     </properties>
     <body>
 
+        <release version="4.2.0" date="2014-??-??">
+        	<action dev="mdescher" type="update">
+	        	Reverted server requirements back to 5.0.0. Only remote control
+	        	requires a server 6.3.0 or better.
+	        </action>
+	    </release>
+
         <release version="4.1.0" date="2014-09-17">
         	<action dev="mdescher" type="update">
 	        	Added iOS 8 and iPhone 6 support.

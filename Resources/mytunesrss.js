@@ -2,10 +2,16 @@ var TABLE_VIEW_ROW_HEIGHT = 40;
 var DEFAULT_AUDIO_BUFFER_SIZE = 2048;
 var DEFAULT_SEARCH_ACCURACY = 40;
 var MININUM_SERVER_VERSION = {
+	major : 5,
+	minor : 0,
+	bugfix : 0,
+	text : "5.0.0"
+};
+var MINIMUM_SERVER_VERSION_REMOTE_CONTROL = {
 	major : 6,
 	minor : 3,
 	bugfix : 0,
-	text : "6.3.0"
+	text : "5.0.0"
 };
 var TRACK_ATTRIBUTES = "attr.incl=id&attr.incl=name&attr.incl=downloadUri&attr.incl=playbackUri&attr.incl=httpLiveStreamUri&attr.incl=mediaType&attr.incl=artist&attr.incl=imageUri&attr.incl=imageHash&attr.incl=time&attr.incl=protected&attr.incl=album&attr.incl=albumArtist&attr.incl=genre&attr.incl=discNumber&attr.incl=trackNumber";
 
@@ -317,7 +323,15 @@ function loadAndDisplayPhotoAlbums(parent) {
     return false;
 }
 
+function isRemoteControlAvailable() {
+	return compareVersions(serverVersion, MINIMUM_SERVER_VERSION_REMOTE_CONTROL) >= 0;
+}
+
 function loadAndDisplayRemoteControl(parent) {
+	if (!isRemoteControlAvailable()) {
+		showError({message:String.format(L("remotecontrol.notAvailable"), MINIMUM_SERVER_VERSION_REMOTE_CONTROL.text),buttonNames:['Ok']});
+		return false;
+	}
     var response = restCall("GET", getLibrary().mediaPlayerUri + "?attr.incl=playlistVersion", {});
     if (response.status / 100 === 2) {
         var playlistVersion = response.result.playlistVersion;
@@ -778,6 +792,10 @@ function isIos7() {
 }
 
 function remoteControlMenu(win, name, params) {
+	if (!isRemoteControlAvailable()) {
+		showError({message:String.format(L("remotecontrol.notAvailable"), MINIMUM_SERVER_VERSION_REMOTE_CONTROL.text),buttonNames:['Ok']});
+		return;
+	}
 	var buttons = [L("common.option.rc.replace"), L("common.option.rc.add"), L("common.option.cancel")];
     new MenuView(win, name, buttons, function(selectedButton) {
         if (selectedButton === L("common.option.rc.replace")) {

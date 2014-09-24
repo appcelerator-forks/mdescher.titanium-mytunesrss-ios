@@ -44,7 +44,7 @@ function OnlineLoginWindow(parent) {
 		disableIdleTimer();
         try {
 		    Titanium.Network.createHTTPClient().clearCookies(Titanium.App.Properties.getString('resolvedServerUrl'));
-		    var serverVersion = getServerVersion();
+		    serverVersion = getServerVersion();
 		    if (serverVersion === undefined) {
 		        showError({message:String.format(L("login.noValidResponse"), MININUM_SERVER_VERSION.text),buttonNames:['Ok']});
 		    } else if (compareVersions(serverVersion, MININUM_SERVER_VERSION) < 0) {

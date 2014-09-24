@@ -256,6 +256,7 @@ var connectedUsername;
 var connectedPassword;
 var offlineMode;
 var onlineShuffleSession;
+var serverVersion;
 
 db = Titanium.Database.open("OfflineTracks");
 db.file.setRemoteBackup(false);
