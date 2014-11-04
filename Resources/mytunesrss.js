@@ -817,31 +817,39 @@ function downloadTracksForUri(view, tracksUri, displayName, analyticsEvent) {
 	    enableIdleTimer();
         view.remove(busyView);
     }
-    downloadTracksForList(tracks, displayName, analyticsEvent);
+    downloadTracksForList(view, tracks, displayName, analyticsEvent);
 }
 
-function downloadTracksForList(tracks, displayName, analyticsEvent) {
-    if (tracks != undefined && tracks.length > 0) {
-    	Titanium.Analytics.featureEvent(analyticsEvent);
-	    CANCEL_SYNC_AUDIO_TRACKS = false;
-	    var busyWindow = new BusyWindow(L("busy.downloading"), displayName, function() {
-		    CANCEL_SYNC_AUDIO_TRACKS = true;
-	    });
-	    busyWindow.open();
-	    disableIdleTimer();
-	    var syncProgress = function(e) {
-		    busyWindow.setProgress(e.progress);
-	    };
-	    var syncDone = function() {
-		    enableIdleTimer();
-		    busyWindow.close();
-		    Titanium.App.removeEventListener("mytunesrss_sync_progress", syncProgress);
-		    Titanium.App.removeEventListener("mytunesrss_sync_done", syncDone);
-	    };
-	    Titanium.App.addEventListener("mytunesrss_sync_progress", syncProgress);
-	    Titanium.App.addEventListener("mytunesrss_sync_done", syncDone);
-	    Titanium.App.fireEvent("mytunesrss_sync", {data:tracks,index:0});
-    }	
+function downloadTracksForList(view, tracks, displayName, analyticsEvent) {
+    var busyView = createBusyView();
+    view.add(busyView);
+    disableIdleTimer();
+    try {
+        if (tracks != undefined && tracks.length > 0) {
+        	Titanium.Analytics.featureEvent(analyticsEvent);
+	        CANCEL_SYNC_AUDIO_TRACKS = false;
+	        var busyWindow = new BusyWindow(L("busy.downloading"), displayName, function() {
+		        CANCEL_SYNC_AUDIO_TRACKS = true;
+	        });
+	        busyWindow.open();
+	        disableIdleTimer();
+	        var syncProgress = function(e) {
+		        busyWindow.setProgress(e.progress);
+	        };
+	        var syncDone = function() {
+		        enableIdleTimer();
+		        busyWindow.close();
+		        Titanium.App.removeEventListener("mytunesrss_sync_progress", syncProgress);
+		        Titanium.App.removeEventListener("mytunesrss_sync_done", syncDone);
+	        };
+	        Titanium.App.addEventListener("mytunesrss_sync_progress", syncProgress);
+	        Titanium.App.addEventListener("mytunesrss_sync_done", syncDone);
+	        Titanium.App.fireEvent("mytunesrss_sync", {data:tracks,index:0});
+        }	
+    } finally {
+	    enableIdleTimer();
+        view.remove(busyView);
+    }
 }
 
 function deleteLocalTracks(win, tracks, analyticsEvent) {
