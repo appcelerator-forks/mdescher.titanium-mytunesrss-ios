@@ -132,7 +132,6 @@ function PlaylistsWindow(data) {
 		        function(item) {
 		            return item.name;
 		        });
-		listView.scrollToItem(0, 0);
 	}
 	
     listView.addEventListener("itemclick", function(e) {
