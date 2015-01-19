@@ -164,10 +164,10 @@ startHttpServer();
 
 var STYLE = new GUI.Style();
 
-Titanium.Media.audioSessionMode = Titanium.Media.AUDIO_SESSION_MODE_PLAYBACK;
+Titanium.Media.audioSessionCategory = Titanium.Media.AUDIO_SESSION_CATEGORY_PLAYBACK;
 
 var jukebox = new Jukebox();
-Titanium.Media.addEventListener("linechange", function() {
+Titanium.Media.addEventListener("routechange", function() {
 	Titanium.API.info("Line change, new state is \"" + Titanium.Media.audioLineType + "\".");
 	if (Titanium.Media.audioLineType === Titanium.Media.AUDIO_SPEAKER || Titanium.Media.audioLineType === Titanium.Media.AUDIO_UNAVAILABLE || Titanium.Media.audioLineType === Titanium.Media.AUDIO_UNKNOWN) {
 		Titanium.API.info("Stopping playback due to line change.");
