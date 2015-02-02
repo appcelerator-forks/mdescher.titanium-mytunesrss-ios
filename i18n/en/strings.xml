@@ -79,7 +79,7 @@
 	<string name="settings.bufferSize">Buffer size</string>
 	<string name="settings.searchAccuracy">Result accuracy</string>
 	<string name="settings.cache">Cache</string>
-	<string name="settings.transcoders">Transcoders</string>
+	<string name="settings.transcoders">Transcoders (wifi)</string>
 	<string name="settings.mobileTranscoders">Transcoders (mobile)</string>
 	<string name="settings.title">Options</string>
 	<string name="settings.accuracyHint">Accuracy in percent</string>

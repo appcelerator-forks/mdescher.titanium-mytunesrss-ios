@@ -5,7 +5,13 @@
     </properties>
     <body>
 
-        <release version="4.2.2" date="___D___">
+        <release version="4.3" date="___D___">
+        	<action dev="mdescher" type="update">
+	        	[MYTUNESRSSIPHONE-82] Label for Wifi transcoders
+	        </action>
+	    </release>
+
+        <release version="4.2.2" date="2014-12-02">
         	<action dev="mdescher" type="fix">
 	        	[MYTUNESRSSIPHONE-79] Topmost paylist not shown
 	        </action>
