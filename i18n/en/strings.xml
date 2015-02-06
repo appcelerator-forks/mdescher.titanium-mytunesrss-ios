@@ -119,4 +119,5 @@
     <string name="remotecontrol.settings.renderer.none">- none -</string>
     <string name="remotecontrol.notAvailable">The server version is %s but remote control needs %s or better.</string>
     <string name="remote.noMediaRenderer">Please select a media renderer to start playback.</string>
+    <string name="sections.all">All</string>
 </resources>

@@ -26,6 +26,7 @@ Titanium.include("win_photo.js");
 Titanium.include("win_remote.js");
 Titanium.include("win_remote_settings.js");
 Titanium.include("view_menu.js");
+Titanium.include("win_sections.js");
 
 var DARK_GRAY = "#2A2A2A";
 var LIGHT_GRAY = isIos7() ? "#CCCCCC" : "#3A3A3A";

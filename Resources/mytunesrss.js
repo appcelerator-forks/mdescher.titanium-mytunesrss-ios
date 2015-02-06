@@ -209,8 +209,11 @@ function loadAndDisplayOfflineAlbums(parent, artist, genre) {
     return false;
 }
 
-function loadAndDisplayAlbums(parent, uri) {
-    var response = restCall("GET", uri + "?attr.incl=name&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=imageHash&attr.incl=artist");
+function loadAndDisplayAlbums(parent, uri, requestIndex) {
+	if (requestIndex === undefined) {
+		requestIndex = -1;
+	}
+    var response = restCall("GET", uri + "?index=" + requestIndex + "&attr.incl=name&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=imageHash&attr.incl=artist");
     if (response.status / 100 === 2) {
         if (response.result.length === 0) {
         	showError({message:L("albums.noneFound"),buttonNames:['Ok']});
@@ -224,7 +227,7 @@ function loadAndDisplayAlbums(parent, uri) {
     return false;
 }
 
-function loadAndDisplayArtists(parent) {
+function loadAndDisplayArtists(parent, requestIndex) {
 	if (offlineMode) {
 		db = Titanium.Database.open("OfflineTracks");
 		rs = db.execute("SELECT artist FROM track WHERE artist IS NOT NULL GROUP BY LOWER(artist) ORDER BY artist");
@@ -243,7 +246,10 @@ function loadAndDisplayArtists(parent) {
 	    	return true;
 	    }
 	} else {
-	    var response = restCall("GET", getLibrary().artistsUri + "?attr.incl=name&attr.incl=albumsUri&attr.incl=tracksUri", {});
+		if (requestIndex === undefined) {
+			requestIndex = -1;
+		}
+	    var response = restCall("GET", getLibrary().artistsUri + "?index=" + requestIndex + "&attr.incl=name&attr.incl=albumsUri&attr.incl=tracksUri", {});
 	    if (response.status / 100 === 2) {
 	        if (response.result.length === 0) {
 	        	showError({message:L("artists.noneFound"),buttonNames:['Ok']});

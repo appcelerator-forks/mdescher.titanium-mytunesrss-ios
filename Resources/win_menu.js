@@ -103,39 +103,55 @@ function MenuWindow() {
 	var rowAlbums = createMenuItem(L("menu.albums"), "images/albums.png");
 	rowAlbums.addEventListener('click', function() {
 		searchBar.blur();
-		var busyView = createBusyView();
-		mediaControlsView.add(busyView);
-		disableIdleTimer();
-        try {
-	        if (!offlineMode) {
-	        	if (loadAndDisplayAlbums(self, getLibrary().albumsUri)) {
+        if (!offlineMode) {
+        	new SectionsWindow(L("menu.albums")).open(self, function(requestIndex) {
+	        	if (loadAndDisplayAlbums(self, getLibrary().albumsUri, requestIndex)) {
 	        		win.close();
+	        		return true;
+	        	} else {
+	        		return false;
 	        	}
-	        } else {
+        	});
+        } else {
+			var busyView = createBusyView();
+			mediaControlsView.add(busyView);
+			disableIdleTimer();
+	        try {
 	        	if (loadAndDisplayOfflineAlbums(self, undefined, undefined)) {
 	        		win.close();
 	        	}
+	        } finally {
+	        	enableIdleTimer();
+		        mediaControlsView.remove(busyView);
 	        }
-        } finally {
-        	enableIdleTimer();
-	        mediaControlsView.remove(busyView);
         }
 	});
 
 	var rowArtists = createMenuItem(L("menu.artists"), "images/artists.png");
 	rowArtists.addEventListener('click', function() {
 		searchBar.blur();
-		var busyView = createBusyView();
-		mediaControlsView.add(busyView);
-		disableIdleTimer();
-        try {
-	        if (loadAndDisplayArtists(self)) {
-		        win.close();
+		if (!offlineMode) {
+        	new SectionsWindow(L("menu.artists")).open(self, function(requestIndex) {
+		        if (loadAndDisplayArtists(self, requestIndex)) {
+			        win.close();
+	        		return true;
+	        	} else {
+	        		return false;
+	        	}
+        	});
+		} else {
+			var busyView = createBusyView();
+			mediaControlsView.add(busyView);
+			disableIdleTimer();
+	        try {
+		        if (loadAndDisplayArtists(self)) {
+			        win.close();
+		        }
+	        } finally {
+	        	enableIdleTimer();
+		        mediaControlsView.remove(busyView);
 	        }
-        } finally {
-        	enableIdleTimer();
-	        mediaControlsView.remove(busyView);
-        }
+		}
 	});
 
 	var rowGenres = createMenuItem(L("menu.genres"), "images/genres.png");

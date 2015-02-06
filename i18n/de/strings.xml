@@ -119,4 +119,5 @@
     <string name="remotecontrol.settings.renderer.none">- keiner -</string>
     <string name="remotecontrol.notAvailable">>Die Version des Servers ist %s, aber die Fernsteuerung benötigt %s oder höher.</string>
     <string name="remote.noMediaRenderer">Bitte wählen Sie einen Media-Renderer um die Wiedergabe zu starten.</string>
+    <string name="sections.all">Alle</string>
 </resources>
