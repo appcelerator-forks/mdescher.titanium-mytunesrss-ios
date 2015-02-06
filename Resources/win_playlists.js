@@ -48,6 +48,7 @@ function PlaylistsWindow(data) {
 	addTextColorToTemplates(template, [0]);
 	addTextColorToTemplates(templateForFolder, [0]);
     addMoreMenuToTemplate(template, function optionsMenu(item) {
+    	listView.getSearchView().blur();
 		var itemProps = item.properties;
 		var menuItems = [L("common.option.download"), L("common.option.shuffle")];
 		if (itemProps.canRefresh === true) {

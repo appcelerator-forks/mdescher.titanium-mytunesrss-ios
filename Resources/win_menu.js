@@ -86,6 +86,7 @@ function MenuWindow() {
 	
 	var rowPlaylists = createMenuItem(L("menu.playlists"), "images/playlists.png");
 	rowPlaylists.addEventListener('click', function() {
+		searchBar.blur();
 		var busyView = createBusyView();
 		mediaControlsView.add(busyView);
 		disableIdleTimer();
@@ -101,6 +102,7 @@ function MenuWindow() {
 
 	var rowAlbums = createMenuItem(L("menu.albums"), "images/albums.png");
 	rowAlbums.addEventListener('click', function() {
+		searchBar.blur();
 		var busyView = createBusyView();
 		mediaControlsView.add(busyView);
 		disableIdleTimer();
@@ -122,6 +124,7 @@ function MenuWindow() {
 
 	var rowArtists = createMenuItem(L("menu.artists"), "images/artists.png");
 	rowArtists.addEventListener('click', function() {
+		searchBar.blur();
 		var busyView = createBusyView();
 		mediaControlsView.add(busyView);
 		disableIdleTimer();
@@ -137,6 +140,7 @@ function MenuWindow() {
 
 	var rowGenres = createMenuItem(L("menu.genres"), "images/genres.png");
 	rowGenres.addEventListener('click', function() {
+		searchBar.blur();
 		var busyView = createBusyView();
 		mediaControlsView.add(busyView);
 		disableIdleTimer();
@@ -152,6 +156,7 @@ function MenuWindow() {
 
 	var rowMovies = createMenuItem(L("menu.movies"), "images/movies.png");
 	rowMovies.addEventListener('click', function() {
+		searchBar.blur();
 		var busyView = createBusyView();
 		mediaControlsView.add(busyView);
 		disableIdleTimer();
@@ -167,6 +172,7 @@ function MenuWindow() {
 
 	var rowTvShows = createMenuItem(L("menu.tvshows"), "images/tvshows.png");
 	rowTvShows.addEventListener('click', function() {
+		searchBar.blur();
 		var busyView = createBusyView();
 		mediaControlsView.add(busyView);
 		disableIdleTimer();
@@ -182,6 +188,7 @@ function MenuWindow() {
 
 	var rowRandomMode = createMenuItem(L("menu.random"), "images/random.png");
 	rowRandomMode.addEventListener('click', function() {
+		searchBar.blur();
 		if (jukebox.isIos61BugPhase()) {
 			return;
 		}
@@ -205,6 +212,7 @@ function MenuWindow() {
 
 	var rowPhotoalbums = createMenuItem(L("menu.photoalbums"), "images/photoalbums.png");
 	rowPhotoalbums.addEventListener('click', function() {
+		searchBar.blur();
 		var busyView = createBusyView();
 		mediaControlsView.add(busyView);
 		disableIdleTimer();
@@ -220,6 +228,7 @@ function MenuWindow() {
 
 	var rowRemoteControl = createMenuItem(L("menu.remotecontrol"), "images/remote.png");
 	rowRemoteControl.addEventListener("click", function() {
+		searchBar.blur();
 		var busyView = createBusyView();
 		mediaControlsView.add(busyView);
 		disableIdleTimer();
@@ -235,6 +244,7 @@ function MenuWindow() {
 
 	var rowNowPlaying = createMenuItem(L("menu.currentlyPlaying"), "images/currently.png");
 	rowNowPlaying.addEventListener('click', function() {
+		searchBar.blur();
 		var busyView = createBusyView();
 		mediaControlsView.add(busyView);
 		disableIdleTimer();

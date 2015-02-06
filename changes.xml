@@ -7,6 +7,9 @@
 
         <release version="4.3" date="___D___">
         	<action dev="mdescher" type="update">
+        		[MYTUNESRSSIPHONE-81] Hide keyboard
+        	</action>
+        	<action dev="mdescher" type="update">
 	        	[MYTUNESRSSIPHONE-82] Label for Wifi transcoders
 	        </action>
 	    </release>

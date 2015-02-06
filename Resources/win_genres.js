@@ -27,6 +27,7 @@ function GenresWindow(data) {
 	};
 	addTextColorToTemplates(template, [0]);
     addMoreMenuToTemplate(template, function optionsMenu(item) {
+    	listView.getSearchView().blur();
 		var itemProps = item.properties;
 		var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.shuffle"), L("common.option.rc"), L("common.option.cancel")];
 		new MenuView(win, itemProps.genreName, buttons, function(selectedButton) {

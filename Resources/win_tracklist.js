@@ -103,6 +103,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	addTextColorToTemplates(template, [1, 2]);
 	addTextColorToTemplates(noMoreMenu, [1, 2]);
     addMoreMenuToTemplate(template, function optionsMenu(item, itemIndex) {
+    	listView.getSearchView().blur();
         var itemProps = item.properties;
         var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.rc"), L("common.option.cancel")];
         new MenuView(win, item.main.text, buttons, function(selectedButton) {
