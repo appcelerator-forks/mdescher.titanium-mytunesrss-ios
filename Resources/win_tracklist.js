@@ -102,30 +102,44 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	};
 	addTextColorToTemplates(template, [1, 2]);
 	addTextColorToTemplates(noMoreMenu, [1, 2]);
-    addMoreMenuToTemplate(template, function optionsMenu(item, itemIndex) {
-    	listView.getSearchView().blur();
-        var itemProps = item.properties;
-        var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.rc"), L("common.option.cancel")];
-        new MenuView(win, item.main.text, buttons, function(selectedButton) {
-        var busyView = createBusyView();
-        mediaControlsView.add(busyView);
-        disableIdleTimer();
-        try {
-            if (selectedButton === L("common.option.download")) {
-                downloadTracksForList(win, [data[itemIndex]], item.main.text, "download.track");
-            } else if (selectedButton === L("common.option.localdelete")) {
-                deleteLocalTracks(win, [data[itemIndex]], "localdelete.track");
-	            myParent.open();
-            	win.close();
-            } else if (selectedButton === L("common.option.rc")) {
-            	remoteControlMenu(win, item.main.text, {track:data[itemIndex].id});
-            }
-        } finally {
-            enableIdleTimer();
-            mediaControlsView.remove(busyView);
-        }
-        }).show();
-    });
+	if (offlineMode || isDownloadPermission() || isRemoteControlPermission()) {
+	    addMoreMenuToTemplate(template, function optionsMenu(item, itemIndex) {
+	    	listView.getSearchView().blur();
+	        var itemProps = item.properties;
+	        var buttons = [];
+	        if (offlineMode) {
+	        	buttons.push(L("common.option.localdelete"));
+	        	buttons.push(L("common.option.cancel"));
+	        } else {
+	        	if (isDownloadPermission()) {
+		        	buttons.push(L("common.option.download"));
+	        	}
+	        	if (isRemoteControlPermission()) {
+		        	buttons.push(L("common.option.rc"));
+	        	}
+	        	buttons.push(L("common.option.cancel"));
+	        }
+	        new MenuView(win, item.main.text, buttons, function(selectedButton) {
+	        var busyView = createBusyView();
+	        mediaControlsView.add(busyView);
+	        disableIdleTimer();
+	        try {
+	            if (selectedButton === L("common.option.download")) {
+	                downloadTracksForList(win, [data[itemIndex]], item.main.text, "download.track");
+	            } else if (selectedButton === L("common.option.localdelete")) {
+	                deleteLocalTracks(win, [data[itemIndex]], "localdelete.track");
+		            myParent.open();
+	            	win.close();
+	            } else if (selectedButton === L("common.option.rc")) {
+	            	remoteControlMenu(win, item.main.text, {track:data[itemIndex].id});
+	            }
+	        } finally {
+	            enableIdleTimer();
+	            mediaControlsView.remove(busyView);
+	        }
+	        }).show();
+	    });
+	}
 
 	var listView = GUI.createListView({rowHeight:Titanium.Platform.osname === "ipad" ? 72 : 48,top:45,templates:{"default":template,"noMoreMenu":noMoreMenu},defaultItemTemplate:"default",searchView:Titanium.UI.createSearchBar({autocapitalization:false,autocorrect:false}),caseInsensitiveSearch:true});
 	var buttonBack = createCommonBackButton();

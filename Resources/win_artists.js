@@ -29,7 +29,20 @@ function ArtistsWindow(data) {
     addMoreMenuToTemplate(template, function(item) {
     	listView.getSearchView().blur();
 		var itemProps = item.properties;
-		var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.shuffle"), L("common.option.rc"), L("common.option.cancel")];
+		var buttons = [];
+		if (offlineMode) {
+			buttons.push(L("common.option.localdelete"));
+			buttons.push(L("common.option.cancel"));
+		} else {
+			if (isDownloadPermission()) {
+				buttons.push(L("common.option.download"));
+			}
+			buttons.push(L("common.option.shuffle"));
+			if (isRemoteControlPermission()) {
+				buttons.push(L("common.option.rc"));
+			}
+			buttons.push(L("common.option.cancel"));
+		};
 		new MenuView(win, itemProps.artistName, buttons, function(selectedButton) {
 			var busyView = createBusyView();
 	        mediaControlsView.add(busyView);

@@ -55,6 +55,8 @@ function OnlineLoginWindow(parent) {
 				    Titanium.App.Properties.setString("libraryBase", JSON.stringify(restCall("GET", response.result.libraryUri, {}).result));
 				    connectedUsername = inputUsername.value;
 				    connectedPassword = inputPassword.value;
+				    permissions = [];
+				    nextPermissionsFetch = 0;
 				    new MenuWindow().open();
 				    Titanium.Analytics.featureEvent("login.online");
 			    } else {

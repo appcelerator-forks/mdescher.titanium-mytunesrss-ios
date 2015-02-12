@@ -50,11 +50,17 @@ function PlaylistsWindow(data) {
     addMoreMenuToTemplate(template, function optionsMenu(item) {
     	listView.getSearchView().blur();
 		var itemProps = item.properties;
-		var menuItems = [L("common.option.download"), L("common.option.shuffle")];
+		var menuItems = [];
+		if (isDowloadPermission()) {
+			buttons.push(L("common.option.download"));
+		}
+		buttons.push(L("common.option.shuffle"));
 		if (itemProps.canRefresh === true) {
 			menuItems.push(L("playlists.option.refresh"));
 		}
-		menuItems.push(L("common.option.rc"));
+		if (isRemoteControlPermission()) {
+			menuItems.push(L("common.option.rc"));
+		}
 		menuItems.push(L("common.option.cancel"));
 		new MenuView(win, itemProps.name, menuItems, function(selectedButton) {
 			var busyView = createBusyView();

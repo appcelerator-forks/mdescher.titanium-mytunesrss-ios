@@ -319,7 +319,7 @@ function MenuWindow() {
 			if (permissions.indexOf("photos") >= 0 && Titanium.App.Properties.getBool("mainMenuPhotos", true)) {
 	            rows.push(rowPhotoalbums);
 			}
-			if (permissions.indexOf("remoteControl") >= 0 && Titanium.App.Properties.getBool("mainMenuRemoteControl", true)) {
+			if (isRemoteControlPermission() && Titanium.App.Properties.getBool("mainMenuRemoteControl", true)) {
 	            rows.push(rowRemoteControl);
 			}
 		}

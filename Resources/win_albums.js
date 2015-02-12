@@ -2,6 +2,7 @@ function AlbumsWindow(data) {
 
 	var self = this;
 	var myParent;
+	var myPermissions;
 
 	var win = Titanium.UI.createWindow(STYLE.get("window"));
 	var mediaControlsView = createMediaControlsView();
@@ -56,30 +57,44 @@ function AlbumsWindow(data) {
 		]
 	};
 	addTextColorToTemplates(template, [1, 2]);
-    addMoreMenuToTemplate(template, function(item) {
-        listView.getSearchView().blur();
-        var itemProps = item.properties;
-        var buttons = offlineMode ? [L("common.option.localdelete"), L("common.option.cancel")] : [L("common.option.download"), L("common.option.rc"), L("common.option.cancel")];
-        new MenuView(win, itemProps.albumName, buttons, function(selectedButton) {
-	        var busyView = createBusyView();
-	        mediaControlsView.add(busyView);
-	        disableIdleTimer();
-	        try {
-	            if (selectedButton === L("common.option.download")) {
-	                downloadTracksForUri(mediaControlsView, itemProps.tracksUri, item.main.text, "download.album");
-	            } else if (selectedButton === L("common.option.localdelete")) {
-	                deleteLocalTracks(win, loadOfflineAlbumTracks(itemProps.albumName, itemProps.albumArtist), "localdelete.album");
-	            	myParent.open();
-	            	win.close();
-	            } else if (selectedButton === L("common.option.rc")) {
-	            	remoteControlMenu(win, item.main.text, {album:itemProps.albumName,albumArtist:itemProps.albumArtist});
-	            }
-	        } finally {
-	            enableIdleTimer();
-	            mediaControlsView.remove(busyView);
+	if (offlineMode || isDownloadPermission() || isRemoteControlPermission()) {
+	    addMoreMenuToTemplate(template, function(item) {
+	        listView.getSearchView().blur();
+	        var itemProps = item.properties;
+	        var buttons = [];
+	        if (offlineMode) {
+	        	buttons.push(L("common.option.localdelete"));
+	        	buttons.push(L("common.option.cancel"));
+	        } else {
+	        	if (isDownloadPermission()) {
+			        buttons.push(L("common.option.download"));
+	        	}
+	        	if (isRemoteControlPermission()) {
+			        buttons.push(L("common.option.rc"));
+	        	}
+		        buttons.push(L("common.option.cancel"));
 	        }
-        }).show();
-	});
+	        new MenuView(win, itemProps.albumName, buttons, function(selectedButton) {
+		        var busyView = createBusyView();
+		        mediaControlsView.add(busyView);
+		        disableIdleTimer();
+		        try {
+		            if (selectedButton === L("common.option.download")) {
+		                downloadTracksForUri(mediaControlsView, itemProps.tracksUri, item.main.text, "download.album");
+		            } else if (selectedButton === L("common.option.localdelete")) {
+		                deleteLocalTracks(win, loadOfflineAlbumTracks(itemProps.albumName, itemProps.albumArtist), "localdelete.album");
+		            	myParent.open();
+		            	win.close();
+		            } else if (selectedButton === L("common.option.rc")) {
+		            	remoteControlMenu(win, item.main.text, {album:itemProps.albumName,albumArtist:itemProps.albumArtist});
+		            }
+		        } finally {
+		            enableIdleTimer();
+		            mediaControlsView.remove(busyView);
+		        }
+	        }).show();
+		});
+	}
 
 	var listView = createCommonListView(template);
 	var buttonBack = createCommonBackButton();
@@ -145,6 +160,9 @@ function AlbumsWindow(data) {
 	this.open = function(parent) {
 		if (parent != undefined) {
 			myParent = parent;
+		}
+		if (!offlineMode) {
+			myPermissions = getPermissions();
 		}
 		win.open();
 		mediaControlsView.becomeFirstResponder();

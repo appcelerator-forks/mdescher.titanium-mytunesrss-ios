@@ -140,9 +140,31 @@ function isSessionAlive() {
 	return response.status / 100 === 2;
 }
 
+var permissions = [];
+var nextPermissionsFetch = 0;
+
 function getPermissions() {
-	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=permissions");
-	return response.status / 100 === 2 ? response.result.permissions : [];
+	if (offlineMode) {
+		return [];
+	}
+	if (new Date().getTime() >= nextPermissionsFetch) {
+		var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=permissions");
+		if (response.status / 100 === 2) {
+			permissions = response.result.permissions;
+			nextPermissionsFetch = new Date().getTime() + 60000;
+		} else {
+			nextPermissionsFetch = new Date().getTime() + 10000;
+		}
+	}
+	return permissions;
+}
+
+function isRemoteControlPermission() {
+	return getPermissions().indexOf("remoteControl") >= 0;
+}
+
+function isDownloadPermission() {
+	return getPermissions().indexOf("download") >= 0;
 }
 
 function shuffleArray(arr) {
@@ -702,36 +724,42 @@ function getCachedTrackFile(id) {
 }
 
 function cacheTrack(id, headUri, uri, progressCallback, doneCallback) {
-	var file = getFileForTrackCache(id);
-	if (file.exists()) {
-		if (isStaleCache(headUri, file.modificationTimestamp())) {
-			Titanium.API.debug("Deleting stale cache file \"" + file.getName() + "\".");
-			file.deleteFile();
-		}
-	}
-	if (file.exists()) {
+	if (uri == undefined || headUri == undefined) {
 		if (doneCallback != undefined) {
-			doneCallback({});
+			doneCallback();
 		}
 	} else {
-		var httpClient = Titanium.Network.createHTTPClient();
-		if (progressCallback != undefined) {
-			httpClient.ondatastream = function(e) {
-				if (!progressCallback(e.progress * 100)) {
-					httpClient.abort();
-					if (doneCallback != undefined) {
-						doneCallback({aborted:true});
+		var file = getFileForTrackCache(id);
+		if (file.exists()) {
+			if (isStaleCache(headUri, file.modificationTimestamp())) {
+				Titanium.API.debug("Deleting stale cache file \"" + file.getName() + "\".");
+				file.deleteFile();
+			}
+		}
+		if (file.exists()) {
+			if (doneCallback != undefined) {
+				doneCallback({});
+			}
+		} else {
+			var httpClient = Titanium.Network.createHTTPClient();
+			if (progressCallback != undefined) {
+				httpClient.ondatastream = function(e) {
+					if (!progressCallback(e.progress * 100)) {
+						httpClient.abort();
+						if (doneCallback != undefined) {
+							doneCallback({aborted:true});
+						}
 					}
-				}
-			};
+				};
+			}
+			if (doneCallback != undefined) {
+				httpClient.onload = doneCallback;
+				httpClient.onerror = doneCallback;
+			}
+			httpClient.open("GET", uri, progressCallback != undefined || doneCallback != undefined);
+			httpClient.setFile(file);
+			httpClient.send();
 		}
-		if (doneCallback != undefined) {
-			httpClient.onload = doneCallback;
-			httpClient.onerror = doneCallback;
-		}
-		httpClient.open("GET", uri, progressCallback != undefined || doneCallback != undefined);
-		httpClient.setFile(file);
-		httpClient.send();
 	}
 }
 

@@ -210,7 +210,7 @@ Titanium.App.addEventListener("mytunesrss_sync", function(event) {
     var tcParam = getTcParam();
     var uri = event.data[event.index].downloadUri;
     var plainUri = uri;
-    if (tcParam != undefined) {
+    if (tcParam != undefined && uri != undefined) {
     	uri += "/" + tcParam;
     }
 	cacheTrack(event.data[event.index].id, plainUri, uri, function() {return !CANCEL_SYNC_AUDIO_TRACKS;}, function(e) {
