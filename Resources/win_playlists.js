@@ -48,21 +48,20 @@ function PlaylistsWindow(data) {
 	addTextColorToTemplates(template, [0]);
 	addTextColorToTemplates(templateForFolder, [0]);
     addMoreMenuToTemplate(template, function optionsMenu(item) {
-    	listView.getSearchView().blur();
 		var itemProps = item.properties;
-		var menuItems = [];
-		if (isDowloadPermission()) {
+		var buttons = [];
+		if (isDownloadPermission()) {
 			buttons.push(L("common.option.download"));
 		}
 		buttons.push(L("common.option.shuffle"));
 		if (itemProps.canRefresh === true) {
-			menuItems.push(L("playlists.option.refresh"));
+			buttons.push(L("playlists.option.refresh"));
 		}
 		if (isRemoteControlPermission()) {
-			menuItems.push(L("common.option.rc"));
+			buttons.push(L("common.option.rc"));
 		}
-		menuItems.push(L("common.option.cancel"));
-		new MenuView(win, itemProps.name, menuItems, function(selectedButton) {
+		buttons.push(L("common.option.cancel"));
+		new MenuView(win, itemProps.name, buttons, function(selectedButton) {
 			var busyView = createBusyView();
 	        mediaControlsView.add(busyView);
 	        disableIdleTimer();

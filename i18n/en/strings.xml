@@ -124,4 +124,7 @@
     <string name="confirm.close">Close?</string>
     <string name="common.yes">Yes</string>
     <string name="common.no">No</string>
+    <string name="settings.appearance">Appearance</string>
+    <string name="settings.exitConfirmation">Close confirmation</string>
+    <string name="settings.browseSections">Album/artist sections</string>
 </resources>

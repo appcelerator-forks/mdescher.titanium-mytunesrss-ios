@@ -124,4 +124,7 @@
     <string name="confirm.close">Schließen?</string>
     <string name="common.yes">Ja</string>
     <string name="common.no">Nein</string>
+    <string name="settings.appearance">Ansicht</string>
+    <string name="settings.exitConfirmation">Schließen-Bestätigung</string>
+    <string name="settings.browseSections">Alben-/Künster-Sektionen</string>
 </resources>

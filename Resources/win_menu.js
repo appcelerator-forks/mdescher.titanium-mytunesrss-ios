@@ -40,20 +40,30 @@ function MenuWindow() {
 	if (!isIos7()) {
 		buttonLogout.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
 	}
-	buttonLogout.addEventListener("click", function() {
-		var optionsDialog = Titanium.UI.createOptionDialog({cancel:1,options:[L("common.yes"),L("common.no")],selectedIndex:1,title:offlineMode ? L("confirm.close") : L("confirm.logout")});
-		optionsDialog.addEventListener("click", function(e) {
-			if (e.index === 0) {
-				if (jukebox.isIos61BugPhase()) {
-					return;
+	buttonLogout.addEventListener("click", function() { 
+		if (Titanium.App.Properties.getBool("exitConfirmation", true)) {
+			var optionsDialog = Titanium.UI.createOptionDialog({cancel:1,options:[L("common.yes"),L("common.no")],selectedIndex:1,title:offlineMode ? L("confirm.close") : L("confirm.logout")});
+			optionsDialog.addEventListener("click", function(e) {
+				if (e.index === 0) {
+					if (jukebox.isIos61BugPhase()) {
+						return;
+					}
+					jukebox.reset();
+					connectedUsername = undefined;
+					connectedPassword = undefined;
+				    win.close();
 				}
-				jukebox.reset();
-				connectedUsername = undefined;
-				connectedPassword = undefined;
-			    win.close();
+			});
+			optionsDialog.show();
+		} else {
+			if (jukebox.isIos61BugPhase()) {
+				return;
 			}
-		});
-		optionsDialog.show();
+			jukebox.reset();
+			connectedUsername = undefined;
+			connectedPassword = undefined;
+		    win.close();
+		}
 	});
 
 	var buttonSettings = GUI.createButton({image:"images/config.png"});
@@ -110,14 +120,19 @@ function MenuWindow() {
 	rowAlbums.addEventListener('click', function() {
 		searchBar.blur();
         if (!offlineMode) {
-        	new SectionsWindow(L("menu.albums")).open(self, function(requestIndex) {
-	        	if (loadAndDisplayAlbums(self, getLibrary().albumsUri, requestIndex)) {
+        	if (Titanium.App.Properties.getBool("browseSections", true)) {
+	        	var sections = new SectionsWindow(L("menu.albums"));
+	        	sections.open(self, function(requestIndex) {
+		        	return loadAndDisplayAlbums(sections, getLibrary().albumsUri, requestIndex);
+	        	});
+        	} else {
+	        	if (loadAndDisplayAlbums(self, getLibrary().albumsUri, -1)) {
 	        		win.close();
 	        		return true;
 	        	} else {
 	        		return false;
 	        	}
-        	});
+        	}
         } else {
 			var busyView = createBusyView();
 			mediaControlsView.add(busyView);
@@ -137,14 +152,19 @@ function MenuWindow() {
 	rowArtists.addEventListener('click', function() {
 		searchBar.blur();
 		if (!offlineMode) {
-        	new SectionsWindow(L("menu.artists")).open(self, function(requestIndex) {
-		        if (loadAndDisplayArtists(self, requestIndex)) {
+			if (Titanium.App.Properties.getBool("browseSections", true)) {
+	        	var sections = new SectionsWindow(L("menu.artists"));
+	        	sections.open(self, function(requestIndex) {
+			        return loadAndDisplayArtists(sections, requestIndex);
+	        	});
+			} else {
+		        if (loadAndDisplayArtists(self, -1)) {
 			        win.close();
 	        		return true;
 	        	} else {
 	        		return false;
 	        	}
-        	});
+			}
 		} else {
 			var busyView = createBusyView();
 			mediaControlsView.add(busyView);

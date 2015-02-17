@@ -84,6 +84,10 @@ function SettingsWindow(transcoders, searchFuzziness) {
         Titanium.App.Properties.setBool("mainMenuPhotos", switchMenuPhotos.value);
         Titanium.App.Properties.setBool("mainMenuRemoteControl", switchMenuRemoteControl.value);
         Titanium.App.Properties.setBool("mainMenuOfflineShuffle", switchMenuOfflineShuffle.value);
+        Titanium.App.Properties.setBool("exitConfirmation", switchExitConfirmation.value);
+        if (!offlineMode) {
+	        Titanium.App.Properties.setBool("browseSections", switchBrowseSections.value);
+        }
 	    win.close();
 	});
 	
@@ -231,6 +235,16 @@ function SettingsWindow(transcoders, searchFuzziness) {
 	var photoJpegQualityInput = GUI.createTextField({hintText:L("settings.photoJpegQualityHint"),right:10,width:textFieldWidth,value:getSettingsPhotoJpegQuality(),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 	sectionPhoto.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.photoJpegQuality"),left:10}), photoJpegQualityInput]));
 	sections.push(sectionPhoto);
+
+	// appearance
+	var sectionAppearance = createSection(L("settings.appearance"));
+    var switchExitConfirmation = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("exitConfirmation", true),right:10});
+    sectionAppearance.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.exitConfirmation"),left:10}), switchExitConfirmation]));
+    if (!offlineMode) {
+	    var switchBrowseSections = Titanium.UI.createSwitch({value:Titanium.App.Properties.getBool("browseSections", true),right:10});
+	    sectionAppearance.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.browseSections"),left:10}), switchBrowseSections]));	
+    }
+    sections.push(sectionAppearance);
 
 	// main menu settings
 	var sectionMainMenu = createSection(L("settings.mainMenu"));	

@@ -10,7 +10,7 @@ function SectionsWindow(title) {
 	
 	var buttonBack = createCommonBackButton();
 	buttonBack.addEventListener("click", function() {
-		//myParent.open();
+		myParent.open();
 	    win.close();
 	});
 	mediaControlsView.add(GUI.createTopToolbar(title, buttonBack, undefined));

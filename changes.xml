@@ -7,6 +7,9 @@
 
         <release version="4.3" date="___D___">
         	<action dev="mdescher" type="add">
+				[MYTUNESRSSIPHONE-68] Section based album and artist browing
+        	</action>
+        	<action dev="mdescher" type="add">
         		Confirmation when disconnecting/closing.
         	</action>
         	<action dev="mdescher" type="fix">
