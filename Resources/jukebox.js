@@ -66,7 +66,7 @@ function Jukebox() {
 	    nowPlayingInfo.setAlbumTrackNumber(track.trackNumber != undefined ? track.trackNumber : 1);
 	    nowPlayingInfo.setPlaybackRate(0);
 	    nowPlayingInfo.setElapsedPlaybackTime(0);
-	    if (track.imageUri != undefined) {
+	    if (track.imageUri != undefined && track.imageHash != undefined) {
 	        var imgUri = getCacheableImageUri(track.imageHash, track.imageUri);
 	        var imgView; 
 	        if (hires) {

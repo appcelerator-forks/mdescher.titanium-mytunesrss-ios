@@ -215,14 +215,16 @@ Titanium.App.addEventListener("mytunesrss_sync", function(event) {
     }
 	cacheTrack(event.data[event.index].id, plainUri, uri, function() {return !CANCEL_SYNC_AUDIO_TRACKS;}, function(e) {
 		if (e == undefined || (e.error == undefined && e.aborted !== true)) {
-			if (!getImageCacheFile(event.data[event.index].imageHash).exists()) {
-				downloadImage(event.data[event.index].imageHash, event.data[event.index].imageUri);
-			}
-			if (!getImageCacheFile(event.data[event.index].imageHash + "_64").exists()) {
-				downloadImage(event.data[event.index].imageHash + "_64", event.data[event.index].imageUri + "/size=64");
-			}
-			if (!getImageCacheFile(event.data[event.index].imageHash + "_128").exists()) {
-				downloadImage(event.data[event.index].imageHash + "_128", event.data[event.index].imageUri + "/size=128");
+			if (event.data[event.index].imageHash != undefined && event.data[event.index].imageUri != undefined) {
+				if (!getImageCacheFile(event.data[event.index].imageHash).exists()) {
+					downloadImage(event.data[event.index].imageHash, event.data[event.index].imageUri);
+				}
+				if (!getImageCacheFile(event.data[event.index].imageHash + "_64").exists()) {
+					downloadImage(event.data[event.index].imageHash + "_64", event.data[event.index].imageUri + "/size=64");
+				}
+				if (!getImageCacheFile(event.data[event.index].imageHash + "_128").exists()) {
+					downloadImage(event.data[event.index].imageHash + "_128", event.data[event.index].imageUri + "/size=128");
+				}
 			}
 			db = Titanium.Database.open("OfflineTracks");
 			db.execute("DELETE FROM track WHERE id = ?", event.data[event.index].id);

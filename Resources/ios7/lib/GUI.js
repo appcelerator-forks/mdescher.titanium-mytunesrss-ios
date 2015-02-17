@@ -92,7 +92,7 @@ exports.createMediaTrackItemInfoView = function(imageHash, imageUri, label, subl
 	var spacerRight = Titanium.Platform.osname === "ipad" ? 693 : 242;
 	var size = Titanium.Platform.osname === "ipad" ? 30 : 40;
     var infoView = Titanium.UI.createView({right:30});
-    if (imageUri != undefined) {
+    if (imageUri != undefined && imageHash != undefined) {
 		var hires = Titanium.Platform.displayCaps.density == "high";
 		var imagesize = hires ? 128 : 64;
     	infoView.add(Titanium.UI.createImageView({hires:true,image:getCacheableImageUri(imageHash + "_" + imagesize, imageUri + "/size=" + imagesize),top:spacer,left:spacer,bottom:spacer,right:spacerRight,defaultImage:"appicon.png"}));

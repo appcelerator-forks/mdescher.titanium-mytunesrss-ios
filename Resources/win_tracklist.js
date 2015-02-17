@@ -158,7 +158,7 @@ function TracksWindow(data, currentJukeboxPlaylist) {
 	for (var i = 0; i < data.length; i++) {
 	    var item = {
 		    pic : {
-			    image : data[i].imageHash != undefined ? "http://localhost:" + HTTP_SERVER_PORT + "/image/" + data[i].imageHash + "_" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64) + "/" + encodeURIComponent(data[i].imageUri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64)) : "appicon.png",
+			    image : data[i].imageHash != undefined && data[i].imageUri != undefined ? "http://localhost:" + HTTP_SERVER_PORT + "/image/" + data[i].imageHash + "_" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64) + "/" + encodeURIComponent(data[i].imageUri + "/size=" + (Titanium.Platform.displayCaps.density === "high" ? 128 : 64)) : "appicon.png",
 		    },
 		    main : {
 			    text : getDisplayName(data[i].name)
