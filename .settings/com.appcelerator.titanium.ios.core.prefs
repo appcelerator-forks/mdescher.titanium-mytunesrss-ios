@@ -1,8 +1,8 @@
 eclipse.preferences.version=1
 iosLaunchConfigurationAttributes/ATTR_MINIFY=true
-iosLaunchConfigurationAttributes/ATTR_PROJECT_NAME=mytunesrss-ios
+iosLaunchConfigurationAttributes/ATTR_PROJECT_NAME=titanium-mytunesrss-ios
 iosLaunchConfigurationAttributes/appid=de.codewave.mytunesrss
-iosLaunchConfigurationAttributes/certificate=Michael Descher (64Q697M329)
+iosLaunchConfigurationAttributes/certificate=Michael Descher (KA3C22NAMD)
 iosLaunchConfigurationAttributes/keychain=
-iosLaunchConfigurationAttributes/sdk_version=8.0
-iosLaunchConfigurationAttributes/uuid=a2e62e86-8086-40c0-8cdb-63af6efa048b
+iosLaunchConfigurationAttributes/sdk_version=8.1
+iosLaunchConfigurationAttributes/uuid=73f552b3-5bdd-4adc-a63f-6450fb6fc5b9

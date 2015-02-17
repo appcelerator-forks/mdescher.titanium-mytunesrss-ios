@@ -118,20 +118,24 @@ function setListDataAndIndex(listView, items, createListItemDataCallback, getSec
 }
 
 function removeUnsupportedTracks(items) {
-    for (var i = items.length - 1; i >= 0; i--) {
-        if ((items[i].mediaType != 'Audio' && items[i].mediaType != 'Video') || items[i].protected === true) {
-            items = items.slice(0, i).concat(items.slice(i + 1));
-        }
-    }
+	if (items != undefined && items.length > 0) {
+	    for (var i = items.length - 1; i >= 0; i--) {
+	        if ((items[i].mediaType != 'Audio' && items[i].mediaType != 'Video') || items[i].protected === true) {
+	            items = items.slice(0, i).concat(items.slice(i + 1));
+	        }
+	    }
+	}
     return items;
 }
 
 function removeUnsupportedAndNonAudioTracks(items) {
-    for (var i = items.length - 1; i >= 0; i--) {
-        if (items[i].mediaType != "Audio" || items[i].protected === true) {
-            items = items.slice(0, i).concat(items.slice(i + 1));
-        }
-    }
+	if (items != undefined && items.length > 0) {
+	    for (var i = items.length - 1; i >= 0; i--) {
+	        if (items[i].mediaType != "Audio" || items[i].protected === true) {
+	            items = items.slice(0, i).concat(items.slice(i + 1));
+	        }
+	    }
+	}
     return items;
 }
 

@@ -7,6 +7,9 @@
 
         <release version="4.3" date="___D___">
         	<action dev="mdescher" type="fix">
+        		[MYTUNESRSSIPHONE-84] Error when trying to download a list where no unprotected tracks are found
+        	</action>
+        	<action dev="mdescher" type="fix">
         		[MYTUNESRSSIPHONE-83] Consider download and remote control permissions
         	</action>
         	<action dev="mdescher" type="update">
