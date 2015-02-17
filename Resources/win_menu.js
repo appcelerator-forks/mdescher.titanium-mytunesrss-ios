@@ -40,14 +40,20 @@ function MenuWindow() {
 	if (!isIos7()) {
 		buttonLogout.style = Titanium.UI.iPhone.SystemButtonStyle.BORDERED;
 	}
-	buttonLogout.addEventListener('click', function() {
-		if (jukebox.isIos61BugPhase()) {
-			return;
-		}
-		jukebox.reset();
-		connectedUsername = undefined;
-		connectedPassword = undefined;
-	    win.close();
+	buttonLogout.addEventListener("click", function() {
+		var optionsDialog = Titanium.UI.createOptionDialog({cancel:1,options:[L("common.yes"),L("common.no")],selectedIndex:1,title:offlineMode ? L("confirm.close") : L("confirm.logout")});
+		optionsDialog.addEventListener("click", function(e) {
+			if (e.index === 0) {
+				if (jukebox.isIos61BugPhase()) {
+					return;
+				}
+				jukebox.reset();
+				connectedUsername = undefined;
+				connectedPassword = undefined;
+			    win.close();
+			}
+		});
+		optionsDialog.show();
 	});
 
 	var buttonSettings = GUI.createButton({image:"images/config.png"});

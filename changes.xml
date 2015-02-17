@@ -6,6 +6,9 @@
     <body>
 
         <release version="4.3" date="___D___">
+        	<action dev="mdescher" type="add">
+        		Confirmation when disconnecting/closing.
+        	</action>
         	<action dev="mdescher" type="fix">
         		[MYTUNESRSSIPHONE-85] Downloading "INXS - Greatest Hits" fails
         	</action>

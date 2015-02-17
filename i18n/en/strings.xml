@@ -120,4 +120,8 @@
     <string name="remotecontrol.notAvailable">The server version is %s but remote control needs %s or better.</string>
     <string name="remote.noMediaRenderer">Please select a media renderer to start playback.</string>
     <string name="sections.all">All</string>
+    <string name="confirm.logout">Disconnect?</string>
+    <string name="confirm.close">Close?</string>
+    <string name="common.yes">Yes</string>
+    <string name="common.no">No</string>
 </resources>
