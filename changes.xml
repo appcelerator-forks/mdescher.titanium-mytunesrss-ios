@@ -6,168 +6,172 @@
     <body>
 
         <release version="4.3" date="___D___">
-        	<action dev="mdescher" type="add">
-				[MYTUNESRSSIPHONE-68] Section based album and artist browing
-        	</action>
-        	<action dev="mdescher" type="add">
-        		Confirmation when disconnecting/closing.
-        	</action>
-        	<action dev="mdescher" type="fix">
-        		[MYTUNESRSSIPHONE-85] Downloading "INXS - Greatest Hits" fails
-        	</action>
-        	<action dev="mdescher" type="fix">
-        		[MYTUNESRSSIPHONE-84] Error when trying to download a list where no unprotected tracks are found
-        	</action>
-        	<action dev="mdescher" type="fix">
-        		[MYTUNESRSSIPHONE-83] Consider download and remote control permissions
-        	</action>
-        	<action dev="mdescher" type="update">
-        		[MYTUNESRSSIPHONE-81] Hide keyboard
-        	</action>
-        	<action dev="mdescher" type="update">
-	        	[MYTUNESRSSIPHONE-82] Label for Wifi transcoders
-	        </action>
-	    </release>
+            <action dev="mdescher" type="fix">
+                Do not fail and stop playback when an error occurs while
+                getting the current playback time (fixed in titanium framework).
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-68] Section based album and artist browing
+            </action>
+            <action dev="mdescher" type="add">
+                Confirmation when disconnecting/closing.
+            </action>
+            <action dev="mdescher" type="fix">
+                [MYTUNESRSSIPHONE-85] Downloading "INXS - Greatest Hits" fails
+            </action>
+            <action dev="mdescher" type="fix">
+                [MYTUNESRSSIPHONE-84] Error when trying to download a list where no unprotected tracks are found
+            </action>
+            <action dev="mdescher" type="fix">
+                [MYTUNESRSSIPHONE-83] Consider download and remote control permissions
+            </action>
+            <action dev="mdescher" type="update">
+                [MYTUNESRSSIPHONE-81] Hide keyboard
+            </action>
+            <action dev="mdescher" type="update">
+                [MYTUNESRSSIPHONE-82] Label for Wifi transcoders
+            </action>
+        </release>
 
         <release version="4.2.2" date="2014-12-02">
-        	<action dev="mdescher" type="fix">
-	        	[MYTUNESRSSIPHONE-79] Topmost paylist not shown
-	        </action>
-	    </release>
+            <action dev="mdescher" type="fix">
+                [MYTUNESRSSIPHONE-79] Topmost paylist not shown
+            </action>
+        </release>
 
         <release version="4.2.1" date="2014-11-04">
-        	<action dev="mdescher" type="fix">
-	        	Fixed download of individual tracks.
-	        </action>
-	    </release>
+            <action dev="mdescher" type="fix">
+                Fixed download of individual tracks.
+            </action>
+        </release>
 
         <release version="4.2.0" date="2014-09-29">
-        	<action dev="mdescher" type="update">
-	        	Reverted server requirements back to 5.0.0. Only remote control
-	        	requires a server 6.3.0 or better.
-	        </action>
-	    </release>
+            <action dev="mdescher" type="update">
+                Reverted server requirements back to 5.0.0. Only remote control
+                requires a server 6.3.0 or better.
+            </action>
+        </release>
 
         <release version="4.1.0" date="2014-09-17">
-        	<action dev="mdescher" type="update">
-	        	Added iOS 8 and iPhone 6 support.
-	        </action>
-	    </release>
+            <action dev="mdescher" type="update">
+                Added iOS 8 and iPhone 6 support.
+            </action>
+        </release>
 
         <release version="4.0.0" date="2014-09-02">
-        	<action dev="mdescher" type="update">
-	        	Requires server version 6.3.0.
-	        </action>
-        	<action dev="mdescher" type="add">
-	        	[MYTUNESRSSIPHONE-74] Keep screen on when connected to a power source
-	        </action>
-        	<action dev="mdescher" type="update">
-	        	[MYTUNESRSSIPHONE-75] Remove alert boxes from audio player
-	        </action>
-        	<action dev="mdescher" type="add">
-	        	[MYTUNESRSSIPHONE-22] Support for remote control
-	        </action>
-        	<action dev="mdescher" type="add">
-	        	[MYTUNESRSSIPHONE-57] Download full sized photo
-	        </action>
-        	<action dev="mdescher" type="add">
-	        	[MYTUNESRSSIPHONE-71] Hierarchical playlist view
-	        </action>
-        	<action dev="mdescher" type="add">
-	        	[MYTUNESRSSIPHONE-73] Pause playback when removed from dock or earphones are unplugged
-	        </action>
-	    </release>
+            <action dev="mdescher" type="update">
+                Requires server version 6.3.0.
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-74] Keep screen on when connected to a power source
+            </action>
+            <action dev="mdescher" type="update">
+                [MYTUNESRSSIPHONE-75] Remove alert boxes from audio player
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-22] Support for remote control
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-57] Download full sized photo
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-71] Hierarchical playlist view
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-73] Pause playback when removed from dock or earphones are unplugged
+            </action>
+        </release>
 
         <release version="3.6.0" date="2014-04-09">
-        	<action dev="mdescher" type="add">
-	        	[MYTUNESRSSIPHONE-51] Filter attribute for list views
-	        </action>
-        	<action dev="mdescher" type="add">
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-51] Filter attribute for list views
+            </action>
+            <action dev="mdescher" type="add">
                 Fixed loss of remote control event handling.
-	        </action>
-        	<action dev="mdescher" type="add">
+            </action>
+            <action dev="mdescher" type="add">
                 [MYTUNESRSSIPHONE-61] Configurable main menu
-	        </action>
-        	<action dev="mdescher" type="fix">
-	        	[MYTUNESRSSIPHONE-69] Missing photos on the overview page
-	        </action>
-        	<action dev="mdescher" type="add">
-	        	[MYTUNESRSSIPHONE-63] Cover artwork is "squared" in jukebox
-	        </action>
-        	<action dev="mdescher" type="add">
-        		[MYTUNESRSSIPHONE-64] Use permissions for menu entries
-	        </action>
-	    </release>
+            </action>
+            <action dev="mdescher" type="fix">
+                [MYTUNESRSSIPHONE-69] Missing photos on the overview page
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-63] Cover artwork is "squared" in jukebox
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-64] Use permissions for menu entries
+            </action>
+        </release>
 
         <release version="3.5.0" date="2013-10-29">
-        	<action dev="mdescher" type="add">
-        		[MYTUNESRSSIPHONE-56] Add refresh action to own smart playlists
-	        </action>
-        	<action dev="mdescher" type="add">
-	        	Album artwork is displayed in the now playing info now as well.
-	        </action>
-        	<action dev="mdescher" type="add">
-	        	[MYTUNESRSSIPHONE-60] Random playback of online playlist
-	        </action>
-        	<action dev="mdescher" type="update">
-				Better image and track caching using modification checks.
-				This version now requires a MyTunesRSS service 4.9.8 or
-				better.
-			</action>
-        	<action dev="mdescher" type="update">
-				New iOS 7 icons for login screen. Back to old App icons for iOS 6.
-				New App icons for iOS 7.
-			</action>
-		</release>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-56] Add refresh action to own smart playlists
+            </action>
+            <action dev="mdescher" type="add">
+                Album artwork is displayed in the now playing info now as well.
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-60] Random playback of online playlist
+            </action>
+            <action dev="mdescher" type="update">
+                Better image and track caching using modification checks.
+                This version now requires a MyTunesRSS service 4.9.8 or
+                better.
+            </action>
+            <action dev="mdescher" type="update">
+                New iOS 7 icons for login screen. Back to old App icons for iOS 6.
+                New App icons for iOS 7.
+            </action>
+        </release>
 
         <release version="3.0.0" date="2013-09-24">
-        	<action dev="mdescher" type="add">
-				Display "Now Playing" information.
-        	</action>
-        	<action dev="mdescher" type="update">
-				Works with iOS 7.
-        	</action>
-        	<action dev="mdescher" type="add">
-				[MYTUNESRSSIPHONE-21] Support for photos
-        	</action>
-        	<action dev="mdescher" type="update">
-        		Use list view instead of table view.
-        	</action>
-        	<action dev="mdescher" type="remove">
-        		Removed iAd.
-        	</action>
-        	<action dev="mdescher" type="update">
-        		Use internal http server for all image request. The http server either returns the cached image
-        		or fetches, caches and returns the remote image. This make the special implementation of the
-        		imageview with listeners obsolete.
-        	</action>
+            <action dev="mdescher" type="add">
+                Display "Now Playing" information.
+            </action>
+            <action dev="mdescher" type="update">
+                Works with iOS 7.
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-21] Support for photos
+            </action>
+            <action dev="mdescher" type="update">
+                Use list view instead of table view.
+            </action>
+            <action dev="mdescher" type="remove">
+                Removed iAd.
+            </action>
+            <action dev="mdescher" type="update">
+                Use internal http server for all image request. The http server either returns the cached image
+                or fetches, caches and returns the remote image. This make the special implementation of the
+                imageview with listeners obsolete.
+            </action>
         </release>
 
         <release version="2.3.1" date="2013-05-08">
-        	<action dev="mdescher" type="fix">
-        		Do not stop keep-alive background task when audio player stops due to
+            <action dev="mdescher" type="fix">
+                Do not stop keep-alive background task when audio player stops due to
                 user interaction, e.g. shuffle/next/previous track.
-        	</action>
+            </action>
         </release>
 
         <release version="2.3" date="2013-04-27">
-        	<action dev="mdescher" type="update">
-        		Improved background keep-alive. Only play keep-alive sound once every 60 seconds
-        		when app is in background and jukebox is active.
-        	</action>
-        	<action dev="mdescher" type="update">
-        		Only use play_count 0 and 1 for shuffle mode to prevent new tracks from
-        		being played over and over again before old tracks get another chance.
-        	</action>
-        	<action dev="mdescher" type="add">
-        		[MYTUNESRSSIPHONE-48] Back to playlist when playback in jukebox finishes
-        	</action>
-        	<action dev="mdescher" type="add">
-        		[MYTUNESRSSIPHONE-47] Keep screen alive when activity indicator is active
-        	</action>
-        	<action dev="mdescher" type="add">
-        		[MYTUNESRSSIPHONE-46] Support for media and volume controls
-        	</action>
+            <action dev="mdescher" type="update">
+                Improved background keep-alive. Only play keep-alive sound once every 60 seconds
+                when app is in background and jukebox is active.
+            </action>
+            <action dev="mdescher" type="update">
+                Only use play_count 0 and 1 for shuffle mode to prevent new tracks from
+                being played over and over again before old tracks get another chance.
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-48] Back to playlist when playback in jukebox finishes
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-47] Keep screen alive when activity indicator is active
+            </action>
+            <action dev="mdescher" type="add">
+                [MYTUNESRSSIPHONE-46] Support for media and volume controls
+            </action>
         </release>
 
         <release version="2.2" date="2013-03-27">
