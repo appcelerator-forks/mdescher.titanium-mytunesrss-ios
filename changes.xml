@@ -5,7 +5,10 @@
     </properties>
     <body>
 
-        <release version="4.3" date="___D___">
+        <release version="4.3.3" date="___D___">
+            <action dev="mdescher" type="update">
+            	[MYTUNESRSSIPHONE-88] Use naturalSortName for albums/artists/genres when available
+            </action>
             <action dev="mdescher" type="fix">
                 Do not fail and stop playback when an error occurs while
                 getting the current playback time (fixed in titanium framework).

@@ -239,7 +239,7 @@ function loadAndDisplayAlbums(parent, uri, requestIndex) {
 	if (requestIndex === undefined) {
 		requestIndex = -1;
 	}
-    var response = restCall("GET", uri + "?index=" + requestIndex + "&attr.incl=name&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=imageHash&attr.incl=artist");
+    var response = restCall("GET", uri + "?index=" + requestIndex + "&attr.incl=name&attr.incl=naturalSortName&attr.incl=tracksUri&attr.incl=imageUri&attr.incl=imageHash&attr.incl=artist");
     if (response.status / 100 === 2) {
         if (response.result.length === 0) {
         	showError({message:L("albums.noneFound"),buttonNames:['Ok']});
@@ -275,7 +275,7 @@ function loadAndDisplayArtists(parent, requestIndex) {
 		if (requestIndex === undefined) {
 			requestIndex = -1;
 		}
-	    var response = restCall("GET", getLibrary().artistsUri + "?index=" + requestIndex + "&attr.incl=name&attr.incl=albumsUri&attr.incl=tracksUri", {});
+	    var response = restCall("GET", getLibrary().artistsUri + "?index=" + requestIndex + "&attr.incl=name&attr.incl=naturalSortName&attr.incl=albumsUri&attr.incl=tracksUri", {});
 	    if (response.status / 100 === 2) {
 	        if (response.result.length === 0) {
 	        	showError({message:L("artists.noneFound"),buttonNames:['Ok']});
@@ -309,7 +309,7 @@ function loadAndDisplayGenres(parent) {
 	    	return true;
 	    }
 	} else {
-	    var response = restCall("GET", getLibrary().genresUri + "?attr.incl=name&attr.incl=albumsUri&attr.incl=tracksUri", {});
+	    var response = restCall("GET", getLibrary().genresUri + "?attr.incl=name&attr.incl=naturalSortName&attr.incl=albumsUri&attr.incl=tracksUri", {});
 	    if (response.status / 100 === 2) {
 	        if (response.result.length === 0) {
 	        	showError({message:L("genres.noneFound"),buttonNames:['Ok']});

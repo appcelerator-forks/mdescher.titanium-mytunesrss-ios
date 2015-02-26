@@ -151,7 +151,7 @@ function AlbumsWindow(data) {
 	        	};
 	        },
 	        function(item) {
-	            return item.name;
+	            return item.naturalSortName != undefined ? item.naturalSortName : item.name;
 	        });
 
 	/**
