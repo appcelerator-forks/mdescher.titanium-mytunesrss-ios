@@ -72,6 +72,11 @@ function SettingsWindow(transcoders, searchFuzziness) {
 				return;
 			}
 		    Titanium.App.Properties.setInt('searchAccuracy', searchAccuracyInput.value);
+		    if (defaultTimeoutInput.value < 1 || defaultTimeoutInput.value > 300) {
+				showError({message:L("settings.invalidDefaultTimeout"),buttonNames:['Ok']});
+				return;
+		    }
+		    Titanium.App.Properties.setInt("defaultRestCallTimeout", defaultTimeoutInput.value);
 		    saveTranscoders(transcoderSwitchesWifi, "");
 		    saveTranscoders(transcoderSwitchesMobile, "_mobile");
 	    }
@@ -133,6 +138,14 @@ function SettingsWindow(transcoders, searchFuzziness) {
 		var searchAccuracyInput = GUI.createTextField({editable:!staticSearchFuzziness,right:10,width:textFieldWidth,hintText:L("settings.accuracyHint"),value:searchAccuracy,keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
 		sectionSearch.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.searchAccuracy"),left:10}), searchAccuracyInput]));
 		sections.push(sectionSearch);
+	}
+	
+	if (!offlineMode) {
+		// network settings
+		var sectionNetwork = createSection(L("settings.network"));
+		var defaultTimeoutInput = GUI.createTextField({right:10,width:textFieldWidth,hintText:L("settings.defaultTimeoutHint"),value:Titanium.App.Properties.getInt("defaultRestCallTimeout", DEFAULT_DEFAULT_TIMEOUT),keyboardType:Titanium.UI.KEYBOARD_NUMBER_PAD});
+		sectionNetwork.add(wrapInRow([GUI.createLabel({font:{fontSize:13,fontWeight:"bold"},text:L("settings.defaultTimeout"),left:10}), defaultTimeoutInput]));
+		sections.push(sectionNetwork);
 	}
 	
 	// cache settings

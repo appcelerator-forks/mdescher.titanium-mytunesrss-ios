@@ -50,9 +50,9 @@ function OnlineLoginWindow(parent) {
 		    } else if (compareVersions(serverVersion, MINIMUM_SERVER_VERSION) < 0) {
 		        showError({message:String.format(L("login.wrongServerVersion"), serverVersion.text, MINIMUM_SERVER_VERSION.text),buttonNames:['Ok']});
 		    } else {
-			    var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value});
+			    var response = restCall("POST", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=libraryUri", {username:inputUsername.value,password:inputPassword.value}, 10000);
 			    if (response.status / 100 === 2) {
-				    Titanium.App.Properties.setString("libraryBase", JSON.stringify(restCall("GET", response.result.libraryUri, {}).result));
+				    Titanium.App.Properties.setString("libraryBase", JSON.stringify(restCall("GET", response.result.libraryUri, {}, 10000).result));
 				    connectedUsername = inputUsername.value;
 				    connectedPassword = inputPassword.value;
 				    permissions = [];

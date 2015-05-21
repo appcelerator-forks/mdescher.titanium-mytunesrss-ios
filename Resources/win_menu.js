@@ -78,7 +78,7 @@ function MenuWindow() {
 		    if (offlineMode) {
 			    new SettingsWindow().open(self);
 		    } else {
-			    var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=transcoders&attr.incl=searchFuzziness", {});
+			    var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=transcoders&attr.incl=searchFuzziness", {}, 10000);
 			    if (response.status / 100 === 2) {
 				    new SettingsWindow(response.result.transcoders, response.result.searchFuzziness).open(self);
 			    } else {

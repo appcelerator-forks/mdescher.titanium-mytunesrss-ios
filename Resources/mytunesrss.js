@@ -1,6 +1,7 @@
 var TABLE_VIEW_ROW_HEIGHT = 40;
 var DEFAULT_AUDIO_BUFFER_SIZE = 2048;
 var DEFAULT_SEARCH_ACCURACY = 40;
+var DEFAULT_DEFAULT_TIMEOUT = 30;
 var MINIMUM_SERVER_VERSION = {
 	major : 5,
 	minor : 0,
@@ -42,7 +43,7 @@ function isStaleCache(uri, ts) {
 
 function restCall(method, uri, params, timeout) {
 	if (timeout === undefined) {
-		timeout = 30000;
+		timeout = 1000 * Titanium.App.Properties.getInt("defaultRestCallTimeout", DEFAULT_DEFAULT_TIMEOUT);
 	}
 	if (!Titanium.Network.online) {
 		return {status:500,result:"NO_NETWORK"};
@@ -140,7 +141,7 @@ function removeUnsupportedAndNonAudioTracks(items) {
 }
 
 function isSessionAlive() {
-	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=");
+	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=", {}, 10000);
 	return response.status / 100 === 2;
 }
 
@@ -152,7 +153,7 @@ function getPermissions() {
 		return [];
 	}
 	if (new Date().getTime() >= nextPermissionsFetch) {
-		var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=permissions");
+		var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest/session?attr.incl=permissions", {}, 10000);
 		if (response.status / 100 === 2) {
 			permissions = response.result.permissions;
 			nextPermissionsFetch = new Date().getTime() + 60000;
@@ -606,7 +607,7 @@ function searchAndDisplayTracks(parent, searchTerm) {
 }
 
 function getServerVersion() {
-	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest?attr.incl=version", {});
+	var response = restCall("GET", Titanium.App.Properties.getString('resolvedServerUrl') + "/rest?attr.incl=version", {}, 10000);
 	if (response.status / 100 === 2 && response.result.version != undefined && response.result.version.text != undefined) {
 		return response.result.version;
 	} else {
@@ -772,7 +773,7 @@ function deleteCachedTrackFile(id) {
 }
 
 function pingServer() {
-	restCall("GET", Titanium.App.Properties.getString("resolvedServerUrl") + "/rest/session?attr.incl=dummy");
+	restCall("GET", Titanium.App.Properties.getString("resolvedServerUrl") + "/rest/session?attr.incl=dummy", {}, 10000);
 }
 
 function showError(options) {
