@@ -126,12 +126,20 @@ function MenuWindow() {
 		        	return loadAndDisplayAlbums(sections, getLibrary().albumsUri, requestIndex);
 	        	});
         	} else {
-	        	if (loadAndDisplayAlbums(self, getLibrary().albumsUri, -1)) {
-	        		win.close();
-	        		return true;
-	        	} else {
-	        		return false;
-	        	}
+				var busyView = createBusyView();
+				mediaControlsView.add(busyView);
+				disableIdleTimer();
+				try {
+		        	if (loadAndDisplayAlbums(self, getLibrary().albumsUri, -1)) {
+		        		win.close();
+		        		return true;
+		        	} else {
+		        		return false;
+		        	}
+				} finally {
+		        	enableIdleTimer();
+			        mediaControlsView.remove(busyView);
+				}
         	}
         } else {
 			var busyView = createBusyView();
@@ -158,12 +166,20 @@ function MenuWindow() {
 			        return loadAndDisplayArtists(sections, requestIndex);
 	        	});
 			} else {
-		        if (loadAndDisplayArtists(self, -1)) {
-			        win.close();
-	        		return true;
-	        	} else {
-	        		return false;
-	        	}
+				var busyView = createBusyView();
+				mediaControlsView.add(busyView);
+				disableIdleTimer();
+				try {
+			        if (loadAndDisplayArtists(self, -1)) {
+				        win.close();
+		        		return true;
+		        	} else {
+		        		return false;
+		        	}
+				} finally {
+		        	enableIdleTimer();
+			        mediaControlsView.remove(busyView);
+				}
 			}
 		} else {
 			var busyView = createBusyView();
