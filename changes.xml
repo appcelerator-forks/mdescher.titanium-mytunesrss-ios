@@ -7,6 +7,9 @@
 
         <release version="4.4" date="___D___">
         	<action dev="mdescher" type="update">
+        		Updated to Mobile SDK 4.0.0.MYTUNESRSS.
+        	</action>
+        	<action dev="mdescher" type="update">
         		Moved to Appcelerator Platform 4.
         	</action>
         	<action dev="mdescher" type="add">
