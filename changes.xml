@@ -6,6 +6,9 @@
     <body>
 
         <release version="4.4" date="___D___">
+        	<action dev="mdescher" type="update">
+        		Moved to Appcelerator Platform 4.
+        	</action>
         	<action dev="mdescher" type="add">
         		Added configuration for network call timeout.
         	</action>
