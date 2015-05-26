@@ -1,6 +1,7 @@
 eclipse.preferences.version=1
 iosLaunchConfigurationAttributes/ATTR_MINIFY=true
 iosLaunchConfigurationAttributes/ATTR_PROJECT_NAME=MyTunesRSS
+iosLaunchConfigurationAttributes/ATTR_UPLOAD_DEBUG_SYMBOLS=false
 iosLaunchConfigurationAttributes/appid=de.codewave.mytunesrss
 iosLaunchConfigurationAttributes/certificate=Michael Descher (64Q697M329)
 iosLaunchConfigurationAttributes/keychain=
