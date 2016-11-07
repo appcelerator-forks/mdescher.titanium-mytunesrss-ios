@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ti:app xmlns:ti="http://ti.appcelerator.org">
-    <sdk-version>4.0.0.MYTUNESRSS</sdk-version>
+    <sdk-version>5.5.1.GA</sdk-version>
     <deployment-targets>
         <target device="tizen">false</target>
         <target device="mobileweb">false</target>
@@ -83,8 +83,8 @@
     </ios>
     <android xmlns:android="http://schemas.android.com/apk/res/android"/>
     <modules>
-        <module platform="iphone" version="0.13.1">com.0x82.webserver</module>
-        <module platform="iphone" version="4.2">de.codewave.ti.mediacontrols</module>
+        <module platform="iphone" version="0.14">com.0x82.webserver</module>
+        <module platform="iphone" version="4.3">de.codewave.ti.mediacontrols</module>
     </modules>
     <property name="appc-app-id" type="string">555eb87ba82be9d02ed4b382</property>
 </ti:app>
